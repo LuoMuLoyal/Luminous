@@ -17,9 +17,9 @@ class SearchInput extends HookWidget {
   final String query;
   final ValueChanged<String> onChanged;
 
-  /// Fired by an explicit submit — the keyboard's search action or the field's
-  /// submit button. Search is submit-driven: [onChanged] only records the typed
-  /// query and never searches.
+  /// Fired by an explicit submit — the search button beside the field or the
+  /// keyboard's search action (mobile Enter / desktop Return). Search is
+  /// submit-driven: [onChanged] only records the typed query, never searches.
   final ValueChanged<String>? onSubmitted;
 
   @override
@@ -39,77 +39,83 @@ class SearchInput extends HookWidget {
       return null;
     }, [query]);
 
-    return FTextField(
-      key: const ValueKey('medicine-search-input'),
-      control: FTextFieldControl.managed(
-        controller: controller,
-        onChange: (value) {
-          if (!syncing.value) {
-            onChanged(value.text);
-          }
-        },
-      ),
-      hint: l10n.medicineSearchFieldHint,
-      textInputAction: TextInputAction.search,
-      onSubmit: (value) => (onSubmitted ?? onChanged)(value),
-      prefixBuilder: (context, style, variants) => FTextField.prefixIconBuilder(
-        context,
-        style,
-        variants,
-        Icon(
-          SemanticIcons.actionSearch,
-          color: SemanticColor.neutral.solid(context),
-        ),
-      ),
-      // Both suffixes only exist once there is something to act on, so the
-      // submit button is never a dead control.
-      suffixBuilder: controller.text.isEmpty
-          ? null
-          : (context, style, variants) => Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FTappable(
-                  onPress: () {
-                    controller.clear();
-                    onChanged('');
-                  },
-                  child: Semantics(
-                    button: true,
-                    label: l10n.medicineSearchClearAction,
-                    child: Padding(
-                      padding: const EdgeInsets.all(Spacing.xs),
-                      child: Icon(
-                        SemanticIcons.notificationFailed,
-                        color: SemanticColor.neutral.solid(context),
-                      ),
-                    ),
-                  ),
-                ),
-                // Explicit submit for the submit-only contract. The keyboard's
-                // search action stays wired (`textInputAction` + `onSubmit`);
-                // this is the same trigger for users who never press it.
-                FTappable(
-                  key: const ValueKey('medicine-search-submit'),
-                  onPress: () {
-                    final submitted = controller.text;
-                    // Mirror the keyboard action, which unfocuses the field.
-                    FocusScope.of(context).unfocus();
-                    (onSubmitted ?? onChanged)(submitted);
-                  },
-                  child: Semantics(
-                    button: true,
-                    label: l10n.medicineSearchPageTitle,
-                    child: Padding(
-                      padding: const EdgeInsets.all(Spacing.xs),
-                      child: Icon(
-                        SemanticIcons.actionSearch,
-                        color: SemanticColor.primary.solid(context),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+    // The single non-keyboard trigger. Mirrors the keyboard action, which
+    // unfocuses the field, so both paths leave the field in the same state.
+    void submit() {
+      final value = controller.text;
+      FocusScope.of(context).unfocus();
+      (onSubmitted ?? onChanged)(value);
+    }
+
+    final canSubmit = query.trim().isNotEmpty;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: FTextField(
+            key: const ValueKey('medicine-search-input'),
+            control: FTextFieldControl.managed(
+              controller: controller,
+              onChange: (value) {
+                if (!syncing.value) {
+                  onChanged(value.text);
+                }
+              },
             ),
+            hint: l10n.medicineSearchFieldHint,
+            textInputAction: TextInputAction.search,
+            onSubmit: (value) => (onSubmitted ?? onChanged)(value),
+            prefixBuilder: (context, style, variants) =>
+                FTextField.prefixIconBuilder(
+                  context,
+                  style,
+                  variants,
+                  Icon(
+                    SemanticIcons.actionSearch,
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                ),
+            // Clear only exists once there is something to clear.
+            suffixBuilder: controller.text.isEmpty
+                ? null
+                : (context, style, variants) => FTappable(
+                    onPress: () {
+                      controller.clear();
+                      onChanged('');
+                    },
+                    child: Semantics(
+                      button: true,
+                      label: l10n.medicineSearchClearAction,
+                      child: Padding(
+                        padding: const EdgeInsets.all(Spacing.xs),
+                        child: Icon(
+                          SemanticIcons.notificationFailed,
+                          color: SemanticColor.neutral.solid(context),
+                        ),
+                      ),
+                    ),
+                  ),
+          ),
+        ),
+        const SizedBox(width: Spacing.md),
+        // The single non-keyboard trigger, as a labelled button beside the
+        // field (the keyboard's search action stays wired above). Width-bounded
+        // because a Row hands non-flex children an unbounded main axis.
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 120),
+          child: FButton(
+            key: const ValueKey('medicine-search-submit'),
+            onPress: canSubmit ? submit : null,
+            child: Text(
+              l10n.medicineSearchSubmitAction,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

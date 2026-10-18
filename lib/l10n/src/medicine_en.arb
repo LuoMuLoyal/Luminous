@@ -365,6 +365,7 @@
   "medicineSearchSourceDrugbank": "Drug knowledge (DrugBank)",
   "medicineSearchRecentTitle": "Recent searches",
   "medicineSearchClearAction": "Clear",
+  "medicineSearchSubmitAction": "Search",
   "medicineSearchPhotoAction": "Photo recognition",
   "medicineSearchBarcodeAction": "Scan barcode",
   "medicineSearchPhotoToast": "Opens camera recognition.",

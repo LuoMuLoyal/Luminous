@@ -75,6 +75,10 @@ void main() {
 
     expect(countingRepo.searchCount, 0, reason: 'typing must not search');
     expect(find.text('[DEMO] 布洛芬片'), findsNothing);
+    // Nor may typing *look* like a search: no result-count line and no
+    // no-result panel before an explicit submit.
+    expect(find.textContaining('共找到'), findsNothing);
+    expect(find.text('无结果？'), findsNothing);
 
     // The field's submit button is the explicit trigger.
     await tester.tap(find.byKey(const ValueKey('medicine-search-submit')));
@@ -276,9 +280,13 @@ void main() {
     // CN result should show approval number
     expect(find.textContaining('批准文号'), findsWidgets);
 
-    // Switch to DrugBank and search
+    // The source tab is not a search trigger: switching only drops the
+    // previous source's results. Re-submit to search the new source.
     await tester.tap(find.text('药物知识（DrugBank）').first);
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('medicine-search-submit')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // DrugBank result should show DrugBank ID
     expect(find.textContaining('DrugBank'), findsOneWidget);
@@ -299,7 +307,7 @@ void main() {
   });
 
   testWidgets(
-    'source switch searches selected source and writes result source',
+    'source switch does not search; an explicit submit searches the source',
     (tester) async {
       final fakeSearchRepo = _SourceAwareSearchRepository();
       final fakeHealthRepo = _FakeHealthContextRepository();
@@ -319,7 +327,14 @@ void main() {
       await _searchForIbuprofen(tester);
       expect(fakeSearchRepo.searchSources, [MedicineSearchSource.cn]);
 
+      // Tapping the tab must not fire a request.
       await tester.tap(find.text('药物知识（DrugBank）').first);
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(fakeSearchRepo.searchSources, [MedicineSearchSource.cn]);
+
+      // The submit button is the trigger for the newly selected source.
+      await tester.tap(find.byKey(const ValueKey('medicine-search-submit')));
+      await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.text('Ibuprofen'), findsOneWidget);

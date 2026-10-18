@@ -17,6 +17,8 @@ part 'medicine_search.freezed.dart';
 /// State for the medicine search page.
 @freezed
 abstract class MedicineSearchState with _$MedicineSearchState {
+  const MedicineSearchState._();
+
   const factory MedicineSearchState({
     @Default('') String query,
     @Default(MedicineSearchSource.cn) MedicineSearchSource source,
@@ -25,14 +27,31 @@ abstract class MedicineSearchState with _$MedicineSearchState {
     String? errorMessage,
     String? selectedResultId,
     MedicineSearchSafetyPreview? detailPreview,
+
+    /// The query the current [results]/[detailPreview] were produced for, or
+    /// null while the field holds text that has not been searched yet.
+    ///
+    /// The results panel is gated on this instead of on the raw [query] so
+    /// typing never renders an (empty) result list — which reads as an
+    /// automatic search. It is set by an explicit submit and cleared as soon as
+    /// the text no longer matches it (typing, clearing, switching source).
+    String? submittedQuery,
   }) = _MedicineSearchState;
+
+  /// Whether [results]/[detailPreview] describe the text currently in the
+  /// field, i.e. an explicit search was submitted for [query] and the text has
+  /// not been edited since.
+  bool get hasSubmittedResults =>
+      submittedQuery != null && submittedQuery == query.trim();
 }
 
 /// Notifier that manages medicine search state interactively.
 ///
 /// Search is **submit-driven**: [updateQuery] only records what the user typed,
-/// and the request goes out from [submitQuery] (the keyboard's search action or
-/// the field's submit button). Typing must never fire a request on its own.
+/// and the request goes out from [submitQuery] — the field's search button or
+/// the keyboard's search action (`TextInputAction.search` / Enter). Nothing
+/// else triggers a request: typing, clearing and [switchSource] must never fire
+/// one on their own.
 class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
   /// Monotonic id of the most recently *started* search. Without this guard a
   /// slow response for an abandoned query (e.g. `a`) would land after the
@@ -46,37 +65,60 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
   /// Records the typed query without searching it.
   ///
   /// Deliberately does not touch the network: the page searches only when the
-  /// user submits. Emptying the field still clears the results (and discards
-  /// any in-flight search) so the empty state comes back immediately.
+  /// user submits. As soon as the text stops matching the query that produced
+  /// the current results (including the empty case), the results are dropped
+  /// and the submitted marker cleared — so typing shows the suggestions again
+  /// instead of a result list that no longer describes the field.
   Future<void> updateQuery(String query) async {
-    state = state.copyWith(query: query, errorMessage: null);
-    if (query.trim().isEmpty) {
-      // Bump the generation so any in-flight search for the cleared query is
-      // discarded instead of repopulating the now-empty result list, and clear
-      // isSearching here — the discarded search returns early without doing it.
-      _searchGeneration += 1;
-      state = state.copyWith(
-        results: const [],
-        errorMessage: null,
-        isSearching: false,
-      );
+    final trimmed = query.trim();
+    final matchesSubmitted =
+        trimmed.isNotEmpty && trimmed == state.submittedQuery;
+    if (matchesSubmitted) {
+      state = state.copyWith(query: query, errorMessage: null);
+      return;
     }
+
+    // Bump the generation so any in-flight search for the previous text is
+    // discarded instead of repopulating results for the edited query, and clear
+    // isSearching here — the discarded search returns early without doing it.
+    _searchGeneration += 1;
+    state = state.copyWith(
+      query: query,
+      submittedQuery: null,
+      results: const [],
+      detailPreview: null,
+      selectedResultId: null,
+      errorMessage: null,
+      isSearching: false,
+    );
   }
 
   /// Searches the current query.
   ///
-  /// Bound to the keyboard's search action and the field's submit button;
-  /// a no-op for an empty or whitespace-only query.
+  /// The only trigger besides the keyboard's search action; a no-op for an
+  /// empty or whitespace-only query.
   Future<void> submitQuery() async {
     if (state.query.trim().isEmpty) return;
     await _doSearch();
   }
 
+  /// Switches the data source without searching.
+  ///
+  /// The source tab is not a search trigger — the request goes out only from
+  /// [submitQuery]. Switching clears the submitted results (and any in-flight
+  /// search) so the previous source's list never lingers under the new tab; the
+  /// user re-submits to search the new source.
   Future<void> switchSource(MedicineSearchSource source) async {
-    state = state.copyWith(source: source, results: const []);
-    if (state.query.trim().isNotEmpty) {
-      await _doSearch();
-    }
+    _searchGeneration += 1;
+    state = state.copyWith(
+      source: source,
+      submittedQuery: null,
+      results: const [],
+      selectedResultId: null,
+      detailPreview: null,
+      errorMessage: null,
+      isSearching: false,
+    );
   }
 
   Future<void> selectResult(String id) async {
@@ -100,7 +142,11 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
     // (F-12 review P2-1).
     final searchedQuery = state.query.trim();
     final generation = ++_searchGeneration;
-    state = state.copyWith(isSearching: true, errorMessage: null);
+    state = state.copyWith(
+      submittedQuery: searchedQuery,
+      isSearching: true,
+      errorMessage: null,
+    );
     try {
       final either = await ref
           .watch(medicineSearchRepositoryProvider)

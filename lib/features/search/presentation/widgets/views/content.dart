@@ -224,7 +224,11 @@ class _MobileSearchLayout extends StatelessWidget {
           onChanged: onSourceSwitched,
         ),
         const SizedBox(height: Spacing.xl),
-        if (state.query.trim().isEmpty) ...[
+        // Suggestions and results are gated on an explicit, still-matching
+        // submit (`hasSubmittedResults`), not on the raw text: otherwise typing
+        // swaps the suggestions out for a "0 results" list, which reads as an
+        // automatic search.
+        if (!state.hasSubmittedResults) ...[
           RecentSearches(
             keywords: recentKeywords,
             l10n: l10n,
@@ -247,7 +251,7 @@ class _MobileSearchLayout extends StatelessWidget {
                 onQueryChanged(categoryLabel(l10n, category.type)),
           ),
         ],
-        if (state.query.trim().isNotEmpty) ...[
+        if (state.hasSubmittedResults) ...[
           Text(
             l10n.medicineSearchResultCount(state.results.length),
             style: context.theme.typography.body.md.copyWith(
@@ -406,7 +410,7 @@ class _DesktopSearchPanel extends StatelessWidget {
               onChanged: onSourceSwitched,
             ),
             const SizedBox(height: Spacing.xl),
-            if (state.query.trim().isEmpty) ...[
+            if (!state.hasSubmittedResults) ...[
               RecentSearches(
                 keywords: recentKeywords,
                 l10n: l10n,
@@ -428,7 +432,7 @@ class _DesktopSearchPanel extends StatelessWidget {
                 l10n: l10n,
               ),
             ],
-            if (state.query.trim().isNotEmpty) ...[
+            if (state.hasSubmittedResults) ...[
               Text(
                 l10n.medicineSearchResultCount(state.results.length),
                 style: typography.body.md.copyWith(

@@ -131,6 +131,8 @@ void main() {
       expect(state.errorMessage, isNull);
       expect(state.selectedResultId, isNull);
       expect(state.detailPreview, isNull);
+      expect(state.submittedQuery, isNull);
+      expect(state.hasSubmittedResults, isFalse);
     });
   });
 
@@ -163,6 +165,8 @@ void main() {
 
       final state = container.read(medicineSearchNotifierProvider);
       expect(state.query, 'aspirin');
+      expect(state.submittedQuery, 'aspirin');
+      expect(state.hasSubmittedResults, isTrue);
       expect(state.isSearching, isFalse);
       expect(state.results, hasLength(2));
       expect(state.results.first.id, 'm1');
@@ -189,6 +193,9 @@ void main() {
       expect(repo.lastSearchQuery, isNull);
       expect(state.results, isEmpty);
       expect(state.isSearching, isFalse);
+      // Nothing was submitted, so no results are presented as current.
+      expect(state.submittedQuery, isNull);
+      expect(state.hasSubmittedResults, isFalse);
     });
 
     test('sets error message when search returns a failure Left', () async {
@@ -253,8 +260,8 @@ void main() {
         isFalse,
       );
 
-      // switchSource triggers _doSearch immediately.
-      final searchFuture = notifier.switchSource(MedicineSearchSource.cn);
+      // An explicit submit triggers _doSearch immediately.
+      final searchFuture = notifier.submitQuery();
 
       // Let _doSearch run up to the gate: isSearching must be true while the
       // request is in flight.
@@ -288,51 +295,95 @@ void main() {
       expect(state.results, isEmpty);
     });
 
-    test(
-      'clears results before re-searching when query is non-empty',
-      () async {
-        // Set up a query with results (submit-driven, so the search is an
-        // explicit submit).
-        repo.searchResults = [_result('m1', source: MedicineSearchSource.cn)];
-        final notifier = container.read(
-          medicineSearchNotifierProvider.notifier,
-        );
-        await notifier.updateQuery('aspirin');
-        await notifier.submitQuery();
-
-        // Switch source with different results
-        repo.searchResults = [
-          _result('m2', source: MedicineSearchSource.drugbank),
-        ];
-        await notifier.switchSource(MedicineSearchSource.drugbank);
-
-        final state = container.read(medicineSearchNotifierProvider);
-        expect(state.source, MedicineSearchSource.drugbank);
-        // Results should be replaced, not appended
-        expect(state.results, hasLength(1));
-        expect(state.results.first.id, 'm2');
-        expect(state.results.first.source, MedicineSearchSource.drugbank);
-      },
-    );
-
-    test('triggers search when query is non-empty', () async {
+    test('never searches: switching the tab is not a search trigger', () async {
       repo.searchResults = [_result('m1', source: MedicineSearchSource.cn)];
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('aspirin');
       await notifier.submitQuery();
+      expect(repo.lastSearchQuery, 'aspirin');
 
-      // Now switch source
+      // Switching the data source must not fire a request — only the search
+      // button / keyboard action do.
+      repo.lastSearchQuery = null;
       repo.searchResults = [
         _result('m2', source: MedicineSearchSource.drugbank),
       ];
       await notifier.switchSource(MedicineSearchSource.drugbank);
 
       final state = container.read(medicineSearchNotifierProvider);
+      expect(repo.lastSearchQuery, isNull);
       expect(state.source, MedicineSearchSource.drugbank);
-      expect(state.results, hasLength(1));
-      expect(state.results.first.id, 'm2');
-      expect(state.results.first.source, MedicineSearchSource.drugbank);
+      // The previous source's results are dropped; the user must re-submit.
+      expect(state.results, isEmpty);
+      expect(state.submittedQuery, isNull);
+      expect(state.hasSubmittedResults, isFalse);
+      expect(state.selectedResultId, isNull);
+      expect(state.detailPreview, isNull);
+      expect(state.isSearching, isFalse);
+    });
+
+    test('keeps the typed query so the user can re-submit it', () async {
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('aspirin');
+      await notifier.switchSource(MedicineSearchSource.drugbank);
+      expect(container.read(medicineSearchNotifierProvider).query, 'aspirin');
+    });
+
+    test('discards an in-flight search for the abandoned source', () async {
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+
+      final gate = Completer<void>();
+      repo.searchGate = gate;
+      repo.searchResults = [_result('stale', source: MedicineSearchSource.cn)];
+      await notifier.updateQuery('aspirin');
+      final pending = notifier.submitQuery();
+
+      await notifier.switchSource(MedicineSearchSource.drugbank);
+      gate.complete();
+      await pending;
+
+      final state = container.read(medicineSearchNotifierProvider);
+      expect(state.source, MedicineSearchSource.drugbank);
+      expect(state.results, isEmpty);
+      expect(state.isSearching, isFalse);
+    });
+  });
+
+  // ── submitted-results gating ─────────────────────────────────
+  group('submitted results', () {
+    test('hasSubmittedResults is true only for the submitted text', () async {
+      repo.searchResults = [_result('m1')];
+
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('aspirin');
+      await notifier.submitQuery();
+
+      var state = container.read(medicineSearchNotifierProvider);
+      expect(state.submittedQuery, 'aspirin');
+      expect(state.hasSubmittedResults, isTrue);
+
+      // Editing the text invalidates the marker and clears the results, so the
+      // page falls back to suggestions instead of showing a stale list.
+      await notifier.updateQuery('aspirin bayer');
+      state = container.read(medicineSearchNotifierProvider);
+      expect(state.submittedQuery, isNull);
+      expect(state.hasSubmittedResults, isFalse);
+      expect(state.results, isEmpty);
+    });
+
+    test('clearing the field clears the submitted marker', () async {
+      repo.searchResults = [_result('m1')];
+
+      final notifier = container.read(medicineSearchNotifierProvider.notifier);
+      await notifier.updateQuery('aspirin');
+      await notifier.submitQuery();
+      await notifier.updateQuery('');
+
+      final state = container.read(medicineSearchNotifierProvider);
+      expect(state.submittedQuery, isNull);
+      expect(state.hasSubmittedResults, isFalse);
+      expect(state.results, isEmpty);
     });
   });
 

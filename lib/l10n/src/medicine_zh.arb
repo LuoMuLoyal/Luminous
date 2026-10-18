@@ -372,6 +372,7 @@
   "medicineSearchSourceDrugbank": "药物知识（DrugBank）",
   "medicineSearchRecentTitle": "最近搜索",
   "medicineSearchClearAction": "清空",
+  "medicineSearchSubmitAction": "搜索",
   "medicineSearchPhotoAction": "拍照识别",
   "medicineSearchBarcodeAction": "扫描条形码",
   "medicineSearchPhotoToast": "打开相机识别",
