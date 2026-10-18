@@ -88,7 +88,6 @@ dependencies:
   sign_in_with_apple: ^8.2.0
   flutter_svg: ^2.1.0
   share_plus: ^13.3.1
-  flow_ui: ^0.3.0
   forui: ^0.27.5
   forui_hooks: ^0.27.0
   forui_lucide: ^0.27.0
