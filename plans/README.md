@@ -39,7 +39,6 @@ YYYY-MM-DD-short-task-name.md
 
 | 计划 | 状态 | 备注 |
 | --- | --- | --- |
-| [`2026-10-18-assistant-chat-ui-migration.md`](2026-10-18-assistant-chat-ui-migration.md) | P0 已过（GO），进行中 | `flow_ui` → `flutter_gen_ai_chat_ui` 直接替换；P0 spike 已证「两套 Material 库」主题可接（U1 可解，子树内桥 framework `Theme`），继续 P1 |
 | [`2026-10-17-copy-length-governance.md`](2026-10-17-copy-length-governance.md) | 改写完成，审计超限 0 | 按 Apple HIG / NN-g 定槽位长度阈值（实作比规范严 20%）；53 个 key 已改写；剩余 widget 测试断言同步与 41 条人工复核 |
 | [`2026-09-15-review-remediation-plan.md`](2026-09-15-review-remediation-plan.md) | 进行中 | 09-08~09-14 审查报告逐条修复；剩余顺序 §3-5 → §3-9（合同级）→ §4 共 20 项 → §5-2/3/4 → §6 |
 | [`2026-09-07-record-mini-trend-plan.md`](2026-09-07-record-mini-trend-plan.md) | 未开工 | Wave 1 客户端聚合，不跨 feature 消费 review；与已删除的 review 页重组计划构成阶段 1 的另一半 |
@@ -80,4 +79,4 @@ YYYY-MM-DD-short-task-name.md
 
 ## 已执行完毕、文件已删的计划
 
-- `2026-10-16-client-capability-gaps.md`（深链 / OAuth 内嵌 WebView / 图片缩放 / 日历回写 / 许可清单）、`2026-09-07-review-page-restructure.md`（Review 页重组）、`2026-09-07-large-file-domain-splitting-plan.md`（大文件拆分）、`2026-09-06-account-profile-restructure.md`（账号体系重构）、`2026-08-31-doc-governance-overhaul-plan.md`（文档治理）、`2026-09-15-meal-analysis-rearchitecture.md`（餐食分析重构）、`2026-08-07-product-loop-program.md` 与 `2026-08-07-visit-summary-and-product-measurement.md`（事件主导产品闭环）、以及 08-16 那批里的「AI 助手改造计划」——结论已沉淀进 feature README、`docs/reference/` 与当日迁移日志。
+- `2026-10-18-assistant-chat-ui-migration.md`（flow_ui → flutter_gen_ai_chat_ui 渲染层替换）、`2026-10-16-client-capability-gaps.md`（深链 / OAuth 内嵌 WebView / 图片缩放 / 日历回写 / 许可清单）、`2026-09-07-review-page-restructure.md`（Review 页重组）、`2026-09-07-large-file-domain-splitting-plan.md`（大文件拆分）、`2026-09-06-account-profile-restructure.md`（账号体系重构）、`2026-08-31-doc-governance-overhaul-plan.md`（文档治理）、`2026-09-15-meal-analysis-rearchitecture.md`（餐食分析重构）、`2026-08-07-product-loop-program.md` 与 `2026-08-07-visit-summary-and-product-measurement.md`（事件主导产品闭环）、以及 08-16 那批里的「AI 助手改造计划」——结论已沉淀进 feature README、`docs/reference/` 与当日迁移日志。

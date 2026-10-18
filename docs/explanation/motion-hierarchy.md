@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-09-12
+updated: 2026-10-18
 ---
 
 # 动画体系调研与选型:全局分级动画(Motion Hierarchy)
@@ -39,7 +39,7 @@ updated: 2026-09-12
 | 桌面 hover | `AnimatedContainer` 200ms snappy(背景+边框) | `desktop_hover.dart` |
 | 弹层 | Forui `showFDialog` / `showFSheet` / `FPopover` 自带动画 | core + features |
 | 主题切换 | Forui `FTheme` 自带 `FThemeMotion`(默认 200ms linear)平滑过渡 | forui 0.26 内置 |
-| assistant 内 | flow_ui 0.1.0 自带流式 reveal / thinking 呼吸 / jump 动画 | flow_ui 包 |
+| assistant 内 | `flutter_gen_ai_chat_ui` 自带流式 reveal / thinking 呼吸 / jump 动画 | gen_ai 包 |
 
 ### 1.2 缺的(本次要补)
 

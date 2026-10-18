@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-09-11
+updated: 2026-10-18
 ---
 
 # iconMind 调研与应用:AI 语义图标替换
@@ -48,11 +48,11 @@ assistant 页面(含 drawer/capabilities/empty/composer/source strip)当前用�
 
 | 类别 | 图标 | 出现处 |
 |---|---|---|
-| **AI 语义**(值得换成 iconMind) | `SemanticIcons.aiGenerated`(= `FLucideIcons.bot`,FlowGreeting 欢迎区);`SemanticIcons.statusInfo`(capabilities 入口/源条/memory hint/disclaimer);`SemanticIcons.aiEntry`(= sparkles)、`aiAnalyzing`(= loaderCircle)、`aiSuggestion`(= brain)、`aiTip`(= lightbulb) | 欢迎区、能力面板、空态 |
-| **通用操作**(保持 Lucide) | `actionAdd`(plus)、`actionClose`(x)、`actionSettings`(settings)、`actionMessage`(messageSquare)、`actionSearch`(search)、`actionEdit`(pencil)、`actionDelete`(trash2)、`actionExpand/Collapse`(chevron)、`actionTimeSlot`(clock4)、`statusSuccess/Blocked`(check/lock)、`statusDone`、`statusError`、`statusPaused`、`FLucideIcons.menu`、`FLucideIcons.search`、`Icons.refresh`(1 处残留) | 全页 |
+| **AI 语义**(值得换成 iconMind) | `SemanticIcons.aiGenerated`(= `FLucideIcons.bot`,欢迎区);`SemanticIcons.statusInfo`(capabilities 入口/源条/memory hint/disclaimer);`SemanticIcons.aiEntry`(= sparkles)、`aiAnalyzing`(= loaderCircle)、`aiSuggestion`(= brain)、`aiTip`(= lightbulb) | 欢迎区、能力面板、空态 |
+| **通用操作**(保持 Lucide) | `actionAdd`(plus)、`actionClose`(x)、`actionSettings`(settings)、`actionMessage`(messageSquare)、`actionSearch`(search)、`actionEdit`(pencil)、`actionDelete`(trash2)、`actionExpand/Collapse`(chevron)、`actionTimeSlot`(clock4)、`statusSuccess/Blocked`(check/lock)、`statusDone`、`statusError`、`statusPaused`、`FLucideIcons.menu`、`FLucideIcons.search`、`actionRefresh`(用户消息重发) | 全页 |
 | **动态映射**(utils) | `proposalIcon()` → addCard/editCard/delete/settings;`sendErrorIcon()` → unavailable/emptyResult/server/error | proposal card、发送错误 |
 
-**唯一一处 Material 残留**:`flowui_adapter.dart` L290 `FlowMessageAction(icon: Icons.refresh)`(用户消息重发)。
+**Material 残留已清零**:迁移到 `flutter_gen_ai_chat_ui` 后,原先 `flowui_adapter.dart` 里 `FlowMessageAction(icon: Icons.refresh)` 的用户消息重发已改走 `SemanticIcons.actionRefresh`(`chat_adapter.dart`)。
 
 ## 4. 推荐方案:引入多少、哪些
 
@@ -85,7 +85,7 @@ assistant 页面(含 drawer/capabilities/empty/composer/source strip)当前用�
 
 1. **统一走 `SemanticIcons`**:项目铁律(design-system 文档 + migration log 多次强调)是业务代码不直接引用图标源,语义注册表 `lib/core/design/tokens/semantic_icons.dart` 是唯一入口。新图标应作为新 token 加进去(如 `aiAgent`、`aiMemory`、`aiKnowledge`),而不是散落各文件。
 2. **`SemanticIcons` 现返回 `IconData`**,SVG 替换要引入新的返回类型(或提供 `Widget`/`SvgPicture` 变体)。建议:新增 `SemanticIconSvg` 注册表(返回 `String` asset path 或直接返回 `Widget`),与现有 `IconData` 注册表并存,只给 AI 语义用。
-3. **`FlowGreeting` 只收 `IconData`**(flow_ui 0.1.0 源码已核实,`icon: IconData?`),欢迎区若要放 SVG 需**包一层**:`SizedBox(width:40,height:40, child: SvgPicture.asset(...))` 放在 greeting 的 icon 位不可行 → 要么接受 `IconData` 用 iconMind 的**图标字体版**(没有),要么**给 FlowGreeting 换用自定义布局**放 SVG(改动 flow_ui 之外的一小处,assistant 页面自己渲染 greeting,不用 flow_ui 的 `FlowGreeting`)。**这是方案 A 唯一的工程量点**,建议直接不依赖 `FlowGreeting.icon`,在 empty 态自行渲染 `SvgPicture`。
+3. **欢迎区 greeting 不再受限于外部组件的 `IconData` 契约**:当时 `FlowGreeting` 只收 `IconData`(`icon: IconData?`),SVG glyph 需要包一层;现已由本仓 `AssistantSvgGreeting`(`sections/assistant_greeting.dart`)直接渲染 `SemanticIconSvg.aiGenerated`,并作为 gen_ai `WelcomeMessageConfig.builder` 的内容,不再依赖任何第三方 greeting 组件。
 4. 页面级 `StateMessageView` 的 `icon` 参数是 `IconData`(core widgets 已核实),同样不能直接塞 SVG → 只对**页内小图标**(如 source strip、memory hint、capabilities 摘要行)用 `SvgPicture` 就地替换,或扩展 `StateMessageView` 支持 `Widget`(改动 core,可评估)。
 5. **ARB/文案**:换图标不涉及可见文案,无需改 l10n。
 6. **license 合规**:拷贝 SVG 时保留 `LICENSE`(MIT,Copyright IconMind contributors)到 `assets/icon/iconmind/LICENSE`,或至少项目 NOTICE 里注明来源。图标无品牌商标问题(官方明确不做 brand icons)。
