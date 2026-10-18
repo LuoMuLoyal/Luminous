@@ -110,6 +110,7 @@ dependencies:
   animations: ^3.0.0
   crop_your_image: 2.0.1
   sqlite3: 3.7.0
+  flutter_gen_ai_chat_ui: ^2.20.0
 
 dev_dependencies:
   flutter_test:
