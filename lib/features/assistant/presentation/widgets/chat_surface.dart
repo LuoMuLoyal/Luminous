@@ -177,7 +177,8 @@ class _AssistantChatSurfaceState extends ConsumerState<AssistantChatSurface> {
       pending: pending,
     );
     if (isOpeningConversation) {
-      mapped.add(
+      mapped.insert(
+        0,
         adapter.mapLoading(
           l10n.assistantOpeningConversationLabel,
           id: assistantOpeningMessageId,
@@ -185,7 +186,8 @@ class _AssistantChatSurfaceState extends ConsumerState<AssistantChatSurface> {
       );
     }
     if (sendError != null) {
-      mapped.add(
+      mapped.insert(
+        0,
         ChatMessage.widget(
           user: chatAssistantUser,
           builder: (context) => AssistantAboveComposer(

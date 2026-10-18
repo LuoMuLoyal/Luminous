@@ -35,7 +35,8 @@ void main() {
   group('mapping', () {
     const adapter = AssistantChatAdapter();
 
-    test('maps persisted messages in order and keeps the role', () {
+    test('maps persisted messages newest-first and keeps the role', () {
+      // gen_ai renders a reverse list: index 0 is the newest turn (bottom).
       final messages = [
         _user('hi', base),
         _assistant('**yo**', base.add(const Duration(minutes: 1))),
@@ -48,12 +49,12 @@ void main() {
       );
 
       expect(mapped, hasLength(2));
-      expect(mapped[0].user.id, 'user');
-      expect(mapped[0].text, 'hi');
-      expect(mapped[0].isMarkdown, isFalse);
-      expect(mapped[1].user.id, 'assistant');
-      expect(mapped[1].text, '**yo**');
-      expect(mapped[1].isMarkdown, isTrue);
+      expect(mapped[0].user.id, 'assistant');
+      expect(mapped[0].text, '**yo**');
+      expect(mapped[0].isMarkdown, isTrue);
+      expect(mapped[1].user.id, 'user');
+      expect(mapped[1].text, 'hi');
+      expect(mapped[1].isMarkdown, isFalse);
     });
 
     test('uses the conversation-scoped id without changing the domain id', () {
@@ -93,7 +94,7 @@ void main() {
       );
     });
 
-    test('appends the streaming draft and skips the loading placeholder', () {
+    test('prepends the streaming draft and skips the loading placeholder', () {
       final messages = [_user('hi', base)];
 
       final mapped = adapter.mapMessages(
@@ -106,13 +107,13 @@ void main() {
       );
 
       expect(mapped, hasLength(2));
-      expect(mapped.last.text, 'partial');
-      expect(mapped.last.customProperties!['id'], assistantStreamingMessageId);
-      expect(mapped.last.isMarkdown, isTrue);
-      expect(mapped.last.user.id, 'assistant');
+      expect(mapped.first.text, 'partial');
+      expect(mapped.first.customProperties!['id'], assistantStreamingMessageId);
+      expect(mapped.first.isMarkdown, isTrue);
+      expect(mapped.first.user.id, 'assistant');
     });
 
-    test('appends the loading placeholder before the first chunk', () {
+    test('prepends the loading placeholder before the first chunk', () {
       final mapped = adapter.mapMessages(
         conversationId: 'c',
         messages: [_user('hi', base)],
@@ -122,12 +123,12 @@ void main() {
       );
 
       expect(mapped, hasLength(2));
-      expect(mapped.last.text, _thinking);
-      expect(mapped.last.customProperties!['id'], assistantLoadingMessageId);
-      expect(mapped.last.customProperties!['isLoading'], isTrue);
+      expect(mapped.first.text, _thinking);
+      expect(mapped.first.customProperties!['id'], assistantLoadingMessageId);
+      expect(mapped.first.customProperties!['isLoading'], isTrue);
     });
 
-    test('appends nothing while idle', () {
+    test('adds nothing while idle', () {
       final mapped = adapter.mapMessages(
         conversationId: 'c',
         messages: [_user('hi', base), _assistant('yo', base)],

@@ -59,7 +59,13 @@ class AssistantChatAdapter {
   final void Function(String content)? onResend;
   final Future<bool> Function(Uri uri)? onOpenLink;
 
-  /// Maps all persisted messages and, when requested, appends the draft turn.
+  /// Maps all persisted messages plus the draft turn into gen_ai's list order.
+  ///
+  /// gen_ai renders a reverse list (newest at the bottom) and takes the caller's
+  /// list as newest-first — index 0 is the newest turn, which is also where its
+  /// streaming draft is expected to live. So the draft turn goes first and the
+  /// transcript follows newest-first; each item keeps its chronological [index]
+  /// for a stable id.
   List<ChatMessage> mapMessages({
     required String conversationId,
     required List<AssistantMessage> messages,
@@ -69,22 +75,18 @@ class AssistantChatAdapter {
     bool isSending = false,
     bool pending = false,
   }) {
-    final mapped = <ChatMessage>[
-      for (var index = 0; index < messages.length; index++)
+    return <ChatMessage>[
+      if (streamingDraft.isNotEmpty)
+        mapStreamingDraft(streamingDraft, createdAt: streamingDraftCreatedAt)
+      else if (isSending && pending)
+        mapLoading(thinkingLabel),
+      for (var index = messages.length - 1; index >= 0; index--)
         mapMessage(
           messages[index],
           conversationId: conversationId,
           index: index,
         ),
     ];
-    if (streamingDraft.isNotEmpty) {
-      mapped.add(
-        mapStreamingDraft(streamingDraft, createdAt: streamingDraftCreatedAt),
-      );
-    } else if (isSending && pending) {
-      mapped.add(mapLoading(thinkingLabel));
-    }
-    return mapped;
   }
 
   /// Maps one domain message to a stable gen_ai list item.

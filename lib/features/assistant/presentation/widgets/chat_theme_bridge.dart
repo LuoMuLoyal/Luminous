@@ -46,7 +46,9 @@ ThemeData luminousChatTheme(BuildContext context) {
       CustomThemeExtension(
         chatBackground: colors.background,
         messageBubbleColor: colors.secondary,
-        userBubbleColor: SemanticColor.primary.solid(context),
+        // Light-blue user bubble (a tint of the brand primary) rather than the
+        // solid primary: dark foreground text stays readable on top of it.
+        userBubbleColor: SemanticColor.primary.muted(context),
         messageTextColor: colors.foreground,
         inputBackgroundColor: colors.secondary,
         inputBorderColor: SemanticColor.neutral.border(context),
