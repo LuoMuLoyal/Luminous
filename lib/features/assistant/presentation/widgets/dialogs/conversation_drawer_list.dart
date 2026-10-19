@@ -9,7 +9,8 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 /// The grouped conversation list used inside the assistant conversation drawer.
 ///
-/// Groups are: today, last 7 days, older. The current conversation is
+/// Conversations are grouped one [FTileGroup] per calendar day, labelled with
+/// that day (see [conversationDayGroupLabel]). The current conversation is
 /// highlighted with a checkmark prefix and a "current" suffix label.
 class AssistantConversationDrawerList extends StatelessWidget {
   const AssistantConversationDrawerList({
@@ -95,70 +96,58 @@ class AssistantConversationDrawerList extends StatelessWidget {
       );
     }
 
-    final groups = _groupConversations(visibleItems, DateTime.now());
+    final days = _groupByDay(visibleItems);
 
     return ListView.builder(
       key: const Key('assistant-recent-conversation-list'),
-      itemCount: groups.length,
-      itemBuilder: (context, index) {
-        final group = groups[index];
-        if (group.items.isEmpty) return const SizedBox.shrink();
-        return _ConversationGroup(
-          title: group.title,
-          items: group.items,
-          currentConversationId: state.conversationId,
-          isOpeningConversation: state.isOpeningConversation,
-          isClearingConversation: state.isClearingConversation,
-          onSelect: onSelect,
-          onRename: onRename,
-          onDelete: onDelete,
-        );
-      },
+      itemCount: days.length,
+      itemBuilder: (context, index) => _ConversationDayGroup(
+        day: days[index].day,
+        items: days[index].items,
+        currentConversationId: state.conversationId,
+        isOpeningConversation: state.isOpeningConversation,
+        isClearingConversation: state.isClearingConversation,
+        onSelect: onSelect,
+        onRename: onRename,
+        onDelete: onDelete,
+      ),
     );
-  }
-
-  List<_ConversationGroupData> _groupConversations(
-    List<AssistantConversationSummary> items,
-    DateTime now,
-  ) {
-    final today = DateTime(now.year, now.month, now.day);
-    final weekAgo = today.subtract(const Duration(days: 7));
-
-    final todayItems = <AssistantConversationSummary>[];
-    final thisWeekItems = <AssistantConversationSummary>[];
-    final olderItems = <AssistantConversationSummary>[];
-
-    for (final item in items) {
-      final updatedAt = item.updatedAt;
-      // `!isBefore` (i.e. "is after or equal to") so a conversation updated
-      // exactly at 00:00:00 lands in the current group instead of "older".
-      if (!updatedAt.isBefore(today)) {
-        todayItems.add(item);
-      } else if (!updatedAt.isBefore(weekAgo)) {
-        thisWeekItems.add(item);
-      } else {
-        olderItems.add(item);
-      }
-    }
-
-    return [
-      _ConversationGroupData(title: 'today', items: todayItems),
-      _ConversationGroupData(title: 'thisWeek', items: thisWeekItems),
-      _ConversationGroupData(title: 'older', items: olderItems),
-    ];
   }
 }
 
-class _ConversationGroupData {
-  const _ConversationGroupData({required this.title, required this.items});
+/// Buckets conversations into their local calendar day, newest day first.
+///
+/// Within a day the incoming (server) order is kept. Days are ordered by value
+/// rather than by first appearance so a payload that is not strictly sorted by
+/// `updatedAt` still renders as a descending timeline.
+List<_ConversationDayGroupData> _groupByDay(
+  List<AssistantConversationSummary> items,
+) {
+  final buckets = <DateTime, List<AssistantConversationSummary>>{};
+  for (final item in items) {
+    final local = item.updatedAt.toLocal();
+    final day = DateTime(local.year, local.month, local.day);
+    buckets.putIfAbsent(day, () => []).add(item);
+  }
 
-  final String title;
+  final days = buckets.keys.toList()..sort((a, b) => b.compareTo(a));
+  return [
+    for (final day in days)
+      _ConversationDayGroupData(day: day, items: buckets[day]!),
+  ];
+}
+
+class _ConversationDayGroupData {
+  const _ConversationDayGroupData({required this.day, required this.items});
+
+  final DateTime day;
   final List<AssistantConversationSummary> items;
 }
 
-class _ConversationGroup extends StatelessWidget {
-  const _ConversationGroup({
-    required this.title,
+/// One calendar day's conversations, rendered as a single labelled tile group.
+class _ConversationDayGroup extends StatelessWidget {
+  const _ConversationDayGroup({
+    required this.day,
     required this.items,
     required this.currentConversationId,
     required this.isOpeningConversation,
@@ -168,7 +157,7 @@ class _ConversationGroup extends StatelessWidget {
     this.onDelete,
   });
 
-  final String title;
+  final DateTime day;
   final List<AssistantConversationSummary> items;
   final String? currentConversationId;
   final bool isOpeningConversation;
@@ -180,39 +169,31 @@ class _ConversationGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final groupTitle = _groupTitle(l10n, title);
     final hasMenu = onRename != null || onDelete != null;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: Spacing.md, bottom: Spacing.sm),
-          child: Text(
-            groupTitle,
-            style: context.theme.typography.body.xs2.copyWith(
-              color: SemanticColor.neutral.solid(context),
-            ),
-          ),
-        ),
-        if (hasMenu)
-          // With rename/delete wired, each conversation gets its own
-          // long-press / right-click context menu (see _buildTile); the
-          // single-tile FTileGroup keeps the rounded-card look.
-          Column(
-            children: [
-              for (final item in items)
-                FContextMenu.tiles(
-                  menu: _buildMenu(context, l10n, item.id),
-                  child: FTileGroup(children: [_buildTile(context, item)]),
-                ),
-            ],
-          )
-        else
-          FTileGroup(
-            children: [for (final item in items) _buildTile(context, item)],
-          ),
-      ],
+    // Built through `FTileGroup.builder` rather than `FTileGroup(children:)`
+    // because the long-press menu wrapper is not an `FTileMixin` and so cannot
+    // be a plain child. The builder variant still wraps every tile in the
+    // group's item data (dividers, first/last corners). `count` keeps the
+    // group's lazily-built sliver bounded inside the drawer's own list.
+    return FTileGroup.builder(
+      label: Text(conversationDayGroupLabel(context, day)),
+      count: items.length,
+      tileBuilder: (context, index) {
+        // The last-item probe calls the builder with `index == items.length`.
+        if (index >= items.length) return null;
+
+        final item = items[index];
+        final tile = _buildTile(context, item);
+        if (!hasMenu) return tile;
+
+        // With rename/delete wired, each conversation gets its own
+        // long-press / right-click context menu (see _buildTile).
+        return FContextMenu.tiles(
+          menu: _buildMenu(context, l10n, item.id),
+          child: tile,
+        );
+      },
     );
   }
 
@@ -319,17 +300,5 @@ class _ConversationGroup extends StatelessWidget {
   bool _isUntitled(AssistantConversationSummary item) {
     final title = item.title?.trim();
     return title == null || title.isEmpty;
-  }
-
-  String _groupTitle(AppLocalizations l10n, String key) {
-    switch (key) {
-      case 'today':
-        return l10n.assistantConversationTodayGroup;
-      case 'thisWeek':
-        return l10n.assistantConversationThisWeekGroup;
-      case 'older':
-        return l10n.assistantConversationOlderGroup;
-    }
-    return key;
   }
 }

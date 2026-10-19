@@ -188,6 +188,28 @@ String conversationTimestampLabel(
   return intl.DateFormat.MMMd(locale).add_Hm().format(local);
 }
 
+/// Title of a conversation day group: 今天 / 昨天 / a localized date.
+///
+/// [day] is a local midnight; callers bucket conversations by the local
+/// calendar day of `updatedAt` (see `_groupByDay`).
+String conversationDayGroupLabel(BuildContext context, DateTime day) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final l10n = AppLocalizations.of(context)!;
+
+  if (day == today) {
+    return l10n.assistantConversationTodayGroup;
+  }
+  // Built from the calendar date rather than `today - 24h`, which lands on the
+  // wrong side of a DST shift.
+  if (day == DateTime(now.year, now.month, now.day - 1)) {
+    return l10n.assistantConversationYesterdayGroup;
+  }
+
+  final locale = Localizations.localeOf(context).toString();
+  return intl.DateFormat.yMMMd(locale).format(day);
+}
+
 /// Trust tier of a knowledge-retrieval tool, used for source badges and the
 /// low-trust hint on the source strip.
 enum AssistantKnowledgeSourceType { leaflet, drugbank, medicalQa }

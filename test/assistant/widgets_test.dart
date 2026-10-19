@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
@@ -431,7 +432,9 @@ void main() {
       expect(find.text('No conversations'), findsOneWidget);
     });
 
-    testWidgets('groups conversations and highlights current', (tester) async {
+    testWidgets('groups conversations by day and highlights current', (
+      tester,
+    ) async {
       final now = DateTime.now();
       final today = AssistantConversationSummary(
         id: 'today',
@@ -441,22 +444,27 @@ void main() {
         createdAt: now,
         updatedAt: now,
       );
-      final thisWeek = AssistantConversationSummary(
-        id: 'this-week',
-        title: 'This week chat',
+      final yesterdayAt = DateTime(now.year, now.month, now.day - 1, 12);
+      final yesterday = AssistantConversationSummary(
+        id: 'yesterday',
+        title: 'Yesterday chat',
         status: 'active',
-        lastMessageAt: now.subtract(const Duration(days: 2)),
-        createdAt: now.subtract(const Duration(days: 2)),
-        updatedAt: now.subtract(const Duration(days: 2)),
+        lastMessageAt: yesterdayAt,
+        createdAt: yesterdayAt,
+        updatedAt: yesterdayAt,
       );
+      final olderAt = DateTime(now.year, now.month, now.day - 9, 12);
       final older = AssistantConversationSummary(
         id: 'older',
         title: 'Older chat',
         status: 'active',
-        lastMessageAt: now.subtract(const Duration(days: 8)),
-        createdAt: now.subtract(const Duration(days: 8)),
-        updatedAt: now.subtract(const Duration(days: 8)),
+        lastMessageAt: olderAt,
+        createdAt: olderAt,
+        updatedAt: olderAt,
       );
+      final olderDayLabel = intl.DateFormat.yMMMd(
+        'zh',
+      ).format(DateTime(now.year, now.month, now.day - 9));
 
       await tester.pumpWidget(
         _shell(
@@ -466,7 +474,7 @@ void main() {
               isOpeningConversation: false,
               isLoadingRecentConversations: false,
               recentConversationError: null,
-              recentConversations: [today, thisWeek, older],
+              recentConversations: [today, yesterday, older],
             ),
             title: 'History',
             emptyTitle: 'No conversations',
@@ -482,12 +490,18 @@ void main() {
       );
 
       expect(find.text('今天'), findsOneWidget);
-      expect(find.text('最近 7 天'), findsOneWidget);
-      expect(find.text('更早'), findsOneWidget);
+      expect(find.text('昨天'), findsOneWidget);
+      expect(find.text(olderDayLabel), findsOneWidget);
       expect(find.text('当前'), findsOneWidget);
       expect(find.text('Today chat'), findsOneWidget);
-      expect(find.text('This week chat'), findsOneWidget);
+      expect(find.text('Yesterday chat'), findsOneWidget);
       expect(find.text('Older chat'), findsOneWidget);
+
+      // Newest day first.
+      expect(
+        tester.getTopLeft(find.text('今天')).dy,
+        lessThan(tester.getTopLeft(find.text(olderDayLabel)).dy),
+      );
     });
 
     testWidgets('new conversation button is shown when callback is provided', (
@@ -745,7 +759,7 @@ void main() {
       expect(find.text('Today chat'), findsNothing);
       expect(find.text('This week chat'), findsNothing);
       expect(find.text('今天'), findsNothing);
-      expect(find.text('最近 7 天'), findsNothing);
+      expect(find.text('昨天'), findsNothing);
     });
 
     testWidgets('shows an empty state when the search has no matches', (
