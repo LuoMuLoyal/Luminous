@@ -55,31 +55,18 @@ class _AssistantEmptySupportState extends State<AssistantEmptySupport> {
           ),
         ),
         const SizedBox(height: Spacing.xl2),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.assistantStarterPromptTitle,
-                style: typography.body.xs.copyWith(
-                  color: SemanticColor.neutral.solid(context),
-                ),
+        // The prompts are a tile group, so the heading is the group label —
+        // it takes the tile-group label style instead of a hand-set body style.
+        FTileGroup(
+          label: Text(l10n.assistantStarterPromptTitle),
+          children: [
+            for (final prompt in prompts)
+              FTile(
+                prefix: const Icon(SemanticIcons.actionMessage, size: 18),
+                title: Text(prompt),
+                onPress: () => widget.onStarterPrompt(prompt),
               ),
-              const SizedBox(height: Spacing.sm),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (final prompt in prompts)
-                    FTile(
-                      prefix: const Icon(SemanticIcons.actionMessage, size: 18),
-                      title: Text(prompt),
-                      onPress: () => widget.onStarterPrompt(prompt),
-                    ),
-                ],
-              ),
-            ],
-          ),
+          ],
         ),
         if (widget.showMemoryHint) ...[
           const SizedBox(height: Spacing.xl),
