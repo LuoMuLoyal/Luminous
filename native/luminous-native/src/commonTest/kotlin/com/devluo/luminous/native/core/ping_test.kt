@@ -7,6 +7,6 @@ class PingTest {
 
     @Test
     fun pingReturnsPong() {
-        assertEquals("pong", ping())
+        assertEquals("pong", LuminousNativeApi.ping())
     }
 }

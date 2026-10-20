@@ -1,4 +1,5 @@
 import Flutter
+import LuminousNative
 import UIKit
 
 public class LuminousNativeBridgePlugin: NSObject, FlutterPlugin {
@@ -11,7 +12,7 @@ public class LuminousNativeBridgePlugin: NSObject, FlutterPlugin {
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
     case "ping":
-      result("pong")
+      result(LuminousNativeApi.shared.ping())
     default:
       result(FlutterMethodNotImplemented)
     }

@@ -6,8 +6,11 @@ Luminous 原生桥接通道层：Dart 只通过本包访问原生能力，不直
 
 - Android：`android/build.gradle.kts` 通过复合构建依赖 `com.devluo.luminous:luminous-native`，
   由 `android/settings.gradle.kts` 的 `includeBuild("../native")` 提供。
-- iOS：当前 `ping` 由 Swift 直接返回；KMP XCFramework 在 macOS 上构建后再由 podspec
-  的 `vendored_frameworks` 接入。
+- iOS：在 macOS 上运行 `scripts/native/build_kmp_ios.sh`（或 `.ps1`）生成并同步
+  `Frameworks/LuminousNative.xcframework`，podspec 通过 `vendored_frameworks` 链接。
+  该目录已 gitignore，修改 KMP 共享代码后需重新执行。
+  项目当前使用 CocoaPods；若启用 Flutter SPM，需在 `Package.swift` 增加指向同一
+  XCFramework 的 binary target。
 - Dart 单测：`flutter test`（在 `pkgs/luminous_native_bridge` 目录执行）。
 
 ## 新增 bridge module

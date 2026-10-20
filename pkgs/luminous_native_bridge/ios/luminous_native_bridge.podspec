@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'luminous_native_bridge'
-  s.version          = '0.0.1'
+  s.version          = '0.1.0'
   s.summary          = 'Luminous native bridge channel layer.'
   s.description      = <<-DESC
 Luminous native bridge channel layer.
@@ -14,6 +14,7 @@ Luminous native bridge channel layer.
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
   s.source_files = 'luminous_native_bridge/Sources/luminous_native_bridge/**/*'
+  s.vendored_frameworks = 'Frameworks/LuminousNative.xcframework'
   s.dependency 'Flutter'
   s.platform = :ios, '15.0'
 

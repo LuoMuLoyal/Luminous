@@ -1,6 +1,6 @@
 package com.devluo.luminous.bridge
 
-import com.devluo.luminous.native.core.ping
+import com.devluo.luminous.native.core.LuminousNativeApi
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -17,7 +17,7 @@ class LuminousNativeBridgePlugin :
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "ping" -> result.success(ping())
+            "ping" -> result.success(LuminousNativeApi.ping())
             else -> result.notImplemented()
         }
     }
