@@ -33,12 +33,13 @@ YYYY-MM-DD-short-task-name.md
 
 ## Current Plans
 
-> 更新于 2026-10-18。每份计划的状态以文件自身头部的状态段为准；此处只列当前仍在驱动工作、
+> 更新于 2026-10-20。每份计划的状态以文件自身头部的状态段为准；此处只列当前仍在驱动工作、
 > 或已裁决暂缓但保留触发条件的计划。已执行完毕的计划按约定直接删除（文件已删），
 > 历史记录见当日迁移日志。
 
 | 计划 | 状态 | 备注 |
 | --- | --- | --- |
+| [`2026-10-20-native-bridge-pilots.md`](2026-10-20-native-bridge-pilots.md) | 未开工 | 原生桥接试点：步数（KMP）+ 后台同步（纯平台），同时固化可扩展模块骨架 |
 | [`2026-10-17-copy-length-governance.md`](2026-10-17-copy-length-governance.md) | 改写完成，审计超限 0 | 按 Apple HIG / NN-g 定槽位长度阈值（实作比规范严 20%）；53 个 key 已改写；剩余 widget 测试断言同步与 41 条人工复核 |
 | [`2026-09-15-review-remediation-plan.md`](2026-09-15-review-remediation-plan.md) | 进行中 | 09-08~09-14 审查报告逐条修复；剩余顺序 §3-5 → §3-9（合同级）→ §4 共 20 项 → §5-2/3/4 → §6 |
 | [`2026-09-07-record-mini-trend-plan.md`](2026-09-07-record-mini-trend-plan.md) | 未开工 | Wave 1 客户端聚合，不跨 feature 消费 review；与已删除的 review 页重组计划构成阶段 1 的另一半 |
