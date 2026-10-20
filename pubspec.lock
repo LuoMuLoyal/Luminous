@@ -1139,6 +1139,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  luminous_native_bridge:
+    dependency: "direct main"
+    description:
+      path: "pkgs/luminous_native_bridge"
+      relative: true
+    source: path
+    version: "0.1.0"
   markdown:
     dependency: transitive
     description:

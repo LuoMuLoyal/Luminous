@@ -73,6 +73,8 @@ dependencies:
   mobile_scanner: ^7.4.2
   paddle_ocr_native: ^0.1.1
   health: ^13.3.2
+  luminous_native_bridge:
+    path: pkgs/luminous_native_bridge
 
   # 深链：OAuth 回调 / 推送跳转 / 分享链接
   app_links: ^7.2.2
