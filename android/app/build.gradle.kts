@@ -22,7 +22,7 @@ val hasReleaseSigning =
     keystoreValue("keyAlias").isNotEmpty() &&
     keystoreValue("keyPassword").isNotEmpty()
 
-val luminousApplicationId = "com.dev.luminous"
+val luminousApplicationId = "com.devluo.luminous"
 val jpushAppKey = providers.gradleProperty("JPUSH_APP_KEY")
     .orElse(providers.environmentVariable("JPUSH_APP_KEY"))
     .orElse("")
@@ -38,7 +38,7 @@ val deepLinkScheme = providers.gradleProperty("DEEP_LINK_SCHEME")
     .orElse(luminousApplicationId)
 
 android {
-    namespace = "com.dev.luminous"
+    namespace = "com.devluo.luminous"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

@@ -3,7 +3,7 @@ import Photos
 import UIKit
 
 class SceneDelegate: FlutterSceneDelegate {
-  private let galleryChannelName = "com.dev.luminous/gallery"
+  private let galleryChannelName = "com.devluo.luminous/gallery"
   private var galleryChannel: FlutterMethodChannel?
 
   override func scene(

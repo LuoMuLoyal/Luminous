@@ -49,7 +49,7 @@ lib/app/router.dart。
   Android/iOS/macOS 一律 `NoopDeepLinkSource`);新建 web 目标前先确认这层不会被打包。
 
 ## 陷阱与决策
-- 自定义 scheme 的 path 会被 URI 解析吃进 host:`com.dev.luminous://login/oauth/qq` 的
+- 自定义 scheme 的 path 会被 URI 解析吃进 host:`com.devluo.luminous://login/oauth/qq` 的
   `host` 是 `login`,所以只按 host 校验会把平台声明注册的兜底链接自己拒掉——scheme 规则
   必须排在 host 规则之前(deep_link.dart 的 `isAcceptedDeepLink`)。
 - 动作 token `report` 映射到 `Routes.review`(旧名兼容,与 shell 的 `shell-tab-report`

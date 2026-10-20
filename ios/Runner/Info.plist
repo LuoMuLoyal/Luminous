@@ -38,7 +38,7 @@
 				<key>CFBundleTypeRole</key>
 				<string>Editor</string>
 				<key>CFBundleURLName</key>
-				<string>com.dev.luminous.deeplink</string>
+				<string>com.devluo.luminous.deeplink</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>$(DEEP_LINK_SCHEME)</string>

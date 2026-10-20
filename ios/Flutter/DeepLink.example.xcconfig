@@ -8,4 +8,4 @@
 // DEEP_LINK_SCHEME is the custom-scheme fallback registered in Info.plist, and
 // must equal the Dart-side LUMINOUS_DEEP_LINK_SCHEME.
 DEEP_LINK_HOST = luminous.invalid
-DEEP_LINK_SCHEME = com.dev.luminous
+DEEP_LINK_SCHEME = com.devluo.luminous

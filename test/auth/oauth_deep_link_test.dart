@@ -16,7 +16,7 @@ void main() {
 
     test('parses a custom-scheme callback link (single slash)', () {
       final link = parseOAuthDeepLink(
-        Uri.parse('com.dev.luminous://login/oauth/wechat?code=c2&state=s2'),
+        Uri.parse('com.devluo.luminous://login/oauth/wechat?code=c2&state=s2'),
       );
 
       expect(link, isNotNull);
@@ -27,7 +27,7 @@ void main() {
 
     test('parses a custom-scheme callback link (triple slash)', () {
       final link = parseOAuthDeepLink(
-        Uri.parse('com.dev.luminous:///login/oauth/wechat?code=c2&state=s2'),
+        Uri.parse('com.devluo.luminous:///login/oauth/wechat?code=c2&state=s2'),
       );
 
       expect(link, isNotNull);
@@ -47,7 +47,7 @@ void main() {
 
     test('tolerates a trailing slash on the path', () {
       final link = parseOAuthDeepLink(
-        Uri.parse('com.dev.luminous://login/oauth/qq/?code=c1&state=s1'),
+        Uri.parse('com.devluo.luminous://login/oauth/qq/?code=c1&state=s1'),
       );
 
       expect(link?.provider, OAuthDeepLinkProvider.qq);

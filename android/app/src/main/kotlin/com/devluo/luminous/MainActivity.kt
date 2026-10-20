@@ -1,4 +1,4 @@
-package com.dev.luminous
+package com.devluo.luminous
 
 import android.content.ContentValues
 import android.os.Build
@@ -11,7 +11,7 @@ import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
-  private val channelName = "com.dev.luminous/gallery"
+  private val channelName = "com.devluo.luminous/gallery"
   private var keepNativeSplash = true
 
   override fun onCreate(savedInstanceState: Bundle?) {

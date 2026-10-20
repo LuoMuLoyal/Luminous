@@ -18,7 +18,7 @@ Luminous 当前大部分功能通过纯 Dart + Flutter 插件实现，已有的�
 
 | 已有桥接 | 实现方式 |
 |---------|---------|
-| 保存图片到相册 (Android) | 自定义 `MethodChannel` (`com.dev.luminous/gallery`) 在 `MainActivity.kt` |
+| 保存图片到相册 (Android) | 自定义 `MethodChannel` (`com.devluo.luminous/gallery`) 在 `MainActivity.kt` |
 | 微信 OAuth (移动端) | `fluwx` 插件 |
 | 本地通知调度 | `flutter_local_notifications` 插件 |
 | OCR 文字识别 | `paddle_ocr_native` (PP-OCRv6 / ONNX Runtime) |

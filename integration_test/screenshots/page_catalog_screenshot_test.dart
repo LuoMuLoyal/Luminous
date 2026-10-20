@@ -413,7 +413,7 @@ String screenshotFileName(int index, ScreenshotTarget target) {
 /// PNGs must be pulled while the run is still holding (see
 /// [screenshotPullWindowSeconds]).
 const String deviceOutputDirSuffix =
-    'Android/data/com.dev.luminous/files/screenshots';
+    'Android/data/com.devluo.luminous/files/screenshots';
 
 /// Groups captured by the current run.
 ///

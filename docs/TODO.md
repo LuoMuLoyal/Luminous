@@ -66,7 +66,7 @@ Product Loop Program 的延后项如下。
     客户端 P0-3 因此改用 `https://<LUMINOUS_DEEP_LINK_HOST>/login/oauth/<provider>`
     作为回调，需该 origin 进 `CORS_ORIGIN` 才能用
   - 阻塞：契约属 Lucent 侧，已在 `Lucent/docs/TODO.md` 登记
-  - 方案：若要走 `com.dev.luminous://` 这类自定义 scheme 直达，需 Lucent 放宽
+  - 方案：若要走 `com.devluo.luminous://` 这类自定义 scheme 直达，需 Lucent 放宽
     `normalizeCallbackUri`；否则维持 https 中转形态
 
 - 深链回调真机验证（A6）

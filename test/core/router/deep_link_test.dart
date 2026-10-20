@@ -47,9 +47,9 @@ void main() {
       // alone would reject the custom-scheme fallback.
       expect(
         isAcceptedDeepLink(
-          Uri.parse('com.dev.luminous://login/oauth/qq'),
+          Uri.parse('com.devluo.luminous://login/oauth/qq'),
           host: 'api.luminous.app',
-          scheme: 'com.dev.luminous',
+          scheme: 'com.devluo.luminous',
         ),
         isTrue,
       );
@@ -60,7 +60,7 @@ void main() {
         isAcceptedDeepLink(
           Uri.parse('evil://login/oauth/qq'),
           host: 'api.luminous.app',
-          scheme: 'com.dev.luminous',
+          scheme: 'com.devluo.luminous',
         ),
         isFalse,
       );
@@ -69,7 +69,7 @@ void main() {
     test('ignores the scheme rule when no scheme is configured', () {
       expect(
         isAcceptedDeepLink(
-          Uri.parse('com.dev.luminous://login/oauth/qq'),
+          Uri.parse('com.devluo.luminous://login/oauth/qq'),
           host: 'api.luminous.app',
           scheme: '',
         ),

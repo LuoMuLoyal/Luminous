@@ -150,7 +150,7 @@ void _installPlatformStubs() {
     (call) async => call.method == 'getAll'
         ? <String, Object?>{
             'appName': 'Luminous',
-            'packageName': 'com.dev.luminous',
+            'packageName': 'com.devluo.luminous',
             'version': '0.0.0',
             'buildNumber': '0',
             'buildSignature': '',
