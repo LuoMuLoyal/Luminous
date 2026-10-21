@@ -44,6 +44,15 @@ jobs:
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
           restore-keys: pub-${{ runner.os }}-
 
+      # native/ 是独立 Gradle build（KMP 共享模块）：缓存 Gradle 用户目录，
+      # 加速下面的 host 测试；deploy-* 的 flutter build 内复合构建同样复用。
+      - name: Cache Gradle (native build)
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle
+          key: gradle-native-${{ runner.os }}-${{ hashFiles('native/**/*.kts', 'native/**/*.toml', 'native/gradle/wrapper/*', 'native/gradlew', 'native/gradlew.bat') }}
+          restore-keys: gradle-native-${{ runner.os }}-
+
       - name: Merge ARB fragments
         run: dart scripts/l10n/arb_tools.dart merge
 
@@ -68,3 +77,11 @@ jobs:
 
       - name: Run tests
         run: flutter test --coverage --reporter=github
+
+      # KMP 共享模块（native/luminous-native）的 commonTest 跑在 JVM 上，
+      # 与 flutter test 是两条工具链；androidLibrary 目标随项目配置，
+      # ubuntu runner 自带 Android SDK（ANDROID_HOME）。
+      - name: Run KMP host tests
+        run: |
+          cd native
+          ./gradlew :luminous-native:testAndroidHostTest

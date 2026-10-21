@@ -46,6 +46,17 @@ jobs:
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
           restore-keys: pub-${{ runner.os }}-
 
+      # native/ 是独立 Gradle build：KMP 模块经 android/settings.gradle.kts 的
+      # includeBuild + dependency substitution 进入 Flutter 的 Android 构建。
+      # 先单独 assemble 一次，让 KMP 编译失败在本步暴露而不是埋在 flutter build
+      # 日志里；Gradle 缓存同时被下面的 flutter build apk 复用。
+      - name: Cache Gradle (native build)
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle
+          key: gradle-native-${{ runner.os }}-${{ hashFiles('native/**/*.kts', 'native/**/*.toml', 'native/gradle/wrapper/*', 'native/gradlew', 'native/gradlew.bat') }}
+          restore-keys: gradle-native-${{ runner.os }}-
+
       - name: Validate required secrets
         env:
           LUCENT_BASE_URL: ${{ secrets.LUCENT_BASE_URL }}
@@ -74,6 +85,11 @@ jobs:
           dart pub get
           dart run build_runner build --delete-conflicting-outputs
           cd ../..
+
+      - name: Build KMP module (Android)
+        run: |
+          cd native
+          ./gradlew :luminous-native:assemble
 
       - name: Build APK (release)
         env:

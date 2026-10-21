@@ -56,6 +56,34 @@ jobs:
           key: pods-${{ runner.os }}-${{ hashFiles('ios/Podfile', 'pkgs/**/*.podspec') }}
           restore-keys: pods-${{ runner.os }}-
 
+      # native/ 是独立 Gradle build（KMP 共享模块）：Gradle 用户目录 + 项目
+      # 构建目录一并缓存（~/.gradle 不含 build 输出，单缓存它无法跳过
+      # Kotlin/Native 重编译）；命中后 assembleLuminousNativeXCFramework
+      # 直接 UP-TO-DATE，sync 步骤再把静态产物复制进插件目录。
+      - name: Cache Gradle (native build)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle
+            native/.gradle
+            native/luminous-native/.gradle
+            native/luminous-native/build/XCFrameworks
+          key: gradle-native-${{ runner.os }}-${{ hashFiles('native/**/*.kts', 'native/**/*.toml', 'native/gradle/wrapper/*', 'native/gradlew', 'native/gradlew.bat') }}
+          restore-keys: gradle-native-${{ runner.os }}-
+
+      # 插件 podspec 以 vendored_frameworks 引用 LuminousNative.xcframework，
+      # 且 Frameworks/ 目录已 gitignore：必须在 flutter build ios（内部会
+      # pod install）之前构建并同步，否则 pod install 直接失败。
+      # androidLibrary 目标随项目配置，macOS runner 自带 Android SDK。
+      - name: Setup JDK 17 for Gradle
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build KMP XCFramework
+        run: bash scripts/native/build_kmp_ios.sh
+
       - name: Print toolchain versions
         run: |
           flutter --version
