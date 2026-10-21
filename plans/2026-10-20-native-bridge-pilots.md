@@ -253,7 +253,7 @@ Android WorkManager / iOS BGTaskScheduler
 
 ### 5. 后台同步接线
 
-- `pigeon/background.dart` 定义 `BackgroundHostApi`；Dart 侧传 callback handle，插件保存并在唤醒时使用。
+- 使用 `workmanager` 包调度；Dart 侧注册 callback dispatcher，插件在唤醒时启动 headless engine 并调用入口。
 - `handlers.dart` 抽出前后台共用的 sync handler 注册；`background_entry.dart` 构建最小容器并 flush。
 - `SyncWorker.flush()` 返回结果摘要；前台调用点忽略摘要，后台 worker 用它决定 retry。
 - 登录/恢复会话后调度，登出取消；无会话时后台入口直接退出。
