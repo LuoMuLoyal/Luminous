@@ -13,15 +13,6 @@ fun normalizeSteps(
     return mergeByDayAndSource(split, startOfDay)
 }
 
-fun stepsAfterBaseline(currentTotal: Long, previousTotal: Long?): Long {
-    if (currentTotal <= 0L || previousTotal == null || previousTotal < 0L) return 0L
-    return if (currentTotal >= previousTotal) {
-        currentTotal - previousTotal
-    } else {
-        currentTotal
-    }
-}
-
 private fun clipToRequest(sample: StepSample, request: StepRequest): StepSample? {
     if (sample.count <= 0L || sample.endMs <= sample.startMs) return null
 

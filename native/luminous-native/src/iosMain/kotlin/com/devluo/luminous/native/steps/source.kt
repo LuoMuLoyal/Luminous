@@ -12,7 +12,7 @@ import kotlin.native.ObjCName
 @ObjCName(name = "LuminousStepSource", swiftName = "LuminousStepSource")
 class IosStepSource : StepSource {
     override fun capability(): Capability {
-        if (!HealthKitQuery.isAvailable()) {
+        if (!isHealthDataAvailable()) {
             return Capability.unavailable(UnavailableReason.healthDataUnavailable)
         }
         return Capability.Available
@@ -24,14 +24,14 @@ class IosStepSource : StepSource {
                 Failure(FailureCode.invalidRequest, "endMs must be greater than startMs"),
             )
         }
-        if (!HealthKitQuery.isAvailable()) {
+        if (!isHealthDataAvailable()) {
             return NativeResult.Error(
                 Failure(FailureCode.unavailable, "Health data is not available on this device"),
             )
         }
 
         return try {
-            val samples = HealthKitQuery.readSteps(request)
+            val samples = HealthKitStatistics.readSteps(request)
             NativeResult.Success(
                 normalizeSteps(samples, request, ::startOfLocalDay),
             )
@@ -43,5 +43,5 @@ class IosStepSource : StepSource {
     }
 
     suspend fun requestAuthorization(): NativeResult<Boolean> =
-        HealthKitQuery.requestAuthorization()
+        HealthKitAuthorization.request()
 }

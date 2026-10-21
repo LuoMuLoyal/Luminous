@@ -82,14 +82,6 @@ class NormalizationTest {
         assertEquals(25L, result[1].count)
     }
 
-    @Test
-    fun usesCurrentTotalAfterRestart() {
-        assertEquals(0L, stepsAfterBaseline(120, null))
-        assertEquals(40L, stepsAfterBaseline(120, 80))
-        assertEquals(40L, stepsAfterBaseline(40, 120))
-        assertEquals(0L, stepsAfterBaseline(-1, 120))
-    }
-
     private fun startOfUtcDay(epochMs: Long): Long {
         val remainder = epochMs % DAY_MS
         val normalized = if (remainder < 0L) remainder + DAY_MS else remainder

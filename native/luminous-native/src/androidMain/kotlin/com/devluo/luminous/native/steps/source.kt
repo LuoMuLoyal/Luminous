@@ -1,9 +1,6 @@
 package com.devluo.luminous.native.steps
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.SystemClock
 import com.devluo.luminous.native.core.Capability
 import com.devluo.luminous.native.core.Failure
@@ -11,8 +8,6 @@ import com.devluo.luminous.native.core.FailureCode
 import com.devluo.luminous.native.core.NativeResult
 import com.devluo.luminous.native.core.UnavailableReason
 import com.devluo.luminous.native.core.toFailureCode
-import java.time.Instant
-import java.time.ZoneId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -25,7 +20,7 @@ class AndroidStepSource(context: Context) : StepSource {
         if (!sensor.hasSensor()) {
             return Capability.unavailable(UnavailableReason.noStepSensor)
         }
-        if (!hasPermission()) {
+        if (!appContext.hasActivityRecognitionPermission()) {
             return Capability.unavailable(UnavailableReason.permissionDenied)
         }
         return Capability.Available
@@ -78,18 +73,4 @@ class AndroidStepSource(context: Context) : StepSource {
                 normalizeSteps(listOf(sample), request, ::startOfLocalDay),
             )
         }
-
-    private fun hasPermission(): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return true
-        return appContext.checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION) ==
-            PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun startOfLocalDay(epochMs: Long): Long =
-        Instant.ofEpochMilli(epochMs)
-            .atZone(ZoneId.systemDefault())
-            .toLocalDate()
-            .atStartOfDay(ZoneId.systemDefault())
-            .toInstant()
-            .toEpochMilli()
 }
