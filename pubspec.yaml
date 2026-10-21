@@ -90,7 +90,7 @@ dependencies:
   sign_in_with_apple: ^8.2.0
   flutter_svg: ^2.1.0
   share_plus: ^13.3.1
-  forui: ^0.27.5
+  forui: ^0.27.6
   forui_hooks: ^0.27.0
   forui_lucide: ^0.27.0
   forui_phosphor: ^0.27.0
@@ -110,7 +110,7 @@ dependencies:
   jpush_flutter: ^3.5.8
   animations: ^3.0.0
   crop_your_image: 2.0.1
-  sqlite3: 3.7.0
+  sqlite3: 3.7.1
   flutter_gen_ai_chat_ui: ^2.20.0
   workmanager: ^0.10.10
 
@@ -120,9 +120,9 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.6
-  build_runner: ^2.15.1
+  build_runner: ^2.16.2
   json_serializable: ^6.14.1
-  freezed: ^4.0.1
+  freezed: ^4.0.3
   mocktail: ^1.0.5
   network_image_mock: ^2.1.1
   # Platform interfaces used directly in tests (fakes for scan/camera flows).
