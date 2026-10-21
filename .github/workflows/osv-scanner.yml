@@ -1,0 +1,52 @@
+name: OSV-Scanner
+
+# 依赖漏洞扫描：用 Google 的 OSV 数据库查 pub 依赖树里的已知漏洞。
+#
+# ## 与 Dependabot 的分工
+#
+# Dependabot 负责「把依赖升上去」（发 PR 改 pubspec），它天然滞后——只在有新
+# 版本时才动。OSV-Scanner 负责「现在这份 pubspec.lock 里有什么已知漏洞」，
+# 覆盖 Dependabot 抓不到的两类：
+#   1. 漏洞披露晚于版本发布，而修复版你暂时不想升（Flutter 插件常卡在
+#      SDK 约束上，大版本跳跃代价高）。
+#   2. 传递依赖——Flutter 依赖树很深，不直接声明但被带进来的包。
+#
+# ## 为什么这个仓尤其需要
+#
+# 客户端把依赖编译进 APK/IPA 分发到用户设备，漏洞无法靠服务端热修。
+#
+# ## 两个 job 为什么分开
+#
+# `scan-pr` 只报**本次 PR 新引入**的漏洞，不因既有漏洞而失败；
+# `scan-full` 是全量扫描，周度跑，抓「代码没动但漏洞库更新了」的情况。
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  schedule:
+    # 每周一 12:30 UTC，与 CodeQL 错开
+    - cron: '30 12 * * 1'
+
+permissions:
+  actions: read
+  security-events: write
+  contents: read
+
+jobs:
+  scan-pr:
+    name: Scan PR (new vulnerabilities)
+    if: github.event_name == 'pull_request'
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@v2.7.0
+
+  scan-full:
+    name: Scan full dependency tree
+    if: github.event_name != 'pull_request'
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.7.0
+    with:
+      scan-args: |-
+        --recursive
+        ./
+      # 不阻断：先观察，确认存量漏洞规模后再决定是否收紧。
+      fail-on-vuln: false

@@ -45,7 +45,7 @@ updates:
   - package-ecosystem: pub
     directory: '/'
     schedule:
-      interval: weekly
+      interval: monthly
       day: monday
     open-pull-requests-limit: 10
     labels:
@@ -69,7 +69,7 @@ updates:
   - package-ecosystem: pub
     directory: '/generated/lucent_api'
     schedule:
-      interval: weekly
+      interval: monthly
       day: monday
     open-pull-requests-limit: 5
     labels:
@@ -108,7 +108,7 @@ updates:
   - package-ecosystem: pub
     directory: '/tool/luminous_lints'
     schedule:
-      interval: weekly
+      interval: monthly
       day: monday
     open-pull-requests-limit: 5
     labels:
@@ -136,7 +136,7 @@ updates:
   - package-ecosystem: github-actions
     directory: '/'
     schedule:
-      interval: weekly
+      interval: monthly
       day: monday
     open-pull-requests-limit: 5
     labels:

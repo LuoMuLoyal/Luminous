@@ -11,6 +11,25 @@
 | `deploy-android.yml` | `Deploy Android` | 构建 release APK 并上传产物 | push(`main`), 手动 |
 | `deploy-ios.yml` | `Deploy iOS` | 构建未签名 IPA（macOS runner）并上传产物 | push(`main`), 手动 |
 | `deploy-web.yml` | `Deploy web` | 构建 Flutter Web 并发布到 GitHub Pages | push(`refactor`), 手动 |
+| `codeql.yml` | `CodeQL` | 代码安全分析（生成客户端 / lint 工具 / scripts 的 TS-JS 部分） | push, PR, 周度 |
+| `osv-scanner.yml` | `OSV-Scanner` | pub 依赖漏洞扫描（含传递依赖） | push, PR, 周度 |
+| `scorecard.yml` | `Scorecard` | 供应链安全评分 | push, 周度 |
+
+## 安全类 workflow
+
+| workflow | 查什么 | 覆盖范围 |
+| --- | --- | --- |
+| `codeql.yml` | **源码**里的数据流漏洞：凭证硬编码、敏感字段进日志、深链参数未校验 | 只覆盖 TS/JS：`generated/lucent_api`、`tool/luminous_lints`、`scripts/` |
+| `osv-scanner.yml` | **依赖**里的已知漏洞，含传递依赖；PR 只报新增，全量扫描周度跑 | `pubspec.yaml` / `pubspec.lock`（4 个包） |
+| `scorecard.yml` | **流程与配置**的反模式：分支保护、action 版本固定、评审要求、依赖更新开关 | 全仓库 |
+
+⚠️ **Dart 业务代码不在 CodeQL 覆盖范围内**——CodeQL 官方不支持 Dart（支持的语言见
+`codeql.yml` 里的注释）。`lib/` 下的 Dart 代码由 `flutter analyze`、`tool/luminous_lints`
+的八条自定义规则与 `--fatal` 门禁承接，不要以为有了 CodeQL 就多了一层 Dart 检查。
+
+⚠️ **这三条目前都不阻断合并**，报告只上 Security 页。理由同 Trivy 与 arch 基线：
+首次接入会浮出全部存量问题。等存量清完再改 `osv-scanner.yml` 的 `fail-on-vuln: true`
+并加入分支保护。
 
 ## 命名
 

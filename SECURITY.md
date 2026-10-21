@@ -46,6 +46,26 @@ Only the latest release line receives security fixes. Pre-release versions
 | latest  | ✅        |
 | `*-dev` | ❌        |
 
+## Automated Security Checks
+
+This repository runs the following automated checks. They are listed here so that a
+failing check is understood rather than silenced.
+
+| Check | Workflow | What it covers | Blocking |
+| ----- | -------- | -------------- | -------- |
+| CodeQL | `.github/workflows/codeql.yml` | Data-flow analysis of the TS/JS parts: generated client, lint tooling, scripts. **Dart is not covered** — CodeQL does not support it | No — reports to Security tab |
+| OSV-Scanner | `.github/workflows/osv-scanner.yml` | Known vulnerabilities across the four `pubspec` trees, including transitive packages | No — PR scan reports new findings only |
+| Scorecard | `.github/workflows/scorecard.yml` | Supply-chain hygiene: branch protection, pinned actions, review requirements | No — score only |
+| Dependabot | `.github/dependabot.yml` | Dependency updates (monthly, grouped) | Opens PRs |
+
+None of these gate merges yet. A first-time scan surfaces the entire accumulated
+backlog, and a check that fails on day one gets ignored rather than fixed. The plan is
+to observe, clear or consciously waive the findings, then turn each into a gate.
+
+Dart business code is covered instead by `flutter analyze`, the eight custom rules in
+`tool/luminous_lints`, and the error-level analyzer settings — see `AGENTS.md`. Do not
+read the CodeQL result as a clean bill of health for `lib/`.
+
 ## Security Features
 
 Luminous implements the following security measures:
