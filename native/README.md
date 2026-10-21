@@ -5,8 +5,12 @@ plumbing stays in `pkgs/luminous_native_bridge`.
 
 ## Layout
 
-- `src/commonMain/kotlin/com/devluo/luminous/native/core/` — shared API and logic.
-- `src/commonTest/kotlin/...` — host tests.
+- `src/commonMain/kotlin/com/devluo/luminous/native/core/` — capability, failure, result.
+- `src/commonMain/kotlin/com/devluo/luminous/native/steps/` — request/sample contracts,
+  baseline delta, day splitting, clipping, and per-day merging.
+- `src/commonTest/kotlin/...` — host tests for normalization and baseline restart.
+- `src/androidMain/.../steps/` — `TYPE_STEP_COUNTER`, permission check, persisted baseline.
+- `src/iosMain/.../steps/` — HealthKit authorization and daily step statistics.
 - `androidLibrary` target — consumed by the Flutter plugin through the composite build
   in `Luminous/android/settings.gradle.kts`.
 - `iosArm64` + `iosSimulatorArm64` — exported as a static `LuminousNative.xcframework`.
@@ -16,6 +20,7 @@ plumbing stays in `pkgs/luminous_native_bridge`.
 ```bash
 ./gradlew :luminous-native:testAndroidHostTest
 ./gradlew :luminous-native:assemble
+./gradlew :luminous-native:compileKotlinIosArm64 :luminous-native:compileKotlinIosSimulatorArm64
 ```
 
 iOS artifacts require macOS:
@@ -29,7 +34,8 @@ The XCFramework is written to
 `native/luminous-native/build/XCFrameworks/release/LuminousNative.xcframework` and copied
 to `pkgs/luminous_native_bridge/ios/Frameworks/`, which is gitignored.
 
-Windows cannot link Kotlin/Native iOS targets; the iOS test tasks are skipped there.
+Kotlin iOS compilation works on Windows. Linking the framework/XCFramework and running
+iOS/simulator tests still require macOS.
 
 ## Adding a module
 
