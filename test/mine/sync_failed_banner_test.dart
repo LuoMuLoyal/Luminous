@@ -76,7 +76,7 @@ void main() {
     when(
       () => dao.fetchPermanentlyFailed(),
     ).thenAnswer((_) async => [_entry()]);
-    when(() => worker.flush()).thenAnswer((_) async {});
+    when(() => worker.flush()).thenAnswer((_) async => const SyncFlushResult());
 
     await tester.pumpWidget(_app(dao: dao, worker: worker, failedCount: 1));
     await tester.pumpAndSettle();

@@ -64,31 +64,65 @@ class SyncWorker {
   /// Attempts to replay all ready pending items.
   ///
   /// Called automatically on connectivity restore, or can be called
-  /// manually (e.g. after a write operation).
-  Future<void> flush() async {
-    if (_isFlushing) return;
+  /// manually (e.g. after a write operation). The returned summary lets a
+  /// background worker decide between success and retry.
+  Future<SyncFlushResult> flush() async {
+    if (_isFlushing) return const SyncFlushResult();
     _isFlushing = true;
 
+    var synced = 0;
+    var retryable = 0;
+    var permanent = 0;
+    var readyCount = 0;
     try {
       final ready = await pendingSyncDao.fetchReady();
+      readyCount = ready.length;
       for (final entry in ready) {
-        await _replayEntry(entry);
+        switch (await _replayEntry(entry)) {
+          case _ReplayOutcome.synced:
+            synced++;
+          case _ReplayOutcome.retryable:
+            retryable++;
+          case _ReplayOutcome.permanent:
+            permanent++;
+          case _ReplayOutcome.skipped:
+            break;
+        }
       }
+      final pending = readyCount > synced + permanent
+          ? readyCount - synced - permanent
+          : 0;
+      return SyncFlushResult(
+        synced: synced,
+        retryable: retryable,
+        permanent: permanent,
+        pending: pending,
+      );
     } catch (e) {
       talker.error('SyncWorker.flush: unexpected error: $e');
+      final pending = readyCount > synced + permanent
+          ? readyCount - synced - permanent
+          : 0;
+      return SyncFlushResult(
+        synced: synced,
+        retryable: retryable,
+        permanent: permanent,
+        pending: pending,
+        error: '$e',
+      );
     } finally {
       _isFlushing = false;
     }
   }
 
-  Future<void> _replayEntry(PendingSyncEntry entry) async {
+  Future<_ReplayOutcome> _replayEntry(PendingSyncEntry entry) async {
     final handler = _handlers[entry.entityType];
     if (handler == null) {
       talker.warning(
         'SyncWorker: no handler for entityType="${entry.entityType}", '
         'skipping item ${entry.id}',
       );
-      return;
+      return _ReplayOutcome.skipped;
     }
 
     await pendingSyncDao.markSyncing(entry.id);
@@ -97,6 +131,7 @@ class SyncWorker {
       await handler(entry);
       await pendingSyncDao.remove(entry.id);
       talker.info('SyncWorker: synced ${entry.entityType} ${entry.id}');
+      return _ReplayOutcome.synced;
     } on DioException catch (e) {
       final failure = LucentErrorMapper.fromObject(e);
       final details = PendingSyncErrorDetails.fromLucentFailure(
@@ -121,7 +156,7 @@ class SyncWorker {
           'SyncWorker: item ${entry.id} rejected as non-retryable '
           '(${failure.code ?? 'no code'}): $e',
         );
-        return;
+        return _ReplayOutcome.permanent;
       }
       final isPermanentlyFailed = entry.retryCount + 1 >= entry.maxRetry;
       await _recordFailure(
@@ -138,14 +173,16 @@ class SyncWorker {
           'SyncWorker: item ${entry.id} permanently failed after '
           '${entry.maxRetry} retries: $e',
         );
-      } else {
-        talker.warning(
-          'SyncWorker: item ${entry.id} failed (retry '
-          '${entry.retryCount + 1}/${entry.maxRetry}): $e',
-        );
+        return _ReplayOutcome.permanent;
       }
+      talker.warning(
+        'SyncWorker: item ${entry.id} failed (retry '
+        '${entry.retryCount + 1}/${entry.maxRetry}): $e',
+      );
+      return _ReplayOutcome.retryable;
     } catch (e) {
       final failure = LucentErrorMapper.fromObject(e);
+      final isPermanentlyFailed = entry.retryCount + 1 >= entry.maxRetry;
       await _recordFailure(
         entry.id,
         write: () => pendingSyncDao.markFailed(
@@ -159,6 +196,9 @@ class SyncWorker {
         error: e,
       );
       talker.error('SyncWorker: item ${entry.id} unexpected error: $e');
+      return isPermanentlyFailed
+          ? _ReplayOutcome.permanent
+          : _ReplayOutcome.retryable;
     }
   }
 
@@ -195,6 +235,36 @@ class SyncWorker {
 
 /// Handler function type for replaying a pending sync item.
 typedef SyncHandler = Future<void> Function(PendingSyncEntry entry);
+
+enum _ReplayOutcome { synced, retryable, permanent, skipped }
+
+/// Summary of one [SyncWorker.flush] pass.
+class SyncFlushResult {
+  const SyncFlushResult({
+    this.synced = 0,
+    this.retryable = 0,
+    this.permanent = 0,
+    this.pending = 0,
+    this.error,
+  });
+
+  /// Items removed from the queue.
+  final int synced;
+
+  /// Items that failed but still have retry budget.
+  final int retryable;
+
+  /// Items parked as permanently failed during this pass.
+  final int permanent;
+
+  /// Items still pending after the pass (including skipped/retryable ones).
+  final int pending;
+
+  /// Set when the pass aborted before processing the queue.
+  final String? error;
+
+  bool get shouldRetry => retryable > 0 || error != null;
+}
 
 /// Riverpod provider for [SyncWorker].
 ///

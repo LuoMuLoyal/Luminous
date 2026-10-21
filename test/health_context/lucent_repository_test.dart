@@ -162,8 +162,9 @@ class _FakeSyncWorker extends SyncWorker {
   bool flushCalled = false;
 
   @override
-  Future<void> flush() async {
+  Future<SyncFlushResult> flush() async {
     flushCalled = true;
+    return const SyncFlushResult();
   }
 }
 

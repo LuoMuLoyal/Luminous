@@ -121,6 +121,53 @@ void main() {
       );
     });
 
+    test(
+      'returns a summary of synced, retryable and permanent items',
+      () async {
+        final ok = _createEntry(id: 'ok');
+        final retryable = _createEntry(id: 'retryable');
+        final permanent = _createEntry(
+          id: 'permanent',
+          retryCount: 4,
+          maxRetry: 5,
+        );
+        when(
+          () => mockDao.fetchReady(),
+        ).thenAnswer((_) async => [ok, retryable, permanent]);
+        when(() => mockDao.markSyncing(any())).thenAnswer((_) async {});
+        when(() => mockDao.remove(any())).thenAnswer((_) async {});
+        when(
+          () => mockDao.markFailed(
+            any(),
+            raw: any(named: 'raw'),
+            details: any(named: 'details'),
+          ),
+        ).thenAnswer((_) async {});
+
+        worker.registerHandler('daily_record', (e) async {
+          if (e.id != 'ok') throw StateError('replay failed');
+        });
+
+        final result = await worker.flush();
+
+        expect(result.synced, 1);
+        expect(result.retryable, 1);
+        expect(result.permanent, 1);
+        expect(result.pending, 1);
+        expect(result.error, isNull);
+        expect(result.shouldRetry, isTrue);
+      },
+    );
+
+    test('reports an aborted pass so a background worker retries', () async {
+      when(() => mockDao.fetchReady()).thenThrow(StateError('database lost'));
+
+      final result = await worker.flush();
+
+      expect(result.error, isNotNull);
+      expect(result.shouldRetry, isTrue);
+    });
+
     test('marks failed on DioException and does not remove', () async {
       final entry = _createEntry(id: 'fail-001');
       when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);

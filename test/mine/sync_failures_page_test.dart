@@ -135,7 +135,7 @@ void main() {
 
     when(() => dao.resetForRetry('pending-1')).thenAnswer((_) async {});
     when(() => dao.resetForRetry('pending-2')).thenAnswer((_) async {});
-    when(() => worker.flush()).thenAnswer((_) async {});
+    when(() => worker.flush()).thenAnswer((_) async => const SyncFlushResult());
 
     await tester.pumpWidget(
       _app(
