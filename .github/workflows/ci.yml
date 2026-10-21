@@ -28,7 +28,7 @@ jobs:
       FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -38,7 +38,7 @@ jobs:
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
@@ -47,7 +47,7 @@ jobs:
       # native/ 是独立 Gradle build（KMP 共享模块）：缓存 Gradle 用户目录，
       # 加速下面的 host 测试；deploy-* 的 flutter build 内复合构建同样复用。
       - name: Cache Gradle (native build)
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.gradle
           key: gradle-native-${{ runner.os }}-${{ hashFiles('native/**/*.kts', 'native/**/*.toml', 'native/gradle/wrapper/*', 'native/gradlew', 'native/gradlew.bat') }}

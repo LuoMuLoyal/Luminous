@@ -30,7 +30,7 @@ jobs:
       JPUSH_APP_KEY: ${{ secrets.JPUSH_APP_KEY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -40,7 +40,7 @@ jobs:
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
@@ -51,7 +51,7 @@ jobs:
       # 先单独 assemble 一次，让 KMP 编译失败在本步暴露而不是埋在 flutter build
       # 日志里；Gradle 缓存同时被下面的 flutter build apk 复用。
       - name: Cache Gradle (native build)
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.gradle
           key: gradle-native-${{ runner.os }}-${{ hashFiles('native/**/*.kts', 'native/**/*.toml', 'native/gradle/wrapper/*', 'native/gradlew', 'native/gradlew.bat') }}
@@ -134,14 +134,14 @@ jobs:
           PY
 
       - name: Upload APKs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: luminous-android-apk
           path: build/app/outputs/flutter-apk/app-*-release.apk
           if-no-files-found: error
 
       - name: Upload Dart symbols
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: luminous-android-symbols
           path: build/symbols
