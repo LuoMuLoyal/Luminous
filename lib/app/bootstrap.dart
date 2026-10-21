@@ -8,6 +8,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/accessibility/settings.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/database/sync/background.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/i18n/locale.dart';
@@ -60,6 +61,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       if (previous?.isAuthenticated == true && !next.isAuthenticated) {
         ref.invalidate(healthContextSnapshotProvider);
         unawaited(_syncPushAuth(null));
+        unawaited(ref.read(backgroundSyncSchedulerProvider).cancel());
         return;
       }
 
@@ -79,6 +81,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
 
       ref.invalidate(healthContextSnapshotProvider);
       unawaited(_restoreLocaleFromProfile());
+      unawaited(ref.read(backgroundSyncSchedulerProvider).schedule());
     });
     ref.listen<AsyncValue<void>>(
       medicineReminderNotificationSyncProvider,

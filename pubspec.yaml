@@ -112,6 +112,7 @@ dependencies:
   crop_your_image: 2.0.1
   sqlite3: 3.7.0
   flutter_gen_ai_chat_ui: ^2.20.0
+  workmanager: ^0.10.10
 
 dev_dependencies:
   flutter_test:
