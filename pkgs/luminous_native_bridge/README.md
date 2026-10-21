@@ -13,6 +13,20 @@ Luminous 原生桥接通道层：Dart 只通过本包访问原生能力，不直
   XCFramework 的 binary target。
 - Dart 单测：`flutter test`（在 `pkgs/luminous_native_bridge` 目录执行）。
 
+## 生成 Pigeon 代码
+
+修改 `pigeon/*.dart` 后，在包目录执行：
+
+```bash
+dart run pigeon --input pigeon/steps.dart \
+  --dart_out lib/src/generated/steps.g.dart \
+  --kotlin_out android/src/main/kotlin/com/devluo/luminous/bridge/steps/Steps.g.kt \
+  --kotlin_package com.devluo.luminous.bridge.steps \
+  --swift_out ios/luminous_native_bridge/Sources/luminous_native_bridge/Steps/Steps.g.swift
+```
+
+生成文件不手改；公开 API 只暴露 `lib/src/steps/model.dart` 中的类型。
+
 ## 新增 bridge module
 
 1. 在 `pigeon/` 增加 schema，生成 `lib/src/generated/`，不手改生成文件。

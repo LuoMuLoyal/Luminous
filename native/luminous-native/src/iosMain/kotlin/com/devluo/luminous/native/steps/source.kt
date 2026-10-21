@@ -9,6 +9,22 @@ import kotlin.experimental.ExperimentalObjCName
 import kotlin.native.ObjCName
 
 @OptIn(ExperimentalObjCName::class)
+@ObjCName(name = "LuminousStepStatus", swiftName = "LuminousStepStatus")
+class StepStatus(
+    val available: Boolean,
+    val reason: String?,
+    val message: String?,
+)
+
+@OptIn(ExperimentalObjCName::class)
+@ObjCName(name = "LuminousStepReadOutcome", swiftName = "LuminousStepReadOutcome")
+class StepReadOutcome(
+    val samples: List<StepSample>,
+    val errorCode: String?,
+    val errorMessage: String?,
+)
+
+@OptIn(ExperimentalObjCName::class)
 @ObjCName(name = "LuminousStepSource", swiftName = "LuminousStepSource")
 class IosStepSource : StepSource {
     override fun capability(): Capability {
@@ -41,6 +57,25 @@ class IosStepSource : StepSource {
             )
         }
     }
+
+    fun status(): StepStatus = when (val capability = capability()) {
+        Capability.Available -> StepStatus(true, null, null)
+        is Capability.Unavailable -> StepStatus(
+            available = false,
+            reason = capability.reason.name,
+            message = capability.message,
+        )
+    }
+
+    suspend fun readOutcome(request: StepRequest): StepReadOutcome =
+        when (val result = read(request)) {
+            is NativeResult.Success -> StepReadOutcome(result.value, null, null)
+            is NativeResult.Error -> StepReadOutcome(
+                samples = emptyList(),
+                errorCode = result.failure.code.name,
+                errorMessage = result.failure.message,
+            )
+        }
 
     suspend fun requestAuthorization(): NativeResult<Boolean> =
         HealthKitAuthorization.request()

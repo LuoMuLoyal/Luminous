@@ -7,6 +7,10 @@ public class LuminousNativeBridgePlugin: NSObject, FlutterPlugin {
     let channel = FlutterMethodChannel(name: "luminous_native_bridge", binaryMessenger: registrar.messenger())
     let instance = LuminousNativeBridgePlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
+    StepHostApiSetup.setUp(
+      binaryMessenger: registrar.messenger(),
+      api: StepHandler()
+    )
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
