@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/features/health_data/data/datasources/health_platform.dart';
+import 'package:luminous/features/health_data/data/datasources/steps.dart';
 import 'package:luminous/features/health_data/data/mappers/health_record_mapper.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
 import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
@@ -17,11 +18,13 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
     required this.dataSource,
     required this.mapper,
     required this.dailyRecordRepo,
+    this.nativeStepSource,
   });
 
   final HealthPlatformDataSource dataSource;
   final HealthRecordMapper mapper;
   final DailyRecordRepository dailyRecordRepo;
+  final NativeStepSource? nativeStepSource;
 
   @override
   bool get isPlatformAvailable => dataSource.isPlatformAvailable;
@@ -50,17 +53,66 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
   }
 
   @override
+  Future<HealthCapability> getStepCapability() async {
+    final nativeSteps = nativeStepSource;
+    if (nativeSteps == null) {
+      return const HealthCapability(available: true);
+    }
+    try {
+      final capability = await nativeSteps.capability();
+      return HealthCapability(
+        available: capability.available,
+        reason: capability.reason,
+        message: capability.message,
+      );
+    } catch (e) {
+      appTalker.warning(
+        'HealthSync: native steps capability failed, using plugin: $e',
+      );
+      return const HealthCapability(available: true);
+    }
+  }
+
+  @override
   Future<List<HealthMetric>> fetchMetrics({
     required Set<HealthMetricType> types,
     required DateTime start,
     required DateTime end,
   }) async {
-    final points = await dataSource.fetchDataPoints(
-      types: types,
-      start: start,
-      end: end,
-    );
-    final metrics = mapper.mapToMetrics(points);
+    final nativeSteps = nativeStepSource;
+    var pluginTypes = types;
+    final metrics = <HealthMetric>[];
+
+    if (nativeSteps != null && types.contains(HealthMetricType.steps)) {
+      try {
+        final capability = await nativeSteps.capability();
+        if (capability.available) {
+          metrics.addAll(
+            await nativeSteps.fetchMetrics(start: start, end: end),
+          );
+          pluginTypes = types.difference(const {HealthMetricType.steps});
+        } else {
+          pluginTypes = types.difference(const {HealthMetricType.steps});
+          appTalker.warning(
+            'HealthSync: native steps unavailable: '
+            '${capability.reason ?? 'unknown'}',
+          );
+        }
+      } catch (e) {
+        appTalker.warning(
+          'HealthSync: native steps failed, falling back to health plugin: $e',
+        );
+      }
+    }
+
+    if (pluginTypes.isNotEmpty) {
+      final points = await dataSource.fetchDataPoints(
+        types: pluginTypes,
+        start: start,
+        end: end,
+      );
+      metrics.addAll(mapper.mapToMetrics(points));
+    }
     return metrics;
   }
 

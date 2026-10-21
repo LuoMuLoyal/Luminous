@@ -50,6 +50,9 @@ class HealthSyncController extends _$HealthSyncController {
     state = state.copyWith(isFetching: true, error: null, fetchedMetrics: []);
 
     final now = DateTime.now();
+    final stepCapability = state.selectedTypes.contains(HealthMetricType.steps)
+        ? await _repo.getStepCapability()
+        : null;
     final start = switch (state.timeRange) {
       HealthSyncTimeRange.today => DateTime(now.year, now.month, now.day),
       HealthSyncTimeRange.threeDays => now.subtract(const Duration(days: 3)),
@@ -62,7 +65,11 @@ class HealthSyncController extends _$HealthSyncController {
         start: start,
         end: now,
       );
-      state = state.copyWith(isFetching: false, fetchedMetrics: metrics);
+      state = state.copyWith(
+        isFetching: false,
+        fetchedMetrics: metrics,
+        stepCapability: stepCapability,
+      );
     } catch (e) {
       state = state.copyWith(isFetching: false, error: '$e');
     }
@@ -87,6 +94,11 @@ class HealthSyncController extends _$HealthSyncController {
   }
 
   void reset() {
-    state = state.copyWith(fetchedMetrics: [], syncResult: null, error: null);
+    state = state.copyWith(
+      fetchedMetrics: [],
+      syncResult: null,
+      stepCapability: null,
+      error: null,
+    );
   }
 }

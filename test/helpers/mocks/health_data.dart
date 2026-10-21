@@ -12,6 +12,7 @@ import 'package:luminous/features/health_data/domain/repositories/health_sync.da
 class FakeHealthSyncRepository implements HealthSyncRepository {
   bool available = true;
   HealthPermissionStatus permissionStatus = HealthPermissionStatus.granted;
+  HealthCapability stepCapability = const HealthCapability(available: true);
   List<HealthMetric> fetchResult = [];
   Object? fetchError;
   HealthSyncResult syncResult = const HealthSyncResult(
@@ -33,6 +34,9 @@ class FakeHealthSyncRepository implements HealthSyncRepository {
 
   @override
   Future<Set<HealthMetricType>> getAuthorizedTypes() async => const {};
+
+  @override
+  Future<HealthCapability> getStepCapability() async => stepCapability;
 
   @override
   Future<List<HealthMetric>> fetchMetrics({

@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
+import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
 import 'package:luminous/features/health_data/domain/entities/health_sync_result.dart';
 
 part 'health_sync.freezed.dart';
@@ -26,6 +27,7 @@ abstract class HealthSyncState with _$HealthSyncState {
     @Default(false) bool isFetching,
     @Default(false) bool isSyncing,
     @Default(false) bool isRequestingPermissions,
+    HealthCapability? stepCapability,
     String? error,
   }) = _HealthSyncState;
 

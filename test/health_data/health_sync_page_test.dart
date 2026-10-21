@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/health_data/data/providers/health_sync.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
+import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
 import 'package:luminous/features/health_data/domain/entities/health_sync_result.dart';
 import 'package:luminous/features/health_data/presentation/pages/health_sync.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -104,6 +105,25 @@ void main() {
     expect(find.text(l10n(tester).healthSyncResultTitle), findsOneWidget);
     expect(find.text(l10n(tester).healthSyncResultSuccess(1)), findsOneWidget);
     expect(find.text(l10n(tester).healthSyncResultSkipped(0)), findsOneWidget);
+  });
+
+  testWidgets('shows the native step unavailability reason', (tester) async {
+    repo.stepCapability = const HealthCapability(
+      available: false,
+      reason: 'noStepSensor',
+    );
+    await pumpPage(tester);
+
+    await tapVisible(tester, find.text(l10n(tester).healthSyncFetchButton));
+
+    expect(
+      find.text(
+        l10n(
+          tester,
+        ).healthSyncStepsUnavailable(l10n(tester).healthSyncStepNoSensor),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('shows error banner when fetch fails', (tester) async {

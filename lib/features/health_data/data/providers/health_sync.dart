@@ -1,4 +1,6 @@
+import 'package:luminous/core/native/bridge.dart';
 import 'package:luminous/features/health_data/data/datasources/health_platform.dart';
+import 'package:luminous/features/health_data/data/datasources/steps.dart';
 import 'package:luminous/features/health_data/data/mappers/health_record_mapper.dart';
 import 'package:luminous/features/health_data/data/repositories/health_sync.dart';
 import 'package:luminous/features/health_data/domain/repositories/health_sync.dart'
@@ -19,10 +21,17 @@ HealthRecordMapper healthRecordMapper(Ref ref) {
 }
 
 @riverpod
+NativeStepSource? nativeStepSource(Ref ref) {
+  if (!ref.watch(nativeStepsEnabledProvider)) return null;
+  return NativeStepSource(bridge: ref.watch(nativeBridgeProvider).steps);
+}
+
+@riverpod
 domain.HealthSyncRepository healthSyncRepository(Ref ref) {
   return HealthSyncRepositoryImpl(
     dataSource: ref.watch(healthPlatformDataSourceProvider),
     mapper: ref.watch(healthRecordMapperProvider),
     dailyRecordRepo: ref.watch(dailyRecordRepositoryProvider),
+    nativeStepSource: ref.watch(nativeStepSourceProvider),
   );
 }

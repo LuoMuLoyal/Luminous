@@ -12,3 +12,12 @@ enum HealthPermissionStatus {
   /// Permission has not been requested yet.
   notDetermined,
 }
+
+/// Availability of a health data source.
+class HealthCapability {
+  const HealthCapability({required this.available, this.reason, this.message});
+
+  final bool available;
+  final String? reason;
+  final String? message;
+}

@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:health/health.dart';
 import 'package:luminous/features/health_data/data/datasources/health_platform.dart';
+import 'package:luminous/features/health_data/data/datasources/steps.dart';
 import 'package:luminous/features/health_data/data/mappers/health_record_mapper.dart';
 import 'package:luminous/features/health_data/data/repositories/health_sync.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
@@ -9,12 +10,34 @@ import 'package:luminous/features/health_data/domain/entities/health_permission.
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:luminous_native_bridge/luminous_native_bridge.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/mocks/health_data.dart';
 
 class _MockDailyRecordRepository extends Mock
     implements DailyRecordRepository {}
+
+class _FakeStepBridge extends StepBridge {
+  StepCapability capabilityResult = const StepCapability(available: true);
+  List<NativeStepSample> samples = const [];
+  Object? capabilityError;
+
+  @override
+  Future<StepCapability> capability() async {
+    final error = capabilityError;
+    if (error != null) throw error;
+    return capabilityResult;
+  }
+
+  @override
+  Future<List<NativeStepSample>> read({
+    required int startMs,
+    required int endMs,
+  }) async {
+    return samples;
+  }
+}
 
 DailyRecordItem _record({
   required String id,
@@ -177,6 +200,106 @@ void main() {
       expect(dataSource.lastFetchTypes, {HealthMetricType.heartRate});
       expect(dataSource.lastFetchStart, DateTime(2026, 7, 12));
       expect(dataSource.lastFetchEnd, DateTime(2026, 7, 13));
+    });
+  });
+
+  group('native steps', () {
+    late _FakeStepBridge bridge;
+    late HealthSyncRepositoryImpl nativeRepository;
+
+    setUp(() {
+      bridge = _FakeStepBridge();
+      nativeRepository = HealthSyncRepositoryImpl(
+        dataSource: dataSource,
+        mapper: const HealthRecordMapper(),
+        dailyRecordRepo: dailyRecordRepo,
+        nativeStepSource: NativeStepSource(bridge: bridge),
+      );
+    });
+
+    test('routes steps to native and other types to the plugin', () async {
+      bridge.samples = [
+        NativeStepSample(
+          count: 1200,
+          startMs: DateTime(2026, 7, 12).millisecondsSinceEpoch,
+          endMs: DateTime(2026, 7, 13).millisecondsSinceEpoch,
+          source: 'android_sensor',
+        ),
+      ];
+      dataSource.points = [
+        HealthDataPoint(
+          uuid: 'u1',
+          value: NumericHealthValue(numericValue: 72),
+          type: HealthDataType.HEART_RATE,
+          unit: HealthDataUnit.COUNT,
+          dateFrom: DateTime(2026, 7, 12, 8),
+          dateTo: DateTime(2026, 7, 12, 8),
+          sourcePlatform: HealthPlatformType.appleHealth,
+          sourceDeviceId: 'd',
+          sourceId: 's',
+          sourceName: 'sn',
+        ),
+      ];
+
+      final metrics = await nativeRepository.fetchMetrics(
+        types: {HealthMetricType.steps, HealthMetricType.heartRate},
+        start: DateTime(2026, 7, 12),
+        end: DateTime(2026, 7, 13),
+      );
+
+      final steps = metrics.singleWhere(
+        (metric) => metric.type == HealthMetricType.steps,
+      );
+      expect(steps.value, 1200);
+      expect(steps.source, 'android_sensor');
+      expect(
+        metrics.where((m) => m.type == HealthMetricType.heartRate),
+        hasLength(1),
+      );
+      expect(dataSource.lastFetchTypes, {HealthMetricType.heartRate});
+    });
+
+    test('skips steps when native capability is unavailable', () async {
+      bridge.capabilityResult = const StepCapability(
+        available: false,
+        reason: 'noStepSensor',
+      );
+
+      final metrics = await nativeRepository.fetchMetrics(
+        types: {HealthMetricType.steps},
+        start: DateTime(2026, 7, 12),
+        end: DateTime(2026, 7, 13),
+      );
+
+      expect(metrics, isEmpty);
+      expect(dataSource.lastFetchTypes, isNull);
+    });
+
+    test('falls back to the plugin when the native bridge throws', () async {
+      bridge.capabilityError = Exception('bridge failed');
+      dataSource.points = [
+        HealthDataPoint(
+          uuid: 'steps-1',
+          value: NumericHealthValue(numericValue: 50),
+          type: HealthDataType.STEPS,
+          unit: HealthDataUnit.COUNT,
+          dateFrom: DateTime(2026, 7, 12, 8),
+          dateTo: DateTime(2026, 7, 12, 9),
+          sourcePlatform: HealthPlatformType.googleHealthConnect,
+          sourceDeviceId: 'd',
+          sourceId: 's',
+          sourceName: 'sn',
+        ),
+      ];
+
+      final metrics = await nativeRepository.fetchMetrics(
+        types: {HealthMetricType.steps},
+        start: DateTime(2026, 7, 12),
+        end: DateTime(2026, 7, 13),
+      );
+
+      expect(metrics.single.value, 50);
+      expect(dataSource.lastFetchTypes, {HealthMetricType.steps});
     });
   });
 

@@ -2,6 +2,15 @@
   "healthSyncTitle": "Health data import",
   "healthSyncDescription": "Import steps, heart rate, sleep, and more from Apple Health / Health Connect.",
   "healthSyncNotAvailable": "No supported health platform here. iOS needs HealthKit; Android needs Health Connect.",
+  "healthSyncStepsUnavailable": "Steps unavailable: {reason}",
+  "@healthSyncStepsUnavailable": {
+    "placeholders": {
+      "reason": {}
+    }
+  },
+  "healthSyncStepNoSensor": "No step sensor",
+  "healthSyncStepPermissionDenied": "Permission denied",
+  "healthSyncStepUnavailable": "Unavailable",
   "healthSyncAutoSyncNotConfigured": "Only manual import is available for now.",
   "healthSyncAutoSyncUnsupported": "Background health sync isn't supported on this device.",
   "healthSyncMetricTypes": "Select data types",

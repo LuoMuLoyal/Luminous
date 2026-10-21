@@ -64,6 +64,17 @@ class HealthSyncPage extends ConsumerWidget {
                 ),
               ),
             ],
+            if (state.stepCapability != null &&
+                !state.stepCapability!.available &&
+                state.selectedTypes.contains(HealthMetricType.steps)) ...[
+              const SizedBox(height: Spacing.md),
+              Text(
+                l10n.healthSyncStepsUnavailable(
+                  _stepUnavailableReason(l10n, state.stepCapability!.reason),
+                ),
+                style: typography.body.md.copyWith(color: colors.error),
+              ),
+            ],
             const SizedBox(height: Spacing.xl2),
             _MetricTypeSection(
               selectedTypes: state.selectedTypes,
@@ -447,4 +458,12 @@ class _MetricsPreviewSection extends StatelessWidget {
     final dt = metric.recordedAt;
     return '${dt.month}/${dt.day} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
+}
+
+String _stepUnavailableReason(AppLocalizations l10n, String? reason) {
+  return switch (reason) {
+    'noStepSensor' => l10n.healthSyncStepNoSensor,
+    'permissionDenied' => l10n.healthSyncStepPermissionDenied,
+    _ => l10n.healthSyncStepUnavailable,
+  };
 }

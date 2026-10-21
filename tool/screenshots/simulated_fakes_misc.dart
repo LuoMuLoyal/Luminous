@@ -852,6 +852,10 @@ class SimulatedHealthSyncRepository implements HealthSyncRepository {
       };
 
   @override
+  Future<HealthCapability> getStepCapability() async =>
+      const HealthCapability(available: true);
+
+  @override
   Future<List<HealthMetric>> fetchMetrics({
     required Set<HealthMetricType> types,
     required DateTime start,

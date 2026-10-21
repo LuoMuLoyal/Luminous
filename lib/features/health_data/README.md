@@ -28,6 +28,9 @@ feature:统一指标实体、权限、手动/前台自动同步能力。
   (`data/datasources/health_platform.dart`);`health` 插件只在该 datasource 触碰。
 - 同步单向:只读健康平台 → 写 daily records,不回写健康平台;successCount>0 时必须
   广播 `DataChangeTopic.dailyRecords`(`health_sync_controller.dart`)。
+- 步数路由:默认经 `data/datasources/steps.dart` 的 `NativeStepSource` 读取 KMP
+  桥接;其余指标仍走 `health` 插件。native 能力不可用时跳过步数并在同步页显示
+  原因,桥接异常回退插件;`nativeStepsEnabledProvider` 可整体关闭 native 步数。
 - 自动同步偏好仅存 SharedPreferences(`PrefKeys.healthAutoSyncEnabled`),不上云;
   availability 不满足时强制 false(`health_auto_sync.dart`)。
 - 测试锚点:`test/health_data/health_sync_repository_test.dart`(注入 fake datasource,

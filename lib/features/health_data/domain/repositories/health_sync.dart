@@ -15,6 +15,9 @@ abstract interface class HealthSyncRepository {
   /// Get currently authorized metric types.
   Future<Set<HealthMetricType>> getAuthorizedTypes();
 
+  /// Availability of the native step source, or the plugin fallback.
+  Future<HealthCapability> getStepCapability();
+
   /// Fetch health metrics in the given time range.
   Future<List<HealthMetric>> fetchMetrics({
     required Set<HealthMetricType> types,
