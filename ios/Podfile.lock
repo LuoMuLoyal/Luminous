@@ -24,12 +24,12 @@ PODS:
   - integration_test (0.0.1):
     - Flutter
   - JCore (5.5.3)
-  - JPush (6.2.0):
-    - JCore (> 5.1.1)
+  - JPush (6.2.6):
+    - JCore (> 5.5.0)
   - jpush_flutter (0.0.2):
     - Flutter
     - JCore (>= 5.5.0)
-    - JPush (= 6.2.0)
+    - JPush (= 6.2.6)
   - libwebp (1.6.0):
     - libwebp/demux (= 1.6.0)
     - libwebp/mux (= 1.6.0)
@@ -213,7 +213,7 @@ SPEC CHECKSUMS:
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
   integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
   JCore: 3e14acb18c4dc2615008c5cb385a9ae627688a01
-  JPush: eb729308f4d3c579840d4ba41a67065e8c491ada
+  JPush: 4a7e5df2be0d19f5fbbfab9050f4da9f7a35f1dd
   jpush_flutter: e596cb51fb637f8dba976407a284de5bf443cbf2
   libwebp: af5937a13536ef73f3784d69cc342b98961acf33
   Mantle: c5aa8794a29a022dfbbfc9799af95f477a69b62d
