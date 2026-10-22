@@ -118,7 +118,7 @@ updates:
       prefix: 'chore'
       include: scope
     ignore:
-      # 与 Flutter 3.47.1 内置 Dart 3.13.1 的 analyzer 14.1.0 对齐，
+      # 与 Flutter 3.47.7 内置 Dart 3.13.5 的 analyzer 版本对齐，
       # 见该目录 pubspec.yaml 的注释。升级时机 = 升级 Flutter 时人工同步。
       - dependency-name: 'analyzer'
       - dependency-name: 'analysis_server_plugin'
