@@ -33,12 +33,13 @@ YYYY-MM-DD-short-task-name.md
 
 ## Current Plans
 
-> 更新于 2026-10-21。每份计划的状态以文件自身头部的状态段为准；此处只列当前仍在驱动工作、
+> 更新于 2026-10-22。每份计划的状态以文件自身头部的状态段为准；此处只列当前仍在驱动工作、
 > 或已裁决暂缓但保留触发条件的计划。已执行完毕的计划按约定直接删除（文件已删），
 > 历史记录见当日迁移日志。
 
 | 计划 | 状态 | 备注 |
 | --- | --- | --- |
+| [`2026-10-22-harmonyos-ohos-adaptation-plan.md`](2026-10-22-harmonyos-ohos-adaptation-plan.md) | 待评审 / 未开工 | 鸿蒙（OpenHarmony / ohos）适配：**独立仓库 `Luminous-ohos`（复制 Luminous、不保留历史、不双向同步），本仓仅新增 `.fvmrc`**；SDK 3.47.7-ohos-1.0.1 社区先锋版，克隆到 `D:\flutter-ohos` 由 **FVM** 按项目锁定 + DevEco 26.0.0；依赖四组矩阵（已适配 3 / 社区 fork 13 / 无适配 5 / 本地包 2）；代码耦合 A/B/C/D 四档共 44 文件；**硬阻塞是 `sqlite3` native hook 无 ohos 目标，构建期即失败**；Phase 0 环境与建仓 → Phase 4 真机与 CI |
 | [`2026-10-21-ddd-refactor-frontend.md`](2026-10-21-ddd-refactor-frontend.md) | 未开工 | 标准 DDD 首批：Health Logging / Medication / Identity & Access / Preferences；先落 ADR-0010、上下文映射与聚合边界，再逐 feature 迁移；UI/路由/契约零变化 |
 | [`2026-10-17-copy-length-governance.md`](2026-10-17-copy-length-governance.md) | 改写完成，审计超限 0 | 按 Apple HIG / NN-g 定槽位长度阈值（实作比规范严 20%）；53 个 key 已改写；剩余 widget 测试断言同步与 41 条人工复核 |
 | [`2026-09-15-review-remediation-plan.md`](2026-09-15-review-remediation-plan.md) | 进行中 | 09-08~09-14 审查报告逐条修复；剩余顺序 §3-5 → §3-9（合同级）→ §4 共 20 项 → §5-2/3/4 → §6 |
