@@ -1,16 +1,29 @@
 import 'package:lucent_api/src/model/account_email_response.dart';
 import 'package:lucent_api/src/model/account_response.dart';
 import 'package:lucent_api/src/model/account_response_linked_identities.dart';
+import 'package:lucent_api/src/model/admin_admin_list_response.dart';
+import 'package:lucent_api/src/model/admin_admin_list_response_items.dart';
+import 'package:lucent_api/src/model/admin_admin_summary.dart';
 import 'package:lucent_api/src/model/admin_audit_log_list_response.dart';
 import 'package:lucent_api/src/model/admin_audit_log_list_response_items.dart';
+import 'package:lucent_api/src/model/admin_dependencies.dart';
+import 'package:lucent_api/src/model/admin_dependencies_lightrag.dart';
+import 'package:lucent_api/src/model/admin_dependencies_semantica.dart';
 import 'package:lucent_api/src/model/admin_legal_document.dart';
 import 'package:lucent_api/src/model/admin_legal_document_item.dart';
 import 'package:lucent_api/src/model/admin_metrics_overview.dart';
 import 'package:lucent_api/src/model/admin_metrics_overview_users.dart';
+import 'package:lucent_api/src/model/admin_qa_chunk.dart';
+import 'package:lucent_api/src/model/admin_qa_chunk_list_response.dart';
+import 'package:lucent_api/src/model/admin_qa_chunk_list_response_items.dart';
+import 'package:lucent_api/src/model/admin_resource_list_response.dart';
 import 'package:lucent_api/src/model/admin_safety_tip.dart';
 import 'package:lucent_api/src/model/admin_safety_tip_item.dart';
 import 'package:lucent_api/src/model/admin_user_list_response.dart';
 import 'package:lucent_api/src/model/admin_user_list_response_items.dart';
+import 'package:lucent_api/src/model/admin_user_related.dart';
+import 'package:lucent_api/src/model/admin_user_related_groups.dart';
+import 'package:lucent_api/src/model/admin_user_related_groups_sections.dart';
 import 'package:lucent_api/src/model/admin_user_summary.dart';
 import 'package:lucent_api/src/model/app_info_response.dart';
 import 'package:lucent_api/src/model/assistant_capabilities_response.dart';
@@ -278,6 +291,7 @@ import 'package:lucent_api/src/model/run_risk_check_request_candidate.dart';
 import 'package:lucent_api/src/model/send_verification_code_request.dart';
 import 'package:lucent_api/src/model/send_verification_code_response.dart';
 import 'package:lucent_api/src/model/session_list_item_entry.dart';
+import 'package:lucent_api/src/model/set_admin_role_request.dart';
 import 'package:lucent_api/src/model/set_password_request.dart';
 import 'package:lucent_api/src/model/share_clinic_summary_request.dart';
 import 'package:lucent_api/src/model/sse_problem_details_dto.dart';
@@ -346,7 +360,9 @@ import 'package:lucent_api/src/model/unlink_identity_request.dart';
 import 'package:lucent_api/src/model/unread_count_response.dart';
 import 'package:lucent_api/src/model/update_account_request.dart';
 import 'package:lucent_api/src/model/update_admin_legal_document_request.dart';
+import 'package:lucent_api/src/model/update_admin_qa_chunk_request.dart';
 import 'package:lucent_api/src/model/update_admin_safety_tip_request.dart';
+import 'package:lucent_api/src/model/update_admin_user_status_request.dart';
 import 'package:lucent_api/src/model/update_allergy_request.dart';
 import 'package:lucent_api/src/model/update_condition_request.dart';
 import 'package:lucent_api/src/model/update_current_medicine_request.dart';
@@ -398,6 +414,15 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'AdminAdminListResponse':
+      return AdminAdminListResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminAdminListResponseItems':
+      return AdminAdminListResponseItems.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminAdminSummary':
+      return AdminAdminSummary.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'AdminAuditLogListResponse':
       return AdminAuditLogListResponse.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -405,6 +430,15 @@ ReturnType deserialize<ReturnType, BaseType>(
       return AdminAuditLogListResponseItems.fromJson(
             value as Map<String, dynamic>,
           )
+          as ReturnType;
+    case 'AdminDependencies':
+      return AdminDependencies.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminDependenciesLightrag':
+      return AdminDependenciesLightrag.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminDependenciesSemantica':
+      return AdminDependenciesSemantica.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'AdminLegalDocument':
       return AdminLegalDocument.fromJson(value as Map<String, dynamic>)
@@ -418,6 +452,19 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'AdminMetricsOverviewUsers':
       return AdminMetricsOverviewUsers.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'AdminQaChunk':
+      return AdminQaChunk.fromJson(value as Map<String, dynamic>) as ReturnType;
+    case 'AdminQaChunkListResponse':
+      return AdminQaChunkListResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminQaChunkListResponseItems':
+      return AdminQaChunkListResponseItems.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'AdminResourceListResponse':
+      return AdminResourceListResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'AdminSafetyTip':
       return AdminSafetyTip.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -429,6 +476,17 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'AdminUserListResponseItems':
       return AdminUserListResponseItems.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminUserRelated':
+      return AdminUserRelated.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminUserRelatedGroups':
+      return AdminUserRelatedGroups.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AdminUserRelatedGroupsSections':
+      return AdminUserRelatedGroupsSections.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'AdminUserSummary':
       return AdminUserSummary.fromJson(value as Map<String, dynamic>)
@@ -1547,6 +1605,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'SessionListItemEntry':
       return SessionListItemEntry.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'SetAdminRoleRequest':
+      return SetAdminRoleRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'SetPasswordRequest':
       return SetPasswordRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1847,8 +1908,16 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'UpdateAdminQaChunkRequest':
+      return UpdateAdminQaChunkRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'UpdateAdminSafetyTipRequest':
       return UpdateAdminSafetyTipRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'UpdateAdminUserStatusRequest':
+      return UpdateAdminUserStatusRequest.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'UpdateAllergyRequest':
       return UpdateAllergyRequest.fromJson(value as Map<String, dynamic>)

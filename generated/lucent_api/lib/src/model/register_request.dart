@@ -31,7 +31,7 @@ class RegisterRequest {
   @JsonKey(name: r'email', required: true, includeIfNull: false)
   final String email;
 
-  /// 密码（8-32位，需包含大小写字母和数字）
+  /// 密码（至少8位，需通过强度校验）
   @JsonKey(name: r'password', required: true, includeIfNull: false)
   final String password;
 
