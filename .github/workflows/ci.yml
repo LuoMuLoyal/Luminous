@@ -94,7 +94,9 @@ jobs:
       # KMP 共享模块（native/luminous-native）的 commonTest 跑在 JVM 上，
       # 与 flutter test 是两条工具链；androidLibrary 目标随项目配置，
       # ubuntu runner 自带 Android SDK（ANDROID_HOME）。
+      # 用 `bash gradlew` 而非 `./gradlew`：wrapper 脚本的可执行位在 Windows 上
+      # 提交时（core.fileMode=false）会丢成 100644，Linux 上直接执行报 exit 126。
       - name: Run KMP host tests
         run: |
           cd native
-          ./gradlew :luminous-native:testAndroidHostTest
+          bash gradlew :luminous-native:testAndroidHostTest
