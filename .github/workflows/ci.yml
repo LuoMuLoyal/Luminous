@@ -72,6 +72,19 @@ jobs:
       - name: Verify generated docs
         run: dart run scripts/docs/generate.dart --check
 
+      # 根 `pub get` 不会为 path 依赖的子 package 各自解析依赖，而 `flutter analyze`
+      # 会分析到 pkgs/ 下的源码。`pkgs/luminous_native_bridge/pigeon/steps.dart`
+      # 引用了只在其 dev_dependencies 里的 pigeon，缺解析就会以
+      # `Target of URI doesn't exist: 'package:pigeon/pigeon.dart'` 失败。
+      # 全新 clone 上没有子包的 .dart_tool，本地能过是之前手动跑过 pub get。
+      - name: Resolve sub-package dependencies
+        run: |
+          for pkg in pkgs/luminous_native_bridge pkgs/paddle_ocr_native-0.1.1; do
+            echo "::group::pub get $pkg"
+            (cd "$pkg" && flutter pub get)
+            echo "::endgroup::"
+          done
+
       - name: Analyze
         run: flutter analyze
 
