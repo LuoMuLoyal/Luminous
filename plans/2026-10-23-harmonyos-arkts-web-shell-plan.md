@@ -6,10 +6,10 @@ updated: 2026-10-23
 # Luminous 鸿蒙（HarmonyOS）ArkTS 壳 + ArkWeb 渲染执行计划
 
 Created: 2026-10-23
-> 状态：
 
-**待评审，未开工**。
-> **执行位置：ArkTS 工程独立成仓（`Luminous-harmonyos`，见 §二）；本计划对 `Luminous` 的改动只允许「新增一条 CI 流水线」（`Luminous/.github/workflows/deploy-harmonyos.yml`）与「本计划文件 / 迁移日志」，Dart 代码零改动。**
+> 状态：**待评审，未开工**。
+> **执行位置：ArkTS 工程作为 `Luminous/ohos/` 子目录与 Flutter 工程同仓**（见 §二；同仓先例：`Luminous/native/` 的 KMP Gradle 工程）。
+> **`Luminous` 的 Dart 代码可以改**——凡 Web 分支上缺失或体验不足的能力，允许改 Dart 补接缝，不再作为约束（见 §1.1）。
 > 本文件是执行清单，不是调研报告。ArkWeb 侧的调研结论未验证的部分全部进 §十三，正文不依赖外部链接存活。
 >
 > 标注约定：
@@ -42,7 +42,7 @@ Created: 2026-10-23
 | `TargetPlatform` 穷尽性检查 | 35 处失败 | **不触发**：`switch` 的目标枚举里根本没有 `ohos` 这个值 |
 | 产物形态 | `.hap` 内含 Flutter 引擎 + AOT 快照 | `.hap` 内含 **Web 静态资源** + 系统 ArkWeb |
 | 上游包要求 | 每个包都要覆盖 `TargetPlatform.ohos` | 只要包的 **Web 实现** 可用即可（Web 是各包的一等目标） |
-| 本项目 Dart 代码 | 需补 44 文件平台分支 | **零改动**（走的是已有的 Web 分支，见 §六） |
+| 本项目 Dart 代码 | 需补 44 文件平台分支 | **基本复用已有的 Web 分支**（§六逐条核实过）；Web 上确有缺口时**允许改 Dart 补接缝**（§1.1） |
 关键点：鸿蒙壳里跑的是 **dart2js 编译的 JS**，不是 Dart AOT 快照。`TargetPlatform.ohos` 这个值只存在于鸿蒙 SDK 的 **Dart 侧枚举**里；Web 产物由上游 SDK 编译，枚举里没有 `ohos`，穷尽性检查自然成立。**这条是本方案成立的唯一理由，也是它唯一的价值主张。**
 
 **代价（明知而为，写在这里避免后面反复讨论）**：Web 壳拿到的是 Luminous 的 **Web 能力集**，不是移动端能力集。推送、后台同步、本地通知、健康数据、原生扫码/OCR 全部拿不到（§七逐条列）。产品必须接受「鸿蒙版 = 移动 Web 版 + 少量原生桥」这个定位。
@@ -66,49 +66,73 @@ Created: 2026-10-23
 | 鸿蒙工具链 | **DevEco Studio 26.0.0.851 已装于 `E:\DevEco Studio`**（含 API 26 SDK `sdk\default`、`tools\ohpm` 26.0.0.630、`tools\hvigor` 6.26.8、`tools\node` 24.14.1）；`ohpm` / `hvigorw` **不在 PATH**，需按 §9.1 前置（V，本机实测） | 复用已装的 DevEco，无需重装 |
 | 产物 | APK / IPA / Web（GitHub Pages）/ Windows（V） | + `.hap`（AppGallery Connect 分发） |
 | Web 产物 | `build/web/` 本地已存在：**203 文件 / 51.46 MB**（V） | 进 HAP 的 rawfile（体积需裁剪，见 §三） |
-| 仓库平台目录 | `android ios linux macos web windows`（V，无 `ohos/`） | **`Luminous` 不新增平台目录**；ArkTS 工程独立（§二） |
-| CI | **7 个 workflow**（V）：`ci.yml` `codeql.yml` `deploy-android.yml` `deploy-ios.yml` `deploy-web.yml` `osv-scanner.yml` `scorecard.yml` | 新增 `deploy-harmonyos.yml`（或独立仓流水线，见 §八） |
+| 仓库平台目录 | `android ios linux macos web windows`（V，无 `ohos/`） | **新增 `ohos/`**（ArkTS 壳，同仓；`flutter create` 不参与，手工建） |
+| CI | **7 个 workflow**（V）：`ci.yml` `codeql.yml` `deploy-android.yml` `deploy-ios.yml` `deploy-web.yml` `osv-scanner.yml` `scorecard.yml` | 新增 `deploy-harmonyos.yml`（见 §八） |
 | `deploy-web.yml` 触发分支 | `push: branches: [refactor]`（V，`.github/workflows/deploy-web.yml:10`）；当前分支为 **`develop`** | 新增的鸿蒙流水线**不复用**这条触发约定，见 §八 |
 
-### 1.1 本计划的硬约束（先记住这四条）1.
+### 1.1 本计划的硬约束
 
-**`Luminous` 的 Dart 代码零改动。** 所有能力差异靠已有的 Web 分支承接（§六逐条核实过）；一旦需要改 Dart，说明该能力在 Web 上本来就缺，走 §七 降级而不是打补丁。
+1. **`Luminous` 的 Dart 代码可以改。** Web 分支已经承接了大部分能力差异（§六逐条核实过），但凡 Web 上缺失或体验不足的（如 §5.3 的 OAuth 回调 URI、B-6 的安全存储桥、B-7 的扫码入口），**允许改 Dart 补接缝**。判断标准是「改了是否让 Web 版也受益」——若是（例如把 `Uri.base` 换成可注入的 origin），就改；若只为鸿蒙开一个特例分支，则优先走 §七 降级。
 2. **不引入鸿蒙 Flutter SDK。** 本机此前试装过 `D:\flutter-ohos`（`3.47.7-ohos-1.0.1`），**已于 2026-10-23 删除**；不要再接回来，否则 §〇 的 35 处报错立刻复现。
 3. **Web 产物的两个已知坑必须继承**：不能加 `--wasm`（skwasm 在移动浏览器有内容区高度 0 的布局 bug，`web/flutter_bootstrap.js:4-20` 已显式钉 `renderer: 'canvaskit'`）；`drift_worker.js` 与 `sqlite3.wasm` 必须存在（`.gitignore:76-80` 说明二者都是**构建期产物、不入库**）。
 4. **CanvasKit 默认从 CDN 取，壳内必须显式改成本地**（V，见 §四）—— 这是最容易漏、且表现为「白屏」的一条。
 
 ## 二、仓库 / 工程放哪
 
-### 2.1 三个选项
-| 选项 | 形态 | 代价 |
-|---|---|---|
-| **A. `Luminous/ohos-shell/` 子目录** | ArkTS 工程与 Flutter 工程同仓 | 同仓便于「一次提交同时改 Web 构建参数与壳」；但把 hvigor/ohpm 工具链、`.hvigor/`、签名材料、`oh_modules/` 引入一个 Flutter 仓，`.gitignore` 与 CI 复杂度上升；且 Web 产物进 rawfile 会把**构建产物**（51 MB 级）带进 Flutter 仓的工作树 |
-| **B. 独立仓库 `Luminous-harmonyos`** | 只放 ArkTS 壳 + 一条从 `Luminous` 取 Web 产物的流水线 | 仓界清晰，签名与 AGC 材料不外溢到主仓；代价是**跨仓取产物**需要一条制品通道（release asset / artifact / Pages），且「Web 构建参数变了、壳没跟上」这类漂移不会被同仓 diff 拦住 |
-| **C. 放到 `Luminary/` monorepo** | 与 `apps/lumine`（Tauri 壳）并列 | `Luminary` 是 pnpm/Tauri 生态，塞一个 hvigor 工程进去会污染它的 `pnpm build` / `sync:docs` 门禁，且 `AGENTS.md` 明确 `Luminary/apps/lumine` 的约束是「同构 Web + Tauri」，与本方案无关。
+### 2.1 结论：放 `Luminous/ohos/`，与 Flutter 工程同仓
 
-**不推荐** |
+**决策：ArkTS 壳工程直接放 `Luminous/ohos/`，不另开仓库。**
 
-### 2.2 推荐：
+### 2.2 依据：仓内已有同类先例（V）
 
-**B（独立仓库 `Luminous-harmonyos`）**，理由与代价**推荐理由（基于本仓既有事实）**：
-1. **工具链完全异构**。ArkTS 侧需要 hvigor + ohpm + DevEco + JDK；`Luminous` 侧是 Flutter/Dart。同仓会让 `Luminous` 的 CI 必须区分「Flutter job」与「HarmonyOS job」，而 GitHub 托管 runner **没有鸿蒙工具链**（V：本机 `ohpm`/`hvigorw` 均不在 PATH，说明工具链是本地安装的），CI 天然只能做一半。
-2. **产物不该进主仓**。`build/web` 是 51.46 MB / 203 文件（V）；即使裁剪到仅 canvaskit 一档也仍有数 MB 级二进制。主仓 `.gitignore:46` 已把 `/build/` 整个忽略，同仓方案必须为 rawfile 开一个例外目录，等于在主仓里养一份构建产物。
-3. **签名与上架材料不外溢**。AGC 的证书、Profile、`build-profile.json5` 属于发布凭据类材料，放独立仓的边界更干净。
-4. **主仓边界最小**。`AGENTS.md`「Do not touch unrelated dirty or untracked files in sibling projects」与「Repository Boundaries」的口径都是「一个仓一件事」。本方案对 `Luminous` 的改动收敛为：**新增一条 CI 流水线**（用于产出可下载的 Web 制品），Dart 代码零改动。
+`Luminous/native/` 就是一个**非同构工具链的子工程**，它已经按同仓模式跑了很久：
 
-**代价（必须写清，否则后面会反复讨论）**：
-- **跨仓漂移**：`deploy-web.yml` 的构建参数（`--dart-define` 列表、`--base-href`、canvaskit 本地化开关）改了，鸿蒙壳不会自动跟着改。
-  缓解：把「Web 制品契约」写成一份**清单**（§8.1），任何一侧改动必须同时改清单版本号；壳侧启动时校验制品版本，不匹配则拒绝加载（§三 方案 c 的一部分）。
-- **跨仓取产物需要制品通道**：见 §八，推荐走 GitHub Release asset 或 artifact 下载，而不是让壳仓 clone 主仓。
-> **若评审最终选 A（同仓子目录）**，本计划的 §三/§四/§六/§七/§九 **全部不变**，只有 §八 的流水线位置与 `.gitignore` 条目需要改。这是本计划唯一一处「决策影响面可控」的选择。
+| 事实 | 证据（V） |
+|---|---|
+| `native/` 是独立的 Gradle/Kotlin 工程（KMP 共享模块） | `native/build.gradle.kts`、`native/gradlew`、`native/settings.gradle.kts` |
+| 自带独立 `.gitignore`，忽略 `.gradle/` `build/` `local.properties` 等 | `native/.gitignore` |
+| 有自己的 README 说明布局与构建命令 | `native/README.md` |
+| **CI 已覆盖它**，且有专门的 Gradle 缓存与测试步骤 | `.github/workflows/ci.yml:47-54`（Cache Gradle）、`:99-102`（`cd native && bash gradlew :luminous-native:testAndroidHostTest`） |
+| 与 Flutter 工程的耦合点写在 README 里 | `native/README.md`：「consumed by the Flutter plugin through the composite build in `Luminous/android/settings.gradle.kts`」 |
 
-### 2.3 独立仓的初始化纪律
-1. `git init` 全新历史，首个 commit 记为「Luminous 鸿蒙 ArkTS 壳初始化」。
-2. 仓内
+也就是说，「Flutter 仓里放一个异构工具链的子工程」在本仓**不是新问题，是既有惯例**。ArkTS 壳与 `native/` 的形态几乎一致：独立构建系统、独立依赖管理、独立 `.gitignore`、由主仓 CI 有条件地构建。
 
-**只放**：`entry/`（ArkTS 源码）、`AppScope/`、`build-profile.json5`、`oh-package.json5`、`hvigorfile.ts`、   `scripts/fetch-web-artifact.ps1`（拉取并校验 Web 制品）、`README.md`。
-3. **不放**：任何 Dart 源码、任何 `flutter build` 产物（产物由脚本按需拉取到 gitignored 目录）。
-4. `.gitignore` 至少忽略：`oh_modules/`、`.hvigor/`、`build/`、`entry/src/main/resources/rawfile/web/`（拉取下来的制品）。
+### 2.3 同仓相对独立仓的收益（V）
+
+1. **产物与壳同仓，不需要制品通道**。`ohos/entry/src/main/resources/rawfile/web/` 直接从本仓 `build/web` 拷，省掉 Release asset / artifact / 下载校验整条链路，也省掉「壳侧拉取脚本」这个组件。**这是最大的收益**：§8.1 的「制品契约」从「跨仓唯一接口」降级为「构建步骤的目录约定」，§8.3 的第 1 步直接消失。
+2. **构建参数不会漂移**。`--base-href`、`--web-resources-cdn=false`、`--dart-define` 列表与壳在同一棵工作树里，改 Web 构建配置时改壳是同一次提交、同一次 review，`git diff` 能拦住不一致。
+3. **Dart 接缝改动与壳改动可原子提交**。§1.1 已允许改 Dart；若壳需要 Web 侧暴露一个 `LuminousBridge` 全局对象或注入 origin，同仓才能在一次提交里同时改两侧并跑通 CI。独立仓做这件事要么拆两次提交、要么跨仓等待。
+4. **CI 已有处理异构子工程的先例**，照 `native/` 的写法加一个 job 即可（`ci.yml` 的 Gradle 缓存步骤就是模板）。
+
+### 2.4 同仓的代价与处理
+
+| 代价 | 处理 |
+|---|---|
+| hvigor / ohpm / DevEco 工具链混进 Flutter 仓 | 照 `native/.gitignore` 的做法给 `ohos/.gitignore` 忽略 `oh_modules/`、`.hvigor/`、`build/`、`local.properties`、`oh-package-lock.json5` |
+| **Web 产物（数十 MB）可能被误提交** | `ohos/.gitignore` 必须忽略 `entry/src/main/resources/rawfile/web/`（与主仓 `.gitignore:46` 忽略 `/build/` 同理）。这是同仓方案最需要盯住的一条 |
+| GitHub 托管 runner 没有鸿蒙工具链，CI 只能做一半 | 与独立仓方案完全相同的问题，不是同仓引入的。CI 里对 `ohos/` 做**静态检查 + Web 产物就位检查**，真正的 `assembleHap` 走本地/自建 runner（§8.4） |
+| 签名材料（AGC 证书 / Profile）进主仓 | 与 `native/.gitignore` 里「So we don't accidentally commit our private keys / `*.gpg`」同一口径：签名材料一律 gitignore，只提交 `build-profile.json5` 的结构 |
+| 主仓目录数增加 | 可接受；`ohos/` 与 `android/ ios/ web/ windows/ native/` 并列，符合仓内既有布局 |
+
+### 2.5 目录结构
+
+```
+Luminous/
+  ohos/                          # 新增：ArkTS 壳（与 android/ ios/ native/ 并列）
+    .gitignore                   # 忽略 oh_modules/ .hvigor/ build/ rawfile/web/
+    AppScope/
+    entry/                       # ArkTS 源码 + Web 容器页
+      src/main/ets/              # EntryAbility、Web 组件页
+      src/main/resources/rawfile/web/   # ← 构建期拷入的 Web 产物（gitignored）
+    build-profile.json5
+    oh-package.json5
+    hvigorfile.ts
+    README.md                    # 布局、构建命令、与 Web 产物的耦合点（照 native/README.md 的写法）
+  scripts/ohos/
+    build-hap.ps1                # 环境变量前置 + flutter build web + 拷产物 + hvigorw assembleHap
+```
+
+**`ohos/` 不是 `flutter create --platforms ohos` 生成的**——那条路已随 SDK 路线一起放弃（§〇）。这里是手写的 ArkTS 工程，`Luminous` 的 Flutter 侧不会把它当作平台目录，`flutter build` 系列命令也不会碰它。
 
 ## 三、Web 资源交付方式（核心决策点）
 
@@ -290,62 +314,83 @@ Created: 2026-10-23
 
 ## 八、构建与 CI
 
-### 8.1 Web 制品契约（跨仓唯一接口）壳侧只需要一个
+### 8.1 Web 产物就位（同仓，不需要制品通道）壳侧需要的是
 
-**目录**（`index.html` + 全部相对路径资源），外加一份清单：
+**目录**（`index.html` + 全部相对路径资源）落在 `ohos/entry/src/main/resources/rawfile/web/`。因为是同仓，**直接由构建脚本从 `build/web` 拷贝**，不经过任何跨仓制品通道（§2.3 第 1 条）：
+
+```powershell
+# scripts/ohos/build-hap.ps1 的产物就位段（示意，参数以 §8.2 为准）
+flutter build web --release --base-href "/" --web-resources-cdn=false ...
+Remove-Item ohos/entry/src/main/resources/rawfile/web -Recurse -Force -EA SilentlyContinue
+Copy-Item build/web ohos/entry/src/main/resources/rawfile/web -Recurse
+```
+
+同时生成一份清单供壳侧自检（不再充当跨仓契约，只用于版本展示与诊断）：
+
 | 清单字段 | 来源 | 用途 |
 |---|---|---|
 | `app_version` / `build_number` | 产物 `build/web/version.json`（V，实测内容 `{"app_name":"luminous","version":"0.1.0","build_number":"1"}`） | 壳侧展示版本、判断是否需要更新 |
 | `engine_revision` | 产物 `flutter_bootstrap.js` 的 `_flutter.buildConfig.engineRevision`（V，实测存在） | 诊断「canvas 版本不匹配」类问题 |
 | `use_local_canvaskit` | 同上 buildConfig（§4.2） | **CI 断言必须为 true**，否则壳内会去拉 CDN |
-| `sha256`（逐文件或整包） | 构建后计算 | 壳侧下载校验（方案 `(c)` 的热更新部分） |
 | `base_href` | 构建参数 | **本地加载时必须是 `/`**，不能是 GitHub Pages 的 `/<repo>/`（V，本地产物实测 `<base href="/" />`；`deploy-web.yml:94` 用的是 `--base-href "/${{ github.event.repository.name }}/"`） |
+
 > **`--base-href` 是本方案与现有 Web 流水线的第一个冲突点**：现有流水线为 GitHub Pages 打了仓库名前缀，
 > 壳内本地加载必须用 `/`。**两条产物不能共用同一个构建配置**，见 8.2。
 
 ### 8.2 Web 产物的产出方式
 
 **推荐：新增一条 workflow，而不是改 `deploy-web.yml`。** 依据是本仓既有约定（V，`.github/workflows/README.md:88-95`：「新增发布面时**新建文件**（`deploy-*.yml`），不要把产物塞回 `ci.yml`」）。新增 `.github/workflows/deploy-harmonyos.yml`，内容以 `deploy-web.yml` 为模板，**差异只有三处**：
+
 | 项 | `deploy-web.yml`（现状，V） | 新增流水线 |
 |---|---|---|
 | `--base-href` | `"/${{ github.event.repository.name }}/"`（`:94`） | **去掉或显式 `"/"`** |
 | CanvasKit | 默认（走 CDN，V，§4.1） | **`--web-resources-cdn=false`** |
-| 产物去向 | `actions/upload-pages-artifact` → GitHub Pages（`:102-105`） | `actions/upload-artifact` 或 **GitHub Release asset**（供壳仓拉取） |
+| 产物去向 | `actions/upload-pages-artifact` → GitHub Pages（`:102-105`） | **同仓直接拷进 `ohos/.../rawfile/web/`**，再 `actions/upload-artifact` 留存 `.hap`（若 runner 有工具链） |
 | 触发分支 | `push: branches: [refactor]`（`:10`） | **`develop`**（V，当前分支为 `develop`）或 `workflow_dispatch` 为主 |
+
 **必须保留的步骤（V，`deploy-web.yml:33-100` 的既有坑位，逐条不能少）**：
+
 1. `Validate required secrets`（`:33-50`）：`LUCENT_BASE_URL` **必填**（缺失直接失败，因为 `lib/core/network/client/base_url.dart:36-38` 在 `kReleaseMode` 下会抛 `StateError`）；`SENTRY_DSN` 可选且**不能是占位值**。
 2. `Merge ARB fragments` → `dart scripts/l10n/arb_tools.dart merge`（`:66-67`）。
 3. `Bootstrap generated sources` → `dart run scripts/contract/bootstrap.dart --skip-client`（`:69-70`）。
 4. `Build generated API client` → `generated/lucent_api` 里 `dart pub get` + `build_runner build --delete-conflicting-outputs`（`:72-77`）。
-  **缺这步 `flutter build` 编译期直接失败**（V，`.github/workflows/README.md:80-86`）。
+   **缺这步 `flutter build` 编译期直接失败**（V，`.github/workflows/README.md:80-86`）。
 5. `Compile drift web worker` → `dart compile js web/drift_worker.dart -o web/drift_worker.js -O4`（`:79-80`）。
-  **`drift_worker.js` 与 `sqlite3.wasm` 都不入库**（V，`.gitignore:76-80`），必须现场生成/准备。
+   **`drift_worker.js` 与 `sqlite3.wasm` 都不入库**（V，`.gitignore:76-80`），必须现场生成/准备。
 6. `flutter build web --release`，**不加 `--wasm`**（V，`:83-87` 的注释与 `web/flutter_bootstrap.js:4-20` 一致）。
 7. `--dart-define` 列表（V，`:95-100`）：`LUCENT_BASE_URL` / `SENTRY_DSN` / `SUPPORT_EMAIL` / `LUMINOUS_EXPERIMENTAL_AI_RUNTIME` / `LUMINOUS_AI_RUNTIME_PROVIDER` / `LUMINOUS_ENABLE_GEN_UI`。
-  全部 define 名称的权威清单在 `lib/core/config/env_reader.dart:44-79`。**新增的 CI 断言（本计划要求）**：
+   全部 define 名称的权威清单在 `lib/core/config/env_reader.dart:44-79`。
+
+**新增的 CI 断言（本计划要求）**：
+
 - 产物 `flutter_bootstrap.js` 的 `_flutter.buildConfig` **含 `"useLocalCanvasKit":true`**（§4.2）。
 - 产物 `index.html` 的 `<base href>` 为 `/`。
 - 产物根目录存在 `drift_worker.js` 与 `sqlite3.wasm`。
 - 裁剪步骤（去掉 `canvaskit/*.js.symbols`、`canvaskit/skwasm*`、`canvaskit/wimp*`）后，**总量打印进日志**（用于确认 §3.2 的估算）。
+- **`ohos/entry/src/main/resources/rawfile/web/` 未被 git 跟踪**（`git check-ignore` 断言，防误提交数十 MB 产物）。
 
 ### 8.3 制品进 HAP
+
 | 步骤 | 做法 | 标注 |
 |---|---|---|
-| 1 | 壳仓的 `scripts/fetch-web-artifact.ps1` 从 Release asset 下载并解压到 `entry/src/main/resources/rawfile/web/` | U20：rawfile 是否支持子目录与任意层级 |
-| 2 | `hvigorw assembleHap`（或 DevEco 构建） | V：本机 `hvigorw` **不在 PATH**，需先装 DevEco 并把 `hvigorw`/`ohpm` 加进 PATH |
-| 3 | 签名 | **U21**：AGC 证书 / Profile / `build-profile.json5` 的具体形态；本计划**未调研** |
+| 1 | Web 产物拷进 `ohos/entry/src/main/resources/rawfile/web/`（同仓，见 §8.1） | U20：rawfile 是否支持子目录与任意层级 |
+| 2 | `hvigorw assembleHap`（或 DevEco 构建） | V：本机 `hvigorw` **不在 PATH**，需按 §9.1 前置 DevEco 的 `ohpm`/`hvigorw`/`node` |
+| 3 | 签名 | **U21**：AGC 证书 / Profile / `build-profile.json5` 的具体形态；本计划**未调研**。签名材料一律 gitignore（照 `native/.gitignore` 的私钥口径） |
 | 4 | 上架 | **U9**：AGC 应用登记、资质、隐私合规、动态加载代码的审核口径 |
+
 **JDK 约束（V，本机实测，结论已更新）**：本机全局 `java -version` = **OpenJDK 25**（Zulu），DevEco 自带 JBR 亦为 25。**实测 `hvigorw --version` 在 JDK 25 下正常返回 `6.26.8`**，故「hvigor 必须 JDK 17」这一常见说法在本机未被证实——**不要预设必须降级 JDK**。Phase 0 先按现状跑；若 `assembleHap` 阶段出现 Java 版本相关报错，再考虑把 `JAVA_HOME` 指向 JDK 17（DevEco 安装目录下 `jbr\` 可直接用）。
 
 ### 8.4 对现有 7 条 workflow 的影响
+
 | workflow | 是否要改 | 说明 |
 |---|---|---|
-| `ci.yml` | **不改** | 门禁面（analyze / test / 生成物一致性）与鸿蒙无关 |
+| `ci.yml` | **要改（小）** | 加一个 `ohos/` 的静态检查 job，照 `native/` 的写法（`.github/workflows/ci.yml:47-54` 的 Gradle 缓存步骤是模板）。**不跑 `assembleHap`**——托管 runner 没有鸿蒙工具链 |
 | `deploy-web.yml` | **不改** | 它服务 GitHub Pages，产物 `--base-href` 与壳内不同，**不要为了壳去改它** |
 | `deploy-android.yml` / `deploy-ios.yml` | **不改** | 与本方案无关 |
 | `codeql.yml` / `osv-scanner.yml` / `scorecard.yml` | **不改** | 安全面 |
 | **新增 `deploy-harmonyos.yml`** | — | 见 8.2 |
-> 结论：**Luminous 侧 CI 只增不改**。这与「Dart 代码零改动」一起，构成本方案对主仓的最小侵入面。
+
+> 结论：**Luminous 侧 CI 增一条流水线 + `ci.yml` 加一个 job**。真正的 `.hap` 构建因工具链限制走本地脚本（§9.1）。
 
 ## 九、分阶段执行
 
@@ -353,44 +398,44 @@ Created: 2026-10-23
 | Phase | 内容 | 出口条件 | 可并行边界 |
 |---|---|---|---|
 | **0 可行性打穿（Spike）** | **复用已装的 DevEco Studio**（`E:\DevEco Studio`，含 API 26 SDK / ohpm / hvigor / node）；把 `ohpm` / `hvigorw` / `node` 的 bin 与 `jbr\bin` 前置到 `PATH`，设 `TOOL_HOME` / `DEVECO_SDK_HOME`；建一个**最小 ArkTS 工程**（一个 `Web` 组件 + 一个按钮）；用现有 `build/web`（V，本机已有）**手工**推进 rawfile；逐条打 U1~U7、U8、U10、U13 | ① 真机/模拟器上**页面渲染出来**（不是白屏）；② CanvasKit 从**本地**加载（无 gstatic 请求）；③ `sqlite3.wasm` 与 `drift_worker.js` 加载成功、drift 首读写成功（**U7 判定**）；④ `localStorage` 跨重启保留（**U3 判定**）；⑤ `javaScriptProxy` echo 通（**U4 判定**） | 与「Web 制品本地化构建」（§4.2）并行：先手工把 `--web-resources-cdn=false` 的产物做出来 |
-| **1 Web 制品契约 + CI** | 新增 `deploy-harmonyos.yml`（§8.2）；实现制品裁剪与清单（§8.1）；壳仓的 `fetch-web-artifact.ps1` | ① 流水线产出可下载制品；② 4 条 CI 断言全绿；③ 壳侧脚本能从零拉取并校验 | 与 Phase 2 的 ArkTS 骨架并行 |
+| **1 Web 产物就位 + CI** | 新增 `deploy-harmonyos.yml`（§8.2）；实现产物裁剪与清单（§8.1）；`scripts/ohos/build-hap.ps1` 的产物拷贝段 | ① 流水线产出 Web 产物并拷进 rawfile；② 5 条 CI 断言全绿；③ 本地脚本能一条命令出 `.hap` | 与 Phase 2 的 ArkTS 骨架并行 |
 | **2 壳工程化 + 桥接** | ArkTS 工程结构落地；B-1（返回键）、B-2（安全区）、B-10（外部链接）三条桥接；启动探测（`bridge.ping()`）与降级 UI | ① 三条桥接各有真机验收清单 + 失败降级路径；② 返回键在五 tab 与子页行为正确；③ 外链在系统浏览器打开 | 三条桥互不依赖，可并行；**B-6 只在 U3 失败时才做** |
 | **3 降级口径与产品面** | §七 的 D-2/D-3/D-5/D-7/D-8 逐条真机确认「无死入口」；§5.3 的登录范围决策落地；热更新（方案 c）**仅在合规口径确认后**评估 | ① 五项降级逐条打勾；② 登录路径唯一且可用；③ 热更新有明确 go/no-go 结论 | 与 Phase 4 的文档收尾并行 |
 | **4 真机回归 + 发布** | 逐条回归 §七 的降级清单；签名 + AGC 流程；文档收尾 | 见 §十 验收表 | 与文档收尾并行 |
-**每阶段收尾**：在 **`Luminous` 仓**追加 `docs/logs/migration-log/YYYY-MM-DD.md`（append，不覆盖；本阶段对主仓的实际改动只有 CI 与可能的本计划文件）；壳仓按其自身约定记录。本计划完成的条目**直接删除**（本仓约定，不加标记）。
+**每阶段收尾**：在 `Luminous` 仓追加 `docs/logs/migration-log/YYYY-MM-DD.md`（append，不覆盖）。本计划完成的条目**直接删除**（本仓约定，不加标记）。
 > **Phase 0 的出口条件不满足时不要进 Phase 1。** 具体地：如果 U7（drift）或 U3（localStorage）失败，
-> 本计划需要先解决「Dart 零改动」与「能力可用」的冲突（§十二 待决 1），而不是继续做壳。
+> 先评估改 Dart 的代价（§1.1 已允许改），而不是直接放弃。
 
 ## 十、验收标准与风险回退
 
 **验收**
 | 项 | 验收 |
 |---|---|
-| 主仓侵入面 | `Luminous` 侧改动只允许：新增 `.github/workflows/deploy-harmonyos.yml`、新增本计划文件、追加迁移日志；**Dart 代码零 diff**（`git -C Luminous diff --stat -- lib/` 为空） |
+| 主仓侵入面 | `Luminous` 侧改动：新增 `ohos/` 工程、`scripts/ohos/build-hap.ps1`、`.github/workflows/deploy-harmonyos.yml`、`ci.yml` 加一个 job、本计划与迁移日志；Dart 改动仅限 §1.1 允许的接缝（需在 diff 里逐条说明理由） |
 | 渲染 | 真机冷启动进五 tab 壳；无白屏；CanvasKit 无 gstatic 请求（抓包或 console 断言） |
 | 本地数据库 | drift 首读写成功（**这是 U7 的判定，也是本计划的硬门禁**） |
-| 会话 | 杀进程重启后仍处于登录态（**U3 的判定**）；不满足则必须走 B-6 并重新评审 |
+| 会话 | 杀进程重启后仍处于登录态（**U3 的判定**）；不满足则必须走 B-6 |
 | 静默失效 | §七 的 D-2/D-3/D-5/D-7/D-8 逐条确认「入口不存在」或「有明确提示」，二选一，不许含糊 |
 | 桥接 | B-1/B-2/B-10 各有真机清单；探测失败时有显式降级 UI，不静默 |
-| 制品 | 4 条 CI 断言全绿；制品清单可被壳侧校验 |
+| 产物 | 5 条 CI 断言全绿；`rawfile/web/` 未被 git 跟踪 |
 | 回退 | 任一硬门禁（U7 / U3 / U1-U2 本地加载不通）→ **停止壳工程化，上报本计划可行性**，保留 Phase 0 的结论 |
 **风险与回退**
 | # | 风险 | 影响 | 缓解 / 回退 |
 |---|---|---|---|
-| 1 | **U3 失败：`localStorage` 不持久化** | 每次冷启动掉登录；且绕过修复需要改 Dart（与零改动冲突） | Phase 0 第一优先验证。失败则：要么放宽「Dart 零改动」并走 B-6，要么本计划降级为「鸿蒙版不做持久登录」（产品不可接受，等于不做） |
-| 2 | **U7 失败：drift 落 stub** | 离线缓存与离线队列全废，cache-first 语义崩 | 先确认 `dart.library.js_interop` 在 dart2js 下是编译期常量（V，是）—— 若仍失败，说明是运行期问题而非条件导入问题，按 `database.dart:6-9` 注释的候选解法（补 `dart.library.html` 回退）评估，**需要改 Dart，另开任务** |
-| 3 | **U1/U2/U6 失败：本地资源加载不通（白屏）** | 方案 (a) 不成立 | 回退到方案 (b)（远端加载），但会引入 §3.3 的 Origin/CORS 问题 → 需后端 `CORS_ORIGIN` 配合（**跨仓变更，另开任务**） |
+| 1 | **U3 失败：`localStorage` 不持久化** | 每次冷启动掉登录 | Phase 0 第一优先验证。失败则走 B-6 桥接（需改 Dart，§1.1 已允许） |
+| 2 | **U7 失败：drift 落 stub** | 离线缓存与离线队列全废，cache-first 语义崩 | 先确认 `dart.library.js_interop` 在 dart2js 下是编译期常量（V，是）—— 若仍失败，说明是运行期问题，按 `database.dart:6-9` 注释的候选解法（补 `dart.library.html` 回退）评估 |
+| 3 | **U1/U2/U6 失败：本地资源加载不通（白屏）** | 方案 (a) 不成立 | 回退到方案 (b)（远端加载），但会引入 §3.3 的 Origin/CORS 问题 → 需后端 `CORS_ORIGIN` 配合（**Lucent 侧改动，另开任务**） |
 | 4 | **U5：本地加载的 Origin 不被 Lucent 接受** | 所有 API 请求被 CORS 拦 | 确认后由后端加白名单（**Lucent 侧改动，另开任务**），或改用方案 (b) |
 | 5 | **§4.1 的 CDN 依赖被漏掉** | 白屏，且现象与「资源没打进包」一模一样，排查成本高 | 4.2 的 CI 断言是硬要求；Phase 0 用抓包确认无 gstatic 请求 |
 | 6 | 体积：HAP 带 37 MB 级 Web 资源 | 安装包大、审核可能关注 | §3.2 的裁剪清单；进一步可只保留 `canvaskit.wasm` 的**单一变体**（chromium/webparagraph 两档可删，U22） |
-| 7 | 跨仓漂移：Web 构建参数变了、壳没跟上 | 白屏或功能静默缺失 | §8.1 的制品清单 + 壳侧启动校验（不匹配即拒绝加载并提示） |
-| 8 | 鸿蒙工具链门槛（DevEco / DevEco / 签名 / AGC） | 交付延期 | 至少留一个迭代周期；签名与上架本次**未调研**（U21/U9） |
+| 7 | Web 产物（数十 MB）被误提交 | 仓体积膨胀 | `ohos/.gitignore` 忽略 `rawfile/web/`；CI 加 `git check-ignore` 断言（§8.2） |
+| 8 | 鸿蒙工具链门槛（签名 / AGC） | 交付延期 | 至少留一个迭代周期；签名与上架本次**未调研**（U21/U9） |
 | 9 | 动态加载代码的合规口径不明 | 方案 (c) 的热更新部分不可做 | 第一版只做 (a)；热更新留 Phase 3 且先拿结论 |
 | 10 | CI 无鸿蒙 runner | 无自动化门禁 | 不承诺「CI 全绿」前不声称鸿蒙可交付；退化为本地构建 + 人工门禁 |
 
 ## 十一、不做项
 
-**不向 `Luminous` 提交任何 Dart 代码改动**（§1.1 第 1 条）。唯一例外需重新评审，见 §十二 待决 1。
+- 不为鸿蒙开**特例 Dart 分支**：改 Dart 只允许「让 Web 版一起受益」的接缝（§1.1 第 1 条）。
 - **不引入鸿蒙 Flutter SDK**（`D:\flutter-ohos`），不恢复 `TargetPlatform.ohos` 相关适配。
 - **不做推送**（B-3/D-4）、**不做本地通知与用药提醒的原生实现**（D-3）。
 - **不做扫码与 OCR 的原生桥**（B-7/D-7）；第一版隐藏入口。
@@ -399,20 +444,16 @@ Created: 2026-10-23
 - **不做动态加载代码的热更新**（方案 c 的后半），Phase 3 拿到合规结论前不动。
 - **不改 `deploy-web.yml`**，也不改其 `push: [refactor]` 的触发约定。
 - **不碰 `Lucent/`**；CORS 白名单、OAuth 回调来源等需服务端配合的改动**另开任务**。
-- **不碰 `Luminary/`**（§2.1 选项 C 已否决）。
-- **不重新引入鸿蒙 Flutter SDK**：`D:\flutter-ohos` 已于 2026-10-23 删除，不恢复。
+- **不碰 `Luminary/`**。
 
 ## 十二、待决问题（需要产品或他人拍板）
 | # | 问题 | 需要谁拍 | 影响 |
 |---|---|---|---|
-| 1 | 若 U3（`localStorage`）或 U7（drift）失败，「Dart 零改动」是否放宽？放宽到什么程度？ | 技术 + 产品 | 决定本计划是否成立；也决定 B-6 做不做 |
-| 2 | 鸿蒙版的登录范围：**仅邮箱/验证码**（本计划倾向）还是必须支持 QQ/Google/微信？ | 产品 | §5.3；决定是否要走方案 (b) 的登录路径与后端 CORS 配合 |
-| 3 | 鸿蒙版是否进 0.1.0 交付范围？ | 产品 | 决定 §九 是否压缩到 Phase 0-2 收口 |
-| 4 | 后台同步降级为「回前台冲刷」是否可接受？ | 产品 | D-2 |
-| 5 | 用药提醒在鸿蒙版缺失是否可接受？若不可接受，是否单开一条 ArkTS 提醒任务？ | 产品 | D-3；这是鸿蒙版与移动端最大的能力落差 |
-| 6 | 制品交付通道：GitHub Release asset / artifact / 私有对象存储？ | 工程 | §8.2 |
-| 7 | 包名 / bundleName 与现有 Android `applicationId` 的关系 | 发布 | Phase 4 签名与 AGC 登记 |
-| 8 | 壳工程放独立仓（推荐 B）还是 `Luminous/ohos-shell/`（A）？ | 工程 | §二；只影响 §八 与 `.gitignore` |
+| 1 | 鸿蒙版的登录范围：**仅邮箱/验证码**（本计划倾向）还是必须支持 QQ/Google/微信？ | 产品 | §5.3；决定是否要走方案 (b) 的登录路径与后端 CORS 配合 |
+| 2 | 鸿蒙版是否进 0.1.0 交付范围？ | 产品 | 决定 §九 是否压缩到 Phase 0-2 收口 |
+| 3 | 后台同步降级为「回前台冲刷」是否可接受？ | 产品 | D-2 |
+| 4 | 用药提醒在鸿蒙版缺失是否可接受？若不可接受，是否单开一条 ArkTS 提醒任务？ | 产品 | D-3；这是鸿蒙版与移动端最大的能力落差 |
+| 5 | 包名 / bundleName 与现有 Android `applicationId` 的关系 | 发布 | Phase 4 签名与 AGC 登记 |
 
 ## 十三、待核实清单（U）
 | # | 事项 | 验证方式 |
