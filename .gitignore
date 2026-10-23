@@ -111,6 +111,3 @@ dart_devtools_*.json
 
 # Windows null-device artifact (Bash writes to "nul" as a file)
 nul
-
-# FVM version cache (.fvmrc is committed; the SDK cache is not)
-.fvm/
