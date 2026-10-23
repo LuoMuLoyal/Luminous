@@ -29,7 +29,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 OHOS_DIR = REPO_ROOT / "ohos"
 WEB_SRC = REPO_ROOT / "build" / "web"
-WEB_DST = OHOS_DIR / "entry" / "src" / "main" / "resources" / "rawfile" / "web"
+# 注意：产物必须**平铺**进 rawfile 根，不能放 web/ 子目录。
+# resource://rawfile 协议不认 <base href>，一律以 rawfile 根为基准解析相对路径，
+# 放到子目录会导致 index.html 能加载、而 flutter_bootstrap.js / main.dart.js 全部
+# ERR_FILE_NOT_FOUND（2026-10-23 模拟器实测）。
+RAWFILE_DIR = OHOS_DIR / "entry" / "src" / "main" / "resources" / "rawfile"
 HAP_OUT_DIR = OHOS_DIR / "entry" / "build" / "default" / "outputs" / "default"
 
 DEFAULT_DEVECO_HOME = Path(r"E:\DevEco Studio")
@@ -104,8 +108,21 @@ def find_tool(env: dict[str, str], name: str) -> str:
 def build_web(env: dict[str, str], *, release: bool) -> None:
     step("flutter build web")
     flutter = find_tool(env, "flutter")
+
+    # LUCENT_BASE_URL 在 release 构建里是**必填**的：base_url.dart 的
+    # `configured` getter 在 kReleaseMode 且未配置时直接抛
+    # StateError('LUCENT_BASE_URL must be configured in release builds.')，
+    # 表现为应用卡在启动页 + console 里 ProviderException。
+    # 本地联调默认指向宿主机的 Lucent 开发服务器（模拟器经 10.0.2.2 访问）；
+    # 出正式包必须显式传真实 API 地址。
+    base_url = os.environ.get("LUCENT_BASE_URL", "").strip()
+    if not base_url:
+        base_url = "http://10.0.2.2:3000"
+        log(f"LUCENT_BASE_URL 未设置，使用本地开发默认值 {base_url}")
+        log("（出正式包请显式设置 LUCENT_BASE_URL）")
+
     dart_defines = {
-        "LUCENT_BASE_URL": os.environ.get("LUCENT_BASE_URL", ""),
+        "LUCENT_BASE_URL": base_url,
         "SENTRY_DSN": os.environ.get("SENTRY_DSN", ""),
         "SUPPORT_EMAIL": os.environ.get("SUPPORT_EMAIL", "support@luminous.app"),
     }
@@ -164,15 +181,41 @@ def validate_web_artifacts() -> None:
     log(f"Web 产物：{len(files)} 文件 / {total_mb:.1f} MB")
 
 
-# ── 4. 拷进 rawfile（gitignored）────────────────────────────────────────
+# ── 4. 平铺进 rawfile 根（gitignored）──────────────────────────────────
 def copy_web_to_rawfile() -> None:
-    step("拷贝产物到 rawfile/web")
-    if WEB_DST.exists():
-        shutil.rmtree(WEB_DST)
-    WEB_DST.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(WEB_SRC, WEB_DST, dirs_exist_ok=True)
-    copied = sum(1 for _ in WEB_DST.rglob("*") if _.is_file())
-    log(f"已拷贝 {copied} 个文件 → {WEB_DST.relative_to(REPO_ROOT)}")
+    step("拷贝产物到 rawfile 根")
+
+    # 清掉上一轮产物：rawfile 根下除本脚本生成的之外没有其它东西，
+    # 但为保险只删「与 build/web 顶层同名」的条目 + 历史遗留的 web/ 子目录。
+    if RAWFILE_DIR.exists():
+        legacy_web = RAWFILE_DIR / "web"
+        if legacy_web.is_dir():
+            shutil.rmtree(legacy_web)
+        for entry in WEB_SRC.iterdir():
+            target = RAWFILE_DIR / entry.name
+            if target.is_dir():
+                shutil.rmtree(target)
+            elif target.exists():
+                target.unlink()
+    RAWFILE_DIR.mkdir(parents=True, exist_ok=True)
+
+    shutil.copytree(WEB_SRC, RAWFILE_DIR, dirs_exist_ok=True)
+    copied = sum(1 for p in RAWFILE_DIR.rglob("*") if p.is_file())
+    log(f"已平铺 {copied} 个文件 → {RAWFILE_DIR.relative_to(REPO_ROOT)}")
+
+    # 回退字体（fonts/）由 fetch_fallback_fonts.py 单独维护，不进 git，
+    # 也不随 build/web 覆盖。缺了不会构建失败，但 CJK 文字会显示成方块（口口口），
+    # 所以要显式告警并给出具体命令。
+    font_dir = RAWFILE_DIR / "fonts"
+    if font_dir.is_dir():
+        n_font = sum(1 for p in font_dir.rglob("*.woff2") if p.is_file())
+        log(f"回退字体：{n_font} 个 woff2（fonts/）")
+        if n_font == 0:
+            log("WARN: fonts/ 存在但没有 woff2 —— 中文会显示为方块。")
+            log("      跑：python scripts/ohos/fetch_fallback_fonts.py --all")
+    else:
+        log("WARN: 缺少 fonts/ —— 中文会显示为方块（口口口）。")
+        log("      跑：python scripts/ohos/fetch_fallback_fonts.py --all")
 
 
 # ── 5. hvigorw assembleHap ──────────────────────────────────────────────

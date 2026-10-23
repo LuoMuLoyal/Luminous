@@ -11,9 +11,14 @@
 **/.test
 /.appanalyzer
 
-# 构建期从 ../../build/web 拷入的 Flutter Web 产物（数十 MB），不入库。
-# 由 scripts/ohos/build-hap.ps1 生成；CI 用 git check-ignore 断言它没被跟踪。
-**/resources/rawfile/web/
+# rawfile 下的内容全部是构建期生成的、不进 git 的产物：
+#   - Flutter Web 产物（约 54 MB / 229 文件），由 scripts/ohos/build_hap.py 平铺进来。
+#     注意是平铺到 rawfile 根、不是 rawfile/web/：resource:// 协议不认 <base href>，
+#     放子目录会让 flutter_bootstrap.js / main.dart.js 全部 ERR_FILE_NOT_FOUND。
+#   - CJK 回退字体切片（约 12 MB / 564 个 woff2），由
+#     scripts/ohos/fetch_fallback_fonts.py 下载。
+# 两者都由脚本按需生成；CI 用 git check-ignore 断言它们没被跟踪。
+**/resources/rawfile/
 
 # AGC 签名材料一律不入库（cf. native/.gitignore 的私钥口径）
 *.p12
