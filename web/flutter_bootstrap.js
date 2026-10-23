@@ -29,7 +29,7 @@ _flutter.loader.load({
       // 必须与 Index.ets 的 FONT_ORIGIN 常量保持一致。
       // 浏览器（GitHub Pages）下这个路径不存在，字体回退失败——与引入该配置
       // 之前的行为一致，不影响 Web 版。
-      fontFallbackBaseUrl: 'https://luminous.local/fonts/',
+      fontFallbackBaseUrl: 'http://luminous.local/fonts/',
     });
     await appRunner.runApp();
   }

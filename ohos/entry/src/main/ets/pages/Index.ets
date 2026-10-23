@@ -10,7 +10,7 @@ const TAG = 'LuminousWeb';
 // 用 resource:// 加载会被跨域策略拦掉 fetch()/import()，
 // 导致 canvaskit.wasm、main.dart.js 全部加载失败（2026-10-23 模拟器实测），
 // 必须换成 https:// 前缀 + onInterceptRequest 替换为 rawfile。
-const APP_ORIGIN = 'https://luminous.local';
+const APP_ORIGIN = 'http://luminous.local';
 const ENTRY_PATH = '/index.html';
 
 // 扩展名 → MIME。wasm 必须是 application/wasm，否则
@@ -114,11 +114,11 @@ struct Index {
   }
 
   /**
-   * 把 https://luminous.local/<path> 映射回 rawfile 内的相对路径。
+   * 把 http://luminous.local/<path> 映射回 rawfile 内的相对路径。
    * 返回 null 表示不是本站请求。
    *
    * 回退字体也走这条路径：web/flutter_bootstrap.js 把引擎的
-   * fontFallbackBaseUrl 设成 https://luminous.local/fonts/，
+   * fontFallbackBaseUrl 设成 http://luminous.local/fonts/，
    * 于是 CJK 字形切片请求会以本站 origin 出现，在这里映射到
    * rawfile 的 fonts/ 目录（切片由 scripts/ohos/fetch_fallback_fonts.py 下载）。
    * 用同源而不是 fonts.gstatic.com，是为了避开跨域 fetch 被 CORS 拦掉。
@@ -193,13 +193,23 @@ struct Index {
         // 外部链接：Flutter Web 里 url_launcher 的实现是 window.open，ArkWeb 会把
         // 新页面直接开在当前容器里，把壳导航到法务页/帮助页，用户回不来。
         // 这里拦下非本站的导航，交给系统浏览器打开。
+        //
+        // 关键约束：**只拦主框架导航**（isMainFrame）。onLoadIntercept 对页面发出的
+        // XHR / fetch 也会触发，如果按 URL 前缀一律当外链，API 请求
+        // （http://10.0.2.2:3000/api/v1/...）会被当成链接扔给系统浏览器并在这里
+        // 被 return true 中止，前端表现为「网络请求失败」——登录成功之后所有数据
+        // 都加载不出来，且 console 里没有任何 CORS 或 net 错误，极难排查。
         // 返回 true = 已拦截（阻止 Web 内部导航）。
         .onLoadIntercept((event) => {
           const url: string = event.data.getRequestUrl();
           if (url.startsWith(APP_ORIGIN)) {
             return false;   // 本站资源，正常加载
           }
-          // 只处理 http(s)，其余协议（data:、blob: 等）放行
+          // 非主框架（子资源、XHR、fetch）一律放行，交给网络层按 CORS 规则处理
+          if (!event.data.isMainFrame()) {
+            return false;
+          }
+          // 只处理 http(s) 的主框架导航，其余协议（data:、blob: 等）放行
           if (!url.startsWith('http://') && !url.startsWith('https://')) {
             return false;
           }

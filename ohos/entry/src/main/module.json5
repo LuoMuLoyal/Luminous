@@ -10,6 +10,14 @@
     "deliveryWithInstall": true,
     "installationFree": false,
     "pages": "$profile:main_pages",
+    "requestPermissions": [
+      {
+        // ArkWeb 发任何网络请求都需要它。缺了不会编译失败，但运行时
+        // CreatePlatformSocket() 会被系统拒绝（ERR_ACCESS_DENIED -10），
+        // 表现是「网络请求失败」，极难往权限上想。
+        "name": "ohos.permission.INTERNET"
+      }
+    ],
     "abilities": [
       {
         "name": "EntryAbility",
