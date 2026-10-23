@@ -1,5 +1,7 @@
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { webview } from '@kit.ArkWeb';
+import { common } from '@kit.AbilityKit';
+import { BusinessError } from '@kit.BasicServicesKit';
 
 const DOMAIN = 0x0000;
 const TAG = 'LuminousWeb';
@@ -63,6 +65,53 @@ struct Index {
   @State private renderError: string = '';
   private intercepted: number = 0;
   private fontHits: number = 0;
+
+  /**
+   * 系统返回键：优先让页面自己在路由栈里回退，退无可退才交给系统（最小化/退出）。
+   *
+   * Flutter Web 用 GoRouter 做客户端路由，默认 hash 策略（`#/path`），
+   * 每次导航都会写入浏览器 history，所以 accessBackward()/backward() 能反映
+   * 页面栈深度。不加这段时按返回键会直接把应用退到后台——即使在记录详情页。
+   *
+   * 返回 true = 已消费（不交给系统）；false = 让系统处理。
+   */
+  onBackPress(): boolean {
+    try {
+      if (this.controller.accessBackward()) {
+        this.controller.backward();
+        hilog.info(DOMAIN, TAG, '%{public}s', 'backPress -> page backward');
+        return true;
+      }
+    } catch (e) {
+      const err = e as BusinessError;
+      hilog.error(DOMAIN, TAG, 'backPress failed: %{public}s', JSON.stringify(err));
+    }
+    hilog.info(DOMAIN, TAG, '%{public}s', 'backPress -> system default');
+    return false;
+  }
+
+  /**
+   * 用系统浏览器打开外部链接。
+   * ACTION_VIEW_DATA + 浏览器的隐式 Want 是鸿蒙的标准做法；
+   * 失败（没有可用浏览器）时只记日志，不打断 Web 侧。
+   */
+  private openExternal(url: string): void {
+    try {
+      const ctx = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      ctx.startAbility({
+        action: 'ohos.want.action.viewData',
+        entities: ['entity.system.browsable'],
+        uri: url,
+      }).catch((e: BusinessError) => {
+        hilog.error(DOMAIN, TAG, 'openExternal failed %{public}s %{public}s',
+          url, JSON.stringify(e));
+      });
+    } catch (e) {
+      const err = e as BusinessError;
+      hilog.error(DOMAIN, TAG, 'openExternal threw %{public}s %{public}s',
+        url, JSON.stringify(err));
+    }
+  }
 
   /**
    * 把 https://luminous.local/<path> 映射回 rawfile 内的相对路径。
@@ -140,6 +189,23 @@ struct Index {
             notFound.setResponseIsReady(true);
             return notFound;
           }
+        })
+        // 外部链接：Flutter Web 里 url_launcher 的实现是 window.open，ArkWeb 会把
+        // 新页面直接开在当前容器里，把壳导航到法务页/帮助页，用户回不来。
+        // 这里拦下非本站的导航，交给系统浏览器打开。
+        // 返回 true = 已拦截（阻止 Web 内部导航）。
+        .onLoadIntercept((event) => {
+          const url: string = event.data.getRequestUrl();
+          if (url.startsWith(APP_ORIGIN)) {
+            return false;   // 本站资源，正常加载
+          }
+          // 只处理 http(s)，其余协议（data:、blob: 等）放行
+          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            return false;
+          }
+          hilog.info(DOMAIN, TAG, 'onLoadIntercept -> external %{public}s', url);
+          this.openExternal(url);
+          return true;
         })
         .onPageBegin((event) => {
           hilog.info(DOMAIN, TAG, 'pageBegin %{public}s', event.url);
