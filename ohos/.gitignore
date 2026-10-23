@@ -10,3 +10,13 @@
 /.clang-tidy
 **/.test
 /.appanalyzer
+
+# 构建期从 ../../build/web 拷入的 Flutter Web 产物（数十 MB），不入库。
+# 由 scripts/ohos/build-hap.ps1 生成；CI 用 git check-ignore 断言它没被跟踪。
+**/resources/rawfile/web/
+
+# AGC 签名材料一律不入库（cf. native/.gitignore 的私钥口径）
+*.p12
+*.cer
+*.p7b
+*.csr
