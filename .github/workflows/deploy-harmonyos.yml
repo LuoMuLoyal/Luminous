@@ -1,0 +1,167 @@
+name: Deploy HarmonyOS
+
+# 产出鸿蒙壳用的 Flutter Web 制品：构建 + 5 条产物断言 + 打进 rawfile 布局校验。
+#
+# 为什么这里不跑 hvigorw / assembleHap：
+#   GitHub 托管 runner 没有鸿蒙工具链（DevEco Studio、hvigor、ohpm、OpenHarmony
+#   SDK 都只在本地/自建环境）。`flutter build hap` 实际由本机
+#   `python scripts/ohos/build_hap.py` 完成，本流水线只保证「喂给壳的 Web 制品
+#   是对的」——那部分是纯 Dart/Flutter，托管 runner 能跑。
+#
+# 契约细节见 plans/2026-10-23-harmonyos-arkts-web-shell-plan.md §8。
+# 代码门禁在 ci.yml；本文件只负责产物。
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [develop]
+    paths:
+      # 只在可能影响 Web 制品的路径上触发，避免纯文档改动也出包
+      - 'lib/**'
+      - 'web/**'
+      - 'generated/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - 'scripts/ohos/**'
+      - 'ohos/**'
+      - '.github/workflows/deploy-harmonyos.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: luminous-deploy-harmonyos-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-web-artifact:
+    name: Build Web artifact for HarmonyOS shell
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PUB_HOSTED_URL: https://pub.dev
+      FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required secrets
+        run: |
+          if [ -z "${{ secrets.LUCENT_BASE_URL }}" ]; then
+            echo "::error::Secret LUCENT_BASE_URL is not set. The web build would inject an empty API base URL, and release builds throw StateError at startup (lib/core/network/client/base_url.dart)."
+            exit 1
+          fi
+          if [ -n "${{ secrets.SENTRY_DSN }}" ]; then
+            if ! echo "${{ secrets.SENTRY_DSN }}" | grep -qP '^https?://[^/]+@[^/]+/.+'; then
+              echo "::error::Secret SENTRY_DSN is set but is not a valid Sentry DSN."
+              exit 1
+            fi
+          else
+            echo "::warning::SENTRY_DSN is not set — Sentry will be disabled for this build."
+          fi
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.7
+          cache: true
+
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Merge ARB fragments
+        run: dart scripts/l10n/arb_tools.dart merge
+
+      - name: Bootstrap generated sources
+        run: dart run scripts/contract/bootstrap.dart --skip-client
+
+      - name: Build generated API client
+        run: |
+          cd generated/lucent_api
+          dart pub get
+          dart run build_runner build --delete-conflicting-outputs
+          cd ../..
+
+      - name: Compile drift web worker
+        run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
+
+      - name: Build Web for HarmonyOS shell
+        # 与 deploy-web.yml 的三处差异（见计划 §8.2）：
+        #   1. --base-href "/"      —— 壳内是本地资源，不能带 Pages 的 /<repo>/ 前缀
+        #   2. --no-web-resources-cdn —— 否则运行时从 www.gstatic.com 拉 CanvasKit，
+        #      壳内（国内/离线）白屏
+        #   3. 不加 --wasm          —— skwasm 在移动浏览器有布局 bug（同 deploy-web.yml）
+        env:
+          LUCENT_BASE_URL: ${{ secrets.LUCENT_BASE_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL || 'support@luminous.app' }}
+        run: |
+          flutter build web --release \
+            --base-href "/" \
+            --no-web-resources-cdn \
+            --dart-define=LUCENT_BASE_URL="${LUCENT_BASE_URL}" \
+            --dart-define=SENTRY_DSN="${SENTRY_DSN}" \
+            --dart-define=SUPPORT_EMAIL="${SUPPORT_EMAIL}" \
+            --dart-define=LUMINOUS_EXPERIMENTAL_AI_RUNTIME=${{ vars.LUMINOUS_EXPERIMENTAL_AI_RUNTIME || 'false' }} \
+            --dart-define=LUMINOUS_AI_RUNTIME_PROVIDER=${{ vars.LUMINOUS_AI_RUNTIME_PROVIDER || 'openai' }} \
+            --dart-define=LUMINOUS_ENABLE_GEN_UI=${{ vars.LUMINOUS_ENABLE_GEN_UI || 'false' }}
+
+      # ── 产物断言（计划 §8.2）。任一条失败都意味着壳内会白屏或行为异常，
+      #    且症状很难和第 1 条区分，所以宁可在这里硬失败。
+      - name: Assert useLocalCanvasKit
+        run: |
+          python3 - <<'PY'
+          import re, sys
+          t = open('build/web/flutter_bootstrap.js', encoding='utf-8').read()
+          m = re.search(r'_flutter\.buildConfig\s*=\s*(\{.*?\});', t, re.S)
+          if not m:
+              sys.exit('flutter_bootstrap.js 里找不到 _flutter.buildConfig')
+          if not re.search(r'"useLocalCanvasKit"\s*:\s*true', m.group(1)):
+              sys.exit(
+                  'buildConfig 缺少 "useLocalCanvasKit":true —— 壳内会从 '
+                  'www.gstatic.com 拉 CanvasKit 导致白屏（是否漏了 --no-web-resources-cdn？）'
+              )
+          print('ok: useLocalCanvasKit = true')
+          PY
+
+      - name: Assert base href
+        run: |
+          python3 - <<'PY'
+          import sys
+          t = open('build/web/index.html', encoding='utf-8').read()
+          if '<base href="/"' not in t:
+              sys.exit('index.html 的 <base href> 不是 "/" —— 壳内相对路径会错位')
+          print('ok: base href = /')
+          PY
+
+      - name: Assert drift worker and sqlite wasm present
+        run: |
+          for f in drift_worker.js sqlite3.wasm; do
+            if [ ! -f "build/web/$f" ]; then
+              echo "::error::build/web/$f 缺失。这两个是构建期产物、不入库，必须在流水线里现场生成。"
+              exit 1
+            fi
+            echo "ok: $f"
+          done
+
+      - name: Trim non-essential canvaskit variants
+        # 壳内钉死 canvaskit 单一渲染器：skwasm/wimp 用不到，*.js.symbols 是调试符号。
+        # 计划 §3.2 估算可省约 14 MB。裁完把总量打进日志便于观察漂移。
+        run: |
+          find build/web/canvaskit -name '*.js.symbols' -delete
+          rm -rf build/web/canvaskit/skwasm* build/web/canvaskit/wimp* 2>/dev/null || true
+          du -sh build/web
+          echo "文件数：$(find build/web -type f | wc -l)"
+
+      - name: Upload Web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: luminous-harmonyos-web
+          path: build/web
+          retention-days: 14
+          if-no-files-found: error

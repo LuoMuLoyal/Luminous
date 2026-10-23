@@ -11,6 +11,7 @@
 | `deploy-android.yml` | `Deploy Android` | 构建 release APK 并上传产物 | push(`main`), 手动 |
 | `deploy-ios.yml` | `Deploy iOS` | 构建未签名 IPA（macOS runner）并上传产物 | push(`main`), 手动 |
 | `deploy-web.yml` | `Deploy web` | 构建 Flutter Web 并发布到 GitHub Pages | push(`refactor`), 手动 |
+| `deploy-harmonyos.yml` | `Deploy HarmonyOS` | 构建鸿蒙壳用的 Flutter Web 制品（`--base-href "/"` + `--no-web-resources-cdn`），跑 4 条产物断言后上传 artifact。**不跑 hvigorw**：托管 runner 没有鸿蒙工具链，`.hap` 由本机 `python scripts/ohos/build_hap.py` 出 | push(`develop`, 限相关路径), 手动 |
 | `codeql.yml` | `CodeQL` | 代码安全分析（生成客户端 / lint 工具 / scripts 的 TS-JS 部分） | push, PR, 周度 |
 | `osv-scanner.yml` | `OSV-Scanner` | pub 依赖漏洞扫描（含传递依赖） | push, PR, 周度 |
 | `scorecard.yml` | `Scorecard` | 供应链安全评分 | push, 周度 |

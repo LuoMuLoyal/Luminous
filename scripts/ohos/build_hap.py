@@ -165,12 +165,18 @@ def validate_web_artifacts() -> None:
     log("useLocalCanvasKit = true（CanvasKit 走本地，不会拉 CDN）")
 
     index_html = WEB_SRC / "index.html"
-    if index_html.is_file():
-        html = index_html.read_text(encoding="utf-8", errors="replace")
-        if '<base href="/"' not in html:
-            log('WARN: index.html 的 <base href> 不是 "/"，本地加载时相对路径可能错位')
-    else:
+    if not index_html.is_file():
         fail("缺少 index.html")
+    html = index_html.read_text(encoding="utf-8", errors="replace")
+    if '<base href="/"' not in html:
+        # 硬失败：base href 不是 "/" 时，壳内（平铺在 rawfile 根）相对路径会错位，
+        # 症状是 index.html 能加载而 flutter_bootstrap.js 404。
+        # 与 .github/workflows/deploy-harmonyos.yml 的断言口径一致。
+        fail(
+            'index.html 的 <base href> 不是 "/" —— 壳内相对路径会错位。'
+            "构建时是否漏了 --base-href \"/\"？"
+        )
+    log("base href = /")
 
     for name in ("sqlite3.wasm", "drift_worker.js"):
         if not (WEB_SRC / name).is_file():
