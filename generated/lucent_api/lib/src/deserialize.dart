@@ -37,6 +37,7 @@ import 'package:lucent_api/src/model/assistant_conversation_data_messages.dart';
 import 'package:lucent_api/src/model/assistant_conversation_response.dart';
 import 'package:lucent_api/src/model/assistant_conversation_response_messages.dart';
 import 'package:lucent_api/src/model/assistant_conversation_summary_item.dart';
+import 'package:lucent_api/src/model/captcha_response.dart';
 import 'package:lucent_api/src/model/change_email_request.dart';
 import 'package:lucent_api/src/model/change_password_request.dart';
 import 'package:lucent_api/src/model/clinic_summary_export_job_response.dart';
@@ -185,6 +186,7 @@ import 'package:lucent_api/src/model/login_response.dart';
 import 'package:lucent_api/src/model/login_response_tokens.dart';
 import 'package:lucent_api/src/model/login_response_user.dart';
 import 'package:lucent_api/src/model/login_with_apple_request.dart';
+import 'package:lucent_api/src/model/login_with_cookie_request.dart';
 import 'package:lucent_api/src/model/login_with_google_request.dart';
 import 'package:lucent_api/src/model/login_with_qq_request.dart';
 import 'package:lucent_api/src/model/login_with_wechat_mobile_request.dart';
@@ -249,6 +251,7 @@ import 'package:lucent_api/src/model/register_request.dart';
 import 'package:lucent_api/src/model/register_response.dart';
 import 'package:lucent_api/src/model/register_response_tokens.dart';
 import 'package:lucent_api/src/model/register_response_user.dart';
+import 'package:lucent_api/src/model/register_with_cookie_request.dart';
 import 'package:lucent_api/src/model/reminder_delivery_list_response.dart';
 import 'package:lucent_api/src/model/reminder_delivery_list_response_items.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_response.dart';
@@ -291,6 +294,8 @@ import 'package:lucent_api/src/model/run_risk_check_request_candidate.dart';
 import 'package:lucent_api/src/model/send_verification_code_request.dart';
 import 'package:lucent_api/src/model/send_verification_code_response.dart';
 import 'package:lucent_api/src/model/session_list_item_entry.dart';
+import 'package:lucent_api/src/model/session_response.dart';
+import 'package:lucent_api/src/model/session_response_user.dart';
 import 'package:lucent_api/src/model/set_admin_role_request.dart';
 import 'package:lucent_api/src/model/set_password_request.dart';
 import 'package:lucent_api/src/model/share_clinic_summary_request.dart';
@@ -546,6 +551,9 @@ ReturnType deserialize<ReturnType, BaseType>(
       return AssistantConversationSummaryItem.fromJson(
             value as Map<String, dynamic>,
           )
+          as ReturnType;
+    case 'CaptchaResponse':
+      return CaptchaResponse.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ChangeEmailRequest':
       return ChangeEmailRequest.fromJson(value as Map<String, dynamic>)
@@ -1155,6 +1163,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'LoginWithAppleRequest':
       return LoginWithAppleRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'LoginWithCookieRequest':
+      return LoginWithCookieRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'LoginWithGoogleRequest':
       return LoginWithGoogleRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1413,6 +1424,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'RegisterResponseUser':
       return RegisterResponseUser.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'RegisterWithCookieRequest':
+      return RegisterWithCookieRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'ReminderDeliveryListResponse':
       return ReminderDeliveryListResponse.fromJson(
             value as Map<String, dynamic>,
@@ -1604,6 +1618,12 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'SessionListItemEntry':
       return SessionListItemEntry.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'SessionResponse':
+      return SessionResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'SessionResponseUser':
+      return SessionResponseUser.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'SetAdminRoleRequest':
       return SetAdminRoleRequest.fromJson(value as Map<String, dynamic>)

@@ -62,14 +62,14 @@ void main() {
       expect(mapped, hasLength(1));
       expect(mapped.single.id, 'session-1');
       expect(mapped.single.platform, 'web');
-      expect(adapter.capturedRequest?.path, LucentApiPaths.authSessions);
+      expect(adapter.capturedRequest?.path, LucentApiPaths.authDevices);
       expect(adapter.capturedRequest?.method, 'GET');
 
       adapter.responseData = null;
       await _right(repository.revokeSession('session-1'));
       expect(
         adapter.capturedRequest?.path,
-        LucentApiPaths.authSession('session-1'),
+        LucentApiPaths.authDevice('session-1'),
       );
       expect(adapter.capturedRequest?.method, 'DELETE');
     },

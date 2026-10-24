@@ -15,7 +15,7 @@ class LucentAuthSessionsRepository implements AuthSessionsRepository {
   @override
   TaskEither<LucentFailure, List<AuthDeviceSession>> listSessions() {
     return TaskEither.tryCatch(() async {
-      final response = await dio.get<Object>(LucentApiPaths.authSessions);
+      final response = await dio.get<Object>(LucentApiPaths.authDevices);
       final raw = response.data;
       if (raw is! List) {
         throw LucentFailure.network(
@@ -41,7 +41,7 @@ class LucentAuthSessionsRepository implements AuthSessionsRepository {
   @override
   TaskEither<LucentFailure, void> revokeSession(String sessionId) {
     return TaskEither.tryCatch(() async {
-      await dio.delete<Object>(LucentApiPaths.authSession(sessionId));
+      await dio.delete<Object>(LucentApiPaths.authDevice(sessionId));
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 }

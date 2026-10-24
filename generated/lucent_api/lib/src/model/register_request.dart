@@ -24,6 +24,8 @@ class RegisterRequest {
 
     required this.code,
 
+    this.captchaToken,
+
     this.nickname,
   });
 
@@ -39,6 +41,10 @@ class RegisterRequest {
   @JsonKey(name: r'code', required: true, includeIfNull: false)
   final String code;
 
+  /// 人机验证令牌
+  @JsonKey(name: r'captchaToken', required: false, includeIfNull: false)
+  final String? captchaToken;
+
   /// 昵称
   @JsonKey(name: r'nickname', required: false, includeIfNull: false)
   final String? nickname;
@@ -50,11 +56,16 @@ class RegisterRequest {
           other.email == email &&
           other.password == password &&
           other.code == code &&
+          other.captchaToken == captchaToken &&
           other.nickname == nickname;
 
   @override
   int get hashCode =>
-      email.hashCode + password.hashCode + code.hashCode + nickname.hashCode;
+      email.hashCode +
+      password.hashCode +
+      code.hashCode +
+      captchaToken.hashCode +
+      nickname.hashCode;
 
   factory RegisterRequest.fromJson(Map<String, dynamic> json) =>
       _$RegisterRequestFromJson(json);
