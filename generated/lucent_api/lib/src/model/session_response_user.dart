@@ -39,9 +39,9 @@ class SessionResponseUser {
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
-  /// 邮箱地址
-  @JsonKey(name: r'email', required: true, includeIfNull: false)
-  final String email;
+  /// 邮箱地址。OAuth-only 账号在补填邮箱前为 null
+  @JsonKey(name: r'email', required: true, includeIfNull: true)
+  final String? email;
 
   /// 昵称
   @JsonKey(name: r'nickname', required: true, includeIfNull: true)
@@ -83,7 +83,7 @@ class SessionResponseUser {
   @override
   int get hashCode =>
       id.hashCode +
-      email.hashCode +
+      (email == null ? 0 : email.hashCode) +
       (nickname == null ? 0 : nickname.hashCode) +
       (avatar == null ? 0 : avatar.hashCode) +
       emailVerified.hashCode +
