@@ -424,5 +424,3 @@ export 'package:lucent_api/src/model/upsert_group_request.dart';
 export 'package:lucent_api/src/model/upsert_group_request_slots.dart';
 export 'package:lucent_api/src/model/user_settings_response.dart';
 export 'package:lucent_api/src/model/user_settings_response_assistant_context.dart';
-export 'package:lucent_api/src/model/verify_email_request.dart';
-export 'package:lucent_api/src/model/verify_email_response.dart';

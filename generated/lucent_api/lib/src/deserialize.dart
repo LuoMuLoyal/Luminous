@@ -389,8 +389,6 @@ import 'package:lucent_api/src/model/upsert_group_request.dart';
 import 'package:lucent_api/src/model/upsert_group_request_slots.dart';
 import 'package:lucent_api/src/model/user_settings_response.dart';
 import 'package:lucent_api/src/model/user_settings_response_assistant_context.dart';
-import 'package:lucent_api/src/model/verify_email_request.dart';
-import 'package:lucent_api/src/model/verify_email_response.dart';
 
 final _regList = RegExp(r'^List<(.*)>$');
 final _regSet = RegExp(r'^Set<(.*)>$');
@@ -2031,12 +2029,6 @@ ReturnType deserialize<ReturnType, BaseType>(
       return UserSettingsResponseAssistantContext.fromJson(
             value as Map<String, dynamic>,
           )
-          as ReturnType;
-    case 'VerifyEmailRequest':
-      return VerifyEmailRequest.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'VerifyEmailResponse':
-      return VerifyEmailResponse.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     default:
       RegExpMatch? match;
