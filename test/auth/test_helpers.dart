@@ -74,7 +74,6 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
   String? resetPasswordEmail;
   String? resetPasswordCode;
   String? resetPasswordValue;
-  String? verifyEmailToken;
   String? changeEmailNewEmail;
   String? changeEmailCode;
   String? changeEmailPassword;
@@ -241,11 +240,6 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
     return TaskEither.right(null);
   }
 
-  @override
-  TaskEither<LucentFailure, void> verifyEmail({required String token}) {
-    verifyEmailToken = token;
-    return TaskEither.right(null);
-  }
 
   @override
   TaskEither<LucentFailure, AuthUser> changeEmail({

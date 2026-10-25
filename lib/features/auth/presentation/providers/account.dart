@@ -98,15 +98,6 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     return true;
   }
 
-  Future<bool> verifyEmail({required String token}) async {
-    return _run(
-      ref
-          .read(authRepositoryProvider)
-          .verifyEmail(token: token)
-          .flatMap((_) => ref.read(authRepositoryProvider).fetchAccount()),
-      (user) => ref.read(authSessionProvider.notifier).applyUser(user),
-    );
-  }
 
   Future<bool> uploadAvatar({
     required Uint8List bytes,

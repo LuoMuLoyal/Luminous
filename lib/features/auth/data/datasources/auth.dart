@@ -453,14 +453,6 @@ class LucentAuthRepository implements AuthRepository {
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
-  @override
-  TaskEither<LucentFailure, void> verifyEmail({required String token}) {
-    return TaskEither.tryCatch(() async {
-      await _client.auth.verifyEmail(
-        verifyEmailRequest: VerifyEmailRequest(token: token.trim()),
-      );
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
-  }
 
   @override
   TaskEither<LucentFailure, AuthUser> updateAccountProfile({

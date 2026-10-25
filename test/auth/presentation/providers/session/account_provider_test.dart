@@ -18,7 +18,6 @@ import '../../../test_helpers.dart';
 /// [AuthAccountNotifier] that the base fake doesn't cover.
 class _AccountFakeRemote extends FakeLucentAuthRepository {
   bool fetchAccountCalled = false;
-  bool verifyEmailCalled = false;
 
   @override
   TaskEither<LucentFailure, AuthUser> fetchAccount() {
@@ -36,12 +35,6 @@ class _AccountFakeRemote extends FakeLucentAuthRepository {
     );
   }
 
-  @override
-  TaskEither<LucentFailure, void> verifyEmail({required String token}) {
-    verifyEmailCalled = true;
-    verifyEmailToken = token;
-    return TaskEither.right(null);
-  }
 }
 
 /// Fails account operations with a [DioException].
@@ -62,21 +55,6 @@ class _FailingAccountRemote extends _AccountFakeRemote {
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
-  @override
-  TaskEither<LucentFailure, void> verifyEmail({required String token}) {
-    return TaskEither.tryCatch(() async {
-      throw DioException(
-        requestOptions: RequestOptions(path: '/verify-email'),
-        type: DioExceptionType.badResponse,
-        response: problemResponse(
-          path: '/verify-email',
-          statusCode: 400,
-          code: 'AUTH_VERIFY_TOKEN_INVALID',
-          detail: '验证链接无效或已过期',
-        ),
-      );
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
-  }
 
   @override
   TaskEither<LucentFailure, VerificationCooldown> sendVerificationCode({
@@ -310,55 +288,6 @@ void main() {
       expect(result, isFalse);
       final state = container.read(authAccountProvider);
       expect(state.isSendingCode, isFalse);
-      expect(state.error, isNotNull);
-    });
-  });
-
-  group('AuthAccountNotifier — verifyEmail', () {
-    test('returns true on success and refreshes user', () async {
-      final remote = _AccountFakeRemote();
-      final container = ProviderContainer(
-        overrides: [
-          authRepositoryProvider.overrideWithValue(remote),
-          authSessionProvider.overrideWith(
-            () => _SignedInAuthSessionNotifier(),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      final notifier = container.read(authAccountProvider.notifier);
-
-      final result = await notifier.verifyEmail(token: 'verify-token-1');
-
-      expect(result, isTrue);
-      expect(remote.verifyEmailCalled, isTrue);
-      expect(remote.verifyEmailToken, 'verify-token-1');
-      expect(remote.fetchAccountCalled, isTrue);
-      final state = container.read(authAccountProvider);
-      expect(state.isSubmitting, isFalse);
-      expect(state.successMessage, '');
-    });
-
-    test('returns false on failure', () async {
-      final remote = _FailingAccountRemote();
-      final container = ProviderContainer(
-        overrides: [
-          authRepositoryProvider.overrideWithValue(remote),
-          authSessionProvider.overrideWith(
-            () => _SignedInAuthSessionNotifier(),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      final notifier = container.read(authAccountProvider.notifier);
-
-      final result = await notifier.verifyEmail(token: 'invalid-token');
-
-      expect(result, isFalse);
-      final state = container.read(authAccountProvider);
-      expect(state.isSubmitting, isFalse);
       expect(state.error, isNotNull);
     });
   });

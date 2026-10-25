@@ -281,20 +281,6 @@ void main() {
       });
     });
 
-    group('verifyEmail', () {
-      test('invalid verification token keeps its code', () async {
-        adapter.statusCode = 400;
-        adapter.contentType = 'application/problem+json';
-        adapter.body = _problemBody('AUTH_VERIFY_TOKEN_INVALID', '验证链接无效或已过期');
-
-        final failure = await _left(
-          dataSource.verifyEmail(token: 'invalid-token'),
-        );
-
-        expect(failure.code, 'AUTH_VERIFY_TOKEN_INVALID');
-        expect(failure.statusCode, 400);
-      });
-    });
 
     group('refreshSession', () {
       // The interceptor only refreshes when a refresh token is stored.

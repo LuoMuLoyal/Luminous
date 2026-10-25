@@ -93,7 +93,6 @@ abstract interface class AuthRepository {
     required String email,
   });
 
-  TaskEither<LucentFailure, void> verifyEmail({required String token});
 
   TaskEither<LucentFailure, AuthUser> updateAccountProfile({
     String? nickname,

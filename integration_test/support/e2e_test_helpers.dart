@@ -456,7 +456,6 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
   String? resetPasswordEmail;
   String? resetPasswordCode;
   String? resetPasswordValue;
-  String? verifyEmailToken;
   String? changeEmailNewEmail;
   String? changeEmailCode;
   String? updateProfileNickname;
@@ -564,11 +563,6 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
     return TaskEither.right(null);
   }
 
-  @override
-  TaskEither<LucentFailure, void> verifyEmail({required String token}) {
-    verifyEmailToken = token;
-    return TaskEither.right(null);
-  }
 
   @override
   TaskEither<LucentFailure, AuthUser> changeEmail({

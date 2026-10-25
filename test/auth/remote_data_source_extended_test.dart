@@ -835,25 +835,6 @@ void main() {
       });
     });
 
-    // ─── verifyEmail ─────────────────────────────────────────────────
-    group('verifyEmail', () {
-      test('completes without error on success', () async {
-        adapter.body = <String, dynamic>{'emailVerified': true};
-
-        await _right(dataSource.verifyEmail(token: 'verify-token-1'));
-
-        expect(adapter.lastBody?['token'], 'verify-token-1');
-      });
-
-      test('trims token', () async {
-        adapter.body = <String, dynamic>{'emailVerified': true};
-
-        await _right(dataSource.verifyEmail(token: '  verify-token-1  '));
-
-        expect(adapter.lastBody?['token'], 'verify-token-1');
-      });
-    });
-
     // ─── updateAccountProfile ────────────────────────────────────────
     group('updateAccountProfile', () {
       test('returns updated AuthUser', () async {
