@@ -56,10 +56,10 @@ class RunRiskCheckRequestCandidate {
 
 /// 候选药品所在的可信药品库来源
 enum RunRiskCheckRequestCandidateSource_Enum {
-  @JsonValue(r'cn')
-  cn(r'cn'),
   @JsonValue(r'drugbank')
   drugbank(r'drugbank'),
+  @JsonValue(r'cn')
+  cn(r'cn'),
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

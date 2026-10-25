@@ -181,12 +181,12 @@ import 'package:lucent_api/src/model/legal_document_list_response_items.dart';
 import 'package:lucent_api/src/model/link_wechat_mobile_identity_request.dart';
 import 'package:lucent_api/src/model/link_wechat_web_identity_request.dart';
 import 'package:lucent_api/src/model/local_capability_response.dart';
+import 'package:lucent_api/src/model/login_in_browser_request.dart';
 import 'package:lucent_api/src/model/login_request.dart';
 import 'package:lucent_api/src/model/login_response.dart';
 import 'package:lucent_api/src/model/login_response_tokens.dart';
 import 'package:lucent_api/src/model/login_response_user.dart';
 import 'package:lucent_api/src/model/login_with_apple_request.dart';
-import 'package:lucent_api/src/model/login_with_cookie_request.dart';
 import 'package:lucent_api/src/model/login_with_google_request.dart';
 import 'package:lucent_api/src/model/login_with_qq_request.dart';
 import 'package:lucent_api/src/model/login_with_wechat_mobile_request.dart';
@@ -213,17 +213,23 @@ import 'package:lucent_api/src/model/medicine_risk_check_record_response.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_response_result.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_response_result_coverage_issues.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_response_result_findings.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_record_response_result_findings_mechanism.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_record_response_result_findings_mechanism_mechanisms.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_response_result_red_flags.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_llm.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_llm_result.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_llm_result_coverage_issues.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_llm_result_findings.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_records_response_llm_result_findings_mechanism.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_records_response_llm_result_findings_mechanism_mechanisms.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_llm_result_red_flags.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_static.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_static_result.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_static_result_coverage_issues.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_static_result_findings.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_records_response_static_result_findings_mechanism.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_records_response_static_result_findings_mechanism_mechanisms.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_response_static_result_red_flags.dart';
 import 'package:lucent_api/src/model/medicine_safety_tip_item.dart';
 import 'package:lucent_api/src/model/medicine_search_response.dart';
@@ -247,11 +253,11 @@ import 'package:lucent_api/src/model/record_receipt_request.dart';
 import 'package:lucent_api/src/model/refresh_response.dart';
 import 'package:lucent_api/src/model/refresh_session_request.dart';
 import 'package:lucent_api/src/model/refresh_today_analysis_request.dart';
+import 'package:lucent_api/src/model/register_in_browser_request.dart';
 import 'package:lucent_api/src/model/register_request.dart';
 import 'package:lucent_api/src/model/register_response.dart';
 import 'package:lucent_api/src/model/register_response_tokens.dart';
 import 'package:lucent_api/src/model/register_response_user.dart';
-import 'package:lucent_api/src/model/register_with_cookie_request.dart';
 import 'package:lucent_api/src/model/reminder_delivery_list_response.dart';
 import 'package:lucent_api/src/model/reminder_delivery_list_response_items.dart';
 import 'package:lucent_api/src/model/reminder_delivery_receipt_response.dart';
@@ -1149,6 +1155,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'LocalCapabilityResponse':
       return LocalCapabilityResponse.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'LoginInBrowserRequest':
+      return LoginInBrowserRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'LoginRequest':
       return LoginRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'LoginResponse':
@@ -1162,9 +1171,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'LoginWithAppleRequest':
       return LoginWithAppleRequest.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'LoginWithCookieRequest':
-      return LoginWithCookieRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'LoginWithGoogleRequest':
       return LoginWithGoogleRequest.fromJson(value as Map<String, dynamic>)
@@ -1277,6 +1283,16 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'MedicineRiskCheckRecordResponseResultFindingsMechanism':
+      return MedicineRiskCheckRecordResponseResultFindingsMechanism.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineRiskCheckRecordResponseResultFindingsMechanismMechanisms':
+      return MedicineRiskCheckRecordResponseResultFindingsMechanismMechanisms.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'MedicineRiskCheckRecordResponseResultRedFlags':
       return MedicineRiskCheckRecordResponseResultRedFlags.fromJson(
             value as Map<String, dynamic>,
@@ -1307,6 +1323,16 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'MedicineRiskCheckRecordsResponseLlmResultFindingsMechanism':
+      return MedicineRiskCheckRecordsResponseLlmResultFindingsMechanism.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineRiskCheckRecordsResponseLlmResultFindingsMechanismMechanisms':
+      return MedicineRiskCheckRecordsResponseLlmResultFindingsMechanismMechanisms.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'MedicineRiskCheckRecordsResponseLlmResultRedFlags':
       return MedicineRiskCheckRecordsResponseLlmResultRedFlags.fromJson(
             value as Map<String, dynamic>,
@@ -1329,6 +1355,16 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MedicineRiskCheckRecordsResponseStaticResultFindings':
       return MedicineRiskCheckRecordsResponseStaticResultFindings.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineRiskCheckRecordsResponseStaticResultFindingsMechanism':
+      return MedicineRiskCheckRecordsResponseStaticResultFindingsMechanism.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineRiskCheckRecordsResponseStaticResultFindingsMechanismMechanisms':
+      return MedicineRiskCheckRecordsResponseStaticResultFindingsMechanismMechanisms.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -1412,6 +1448,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'RefreshTodayAnalysisRequest':
       return RefreshTodayAnalysisRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'RegisterInBrowserRequest':
+      return RegisterInBrowserRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'RegisterRequest':
       return RegisterRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1423,9 +1462,6 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'RegisterResponseUser':
       return RegisterResponseUser.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'RegisterWithCookieRequest':
-      return RegisterWithCookieRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ReminderDeliveryListResponse':
       return ReminderDeliveryListResponse.fromJson(

@@ -6,7 +6,7 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'register_with_cookie_request.g.dart';
+part 'register_in_browser_request.g.dart';
 
 @CopyWith()
 @JsonSerializable(
@@ -15,9 +15,9 @@ part 'register_with_cookie_request.g.dart';
   disallowUnrecognizedKeys: false,
   explicitToJson: true,
 )
-class RegisterWithCookieRequest {
-  /// Returns a new [RegisterWithCookieRequest] instance.
-  RegisterWithCookieRequest({
+class RegisterInBrowserRequest {
+  /// Returns a new [RegisterInBrowserRequest] instance.
+  RegisterInBrowserRequest({
     required this.email,
 
     required this.password,
@@ -52,7 +52,7 @@ class RegisterWithCookieRequest {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RegisterWithCookieRequest &&
+      other is RegisterInBrowserRequest &&
           other.email == email &&
           other.password == password &&
           other.code == code &&
@@ -67,10 +67,10 @@ class RegisterWithCookieRequest {
       captchaToken.hashCode +
       nickname.hashCode;
 
-  factory RegisterWithCookieRequest.fromJson(Map<String, dynamic> json) =>
-      _$RegisterWithCookieRequestFromJson(json);
+  factory RegisterInBrowserRequest.fromJson(Map<String, dynamic> json) =>
+      _$RegisterInBrowserRequestFromJson(json);
 
-  Map<String, dynamic> toJson() => _$RegisterWithCookieRequestToJson(this);
+  Map<String, dynamic> toJson() => _$RegisterInBrowserRequestToJson(this);
 
   @override
   String toString() {

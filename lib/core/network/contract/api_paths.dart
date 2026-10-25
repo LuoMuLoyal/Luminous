@@ -18,13 +18,13 @@ abstract final class LucentApiPaths {
   /// ([AuthInterceptor._refreshDio]) to avoid interceptor recursion.
   static const authRefresh = '/api/v1/auth/refresh';
 
-  /// `GET /api/v1/auth/devices` — the generated AuthApi currently declares
+  /// `GET /api/v1/auth/sessions` — the generated AuthApi currently declares
   /// this response as void, while the account-security UI needs its payload.
-  static const authDevices = '/api/v1/auth/devices';
+  static const authDevices = '/api/v1/auth/sessions';
 
-  /// `DELETE /api/v1/auth/devices/{sessionId}` — see [authDevices].
+  /// `DELETE /api/v1/auth/sessions/{sessionId}` — see [authDevices].
   static String authDevice(String sessionId) =>
-      '/api/v1/auth/devices/$sessionId';
+      '/api/v1/auth/sessions/$sessionId';
 
   /// `POST /api/v1/user/today-analysis/generate/stream`
   static const todayAnalysisGenerateStream =

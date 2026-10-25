@@ -20,12 +20,6 @@ class SessionListItemEntry {
   SessionListItemEntry({
     required this.id,
 
-    required this.deviceType,
-
-    required this.deviceName,
-
-    required this.platform,
-
     required this.lastUsedAt,
 
     required this.createdAt,
@@ -35,35 +29,23 @@ class SessionListItemEntry {
     required this.isCurrent,
   });
 
-  /// Session id
+  /// 会话 ID
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
 
-  /// Device type
-  @JsonKey(name: r'deviceType', required: true, includeIfNull: true)
-  final String? deviceType;
-
-  /// Device name
-  @JsonKey(name: r'deviceName', required: true, includeIfNull: true)
-  final String? deviceName;
-
-  /// Platform
-  @JsonKey(name: r'platform', required: true, includeIfNull: true)
-  final String? platform;
-
-  /// Last used at (ISO-8601)
+  /// 最近使用时间 (ISO-8601)
   @JsonKey(name: r'lastUsedAt', required: true, includeIfNull: true)
   final String? lastUsedAt;
 
-  /// Created at (ISO-8601)
+  /// 创建时间 (ISO-8601)
   @JsonKey(name: r'createdAt', required: true, includeIfNull: false)
   final String createdAt;
 
-  /// Expires at (ISO-8601)
+  /// 过期时间 (ISO-8601)
   @JsonKey(name: r'expiresAt', required: true, includeIfNull: false)
   final String expiresAt;
 
-  /// Whether this is the current session
+  /// 是否为发起本次请求的会话（Bearer 客户端恒为 false）
   @JsonKey(name: r'isCurrent', required: true, includeIfNull: false)
   final bool isCurrent;
 
@@ -72,9 +54,6 @@ class SessionListItemEntry {
       identical(this, other) ||
       other is SessionListItemEntry &&
           other.id == id &&
-          other.deviceType == deviceType &&
-          other.deviceName == deviceName &&
-          other.platform == platform &&
           other.lastUsedAt == lastUsedAt &&
           other.createdAt == createdAt &&
           other.expiresAt == expiresAt &&
@@ -83,9 +62,6 @@ class SessionListItemEntry {
   @override
   int get hashCode =>
       id.hashCode +
-      (deviceType == null ? 0 : deviceType.hashCode) +
-      (deviceName == null ? 0 : deviceName.hashCode) +
-      (platform == null ? 0 : platform.hashCode) +
       (lastUsedAt == null ? 0 : lastUsedAt.hashCode) +
       createdAt.hashCode +
       expiresAt.hashCode +
