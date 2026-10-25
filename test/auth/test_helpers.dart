@@ -240,7 +240,6 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
     return TaskEither.right(null);
   }
 
-
   @override
   TaskEither<LucentFailure, AuthUser> changeEmail({
     required String newEmail,

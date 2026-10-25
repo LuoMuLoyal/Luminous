@@ -98,7 +98,6 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     return true;
   }
 
-
   Future<bool> uploadAvatar({
     required Uint8List bytes,
     required String fileName,

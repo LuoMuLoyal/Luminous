@@ -453,7 +453,6 @@ class LucentAuthRepository implements AuthRepository {
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
-
   @override
   TaskEither<LucentFailure, AuthUser> updateAccountProfile({
     String? nickname,

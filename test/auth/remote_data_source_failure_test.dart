@@ -281,7 +281,6 @@ void main() {
       });
     });
 
-
     group('refreshSession', () {
       // The interceptor only refreshes when a refresh token is stored.
       setUp(() async {

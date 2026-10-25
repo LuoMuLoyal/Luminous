@@ -34,7 +34,6 @@ class _AccountFakeRemote extends FakeLucentAuthRepository {
       ),
     );
   }
-
 }
 
 /// Fails account operations with a [DioException].
@@ -54,7 +53,6 @@ class _FailingAccountRemote extends _AccountFakeRemote {
       );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
-
 
   @override
   TaskEither<LucentFailure, VerificationCooldown> sendVerificationCode({
