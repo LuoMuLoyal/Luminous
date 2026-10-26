@@ -79,6 +79,16 @@ jobs:
       - name: Compile drift web worker
         run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
 
+      # `web/sqlite3.wasm` is gitignored and no build step produces it: it is a
+      # release asset of sqlite3.dart keyed by the `sqlite3` version pinned in
+      # pubspec.yaml. The Pages build shipped without it (the web app's drift
+      # worker could not start), and nothing failed loudly because only the
+      # HarmonyOS build asserts on the artifact.
+      - name: Fetch sqlite3 web assembly
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/web/fetch_sqlite3_wasm.py
+
       - name: Build Web (release) with env
         # No --wasm: the wasm default renderer (skwasm) has a known layout
         # bug on mobile browsers — content area gets 0 height, bottom nav bar

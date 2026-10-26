@@ -90,6 +90,16 @@ jobs:
       - name: Compile drift web worker
         run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
 
+      # `web/sqlite3.wasm` is gitignored and is NOT produced by any build step:
+      # it is a release asset of sqlite3.dart keyed by the `sqlite3` package
+      # version pinned in pubspec.yaml. Without this the web app has no WASM
+      # binary to load (connection_web.dart) and the artifact assertion below
+      # fails — which is exactly what happened until this step existed.
+      - name: Fetch sqlite3 web assembly
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/web/fetch_sqlite3_wasm.py
+
       - name: Build Web for HarmonyOS shell
         # 与 deploy-web.yml 的三处差异（见计划 §8.2）：
         #   1. --base-href "/"      —— 壳内是本地资源，不能带 Pages 的 /<repo>/ 前缀
