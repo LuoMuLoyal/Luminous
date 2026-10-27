@@ -13,7 +13,7 @@ abstract final class SemanticIcons {
   // ================================================================
   static const tabToday = FLucideIcons.house;
   static const tabRecord = FLucideIcons.notebookPen;
-  static const tabMedicine = FLucideIcons.pillBottle;
+  static const tabMedicine = FLucideIcons.tablets;
   static const tabReview = FLucideIcons.chartColumn;
   static const tabMine = FLucideIcons.userRound;
 
@@ -58,7 +58,6 @@ abstract final class SemanticIcons {
   static const statusWarning = FLucideIcons.triangleAlert;
   static const statusSuccess = FLucideIcons.circleCheck;
   static const statusInfo = FLucideIcons.info;
-  static const statusInfoCircle = FPhosphorIcons.info;
   static const statusPending = FLucideIcons.clock3;
   static const statusSkipped = FLucideIcons.ban;
   static const statusDone = FLucideIcons.check;
@@ -82,29 +81,24 @@ abstract final class SemanticIcons {
   static const safetyInteraction = FLucideIcons.arrowLeftRight;
   static const safetyAllergy = FLucideIcons.zap;
   static const safetyCoverage = FLucideIcons.searchX;
-  static const safetyLongTerm = FLucideIcons.hourglass;
+  static const safetyLongTerm = FLucideIcons.calendarRange;
   static const safetySpecialGroup = FLucideIcons.baby;
   static const safetySchedulingConflict = FLucideIcons.calendarX2;
-  static const safetyDuplicate = FPhosphorIcons.copySimple;
+  static const safetyDuplicate = FLucideIcons.layers;
   static const safetyFoodInteraction = FPhosphorIcons.bowlSteam;
   static const safetyAlcohol = FLucideIcons.wine;
   static const safetyAllergyShot = FLucideIcons.syringe;
   static const safetyDriving = FLucideIcons.car;
-  static const safetyPregnancy = FLucideIcons.heartPulse;
   static const safetyStorage = FPhosphorIcons.warehouse;
-  static const safetyTiming = FLucideIcons.calendarClock;
-  static const safetyCaffeine = FLucideIcons.coffee;
+  static const safetyTiming = FLucideIcons.clockAlert;
   static const safetyFood = FPhosphorIcons.bowlFood;
 
   // ================================================================
   // 报告
   // ================================================================
-  static const reportReady = FLucideIcons.circleCheck;
-  static const reportInsufficient = FLucideIcons.fileQuestion;
   static const reportTrend = FLucideIcons.trendingUp;
   static const reportAdherence = FLucideIcons.badgeCheck;
-  static const reportInsight = FLucideIcons.lightbulb;
-  static const reportExport = FLucideIcons.arrowDownToLine;
+  static const reportInsight = FLucideIcons.telescope;
   static const reportHistory = FLucideIcons.history;
   static const reportChart = FLucideIcons.chartLine;
 
@@ -116,9 +110,7 @@ abstract final class SemanticIcons {
   static const medicineKit = FLucideIcons.briefcaseMedical;
   static const doseSchedule = FLucideIcons.alarmClockCheck;
   static const doseSlot = FPhosphorIcons.timer;
-  static const doseTaken = FPhosphorIcons.checkCircle;
-  static const doseSkipped = FLucideIcons.ban;
-  static const dosePending = FLucideIcons.clock3;
+  static const doseTaken = FLucideIcons.circleCheckBig;
   static const dosePlanned = FLucideIcons.calendarClock;
   static const doseLog = FLucideIcons.receiptText;
   static const doseVolume = FLucideIcons.volume2;
@@ -133,7 +125,7 @@ abstract final class SemanticIcons {
   static const notificationBellRing = FLucideIcons.bellRing;
   static const notificationRead = FLucideIcons.mailMinus;
   static const notificationWarning = FLucideIcons.mailWarning;
-  static const notificationDelivered = FPhosphorIcons.bellRinging;
+  static const notificationDelivered = FLucideIcons.bellCheck;
   static const notificationFailed = FLucideIcons.circleX;
   static const notificationPending = FPhosphorIcons.hourglassMedium;
 
@@ -176,9 +168,7 @@ abstract final class SemanticIcons {
   // 健康 / 档案
   // ================================================================
   static const profileUser = FLucideIcons.userCheck;
-  static const profileAllergy = FLucideIcons.zap;
   static const profileCondition = FLucideIcons.heartPulse;
-  static const profileMedicine = FLucideIcons.briefcaseMedical;
   static const profileEmergency = FLucideIcons.phone;
   static const profileContact = FLucideIcons.contact;
 }

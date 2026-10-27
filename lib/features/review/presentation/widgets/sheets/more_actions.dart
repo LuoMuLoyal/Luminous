@@ -133,7 +133,7 @@ class ReviewMoreActionsSheet extends StatelessWidget {
           const SizedBox(height: Spacing.sm),
           _MoreActionTile(
             key: const Key('more-print'),
-            icon: SemanticIcons.reportExport,
+            icon: SemanticIcons.actionExport,
             color: SemanticColor.success,
             title: l10n.reviewMorePrintTitle,
             subtitle: l10n.reviewMorePrintSubtitle,

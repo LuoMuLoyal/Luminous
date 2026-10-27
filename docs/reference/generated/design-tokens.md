@@ -85,19 +85,13 @@ is the machine projection; the interpretive contract lives in
 | `masterDetailSwitch` | `` | `Duration(milliseconds: 220)` | Settings desktop master-detail pane switch: fade the incoming pane and |
 | `pageStateSwitch` | `` | `Duration(milliseconds: 240)` | Page state switch (skeleton → content → error …) fade-through. |
 
-### tokens/semantic_icon_svg.dart
-
-| Name | Type | Value | Docs |
-| --- | --- | --- | --- |
-| `_base` | `String` | `'assets/icon/iconmind'` |  |
-
 ### tokens/semantic_icons.dart
 
 | Name | Type | Value | Docs |
 | --- | --- | --- | --- |
 | `tabToday` | `` | `FLucideIcons.house` |  |
 | `tabRecord` | `` | `FLucideIcons.notebookPen` |  |
-| `tabMedicine` | `` | `FLucideIcons.pillBottle` |  |
+| `tabMedicine` | `` | `FLucideIcons.tablets` |  |
 | `tabReview` | `` | `FLucideIcons.chartColumn` |  |
 | `tabMine` | `` | `FLucideIcons.userRound` |  |
 | `aiEntry` | `` | `FLucideIcons.sparkles` |  |
@@ -105,6 +99,9 @@ is the machine projection; the interpretive contract lives in
 | `aiGenerated` | `` | `FLucideIcons.bot` |  |
 | `aiSuggestion` | `` | `FLucideIcons.brain` |  |
 | `aiTip` | `` | `FLucideIcons.lightbulb` |  |
+| `aiMemory` | `` | `FLucideIcons.memoryStick` | 持久化记忆(能力面板摘要行)。 |
+| `aiKnowledge` | `` | `FLucideIcons.database` | 知识库 / RAG 检索(能力面板摘要行)。 |
+| `aiToolCalling` | `` | `FLucideIcons.wrench` | 工具调用(能力面板工具列表行前缀)。 |
 | `recordMedicine` | `` | `FLucideIcons.pill` |  |
 | `recordWater` | `` | `FLucideIcons.droplets` |  |
 | `recordMeal` | `` | `FLucideIcons.utensils` |  |
@@ -121,7 +118,6 @@ is the machine projection; the interpretive contract lives in
 | `statusWarning` | `` | `FLucideIcons.triangleAlert` |  |
 | `statusSuccess` | `` | `FLucideIcons.circleCheck` |  |
 | `statusInfo` | `` | `FLucideIcons.info` |  |
-| `statusInfoCircle` | `` | `FPhosphorIcons.info` |  |
 | `statusPending` | `` | `FLucideIcons.clock3` |  |
 | `statusSkipped` | `` | `FLucideIcons.ban` |  |
 | `statusDone` | `` | `FLucideIcons.check` |  |
@@ -138,25 +134,20 @@ is the machine projection; the interpretive contract lives in
 | `safetyInteraction` | `` | `FLucideIcons.arrowLeftRight` |  |
 | `safetyAllergy` | `` | `FLucideIcons.zap` |  |
 | `safetyCoverage` | `` | `FLucideIcons.searchX` |  |
-| `safetyLongTerm` | `` | `FLucideIcons.hourglass` |  |
+| `safetyLongTerm` | `` | `FLucideIcons.calendarRange` |  |
 | `safetySpecialGroup` | `` | `FLucideIcons.baby` |  |
 | `safetySchedulingConflict` | `` | `FLucideIcons.calendarX2` |  |
-| `safetyDuplicate` | `` | `FPhosphorIcons.copySimple` |  |
+| `safetyDuplicate` | `` | `FLucideIcons.layers` |  |
 | `safetyFoodInteraction` | `` | `FPhosphorIcons.bowlSteam` |  |
 | `safetyAlcohol` | `` | `FLucideIcons.wine` |  |
 | `safetyAllergyShot` | `` | `FLucideIcons.syringe` |  |
 | `safetyDriving` | `` | `FLucideIcons.car` |  |
-| `safetyPregnancy` | `` | `FLucideIcons.heartPulse` |  |
 | `safetyStorage` | `` | `FPhosphorIcons.warehouse` |  |
-| `safetyTiming` | `` | `FLucideIcons.calendarClock` |  |
-| `safetyCaffeine` | `` | `FLucideIcons.coffee` |  |
+| `safetyTiming` | `` | `FLucideIcons.clockAlert` |  |
 | `safetyFood` | `` | `FPhosphorIcons.bowlFood` |  |
-| `reportReady` | `` | `FLucideIcons.circleCheck` |  |
-| `reportInsufficient` | `` | `FLucideIcons.fileQuestion` |  |
 | `reportTrend` | `` | `FLucideIcons.trendingUp` |  |
 | `reportAdherence` | `` | `FLucideIcons.badgeCheck` |  |
-| `reportInsight` | `` | `FLucideIcons.lightbulb` |  |
-| `reportExport` | `` | `FLucideIcons.arrowDownToLine` |  |
+| `reportInsight` | `` | `FLucideIcons.telescope` |  |
 | `reportHistory` | `` | `FLucideIcons.history` |  |
 | `reportChart` | `` | `FLucideIcons.chartLine` |  |
 | `medicineDose` | `` | `FPhosphorIcons.prescription` |  |
@@ -164,9 +155,7 @@ is the machine projection; the interpretive contract lives in
 | `medicineKit` | `` | `FLucideIcons.briefcaseMedical` |  |
 | `doseSchedule` | `` | `FLucideIcons.alarmClockCheck` |  |
 | `doseSlot` | `` | `FPhosphorIcons.timer` |  |
-| `doseTaken` | `` | `FPhosphorIcons.checkCircle` |  |
-| `doseSkipped` | `` | `FLucideIcons.ban` |  |
-| `dosePending` | `` | `FLucideIcons.clock3` |  |
+| `doseTaken` | `` | `FLucideIcons.circleCheckBig` |  |
 | `dosePlanned` | `` | `FLucideIcons.calendarClock` |  |
 | `doseLog` | `` | `FLucideIcons.receiptText` |  |
 | `doseVolume` | `` | `FLucideIcons.volume2` |  |
@@ -177,7 +166,7 @@ is the machine projection; the interpretive contract lives in
 | `notificationBellRing` | `` | `FLucideIcons.bellRing` |  |
 | `notificationRead` | `` | `FLucideIcons.mailMinus` |  |
 | `notificationWarning` | `` | `FLucideIcons.mailWarning` |  |
-| `notificationDelivered` | `` | `FPhosphorIcons.bellRinging` |  |
+| `notificationDelivered` | `` | `FLucideIcons.bellCheck` |  |
 | `notificationFailed` | `` | `FLucideIcons.circleX` |  |
 | `notificationPending` | `` | `FPhosphorIcons.hourglassMedium` |  |
 | `actionAdd` | `` | `FLucideIcons.plus` |  |
@@ -212,9 +201,7 @@ is the machine projection; the interpretive contract lives in
 | `actionThemeLight` | `` | `FLucideIcons.sun` |  |
 | `actionTimeSlot` | `` | `FLucideIcons.clock4` |  |
 | `profileUser` | `` | `FLucideIcons.userCheck` |  |
-| `profileAllergy` | `` | `FLucideIcons.zap` |  |
 | `profileCondition` | `` | `FLucideIcons.heartPulse` |  |
-| `profileMedicine` | `` | `FLucideIcons.briefcaseMedical` |  |
 | `profileEmergency` | `` | `FLucideIcons.phone` |  |
 | `profileContact` | `` | `FLucideIcons.contact` |  |
 
