@@ -26,6 +26,15 @@ abstract final class SemanticIcons {
   static const aiSuggestion = FLucideIcons.brain;
   static const aiTip = FLucideIcons.lightbulb;
 
+  /// 持久化记忆(能力面板摘要行)。
+  static const aiMemory = FLucideIcons.memoryStick;
+
+  /// 知识库 / RAG 检索(能力面板摘要行)。
+  static const aiKnowledge = FLucideIcons.database;
+
+  /// 工具调用(能力面板工具列表行前缀)。
+  static const aiToolCalling = FLucideIcons.wrench;
+
   // ================================================================
   // 健康记录类型
   // ================================================================
