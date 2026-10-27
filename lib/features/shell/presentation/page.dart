@@ -277,7 +277,7 @@ class _SidebarFooter extends ConsumerWidget {
     final themeIcon = switch (themePref.mode) {
       AppThemeModePreference.system => SemanticIcons.actionExternalLink,
       AppThemeModePreference.light => SemanticIcons.actionThemeLight,
-      AppThemeModePreference.dark => SemanticIcons.recordMoon,
+      AppThemeModePreference.dark => SemanticIcons.actionThemeDark,
     };
 
     return Column(

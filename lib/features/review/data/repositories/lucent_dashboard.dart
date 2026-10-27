@@ -271,7 +271,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     return switch (kind) {
       ReviewDataKind.medication => SemanticIcons.recordMedicine,
       ReviewDataKind.water => SemanticIcons.recordWater,
-      ReviewDataKind.sleep => SemanticIcons.recordMoon,
+      ReviewDataKind.sleep => SemanticIcons.recordSleep,
       ReviewDataKind.general => SemanticIcons.profileCondition,
     };
   }
@@ -289,7 +289,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     return switch (kind) {
       ReviewInsightKind.medication => SemanticIcons.reportInsightAdherence,
       ReviewInsightKind.hydration => SemanticIcons.recordWater,
-      ReviewInsightKind.sleep => SemanticIcons.recordMoon,
+      ReviewInsightKind.sleep => SemanticIcons.recordSleep,
       ReviewInsightKind.general => SemanticIcons.reportChart,
     };
   }

@@ -60,7 +60,6 @@ abstract final class SemanticIcons {
   static const recordNote = FLucideIcons.fileText;
   static const recordActivity = FLucideIcons.activity;
   static const recordWeight = FLucideIcons.scale;
-  static const recordMoon = FLucideIcons.moon;
   static const recordClipboard = FLucideIcons.clipboardList;
 
   // ================================================================
@@ -279,6 +278,9 @@ abstract final class SemanticIcons {
   static const actionSend = FLucideIcons.send;
   static const actionMinus = FLucideIcons.minus;
   static const actionThemeLight = FLucideIcons.sun;
+
+  /// 深色主题。
+  static const actionThemeDark = FLucideIcons.moon;
   static const actionTimeSlot = FLucideIcons.clock4;
 
   /// 账号安全入口。

@@ -455,7 +455,7 @@ void main() {
       (DailyRecordKind.mood, SemanticIcons.recordMood),
       (DailyRecordKind.symptom, SemanticIcons.safetyDanger),
       (DailyRecordKind.note, SemanticIcons.tabRecord),
-      (DailyRecordKind.sleep, SemanticIcons.recordMoon),
+      (DailyRecordKind.sleep, SemanticIcons.recordSleep),
     ];
 
     for (final (kind, expectedIcon) in cases) {

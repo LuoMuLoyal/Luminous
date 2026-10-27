@@ -62,7 +62,7 @@ class RecordDetailPage extends ConsumerWidget {
                 error: (_, __) => StateErrorView(
                   title: l10n.recordDetailErrorTitle,
                   description: l10n.recordErrorDescription,
-                  icon: SemanticIcons.tabRecord,
+                  icon: SemanticIcons.statusError,
                   actionLabel: l10n.todayRetryAction,
                   onAction: () =>
                       ref.invalidate(dailyRecordDetailProvider(recordId)),

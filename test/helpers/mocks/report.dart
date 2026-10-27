@@ -57,7 +57,7 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.sleep,
-        icon: SemanticIcons.recordMoon,
+        icon: SemanticIcons.recordSleep,
         color: SemanticColor.primary,
         value: '--',
         unit: 'h',
@@ -160,7 +160,7 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.sleep,
-        icon: SemanticIcons.recordMoon,
+        icon: SemanticIcons.recordSleep,
         color: SemanticColor.primary,
         value: '--',
         unit: 'h',

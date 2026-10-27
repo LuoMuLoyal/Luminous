@@ -308,7 +308,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.sleep,
-      icon: SemanticIcons.recordMoon,
+      icon: SemanticIcons.recordSleep,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -408,7 +408,7 @@ class MockRecordRepository implements RecordRepository {
     const RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
-      icon: SemanticIcons.recordMoon,
+      icon: SemanticIcons.recordSleep,
       accent: SemanticColor.primary,
       selected: true,
     ),
@@ -516,7 +516,7 @@ class MockRecordRepository implements RecordRepository {
     const RecordTimelineEntry(
       time: '23:30',
       type: RecordEntryType.sleep,
-      icon: SemanticIcons.recordMoon,
+      icon: SemanticIcons.recordSleep,
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.timelineSleepRecord,

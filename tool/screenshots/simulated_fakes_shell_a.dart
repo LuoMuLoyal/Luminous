@@ -215,7 +215,7 @@ class SimulatedRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.sleep,
-      icon: SemanticIcons.recordMoon,
+      icon: SemanticIcons.recordSleep,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -243,7 +243,7 @@ class SimulatedRecordRepository implements RecordRepository {
     ),
     RecordSummaryItem(
       type: RecordEntryType.sleep,
-      icon: SemanticIcons.recordMoon,
+      icon: SemanticIcons.recordSleep,
       titleKey: RecordCopyKey.typeSleep,
       value: '7.2',
       unitKey: RecordCopyKey.summaryTimesUnit,
@@ -294,7 +294,7 @@ class SimulatedRecordRepository implements RecordRepository {
     RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
-      icon: SemanticIcons.recordMoon,
+      icon: SemanticIcons.recordSleep,
       accent: SemanticColor.primary,
       selected: true,
     ),
@@ -385,7 +385,7 @@ class SimulatedRecordRepository implements RecordRepository {
     RecordTimelineEntry(
       time: '23:10',
       type: RecordEntryType.sleep,
-      icon: SemanticIcons.recordMoon,
+      icon: SemanticIcons.recordSleep,
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.timelineSleepRecord,
@@ -733,7 +733,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.sleep,
-        icon: SemanticIcons.recordMoon,
+        icon: SemanticIcons.recordSleep,
         color: SemanticColor.neutral,
         value: '7.2',
         unit: 'h',
@@ -807,7 +807,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewFinding(
         kind: ReviewInsightKind.sleep,
-        icon: SemanticIcons.recordMoon,
+        icon: SemanticIcons.recordSleep,
         color: SemanticColor.neutral,
         title: '入睡时间稳定',
         body: '最近 7 天平均入睡 23:10，睡眠时长在 6.8 至 7.6 小时之间。',
@@ -856,7 +856,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewPatternCard(
         kind: ReviewInsightKind.sleep,
-        icon: SemanticIcons.recordMoon,
+        icon: SemanticIcons.recordSleep,
         color: SemanticColor.neutral,
         title: '周末睡得更好',
         status: ReviewStatus.good,

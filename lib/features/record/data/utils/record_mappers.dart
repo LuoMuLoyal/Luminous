@@ -136,7 +136,7 @@ RecordTimelineEntry toTimelineEntry(DailyRecordItem record) {
     DailyRecordKind.symptom => SemanticIcons.recordSymptom,
     DailyRecordKind.activity => SemanticIcons.recordActivity,
     DailyRecordKind.note => SemanticIcons.recordNote,
-    DailyRecordKind.sleep => SemanticIcons.recordMoon,
+    DailyRecordKind.sleep => SemanticIcons.recordSleep,
   };
 
   // Mood records created through the fast-entry dialog store the level in

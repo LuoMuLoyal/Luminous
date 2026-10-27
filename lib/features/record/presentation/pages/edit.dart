@@ -211,7 +211,7 @@ class RecordEditPage extends HookConsumerWidget {
           child: StateErrorView(
             title: l10n.recordDetailErrorTitle,
             description: l10n.recordErrorDescription,
-            icon: SemanticIcons.tabRecord,
+            icon: SemanticIcons.statusError,
             actionLabel: l10n.todayRetryAction,
             onAction: () => controller.load(recordId),
             tone: StateTone.warning,

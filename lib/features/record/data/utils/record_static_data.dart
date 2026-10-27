@@ -99,7 +99,7 @@ const List<RecordQuickAction> staticQuickActions = [
   ),
   RecordQuickAction(
     type: RecordEntryType.sleep,
-    icon: SemanticIcons.recordMoon,
+    icon: SemanticIcons.recordSleep,
     titleKey: RecordCopyKey.typeSleep,
     subtitleKey: RecordCopyKey.summaryRecorded,
     accent: SemanticColor.primary,
@@ -169,7 +169,7 @@ const List<RecordFilter> staticFilters = [
   RecordFilter(
     type: RecordEntryType.sleep,
     titleKey: RecordCopyKey.typeSleep,
-    icon: SemanticIcons.recordMoon,
+    icon: SemanticIcons.recordSleep,
     accent: SemanticColor.primary,
     selected: true,
   ),

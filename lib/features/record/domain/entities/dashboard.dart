@@ -68,7 +68,7 @@ abstract class RecordDashboard with _$RecordDashboard {
         ),
         const RecordQuickAction(
           type: RecordEntryType.sleep,
-          icon: SemanticIcons.recordMoon,
+          icon: SemanticIcons.recordSleep,
           titleKey: RecordCopyKey.typeSleep,
           subtitleKey: RecordCopyKey.summaryRecorded,
           accent: SemanticColor.primary,
@@ -133,7 +133,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     const RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
-      icon: SemanticIcons.recordMoon,
+      icon: SemanticIcons.recordSleep,
       accent: SemanticColor.primary,
       selected: false,
     ),
@@ -147,7 +147,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     const RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
-      icon: SemanticIcons.tabRecord,
+      icon: SemanticIcons.recordNote,
       accent: SemanticColor.primary,
       selected: false,
     ),

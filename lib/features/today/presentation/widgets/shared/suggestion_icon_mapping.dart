@@ -14,7 +14,7 @@ class SuggestionIconMapping {
   /// Canonical mapping from backend icon string → [IconData].
   static const Map<String, IconData> _mapping = {
     'droplets': SemanticIcons.recordWater,
-    'moon': SemanticIcons.recordMoon,
+    'moon': SemanticIcons.recordSleep,
     'activity': SemanticIcons.recordActivity,
     'utensils': SemanticIcons.recordMeal,
     'user': SemanticIcons.profileUser,
