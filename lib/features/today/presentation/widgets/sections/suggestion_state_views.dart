@@ -30,7 +30,7 @@ class SuggestionEmptyState extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                SemanticIcons.aiEntry,
+                SemanticIcons.aiEmptySuggestion,
                 size: IconSizeTokens.xl2,
                 color: SemanticColor.neutral.solid(context),
               ),

@@ -250,7 +250,7 @@ class AiExplainContent extends StatelessWidget {
               Icon(
                 explanation.aiGenerated
                     ? SemanticIcons.aiGenerated
-                    : SemanticIcons.statusInfo,
+                    : SemanticIcons.statusRuleBased,
                 size: IconSizeTokens.sm,
                 color: explanation.aiGenerated
                     ? SemanticColor.primary.solid(context)
@@ -308,7 +308,7 @@ class AiExplainUnavailable extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            SemanticIcons.statusInfo,
+            SemanticIcons.statusRetryExhausted,
             size: IconSizeTokens.sm,
             color: SemanticColor.neutral.solid(context),
           ),

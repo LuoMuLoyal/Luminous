@@ -35,6 +35,18 @@ abstract final class SemanticIcons {
   /// 工具调用(能力面板工具列表行前缀)。
   static const aiToolCalling = FLucideIcons.wrench;
 
+  /// 未授权访问 AI 摘要的提示。
+  static const aiPermissionHint = FLucideIcons.lockKeyhole;
+
+  /// AI 分析结果为空。
+  static const aiEmptyAnalysis = FLucideIcons.circleDashed;
+
+  /// AI 建议列表空态。
+  static const aiEmptySuggestion = FLucideIcons.orbit;
+
+  /// 后端图标字符串无法识别时的兜底图标。
+  static const aiFallbackIcon = FLucideIcons.wandSparkles;
+
   // ================================================================
   // 健康记录类型
   // ================================================================
@@ -117,6 +129,12 @@ abstract final class SemanticIcons {
 
   /// 用药禁忌「红牌警告」。
   static const safetyRedFlag = FLucideIcons.octagonX;
+
+  /// 规则引擎（非 AI）生成的建议来源标签。
+  static const statusRuleBased = FLucideIcons.listTodo;
+
+  /// AI 解释重试次数耗尽的提示。
+  static const statusRetryExhausted = FLucideIcons.refreshCwOff;
 
   // ================================================================
   // 用药安全 — 风险等级、发现类型各用不同图标

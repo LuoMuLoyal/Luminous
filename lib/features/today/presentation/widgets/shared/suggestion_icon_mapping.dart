@@ -9,7 +9,7 @@ import 'package:luminous/core/design/design.dart';
 class SuggestionIconMapping {
   SuggestionIconMapping._();
 
-  static const IconData _fallback = SemanticIcons.aiEntry;
+  static const IconData _fallback = SemanticIcons.aiFallbackIcon;
 
   /// Canonical mapping from backend icon string → [IconData].
   static const Map<String, IconData> _mapping = {

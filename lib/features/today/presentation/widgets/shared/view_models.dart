@@ -284,7 +284,7 @@ TodayAiSummaryCardContent buildAiCardContent({
     return TodayAiSummaryCardContent(
       bullets: [
         TodayAiSummaryItem(
-          icon: SemanticIcons.aiEntry,
+          icon: SemanticIcons.aiPermissionHint,
           color: SemanticColor.primary,
           text: l10n.todayAiSummaryPreviewHint,
         ),
@@ -311,7 +311,7 @@ TodayAiSummaryCardContent buildAiCardContent({
     return TodayAiSummaryCardContent(
       bullets: [
         TodayAiSummaryItem(
-          icon: SemanticIcons.aiEntry,
+          icon: SemanticIcons.aiEmptyAnalysis,
           color: SemanticColor.primary,
           text: l10n.todayAnalysisEmptyTitle,
         ),

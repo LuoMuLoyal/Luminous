@@ -12,6 +12,7 @@ import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/suggestion_icon_mapping.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -103,7 +104,7 @@ class TodayObservationSection extends ConsumerWidget {
     TodaySuggestionCard card,
   ) {
     return _ObservationItem(
-      icon: _iconFor(card.icon),
+      icon: SuggestionIconMapping.resolve(card.icon),
       title: card.title,
       subtitle: card.reason,
       tag: _tagForConfidence(l10n, card.confidence),
@@ -460,22 +461,5 @@ String _tagForConfidence(
     TodaySuggestionConfidence.medium =>
       l10n.todayObservationMediumConfidenceTag,
     TodaySuggestionConfidence.low => l10n.todayObservationLowConfidenceTag,
-  };
-}
-
-IconData _iconFor(String icon) {
-  return switch (icon) {
-    'droplets' => SemanticIcons.recordWater,
-    'moon' => SemanticIcons.recordMoon,
-    'activity' => SemanticIcons.recordActivity,
-    'utensils' => SemanticIcons.recordMeal,
-    'user' => SemanticIcons.profileUser,
-    'clipboard' => SemanticIcons.recordClipboard,
-    'alert-triangle' => SemanticIcons.statusWarning,
-    'pill' => SemanticIcons.recordMedicine,
-    'trending-up' => SemanticIcons.reportTrend,
-    'lightbulb' => SemanticIcons.aiTip,
-    'info' => SemanticIcons.statusInfo,
-    _ => SemanticIcons.aiEntry,
   };
 }
