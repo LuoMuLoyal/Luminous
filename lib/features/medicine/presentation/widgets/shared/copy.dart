@@ -200,7 +200,7 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
 
   return [
     MedicineAlert(
-      icon: SemanticIcons.reportAdherence,
+      icon: SemanticIcons.safetyAllClear,
       color: SemanticColor.primary,
       softColor: SemanticColor.primary,
       rawTitle: l10n.medicineRiskCheckAllClearAlertTitle,
@@ -218,8 +218,9 @@ IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
       SemanticIcons.safetyDuplicate,
     MedicineRiskFindingType.allergy => SemanticIcons.statusWarning,
     MedicineRiskFindingType.specialGroup => SemanticIcons.safetySafe,
-    MedicineRiskFindingType.foodInteraction => SemanticIcons.recordMeal,
-    MedicineRiskFindingType.longTermUse => SemanticIcons.doseSlot,
+    MedicineRiskFindingType.foodInteraction =>
+      SemanticIcons.safetyFoodInteraction,
+    MedicineRiskFindingType.longTermUse => SemanticIcons.safetyLongTermUse,
     MedicineRiskFindingType.schedulingConflict => SemanticIcons.dosePlanned,
   };
 }

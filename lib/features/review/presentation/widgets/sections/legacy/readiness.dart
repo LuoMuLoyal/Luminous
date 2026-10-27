@@ -164,7 +164,7 @@ class ReviewReadinessSection extends StatelessWidget {
   IconData get _statusIcon => switch (status) {
     ReviewReadinessStatus.signedOut => SemanticIcons.statusBlocked,
     ReviewReadinessStatus.insufficient => SemanticIcons.statusError,
-    ReviewReadinessStatus.ready => SemanticIcons.reportAdherence,
+    ReviewReadinessStatus.ready => SemanticIcons.statusComplete,
   };
 
   String get _badgeLabel => switch (status) {

@@ -287,7 +287,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
 
   IconData _insightIcon(ReviewInsightKind kind) {
     return switch (kind) {
-      ReviewInsightKind.medication => SemanticIcons.reportAdherence,
+      ReviewInsightKind.medication => SemanticIcons.reportInsightAdherence,
       ReviewInsightKind.hydration => SemanticIcons.recordWater,
       ReviewInsightKind.sleep => SemanticIcons.recordMoon,
       ReviewInsightKind.general => SemanticIcons.reportChart,

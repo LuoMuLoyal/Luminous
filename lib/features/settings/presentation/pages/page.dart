@@ -62,7 +62,7 @@ class SettingsPage extends ConsumerWidget {
       children: [
         SettingsNavigationTile(
           tileKey: const Key('settings-row-account-security'),
-          icon: SemanticIcons.safetySafe,
+          icon: SemanticIcons.actionSecurity,
           title: l10n.mineSettingsAccountTitle,
           onTap: () => pushAuthRequiredRoute(context, Routes.account),
         ),
@@ -103,7 +103,7 @@ class SettingsPage extends ConsumerWidget {
           groups: [
             SettingsGroup(
               label: l10n.settingsAccountSecuritySectionTitle,
-              icon: SemanticIcons.safetySafe,
+              icon: SemanticIcons.actionSecurity,
               body: buildAccountSecurityGroup(),
             ),
             SettingsGroup(

@@ -67,6 +67,12 @@ abstract final class SemanticIcons {
   static const statusUnknown = FLucideIcons.fileQuestion;
   static const statusPaused = FLucideIcons.circlePause;
 
+  /// 记录条目「已完成 / 已就绪」完成态。
+  static const statusComplete = FLucideIcons.badgePlus;
+
+  /// 餐食「分析已完成」。
+  static const statusAnalyzed = FLucideIcons.sparkle;
+
   // ================================================================
   // 用药安全 — 风险等级、发现类型各用不同图标
   // ================================================================
@@ -93,6 +99,18 @@ abstract final class SemanticIcons {
   static const safetyTiming = FLucideIcons.clockAlert;
   static const safetyFood = FPhosphorIcons.bowlFood;
 
+  /// 风险检查「已确认安全」结论（区别于 [safetySafe] 的通用安全等级）。
+  static const safetyVerified = FLucideIcons.shieldPlus;
+
+  /// 风险检查「未发现问题 / 全部正常」结论。
+  static const safetyAllClear = FLucideIcons.listChecks;
+
+  /// 长期用药风险发现。
+  static const safetyLongTermUse = FLucideIcons.hourglass;
+
+  /// 安全贴士「服用时机」分类。
+  static const safetyTipTiming = FLucideIcons.clockFading;
+
   // ================================================================
   // 报告
   // ================================================================
@@ -101,6 +119,12 @@ abstract final class SemanticIcons {
   static const reportInsight = FLucideIcons.telescope;
   static const reportHistory = FLucideIcons.history;
   static const reportChart = FLucideIcons.chartLine;
+
+  /// 报告洞察条目「用药依从」分类（区别于 [reportAdherence] 的依从率指标）。
+  static const reportInsightAdherence = FLucideIcons.circleGauge;
+
+  /// 报告「覆盖率 / 数据完备度」。
+  static const reportCoverage = FLucideIcons.packageCheck;
 
   // ================================================================
   // 用药执行
@@ -118,6 +142,18 @@ abstract final class SemanticIcons {
   static const doseRepeat = FLucideIcons.repeat2;
   static const doseCalendarCheck = FLucideIcons.calendarCheck;
 
+  /// 提醒「每日服药次数」。
+  static const doseFrequency = FLucideIcons.timerReset;
+
+  /// 提醒「服药时间点」。
+  static const doseTime = FLucideIcons.clockArrowDown;
+
+  /// 风险检查「上次检查时间」。
+  static const doseCheckedAt = FLucideIcons.calendarSync;
+
+  /// 药箱「下一次服药」指标。
+  static const doseNext = FLucideIcons.clockArrowUp;
+
   // ================================================================
   // 通知
   // ================================================================
@@ -128,6 +164,12 @@ abstract final class SemanticIcons {
   static const notificationDelivered = FLucideIcons.bellCheck;
   static const notificationFailed = FLucideIcons.circleX;
   static const notificationPending = FPhosphorIcons.hourglassMedium;
+
+  /// 提醒推送「已送达」。
+  static const notificationSent = FLucideIcons.sendHorizontal;
+
+  /// 通知设置项 / 提醒开关入口。
+  static const notificationSettings = FLucideIcons.bellDot;
 
   // ================================================================
   // 操作
@@ -140,6 +182,7 @@ abstract final class SemanticIcons {
   static const actionSearch = FLucideIcons.search;
   static const actionClose = FLucideIcons.x;
   static const actionMore = FLucideIcons.ellipsis;
+  static const actionMenu = FLucideIcons.menu;
   static const actionNext = FLucideIcons.chevronRight;
   static const actionPrev = FLucideIcons.chevronLeft;
   static const actionExpand = FLucideIcons.chevronDown;
@@ -153,6 +196,8 @@ abstract final class SemanticIcons {
   static const actionSettings = FLucideIcons.settings;
   static const actionHelp = FLucideIcons.circleHelp;
   static const actionScan = FLucideIcons.scanLine;
+  static const actionTorchOn = FLucideIcons.flashlight;
+  static const actionTorchOff = FLucideIcons.flashlightOff;
   static const actionCamera = FLucideIcons.camera;
   static const actionMic = FLucideIcons.mic;
   static const actionImage = FLucideIcons.image;
@@ -164,6 +209,9 @@ abstract final class SemanticIcons {
   static const actionThemeLight = FLucideIcons.sun;
   static const actionTimeSlot = FLucideIcons.clock4;
 
+  /// 账号安全入口。
+  static const actionSecurity = FLucideIcons.shieldBan;
+
   // ================================================================
   // 健康 / 档案
   // ================================================================
@@ -171,4 +219,10 @@ abstract final class SemanticIcons {
   static const profileCondition = FLucideIcons.heartPulse;
   static const profileEmergency = FLucideIcons.phone;
   static const profileContact = FLucideIcons.contact;
+
+  /// 「我的」档案卡片：基本档案。
+  static const profileArchiveBasic = FLucideIcons.clipboardCheck;
+
+  /// 邮箱已验证标记。
+  static const authEmailVerified = FLucideIcons.mailCheck;
 }

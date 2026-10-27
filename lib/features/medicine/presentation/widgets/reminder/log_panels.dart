@@ -252,7 +252,7 @@ class _TodayLogRow extends StatelessWidget {
       DoseLogStatus.skipped => SemanticIcons.statusUnavailable,
       // missed 为防御性分支，主路径不产生该状态。
       DoseLogStatus.missed => SemanticIcons.notificationFailed,
-      DoseLogStatus.planned => SemanticIcons.doseSlot,
+      DoseLogStatus.planned => SemanticIcons.dosePlanned,
     };
     final label = switch (log.status) {
       DoseLogStatus.taken => l10n.medicineDoseStatusTaken,

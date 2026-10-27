@@ -68,7 +68,8 @@ updated: 2026-09-13
 - `MotionTokens` 提供 4 个 curve token：`entrance`（easeOutCubic）、`exit`（easeInCubic）、`standard`（easeInOut）、`snappy`（easeOut）。
 - `IconSizeTokens`（`icon_size.dart`）提供 8 级 icon size（`xs`~`xl4`；全量值见生成的 [token 清单](generated/design-tokens.md)）。原 level5=32 已拆分为 xl=28（suggestion card）和 xl2=32（avatar/hero）。其 `level1`~`level8` 向后兼容别名已于 2026-09-11 退役。
 - `LucideIconBridge`（`lucide_icon_bridge.dart`，generated）提供 name→IconData 正查 (`resolve`) 和 IconData→name 反查 (`nameOf`)。反查使用预计算 `_reverseMap`（O(1)），而非每次 keystroke O(N) 扫描。
-- `SemanticIconSvg`（`semantic_icon_svg.dart`，2026-09-11 起）——AI 语义 SVG 图标注册表：返回 `Widget`（封装 `SvgPicture.asset` + `colorFilter` 染色），与 `SemanticIcons`（`IconData` 字体图标）并存。**分工**：AI 语义图标（aiEntry/aiAnalyzing/aiGenerated/aiSuggestion/aiTip/aiMemory/aiKnowledge/aiToolCalling 等）用 iconMind SVG（`assets/icon/iconmind/`，MIT），通用操作/状态图标仍走 `SemanticIcons`（Lucide）。数据驱动映射（后端字符串/枚举 → 图标，如 `SuggestionIconMapping`）保留 `IconData` 形态不换。
+- `SemanticIcons`（`semantic_icons.dart`）是全 App **唯一**图标入口，全部为 Lucide（`FLucideIcons`）字体图标；业务代码不直接引用 `FLucideIcons`（`icon_picker_sheet.dart` 例外——它是用户可选图标的调色板，按设计直接枚举 Lucide）。数据驱动映射（后端字符串/枚举 → 图标，如 `SuggestionIconMapping`）保留 `IconData` 形态不换。
+- **一个语义一个图标（铁律）**：每个语义名必须映射到**互不相同**的字形，跨 Lucide/Phosphor 的「同形不同名」（如 `circleCheck` vs `checkCircle`）同样算重复。**严禁同一页面出现两个含义不同但图标相同的点**。校验方法：对 `lib/**` 扫描「不同语义名 → 同一字形」的全局重复与逐文件碰撞（`lib/core/design/tokens/semantic_icons.dart` 的定义 + 各调用点的 `SemanticIcons.*` 引用）。iconMind SVG 注册表已于 2026-10-27 删除。
 - `ElevationTokens`（`elevation.dart`）提供 `raised(FColors)` / `glow(Color)` / `shadowColor(FColors)` 方法。
 - `GradientTokens`（`gradient.dart`）提供 `semanticFill(SemanticColorPalette)` / `tintFade(Color, Color)` 两个命名渐变模式；禁止内联 `LinearGradient`，必须走 token。
 - 旧的 `xxs/xs/...` 与 `xs/sm/...` 别名曾在所有调用点迁移后被移除；2026-08-30 起 `Spacing` / `IconSizeTokens` 以语义名（`xs`/`sm`/`md`/`lg`/`xl`/`xl2`...）为主命名，其 `level*` 向后兼容别名已于 2026-09-11 全部退役。

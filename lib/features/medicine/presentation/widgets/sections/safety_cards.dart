@@ -259,7 +259,7 @@ class SafetySummary {
     return SafetySummary(
       title: l10n.medicineRiskCheckTierConfirmedSafe,
       body: l10n.medicineRiskCheckTierSafeDisclaimer,
-      icon: SemanticIcons.reportAdherence,
+      icon: SemanticIcons.safetyVerified,
     );
   }
 }

@@ -211,7 +211,7 @@ class ProfilePage extends HookConsumerWidget {
                       children: [
                         if (user?.emailVerifiedAt != null) ...[
                           Icon(
-                            SemanticIcons.statusSuccess,
+                            SemanticIcons.authEmailVerified,
                             size: IconSizeTokens.md,
                             color: SemanticColor.success.solid(context),
                           ),
@@ -243,7 +243,7 @@ class ProfilePage extends HookConsumerWidget {
                 error: (_, __) => StateErrorView(
                   title: l10n.mineErrorTitle,
                   description: l10n.mineErrorDescription,
-                  icon: SemanticIcons.reportAdherence,
+                  icon: SemanticIcons.statusError,
                   actionLabel: l10n.todayRetryAction,
                   onAction: () => ref
                       .read(dataChangeBusProvider.notifier)

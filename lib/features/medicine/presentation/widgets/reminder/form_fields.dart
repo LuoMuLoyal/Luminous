@@ -131,10 +131,7 @@ class TimePickerRow extends StatelessWidget {
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.xs,
                 mainAxisSize: MainAxisSize.min,
-                prefix: const Icon(
-                  SemanticIcons.statusPending,
-                  size: Spacing.xl,
-                ),
+                prefix: const Icon(SemanticIcons.doseTime, size: Spacing.xl),
                 suffix: canRemove
                     ? const Icon(SemanticIcons.actionClose, size: Spacing.xl)
                     : null,

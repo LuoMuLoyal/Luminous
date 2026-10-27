@@ -195,7 +195,7 @@ class ReviewView extends StatelessWidget {
           key: const Key('review-preview-overview-card'),
           items: [
             (
-              SemanticIcons.reportAdherence,
+              SemanticIcons.reportCoverage,
               l10n.reviewPreviewCoverageTitle,
               l10n.reviewPreviewCoverageBody,
             ),

@@ -111,7 +111,7 @@ String deliveryStatusLabel(AppLocalizations l10n, String value) {
 
 IconData deliveryStatusIcon(String value) {
   return switch (value) {
-    'delivered' => SemanticIcons.reportAdherence,
+    'delivered' => SemanticIcons.notificationSent,
     'failed' => SemanticIcons.statusError,
     _ => SemanticIcons.statusPending,
   };

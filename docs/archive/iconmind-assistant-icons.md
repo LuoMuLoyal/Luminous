@@ -1,12 +1,19 @@
 ---
-status: active
+status: frozen
 owner: frontend
-updated: 2026-10-18
+updated: 2026-10-27
 ---
 
 # iconMind 调研与应用:AI 语义图标替换
 
-> 结论:**已采用并落地**。iconMind(v0.8.1,MIT)的 AI 语义 SVG 图标已引入
+> **已废弃(2026-10-27 归档)**。本方案于 2026-09-11 落地,2026-10-27 全部回退:
+> iconMind 资产、`SemanticIconSvg` 注册表均已删除,图标统一回 Lucide 单族。
+> 回退原因见 `docs/logs/migration-log/2026-10-27.md`:实测 iconMind 资产内部几何纪律
+> 差(111 个 SVG 的墨迹包围盒极差 **2.36 倍**,Lucide 为 1.58 倍),导致同一 `size`
+> 参数实际画出的图标大小差 26%;另有 `agent.svg` 图形未居中(只占 24 框的上半部)。
+> 本文保留作为技术选型的历史记录,**其中的结论与做法均不再代表现状**。
+
+> 原文结论:**已采用并落地**。iconMind(v0.8.1,MIT)的 AI 语义 SVG 图标已引入
 > `assets/icon/iconmind/`(111 个 SVG),通过 `SemanticIconSvg` 注册表替换
 > assistant / today / review / settings / mine / record / scan / medicine / auth
 > 的纯 AI 触点;通用操作图标保持 Lucide 不动。

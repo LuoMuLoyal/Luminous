@@ -380,7 +380,9 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
               setState(() => _torchOn = !_torchOn);
             },
             child: Icon(
-              _torchOn ? FLucideIcons.flashlight : FLucideIcons.flashlightOff,
+              _torchOn
+                  ? SemanticIcons.actionTorchOn
+                  : SemanticIcons.actionTorchOff,
               color: colors.foreground,
             ),
           ),

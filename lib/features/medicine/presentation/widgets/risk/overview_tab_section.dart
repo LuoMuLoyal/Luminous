@@ -40,7 +40,7 @@ class TabHeader extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              SemanticIcons.doseSlot,
+              SemanticIcons.doseCheckedAt,
               size: IconSizeTokens.sm,
               color: SemanticColor.neutral.solid(context),
             ),
@@ -245,7 +245,7 @@ class SafeStateCard extends StatelessWidget {
                 shape: const CircleBorder(),
               ),
               child: Icon(
-                SemanticIcons.reportAdherence,
+                SemanticIcons.safetyVerified,
                 color: SemanticColor.success.solid(context),
                 size: IconSizeTokens.lg,
               ),

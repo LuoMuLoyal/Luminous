@@ -117,7 +117,7 @@ class AssistantPageBody extends ConsumerWidget {
                     isOpeningConversation
                 ? null
                 : onOpenDrawer,
-            child: const Icon(FLucideIcons.menu),
+            child: const Icon(SemanticIcons.actionMenu),
           ),
         ),
         FTooltip(

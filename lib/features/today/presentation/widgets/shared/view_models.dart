@@ -408,7 +408,7 @@ List<TodayQuickActionItem> buildQuickActionItems(
 
   return [
     TodayQuickActionItem(
-      icon: SemanticIcons.doseTaken,
+      icon: SemanticIcons.statusComplete,
       title: l10n.todayQuickActionConfirmTitle,
       subtitle: confirmSubtitle,
       route: Routes.medicine,

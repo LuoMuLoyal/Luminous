@@ -206,7 +206,7 @@ class _InsightRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     final (icon, color) = switch (item.polarity) {
-      'good' => (SemanticIcons.statusSuccess, SemanticColor.success),
+      'good' => (SemanticIcons.statusAnalyzed, SemanticColor.success),
       'watch' => (SemanticIcons.statusWarning, SemanticColor.warning),
       _ => (SemanticIcons.statusInfo, SemanticColor.neutral),
     };

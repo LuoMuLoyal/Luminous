@@ -285,7 +285,7 @@ class _StructureRows extends StatelessWidget {
                         }
                       },
                       child: Icon(
-                        FLucideIcons.copy,
+                        SemanticIcons.actionCopy,
                         size: IconSizeTokens.sm,
                         color: SemanticColor.primary.solid(context),
                       ),
@@ -540,7 +540,7 @@ class _SequenceCard extends StatelessWidget {
                       }
                     },
                     child: Icon(
-                      FLucideIcons.copy,
+                      SemanticIcons.actionCopy,
                       size: IconSizeTokens.sm,
                       color: SemanticColor.primary.solid(context),
                     ),

@@ -8,7 +8,7 @@ IconData medicineSafetyTipIcon(String category) {
   return switch (category) {
     'alcohol' => SemanticIcons.safetyAlcohol,
     'caffeine' => SemanticIcons.recordCaffeine,
-    'timing' => SemanticIcons.statusPending,
+    'timing' => SemanticIcons.safetyTipTiming,
     'storage' => SemanticIcons.recordSymptom,
     'food' => SemanticIcons.recordMeal,
     'pregnancy' => SemanticIcons.profileCondition,

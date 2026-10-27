@@ -204,7 +204,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
 
   return [
     MineArchiveEntry(
-      icon: SemanticIcons.reportAdherence,
+      icon: SemanticIcons.profileArchiveBasic,
       accent: _green,
       titleKey: MineCopyKey.archiveBasicTitle,
       subtitleKey: MineCopyKey.archiveBasicSubtitle,

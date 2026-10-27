@@ -347,7 +347,7 @@ class TimelineCard extends StatelessWidget {
 
   IconData _trailingIcon() {
     if (entry.trailingIcon == SemanticIcons.statusSuccess) {
-      return SemanticIcons.reportAdherence;
+      return SemanticIcons.statusComplete;
     }
     if (entry.trailingIcon == SemanticIcons.actionNext ||
         entry.trailingIcon == null) {

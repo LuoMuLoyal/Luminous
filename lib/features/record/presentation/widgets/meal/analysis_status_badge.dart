@@ -81,7 +81,7 @@ class MealAnalysisStatusBadge extends StatelessWidget {
       _ => (
         l10n.recordMealAnalysisStatusAnalyzed,
         SemanticColor.primary,
-        SemanticIcons.reportAdherence,
+        SemanticIcons.statusAnalyzed,
       ),
     };
   }

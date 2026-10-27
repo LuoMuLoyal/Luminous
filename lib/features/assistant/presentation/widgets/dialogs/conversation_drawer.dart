@@ -107,7 +107,7 @@ class _AssistantConversationDrawerState
                         context,
                         style,
                         variants,
-                        const Icon(FLucideIcons.search),
+                        const Icon(SemanticIcons.actionSearch),
                       ),
                 ),
                 onNewConversation: widget.onNewConversation,

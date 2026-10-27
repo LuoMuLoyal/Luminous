@@ -28,7 +28,7 @@ class AccountStatusSection extends StatelessWidget {
       ),
       _InfoRow(
         icon: user.emailVerified
-            ? SemanticIcons.statusSuccess
+            ? SemanticIcons.authEmailVerified
             : SemanticIcons.notificationWarning,
         label: l10n.authAccountOverviewEmailVerified,
         value: user.emailVerifiedAt == null

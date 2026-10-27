@@ -122,7 +122,7 @@ class AccountManageSection extends ConsumerWidget {
                 children: [
                   if (user.emailVerifiedAt != null) ...[
                     Icon(
-                      SemanticIcons.statusSuccess,
+                      SemanticIcons.authEmailVerified,
                       size: IconSizeTokens.md,
                       color: SemanticColor.success.solid(context),
                     ),

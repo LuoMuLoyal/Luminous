@@ -254,7 +254,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
       children: [
         Expanded(
           child: _DrugBoxMetricItem(
-            icon: SemanticIcons.doseSlot,
+            icon: SemanticIcons.doseNext,
             color: SemanticColor.primary,
             label: l10n.medicineNextDoseReminderTitle,
             value: value,
