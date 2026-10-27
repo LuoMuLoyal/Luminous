@@ -11,6 +11,7 @@ class DialogShell extends StatelessWidget {
     this.animation,
     this.maxWidth = 560,
     this.maxHeight,
+    this.minWidth = 280,
     this.padding = const EdgeInsets.all(Spacing.xl),
     this.scrollable = true,
   }) : assert(
@@ -26,6 +27,9 @@ class DialogShell extends StatelessWidget {
   final Animation<double>? animation;
   final double maxWidth;
   final double? maxHeight;
+
+  /// 弹窗的最小宽度。内容较短时避免弹窗缩成一小块。
+  final double minWidth;
   final EdgeInsets padding;
   final bool scrollable;
 
@@ -67,7 +71,9 @@ class DialogShell extends StatelessWidget {
             )
           : const .context(),
       constraints: BoxConstraints(
-        minWidth: 0,
+        // min 不能超过 max：调用点可能显式给一个很窄的 maxWidth（如 100），
+        // 此时下限必须让位，否则 BoxConstraints 断言失败。
+        minWidth: minWidth <= maxWidth ? minWidth : 0,
         maxWidth: maxWidth,
         maxHeight: maxHeight ?? double.infinity,
       ),
@@ -93,6 +99,7 @@ Future<T?> showAppDialog<T>({
   required WidgetBuilder builder,
   double? maxWidth,
   double? maxHeight,
+  double? minWidth,
   EdgeInsets padding = const EdgeInsets.all(Spacing.xl),
   bool scrollable = true,
   bool barrierDismissible = true,
@@ -112,6 +119,7 @@ Future<T?> showAppDialog<T>({
       animation: animation,
       maxWidth: effectiveMaxWidth,
       maxHeight: maxHeight,
+      minWidth: minWidth ?? 280,
       padding: padding,
       scrollable: scrollable,
       builder: builder,

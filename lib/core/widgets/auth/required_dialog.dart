@@ -57,40 +57,59 @@ Future<void> showAuthRequiredDialog(
   final l10n = AppLocalizations.of(context)!;
   await showAppDialog<void>(
     context: context,
-    // 走 DialogShell 默认的 scrollable: true:窄屏 + 大字号下提示文案 + 两个按钮
-    // 可能高于弹窗上限,关掉滚动会直接底溢。
+    // 按 Apple HIG 的 alert 规格：宽度固定 270pt，居中，不随屏幕变大。
+    // 之前用 showAppDialog 的自适应宽度（360/420 起，桌面可到 640），在
+    // 浏览器窗口里弹窗被拉成一条横亘整屏的长条，按钮挤在左边，完全不像 alert。
+    maxWidth: _higAlertWidth,
+    minWidth: _higAlertWidth,
+    // HIG 的 alert 内容本身左右各留 16pt。
+    padding: const EdgeInsets.fromLTRB(
+      Spacing.xl,
+      Spacing.xl2,
+      Spacing.xl,
+      Spacing.xl,
+    ),
     builder: (dialogContext) => Column(
       key: const Key('auth-required-dialog'),
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // HIG：标题与正文居中、等宽，标题加粗。
         Text(
           l10n.authNotSignedIn,
-          style: dialogContext.theme.dialogStyle.titleTextStyle,
+          textAlign: TextAlign.center,
+          style: dialogContext.theme.dialogStyle.titleTextStyle.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: Spacing.sm),
         Text(
           l10n.authLoginRequiredPrompt,
+          textAlign: TextAlign.center,
           style: dialogContext.theme.dialogStyle.bodyTextStyle,
         ),
         const SizedBox(height: Spacing.xl),
-        // 两个按钮都是固有宽度:放进 Row 会先占满固有宽度再把右边顶出弹窗
-        // (360dp + 大字号必现)。DialogActionRow 用 Wrap,放不下时换行。
-        DialogActionRow(
-          actions: [
-            DialogActionButton(
-              key: const Key('auth-required-cancel-action'),
-              label: l10n.authCancelAction,
-              variant: FButtonVariant.ghost,
-              onPress: () => Navigator.of(dialogContext).pop(),
+        // HIG：两个按钮并排、等宽，取消在左。
+        Row(
+          children: [
+            Expanded(
+              child: DialogActionButton(
+                key: const Key('auth-required-cancel-action'),
+                label: l10n.authCancelAction,
+                variant: FButtonVariant.ghost,
+                onPress: () => Navigator.of(dialogContext).pop(),
+              ),
             ),
-            DialogActionButton(
-              key: const Key('auth-required-login-action'),
-              label: l10n.authGoLogin,
-              onPress: () {
-                Navigator.of(dialogContext).pop();
-                onLogin();
-              },
+            const SizedBox(width: Spacing.md),
+            Expanded(
+              child: DialogActionButton(
+                key: const Key('auth-required-login-action'),
+                label: l10n.authGoLogin,
+                onPress: () {
+                  Navigator.of(dialogContext).pop();
+                  onLogin();
+                },
+              ),
             ),
           ],
         ),
@@ -98,6 +117,9 @@ Future<void> showAuthRequiredDialog(
     ),
   );
 }
+
+/// Apple HIG 的 alert 固定宽度（270pt）。
+const double _higAlertWidth = 270;
 
 /// Checks the auth session and either pushes [route] directly (if
 /// authenticated) or shows the auth-required dialog (if not).
