@@ -14,7 +14,7 @@ design 层集中存放全部设计 token（颜色/间距/图标/动效/布局）
 
 - 根 — `design.dart`：barrel，导出除 `lucide_icon_bridge.dart` 外的 15 个文件。
 - `color/` — `semantic_color.dart`（`SemanticColor` enum 6 色 + `SemanticColorResolution` 解析扩展）、`palette.dart`（`SemanticColorPalette`：单个语义色的 10 tone 值对象）、`theme_extension.dart`（`SemanticColors`：`ThemeExtension`，注入 `FColors.extensions`，提供 `colors.semantic` 访问）、`high_contrast.dart`（`HighContrastColors`：高对比度无障碍覆盖色）。
-- `tokens/` — `spacing.dart`（`Spacing`：12 级间距 token + `TitleContentGapTokens`：标题与其内容之间的统一间距）、`icon_size.dart`（`IconSizeTokens`：8 级图标尺寸 token）、`semantic_icons.dart`（`SemanticIcons`：语义图标注册表，`{域}{语义}` 命名如 `safetyCaution`）、`semantic_icon_svg.dart`（同一注册表的 SVG 侧入口，随 barrel 一并导出）、`breakpoints.dart`（`Breakpoints`：响应式断点常量）、`elevation.dart`（`ElevationTokens`：`raised` / `glow` / `shadowColor`）、`motion.dart`（`MotionTokens` 6 条 curve + `DurationTokens` 时长）、`markdown_style.dart`（`MarkdownStyle`：`legal` / `ai` 两套 Markdown 样式工厂）、`lucide_icon_bridge.dart`（`LucideIconBridge`：kebab-case 图标名 ↔ `FLucideIcons`，**生成文件**，由 `scripts/setup/generate_lucide_bridge.dart` 生成，**不在 barrel 内**，按需直接 import）。
+- `tokens/` — `spacing.dart`（`Spacing`：12 级间距 token + `TitleContentGapTokens`：标题与其内容之间的统一间距）、`icon_size.dart`（`IconSizeTokens`：8 级图标尺寸 token）、`semantic_icons.dart`（`SemanticIcons`：语义图标注册表，`{域}{语义}` 命名如 `safetyCaution`）、`breakpoints.dart`（`Breakpoints`：响应式断点常量）、`elevation.dart`（`ElevationTokens`：`raised` / `glow` / `shadowColor`）、`motion.dart`（`MotionTokens` 6 条 curve + `DurationTokens` 时长）、`markdown_style.dart`（`MarkdownStyle`：`legal` / `ai` 两套 Markdown 样式工厂）、`lucide_icon_bridge.dart`（`LucideIconBridge`：kebab-case 图标名 ↔ `FLucideIcons`，**生成文件**，由 `scripts/setup/generate_lucide_bridge.dart` 生成，**不在 barrel 内**，按需直接 import）。
 - `layout/` — `gradient.dart`（`GradientTokens`：`semanticFill` / `tintFade` 两个命名渐变，**禁止内联 `LinearGradient`**）、`layout_scale.dart`（`LayoutScale` 值对象 + `LayoutScaleResolver`：按屏宽解析 + 对话框宽度 + 生效字号收口 + `isCompact` 断点判定）、`responsive_sizing.dart`（`ResponsiveSizing`：卡宽/侧栏宽/网格列数/按宽高缩放）、`surface.dart`（`SurfaceTokens`：scaffold 背景 / 容器边框）。
 
 ## Token 体系概览
@@ -53,3 +53,16 @@ design 层集中存放全部设计 token（颜色/间距/图标/动效/布局）
 - `SemanticColor.*.tone(context)`（如 `SemanticColor.neutral.solid(context)`）是**规范形态**，每次调用直接传 `context`，不做变量化。
 - 自带 `context` 参数的内嵌闭包（如 `FBadge.raw(builder: (context, style) {...})`）内照常直接 `context.theme.*`，不引用外层方法提取的变量，避免取值来源漂移。
 - 业务代码引用图标走 `SemanticIcons`（`lib/core/design/tokens/semantic_icons.dart`），不直接散用 `FLucideIcons`；`Icons.*` 视为迁移债。
+
+## 图标约定（`SemanticIcons`）
+
+- **唯一入口**：业务代码只通过 `SemanticIcons.<语义名>` 取 `IconData`；`lib/features/` 下不得出现裸 `FLucideIcons.*`。
+- **一个语义一个字形**：两个不同的语义名不得映射到同一字形（含 Lucide/Phosphor 跨族同形，如 `circleCheck` vs `checkCircle`）。
+- **同类通用语义应复用**：返回、提示、错误、关闭、搜索、导航、确认、删除等标准控件动作，
+  在不同页面出现时应共用同一个语义 token，不要为了「页面内不重复」而拆散。
+- **具体功能含义必须独占**：只有一个页面/模块特有的功能入口才需要单独 token；
+  不同含义共用一个字形（例如把「已确认安全」画成「需谨慎」的盾牌）是错配，必须拆开。
+- **尺寸只用 `IconSizeTokens`**：`Icon(size:)` / `iconSize:` 一律取 `IconSizeTokens.*`，
+  不得传 `Spacing.*`（那是间距刻度，`Spacing.xl`=16 与 `IconSizeTokens.sm`=16 只是数值巧合）。
+- **不加装饰性衬底**：裸字形是默认形态。只有承担触摸目标、状态面、强调层级或固定导航槽位时才允许底衬；
+  不要为了给图标一个背景而包一层容器。

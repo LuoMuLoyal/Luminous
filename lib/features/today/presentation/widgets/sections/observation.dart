@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
@@ -59,12 +60,7 @@ class TodayObservationSection extends ConsumerWidget {
               children: [
                 for (var i = 0; i < items.length; i++) ...[
                   _ObservationTile(item: items[i]),
-                  if (i < items.length - 1)
-                    Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: SemanticColor.neutral.border(context),
-                    ),
+                  if (i < items.length - 1) const AppDivider(),
                 ],
               ],
             );

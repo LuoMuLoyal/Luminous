@@ -185,9 +185,13 @@ class ArchiveRow extends ConsumerWidget with FTileMixin {
                           ),
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(SemanticIcons.actionClose, size: 20),
-                        onPressed: () => Navigator.of(sheetContext).pop(),
+                      FButton.icon(
+                        variant: FButtonVariant.ghost,
+                        onPress: () => Navigator.of(sheetContext).pop(),
+                        child: const Icon(
+                          SemanticIcons.actionClose,
+                          size: IconSizeTokens.md,
+                        ),
                       ),
                     ],
                   ),

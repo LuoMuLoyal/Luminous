@@ -2,6 +2,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
@@ -119,17 +120,18 @@ Future<ReviewDashboardQuery?> _showMobileRangePicker(
                         ),
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(
+                    FButton.icon(
+                      variant: FButtonVariant.ghost,
+                      onPress: () => Navigator.of(sheetContext).pop(),
+                      child: const Icon(
                         SemanticIcons.actionClose,
                         size: IconSizeTokens.md,
                       ),
-                      onPressed: () => Navigator.of(sheetContext).pop(),
                     ),
                   ],
                 ),
               ),
-              const Divider(height: 1),
+              const AppDivider(),
               _RangeOptionTile(
                 label: l10n.reviewRangeLast7Days,
                 selected: selectedQuery.range == ReviewDashboardRange.last7Days,

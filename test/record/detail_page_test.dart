@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -403,8 +404,8 @@ void main() {
     expect(find.text('今日饮水'), findsOneWidget);
     expect(find.text('550 / 3000 ml'), findsOneWidget);
 
-    final progress = tester.widget<LinearProgressIndicator>(
-      find.byType(LinearProgressIndicator),
+    final progress = tester.widget<FDeterminateProgress>(
+      find.byType(FDeterminateProgress),
     );
     expect(progress.value, closeTo(550 / 3000, 0.0001));
   });
@@ -500,8 +501,8 @@ void main() {
     expect(find.text('18.6 / 67.6 fl oz'), findsOneWidget);
     expect(find.text('550 / 2000 ml'), findsNothing);
 
-    final progress = tester.widget<LinearProgressIndicator>(
-      find.byType(LinearProgressIndicator),
+    final progress = tester.widget<FDeterminateProgress>(
+      find.byType(FDeterminateProgress),
     );
     expect(progress.value, closeTo(550 / 2000, 0.0001));
   });

@@ -4,6 +4,8 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// A command palette dialog triggered by Ctrl/Cmd+K.
@@ -120,78 +122,56 @@ class _CommandPaletteState extends State<CommandPalette> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = context.theme;
     final typography = context.theme.typography;
 
-    return Dialog(
-      backgroundColor: theme.colors.background,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      alignment: Alignment.topCenter,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560, maxHeight: 480),
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.lg),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Search field.
-              TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: l10n.commandPaletteSearchHint,
-                  prefixIcon: Icon(
-                    SemanticIcons.actionSearch,
-                    size: 18,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 560, maxHeight: 480),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Search field.
+          FTextField(
+            control: FTextFieldControl.managed(controller: _controller),
+            focusNode: _focusNode,
+            autofocus: true,
+            hint: l10n.commandPaletteSearchHint,
+            onSubmit: (_) => _executeSelected(),
+          ),
+          const AppDivider(),
+          // Results list.
+          if (_filtered.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: Spacing.xl2),
+              child: Center(
+                child: Text(
+                  l10n.commandPaletteEmpty,
+                  style: typography.body.xs.copyWith(
                     color: SemanticColor.neutral.solid(context),
                   ),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.md,
-                    vertical: Spacing.md,
-                  ),
                 ),
-                style: typography.body.sm,
-                onSubmitted: (_) => _executeSelected(),
               ),
-              Divider(color: SemanticColor.neutral.border(context), height: 1),
-              // Results list.
-              if (_filtered.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: Spacing.xl2),
-                  child: Center(
-                    child: Text(
-                      l10n.commandPaletteEmpty,
-                      style: typography.body.xs.copyWith(
-                        color: SemanticColor.neutral.solid(context),
-                      ),
-                    ),
-                  ),
-                )
-              else
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.only(top: Spacing.sm),
-                    itemCount: _filtered.length,
-                    itemBuilder: (context, index) {
-                      final cmd = _filtered[index];
-                      final selected = index == _selectedIndex;
-                      return _CommandTile(
-                        command: cmd,
-                        selected: selected,
-                        onTap: () {
-                          setState(() => _selectedIndex = index);
-                          _executeSelected();
-                        },
-                      );
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.only(top: Spacing.sm),
+                itemCount: _filtered.length,
+                itemBuilder: (context, index) {
+                  final cmd = _filtered[index];
+                  final selected = index == _selectedIndex;
+                  return _CommandTile(
+                    command: cmd,
+                    selected: selected,
+                    onTap: () {
+                      setState(() => _selectedIndex = index);
+                      _executeSelected();
                     },
-                  ),
-                ),
-            ],
-          ),
-        ),
+                  );
+                },
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -306,10 +286,16 @@ class _CommandTileState extends State<_CommandTile> {
 
 /// Shows the command palette as a dialog.
 Future<void> showCommandPalette(BuildContext context) async {
-  await showDialog<void>(
+  await showFDialog<void>(
     context: context,
-    // 命令面板遮罩：固定黑色压暗（系统级 scrim，与主题无关）
-    barrierColor: Colors.black54,
-    builder: (context) => const CommandPalette(),
+    builder: (dialogContext, _, animation) => DialogShell(
+      animation: animation,
+      maxWidth: 560,
+      maxHeight: 480,
+      padding: const EdgeInsets.all(Spacing.lg),
+      // 命令面板是键盘驱动的前置面板，内容自带滚动列表。
+      scrollable: false,
+      builder: (_) => const CommandPalette(),
+    ),
   );
 }

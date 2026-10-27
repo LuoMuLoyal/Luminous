@@ -213,9 +213,15 @@ class _MobileSearchLayout extends StatelessWidget {
           onSubmitted: onQuerySubmitted,
         ),
         if (state.isSearching)
+          // 搜索为不确定时长，用 Forui 的循环指示器而不是 Material 的
+          // LinearProgressIndicator（后者是无限循环条，属 Material 残留）。
           const Padding(
             padding: EdgeInsets.only(top: Spacing.sm),
-            child: LinearProgressIndicator(),
+            child: Center(
+              child: FCircularProgress.loader(
+                size: FCircularProgressSizeVariant.sm,
+              ),
+            ),
           ),
         const SizedBox(height: Spacing.lg),
         SourceSwitch(

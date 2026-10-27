@@ -250,8 +250,8 @@ class _ToolRow extends StatelessWidget {
               ),
               const SizedBox(width: Spacing.sm),
               Flexible(
-                child: Tooltip(
-                  message: status,
+                child: FTooltip(
+                  tipBuilder: (_, __) => Text(status),
                   child: Text(
                     status,
                     maxLines: 1,

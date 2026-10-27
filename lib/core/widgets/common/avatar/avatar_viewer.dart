@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
@@ -38,10 +39,16 @@ Future<void> _showAvatarViewerSurface(BuildContext context, Widget content) {
     );
   }
 
-  return showDialog<void>(
+  return showFDialog<void>(
     context: context,
-    barrierColor: Colors.black87,
-    builder: (_) => content,
+    builder: (dialogContext, _, animation) => DialogShell(
+      animation: animation,
+      maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
+      maxHeight: 420 + Spacing.xl * 2,
+      scrollable: false,
+      padding: EdgeInsets.zero,
+      builder: (_) => content,
+    ),
   );
 }
 
@@ -79,10 +86,13 @@ class AvatarViewer extends StatelessWidget {
               ),
             ),
           ),
-          IconButton(
-            tooltip: l10n.commonClose,
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(SemanticIcons.actionClose),
+          FTooltip(
+            tipBuilder: (_, __) => Text(l10n.commonClose),
+            child: FButton.icon(
+              variant: FButtonVariant.ghost,
+              onPress: () => Navigator.of(context).pop(),
+              child: const Icon(SemanticIcons.actionClose),
+            ),
           ),
         ],
       ),
