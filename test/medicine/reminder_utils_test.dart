@@ -19,8 +19,8 @@ void main() {
   });
 
   group('deliveryStatusIcon', () {
-    test('delivered returns badgeCheck', () {
-      expect(deliveryStatusIcon('delivered'), SemanticIcons.reportAdherence);
+    test('delivered returns send', () {
+      expect(deliveryStatusIcon('delivered'), SemanticIcons.notificationSent);
     });
     test('failed returns circleAlert', () {
       expect(deliveryStatusIcon('failed'), SemanticIcons.statusError);

@@ -65,7 +65,7 @@ void main() {
       expect(find.byIcon(SemanticIcons.statusPending), findsOneWidget);
 
       await pumpBadge(tester, status: 'analyzed');
-      expect(find.byIcon(SemanticIcons.reportAdherence), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.statusAnalyzed), findsOneWidget);
 
       await pumpBadge(tester, status: 'analysis_failed');
       expect(find.byIcon(SemanticIcons.statusError), findsOneWidget);
