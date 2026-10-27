@@ -91,7 +91,7 @@ is the machine projection; the interpretive contract lives in
 | --- | --- | --- | --- |
 | `tabToday` | `` | `FLucideIcons.house` |  |
 | `tabRecord` | `` | `FLucideIcons.notebookPen` |  |
-| `tabMedicine` | `` | `FLucideIcons.tablets` |  |
+| `tabMedicine` | `` | `FLucideIcons.pill` |  |
 | `tabReview` | `` | `FLucideIcons.chartColumn` |  |
 | `tabMine` | `` | `FLucideIcons.userRound` |  |
 | `aiEntry` | `` | `FLucideIcons.sparkles` |  |
@@ -108,7 +108,7 @@ is the machine projection; the interpretive contract lives in
 | `aiFallbackIcon` | `` | `FLucideIcons.wandSparkles` | 后端图标字符串无法识别时的兜底图标。 |
 | `aiGenerate` | `` | `FLucideIcons.wand2` | 触发 AI 生成报告 / 总结。 |
 | `aiScanMethod` | `` | `FLucideIcons.scanText` | 扫码「AI 识别」方式入口。 |
-| `recordMedicine` | `` | `FLucideIcons.pill` |  |
+| `recordMedicine` | `` | `FLucideIcons.tablets` |  |
 | `recordWater` | `` | `FLucideIcons.droplets` |  |
 | `recordMeal` | `` | `FLucideIcons.utensils` |  |
 | `recordSleep` | `` | `FLucideIcons.moonStar` |  |
@@ -246,6 +246,14 @@ is the machine projection; the interpretive contract lives in
 | `actionRemoveDish` | `` | `FLucideIcons.utensilsCrossed` | 删除菜品条目。 |
 | `actionThemeLight` | `` | `FLucideIcons.sun` |  |
 | `actionThemeDark` | `` | `FLucideIcons.moon` | 深色主题。 |
+| `settingsTheme` | `` | `FLucideIcons.palette` | 设置页入口：主题。 |
+| `settingsDataStorage` | `` | `FLucideIcons.hardDrive` | 设置页入口：数据与存储。 |
+| `settingsAdvanced` | `` | `FLucideIcons.flaskConical` | 设置页入口：高级设置。 |
+| `settingsAccessibility` | `` | `FLucideIcons.accessibility` | 设置页入口：无障碍。 |
+| `settingsLanguage` | `` | `FLucideIcons.languages` | 设置页入口：语言。 |
+| `settingsQuickEntry` | `` | `FLucideIcons.clipboardPen` | 设置页分组：快速记录。 |
+| `settingsPrivacy` | `` | `FLucideIcons.eyeOff` | 设置页分组：隐私。 |
+| `settingsAbout` | `` | `FLucideIcons.badgeInfo` | 设置页分组：关于。 |
 | `actionTimeSlot` | `` | `FLucideIcons.clock4` |  |
 | `actionSecurity` | `` | `FLucideIcons.shieldBan` | 账号安全入口。 |
 | `profileUser` | `` | `FLucideIcons.userCheck` |  |
@@ -254,78 +262,9 @@ is the machine projection; the interpretive contract lives in
 | `profileContact` | `` | `FLucideIcons.contact` |  |
 | `profileArchiveBasic` | `` | `FLucideIcons.clipboardCheck` | 「我的」档案卡片：基本档案。 |
 | `authEmailVerified` | `` | `FLucideIcons.mailCheck` | 邮箱已验证标记。 |
-| `actionAddPageBody` | `` | `FLucideIcons.circlePlus` | `actionAdd` 的页面区分版本（page_body.dart）。 |
-| `actionAddNewEntryPanel` | `` | `FLucideIcons.listPlus` | `actionAdd` 的页面区分版本（new_entry_panel.dart）。 |
-| `actionAddTimeline` | `` | `FLucideIcons.calendarPlus2` | `actionAdd` 的页面区分版本（timeline.dart）。 |
-| `actionCalendarDateBar` | `` | `FLucideIcons.calendars` | `actionCalendar` 的页面区分版本（date_bar.dart）。 |
-| `actionCalendarTimelineDragHandler` | `` | `FLucideIcons.calendarCheck2` | `actionCalendar` 的页面区分版本（timeline_drag_handler.dart）。 |
-| `actionCameraContent` | `` | `FLucideIcons.webcam` | `actionCamera` 的页面区分版本（content.dart）。 |
-| `actionCopyOssLicenses` | `` | `FLucideIcons.copyCheck` | `actionCopy` 的页面区分版本（oss_licenses.dart）。 |
-| `actionDeleteListItem` | `` | `FLucideIcons.trash` | `actionDelete` 的页面区分版本（list_item.dart）。 |
-| `actionDeleteEditActions` | `` | `FLucideIcons.packageX` | `actionDelete` 的页面区分版本（edit_actions.dart）。 |
-| `actionExternalLinkHelp` | `` | `FLucideIcons.squareArrowOutUpRight` | `actionExternalLink` 的页面区分版本（help.dart）。 |
-| `actionExternalLinkGeneralSection` | `` | `FLucideIcons.arrowUpRight` | `actionExternalLink` 的页面区分版本（general_section.dart）。 |
-| `actionImageImageAttachmentField` | `` | `FLucideIcons.images` | `actionImage` 的页面区分版本（image_attachment_field.dart）。 |
-| `actionImageTimelineItem` | `` | `FLucideIcons.imageOff` | `actionImage` 的页面区分版本（timeline_item.dart）。 |
-| `actionMessageEmptySupport` | `` | `FLucideIcons.messageCircle` | `actionMessage` 的页面区分版本（empty_support.dart）。 |
-| `actionMessageAccountManageSections` | `` | `FLucideIcons.messagesSquare` | `actionMessage` 的页面区分版本（account_manage_sections.dart）。 |
-| `actionMessageFormBody` | `` | `FLucideIcons.inbox` | `actionMessage` 的页面区分版本（form_body.dart）。 |
-| `actionRefreshTopBar` | `` | `FLucideIcons.refreshCcw` | `actionRefresh` 的页面区分版本（top_bar.dart）。 |
-| `actionSearchConversationDrawerList` | `` | `FLucideIcons.searchCheck` | `actionSearch` 的页面区分版本（conversation_drawer_list.dart）。 |
-| `actionSearchResults` | `` | `FLucideIcons.searchSlash` | `actionSearch` 的页面区分版本（results.dart）。 |
-| `actionSearchInput` | `` | `FLucideIcons.searchCode` | `actionSearch` 的页面区分版本（input.dart）。 |
-| `actionSettingsPageBody` | `` | `FLucideIcons.settings2` | `actionSettings` 的页面区分版本（page_body.dart）。 |
-| `actionSettingsSessions` | `` | `FLucideIcons.columnsSettings` | `actionSettings` 的页面区分版本（sessions.dart）。 |
-| `actionSettingsTopBar` | `` | `FLucideIcons.sliders` | `actionSettings` 的页面区分版本（top_bar.dart）。 |
-| `actionSettingsGeneralSection` | `` | `FLucideIcons.slidersHorizontal` | `actionSettings` 的页面区分版本（general_section.dart）。 |
-| `aiAnalyzingExport` | `` | `FLucideIcons.loader` | `aiAnalyzing` 的页面区分版本（export.dart）。 |
-| `aiAnalyzingTopBar` | `` | `FLucideIcons.loaderPinwheel` | `aiAnalyzing` 的页面区分版本（top_bar.dart）。 |
+| `actionSettingsTopBar` | `` | `FLucideIcons.cog` | `actionSettings` 的页面区分版本（top_bar.dart）。 |
 | `aiEntryTopBar` | `` | `FLucideIcons.cpu` | `aiEntry` 的页面区分版本（top_bar.dart）。 |
-| `aiGenerateTopBar` | `` | `FLucideIcons.star` | `aiGenerate` 的页面区分版本（top_bar.dart）。 |
-| `authEmailVerifiedAccountManageSections` | `` | `FLucideIcons.mailOpen` | `authEmailVerified` 的页面区分版本（account_manage_sections.dart）。 |
-| `doseCheckedAtMobileSafety` | `` | `FLucideIcons.clipboardClock` | `doseCheckedAt` 的页面区分版本（mobile_safety.dart）。 |
-| `medicineBottleWorkspaceView` | `` | `FLucideIcons.package` | `medicineBottle` 的页面区分版本（workspace_view.dart）。 |
-| `notificationBellTopBar` | `` | `FLucideIcons.bellOff` | `notificationBell` 的页面区分版本（top_bar.dart）。 |
-| `notificationReadListItem` | `` | `FLucideIcons.mails` | `notificationRead` 的页面区分版本（list_item.dart）。 |
-| `profileUserViewModels` | `` | `FLucideIcons.user` | `profileUser` 的页面区分版本（view_models.dart）。 |
-| `recordActivitySuggestionHistory` | `` | `FLucideIcons.footprints` | `recordActivity` 的页面区分版本（suggestion_history.dart）。 |
-| `recordClipboardSuggestionHistory` | `` | `FLucideIcons.clipboard` | `recordClipboard` 的页面区分版本（suggestion_history.dart）。 |
-| `recordMedicineViewModels` | `` | `FLucideIcons.hospital` | `recordMedicine` 的页面区分版本（view_models.dart）。 |
-| `recordSleepSuggestionIconMapping` | `` | `FLucideIcons.bedDouble` | `recordSleep` 的页面区分版本（suggestion_icon_mapping.dart）。 |
-| `recordSleepViewModels` | `` | `FLucideIcons.bed` | `recordSleep` 的页面区分版本（view_models.dart）。 |
-| `recordWaterWaterProgress` | `` | `FLucideIcons.droplet` | `recordWater` 的页面区分版本（water_progress.dart）。 |
-| `recordWaterViewModels` | `` | `FLucideIcons.dropletOff` | `recordWater` 的页面区分版本（view_models.dart）。 |
-| `reportHistoryDashboardPreview` | `` | `FLucideIcons.archive` | `reportHistory` 的页面区分版本（dashboard_preview.dart）。 |
-| `reportHistoryMoreActions` | `` | `FLucideIcons.archiveRestore` | `reportHistory` 的页面区分版本（more_actions.dart）。 |
-| `reportHistoryReviewView` | `` | `FLucideIcons.fileClock` | `reportHistory` 的页面区分版本（review_view.dart）。 |
-| `reportInsightReviewView` | `` | `FLucideIcons.eye` | `reportInsight` 的页面区分版本（review_view.dart）。 |
-| `reportTrendSuggestionHistory` | `` | `FLucideIcons.trendingDown` | `reportTrend` 的页面区分版本（suggestion_history.dart）。 |
-| `reportTrendReviewView` | `` | `FLucideIcons.trendingUpDown` | `reportTrend` 的页面区分版本（review_view.dart）。 |
-| `safetyCautionRiskCheck` | `` | `FLucideIcons.shieldEllipsis` | `safetyCaution` 的页面区分版本（risk_check.dart）。 |
-| `safetyCautionMedicineAddPrecheckDialog` | `` | `FLucideIcons.shieldUser` | `safetyCaution` 的页面区分版本（medicine_add_precheck_dialog.dart）。 |
-| `safetyInteractionResults` | `` | `FLucideIcons.arrowRightLeft` | `safetyInteraction` 的页面区分版本（results.dart）。 |
-| `safetyPanelEmptySafetyCards` | `` | `FLucideIcons.shieldQuestionMark` | `safetyPanelEmpty` 的页面区分版本（safety_cards.dart）。 |
-| `safetySchedulingConflictFormBody` | `` | `FLucideIcons.calendarOff` | `safetySchedulingConflict` 的页面区分版本（form_body.dart）。 |
-| `safetySchedulingConflictCopy` | `` | `FLucideIcons.calendarMinus` | `safetySchedulingConflict` 的页面区分版本（copy.dart）。 |
-| `safetyVerifiedSafetyCards` | `` | `FLucideIcons.bookmarkCheck` | `safetyVerified` 的页面区分版本（safety_cards.dart）。 |
-| `statusAllDoneListItem` | `` | `FLucideIcons.bookCheck` | `statusAllDone` 的页面区分版本（list_item.dart）。 |
-| `statusAnalyzedAnalysisSummaryCard` | `` | `FLucideIcons.pencilSparkles` | `statusAnalyzed` 的页面区分版本（analysis_summary_card.dart）。 |
-| `statusBlockedExport` | `` | `FLucideIcons.circleOff` | `statusBlocked` 的页面区分版本（export.dart）。 |
-| `statusBlockedDashboardView` | `` | `FLucideIcons.shieldLock` | `statusBlocked` 的页面区分版本（dashboard_view.dart）。 |
-| `statusDoneMedicineAddPrecheckDialog` | `` | `FLucideIcons.squareCheck` | `statusDone` 的页面区分版本（medicine_add_precheck_dialog.dart）。 |
-| `statusDoneResults` | `` | `FLucideIcons.checkCircle` | `statusDone` 的页面区分版本（results.dart）。 |
-| `statusDoneWhatHappened` | `` | `FLucideIcons.checkSquare` | `statusDone` 的页面区分版本（what_happened.dart）。 |
-| `statusDoneCompletedActions` | `` | `FLucideIcons.checkSquare2` | `statusDone` 的页面区分版本（completed_actions.dart）。 |
-| `statusDoneScanResultSheet` | `` | `FLucideIcons.squareCheckBig` | `statusDone` 的页面区分版本（scan_result_sheet.dart）。 |
-| `statusDoneSelectionIcon` | `` | `FLucideIcons.checkLine` | `statusDone` 的页面区分版本（selection_icon.dart）。 |
-| `statusDoneSuggestionInteractive` | `` | `FLucideIcons.fileCheck` | `statusDone` 的页面区分版本（suggestion_interactive.dart）。 |
-| `statusPendingSecurityCenter` | `` | `FLucideIcons.clock1` | `statusPending` 的页面区分版本（security_center.dart）。 |
-| `statusPendingRecognizeDialog` | `` | `FLucideIcons.clock2` | `statusPending` 的页面区分版本（recognize_dialog.dart）。 |
-| `statusPendingWhatHappened` | `` | `FLucideIcons.clock5` | `statusPending` 的页面区分版本（what_happened.dart）。 |
-| `statusSkippedOverviewStates` | `` | `FLucideIcons.circleSlash2` | `statusSkipped` 的页面区分版本（overview_states.dart）。 |
-| `statusSuccessRecognizeDialog` | `` | `FLucideIcons.checkCircle2` | `statusSuccess` 的页面区分版本（recognize_dialog.dart）。 |
-| `statusUnavailableImageAttachmentField` | `` | `FLucideIcons.squareSlash` | `statusUnavailable` 的页面区分版本（image_attachment_field.dart）。 |
-| `statusUnavailableTimelineItem` | `` | `FLucideIcons.slash` | `statusUnavailable` 的页面区分版本（timeline_item.dart）。 |
+| `notificationBellTopBar` | `` | `FLucideIcons.bellElectric` | `notificationBell` 的页面区分版本（top_bar.dart）。 |
 
 ### tokens/spacing.dart
 
