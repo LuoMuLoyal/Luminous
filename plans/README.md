@@ -39,6 +39,7 @@ YYYY-MM-DD-short-task-name.md
 
 | 计划 | 状态 | 备注 |
 | --- | --- | --- |
+| [`2026-10-27-local-storage-overhaul.md`](2026-10-27-local-storage-overhaul.md) | 未开工 | 三项独立整改：**P0** 补全 cache-first 覆盖面（23 个 repository 只有 4 个读缓存；`fetchSummary` 以「derived data」为由跳过缓存，导致首页首帧必出骨架屏）；**P1** shared_preferences → `hive_ce`（破坏性，不迁移旧偏好）；**P2** 引入 SQLCipher 加密本地库（破坏性，检测到明文库即删除重建）。同时删除误导性的 `PrefKeys.accessToken/refreshToken` 与 `SharedPrefsLucentSessionStore`。修订 ADR-0006 §4/§5 |
 | [`2026-10-27-icon-family-consolidation-lucide.md`](2026-10-27-icon-family-consolidation-lucide.md) | 待评审 / 未开工 | iconMind 弃用，统一 Lucide 单族；实测 iconMind 资产墨迹极差 2.36 倍（Lucide 1.58 倍），导致 `size: 14` 实际画出 9.3~11.7px；迁移面仅 **5 个语义位 / 6 个调用点 / 2 个文件**；衬底（`SoftIcon` 44px 容器装 24px 字形）与 iconMind 无关，单列 P3 |
 | [`2026-10-23-harmonyos-arkts-web-shell-plan.md`](2026-10-23-harmonyos-arkts-web-shell-plan.md) | 待评审 / 未开工 | 鸿蒙改走 **ArkTS 壳 + ArkWeb 渲染 Web 产物**（放弃 Flutter 鸿蒙 SDK 路线，原因见 `docs/logs/migration-log/2026-10-23.md`）；壳工程放 **`Luminous/ohos/`** 同仓（先例：`native/` 的 KMP Gradle 工程）；Dart 允许改接缝（不再要求零改动）；头号风险是 ArkWeb 是否暴露 `dart.library.js_interop`（决定 drift 能否用）与 `localStorage` 是否持久化（决定登录态）；Phase 0 打穿 U1~U8 |
 | [`2026-10-21-ddd-refactor-frontend.md`](2026-10-21-ddd-refactor-frontend.md) | 未开工 | 标准 DDD 首批：Health Logging / Medication / Identity & Access / Preferences；先落 ADR-0010、上下文映射与聚合边界，再逐 feature 迁移；UI/路由/契约零变化 |
