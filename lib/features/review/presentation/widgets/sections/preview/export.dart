@@ -111,10 +111,10 @@ class _ExportCard extends StatelessWidget {
         ? clinicShareInFlight
         : requestInFlight.inFlight;
     final trailingIcon = showProgress
-        ? SemanticIcons.aiAnalyzingExport
+        ? SemanticIcons.aiAnalyzing
         : enabled && !anyInFlight
         ? SemanticIcons.actionNext
-        : SemanticIcons.statusBlockedExport;
+        : SemanticIcons.statusBlocked;
     final typography = context.theme.typography;
 
     return FButton.raw(

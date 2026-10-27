@@ -15,7 +15,7 @@ class MedicineErrorView extends StatelessWidget {
     return StateErrorView(
       title: l10n.medicineErrorTitle,
       description: l10n.medicineErrorDescription,
-      icon: SemanticIcons.medicineBottleWorkspaceView,
+      icon: SemanticIcons.medicineBottle,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: StateTone.warning,

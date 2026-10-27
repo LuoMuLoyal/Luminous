@@ -307,9 +307,8 @@ class _MedicineRecognizeDialogState
                             children: [
                               Icon(
                                 _selectedIndex == i
-                                    ? SemanticIcons.statusSuccessRecognizeDialog
-                                    : SemanticIcons
-                                          .statusPendingRecognizeDialog,
+                                    ? SemanticIcons.statusSuccess
+                                    : SemanticIcons.statusPending,
                                 color: SemanticColor.primary.solid(context),
                                 size: 20,
                               ),

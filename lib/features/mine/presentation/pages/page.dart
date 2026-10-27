@@ -61,14 +61,14 @@ class MinePage extends ConsumerWidget {
               suffixes: [
                 IconActionButton(
                   tooltip: l10n.mineHeaderNotifications,
-                  icon: SemanticIcons.notificationBell,
+                  icon: SemanticIcons.notificationBellTopBar,
                   onTap: () => context.push(Routes.notifications),
                   showBadge: hasUnread,
                 ),
                 IconActionButton(
                   key: const Key('mine-settings-action'),
                   tooltip: l10n.mineHeaderSettings,
-                  icon: SemanticIcons.actionSettings,
+                  icon: SemanticIcons.actionSettingsTopBar,
                   onTap: () => context.push(Routes.settings),
                 ),
               ],

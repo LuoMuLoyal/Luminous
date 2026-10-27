@@ -189,7 +189,7 @@ class ReminderFormBody extends StatelessWidget {
                 ),
                 const AppDivider(),
                 ValueActionRow(
-                  icon: SemanticIcons.safetySchedulingConflictFormBody,
+                  icon: SemanticIcons.safetySchedulingConflict,
                   title: l10n.medicineReminderEndDateLabel,
                   value: dateLabel(
                     l10n,
@@ -216,7 +216,7 @@ class ReminderFormBody extends StatelessWidget {
                 ),
                 const AppDivider(),
                 UnavailableMethodRow(
-                  icon: SemanticIcons.actionMessageFormBody,
+                  icon: SemanticIcons.actionMessage,
                   title: l10n.medicineReminderSmsLabel,
                   subtitle: l10n.medicineReminderSmsUnavailableHint,
                   status: l10n.medicineReminderUnavailableStatus,

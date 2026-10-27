@@ -223,7 +223,7 @@ IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
       SemanticIcons.safetyFoodInteraction,
     MedicineRiskFindingType.longTermUse => SemanticIcons.safetyLongTermUse,
     MedicineRiskFindingType.schedulingConflict =>
-      SemanticIcons.safetySchedulingConflictCopy,
+      SemanticIcons.safetySchedulingConflict,
   };
 }
 

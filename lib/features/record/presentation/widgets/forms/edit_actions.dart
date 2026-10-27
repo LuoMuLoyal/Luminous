@@ -49,7 +49,7 @@ class RecordEditActions extends StatelessWidget {
                   height: 16,
                   child: FCircularProgress(),
                 )
-              : const Icon(SemanticIcons.actionDeleteEditActions, size: 18),
+              : const Icon(SemanticIcons.actionDelete, size: 18),
           child: Text(l10n.recordDeleteAction),
         ),
       ],

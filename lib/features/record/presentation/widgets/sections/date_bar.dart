@@ -170,7 +170,7 @@ class _CalendarPickerButton extends StatelessWidget {
           : () => _showCalendarPicker(context),
       variant: FButtonVariant.ghost,
       size: FButtonSizeVariant.sm,
-      child: const Icon(SemanticIcons.actionCalendarDateBar),
+      child: const Icon(SemanticIcons.actionCalendar),
     );
   }
 

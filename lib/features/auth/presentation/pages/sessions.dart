@@ -112,7 +112,7 @@ class _SessionTile extends StatelessWidget with FTileMixin {
 
     return FTile(
       prefix: Icon(
-        SemanticIcons.actionSettingsSessions,
+        SemanticIcons.actionSettings,
         color: SemanticColor.neutral.solid(context),
       ),
       title: Text(title),

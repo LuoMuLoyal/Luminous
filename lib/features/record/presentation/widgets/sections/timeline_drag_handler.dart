@@ -66,7 +66,7 @@ class TimelineDragFeedback extends StatelessWidget {
                 ),
                 const SizedBox(width: Spacing.md),
                 Icon(
-                  SemanticIcons.actionCalendarTimelineDragHandler,
+                  SemanticIcons.actionCalendar,
                   color: SemanticColor.neutral.solid(context),
                   size: 16,
                 ),

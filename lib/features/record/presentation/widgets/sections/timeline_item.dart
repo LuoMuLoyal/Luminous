@@ -384,11 +384,10 @@ class TimelineImageThumbnail extends StatelessWidget {
         child: CachedNetworkImage(
           imageUrl: imageUrl,
           fit: BoxFit.cover,
-          placeholder: (context, url) => const TimelineImageFallback(
-            icon: SemanticIcons.actionImageTimelineItem,
-          ),
+          placeholder: (context, url) =>
+              const TimelineImageFallback(icon: SemanticIcons.actionImage),
           errorWidget: (context, url, error) => const TimelineImageFallback(
-            icon: SemanticIcons.statusUnavailableTimelineItem,
+            icon: SemanticIcons.statusUnavailable,
           ),
           imageBuilder: (context, provider) => Semantics(
             label: label,

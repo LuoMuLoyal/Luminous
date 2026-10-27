@@ -142,7 +142,7 @@ class ReviewMoreActionsSheet extends StatelessWidget {
           const SizedBox(height: Spacing.sm),
           _MoreActionTile(
             key: const Key('more-legacy-report'),
-            icon: SemanticIcons.reportHistoryMoreActions,
+            icon: SemanticIcons.reportHistory,
             color: SemanticColor.neutral,
             title: l10n.reviewMoreLegacyTitle,
             subtitle: l10n.reviewMoreLegacySubtitle,

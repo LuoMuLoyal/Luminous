@@ -68,7 +68,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                   ),
                   const SizedBox(height: Spacing.md),
                   _ScopeRow(
-                    icon: SemanticIcons.safetyCautionMedicineAddPrecheckDialog,
+                    icon: SemanticIcons.safetyCaution,
                     label: l10n.medicineSearchPrecheckScopeAllergy,
                   ),
                   _ScopeRow(
@@ -272,7 +272,7 @@ class _ScopeRow extends StatelessWidget {
             ),
           ),
           Icon(
-            SemanticIcons.statusDoneMedicineAddPrecheckDialog,
+            SemanticIcons.statusDone,
             color: SemanticColor.primary.solid(context),
             size: IconSizeTokens.sm,
           ),

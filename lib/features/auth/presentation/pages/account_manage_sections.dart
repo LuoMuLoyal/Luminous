@@ -122,7 +122,7 @@ class AccountManageSection extends ConsumerWidget {
                 children: [
                   if (user.emailVerifiedAt != null) ...[
                     Icon(
-                      SemanticIcons.authEmailVerifiedAccountManageSections,
+                      SemanticIcons.authEmailVerified,
                       size: IconSizeTokens.md,
                       color: SemanticColor.success.solid(context),
                     ),
@@ -355,7 +355,7 @@ class SupportLinksSection extends ConsumerWidget {
           children: [
             Expanded(
               child: _SupportLink(
-                icon: SemanticIcons.actionMessageAccountManageSections,
+                icon: SemanticIcons.actionMessage,
                 label: l10n.authAccountManageSupportCustomerService,
                 onTap: () => _openCustomerService(context),
               ),

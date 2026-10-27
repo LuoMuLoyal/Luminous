@@ -35,7 +35,7 @@ class WaterProgressCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(SemanticIcons.recordWaterWaterProgress, size: 18),
+              const Icon(SemanticIcons.recordWater, size: 18),
               const SizedBox(width: Spacing.md),
               Expanded(
                 child: Text(

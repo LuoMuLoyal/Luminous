@@ -76,12 +76,10 @@ class ReviewSuggestionHistorySection extends StatelessWidget {
   IconData _iconForType(TodaySuggestionType type) {
     return switch (type) {
       TodaySuggestionType.confirmedRisk => SemanticIcons.statusWarning,
-      TodaySuggestionType.compliance =>
-        SemanticIcons.recordClipboardSuggestionHistory,
-      TodaySuggestionType.trend => SemanticIcons.reportTrendSuggestionHistory,
+      TodaySuggestionType.compliance => SemanticIcons.recordClipboard,
+      TodaySuggestionType.trend => SemanticIcons.reportTrend,
       TodaySuggestionType.behaviorAdvice => SemanticIcons.aiTip,
-      TodaySuggestionType.coverage =>
-        SemanticIcons.recordActivitySuggestionHistory,
+      TodaySuggestionType.coverage => SemanticIcons.recordActivity,
     };
   }
 

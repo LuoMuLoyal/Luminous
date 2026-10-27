@@ -388,7 +388,7 @@ class _ReportLockedFeaturesHint extends StatelessWidget {
       children: [
         FTile(
           prefix: Icon(
-            SemanticIcons.statusBlockedDashboardView,
+            SemanticIcons.statusBlocked,
             color: SemanticColor.primary.solid(context),
             size: IconSizeTokens.lg,
           ),

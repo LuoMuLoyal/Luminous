@@ -185,7 +185,7 @@ class SafetyEmptyCard extends StatelessWidget {
                   shape: const CircleBorder(),
                 ),
                 child: Icon(
-                  SemanticIcons.safetyPanelEmptySafetyCards,
+                  SemanticIcons.safetyPanelEmpty,
                   color: SemanticColor.neutral.solid(context),
                   size: IconSizeTokens.lg,
                 ),
@@ -259,7 +259,7 @@ class SafetySummary {
     return SafetySummary(
       title: l10n.medicineRiskCheckTierConfirmedSafe,
       body: l10n.medicineRiskCheckTierSafeDisclaimer,
-      icon: SemanticIcons.safetyVerifiedSafetyCards,
+      icon: SemanticIcons.safetyVerified,
     );
   }
 }

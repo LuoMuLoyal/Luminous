@@ -162,7 +162,7 @@ class BarcodeScanResultSheetState
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        SemanticIcons.statusDoneScanResultSheet,
+                        SemanticIcons.statusDone,
                         size: IconSizeTokens.sm,
                         color: SemanticColor.primary.solid(context),
                       ),

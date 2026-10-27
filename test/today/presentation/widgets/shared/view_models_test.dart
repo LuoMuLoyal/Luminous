@@ -122,7 +122,7 @@ void main() {
         text: 'Take your medicine',
       );
       final item = mapAiBullet(bullet);
-      expect(item.icon, SemanticIcons.recordMedicineViewModels);
+      expect(item.icon, SemanticIcons.recordMedicine);
       expect(item.text, 'Take your medicine');
       expect(item.color, SemanticColor.primary);
     });
@@ -133,7 +133,7 @@ void main() {
         text: 'Drink more water',
       );
       final item = mapAiBullet(bullet);
-      expect(item.icon, SemanticIcons.recordWaterViewModels);
+      expect(item.icon, SemanticIcons.recordWater);
       expect(item.text, 'Drink more water');
     });
 
@@ -143,7 +143,7 @@ void main() {
         text: 'Sleep earlier',
       );
       final item = mapAiBullet(bullet);
-      expect(item.icon, SemanticIcons.recordSleepViewModels);
+      expect(item.icon, SemanticIcons.recordSleep);
       expect(item.text, 'Sleep earlier');
     });
 

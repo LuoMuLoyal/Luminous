@@ -84,7 +84,7 @@ class AssistantConversationDrawerList extends StatelessWidget {
       return StateMessageView(
         title: searchEmptyTitle,
         description: searchEmptyDescription,
-        icon: SemanticIcons.actionSearchConversationDrawerList,
+        icon: SemanticIcons.actionSearch,
       );
     }
 

@@ -344,7 +344,7 @@ void main() {
         dashboard,
         onWaterQuickEntry: () => tapped = true,
       );
-      expect(items[1].icon, SemanticIcons.recordWaterViewModels);
+      expect(items[1].icon, SemanticIcons.recordWater);
       expect(items[1].title, l10n.todayDrinkWaterAction);
       expect(items[1].subtitle, l10n.todayQuickActionWaterSubtitle);
       expect(items[1].onTap, isNotNull);
@@ -372,7 +372,7 @@ void main() {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
       final items = buildQuickActionItems(l10n, dashboard);
-      expect(items[4].icon, SemanticIcons.profileUserViewModels);
+      expect(items[4].icon, SemanticIcons.profileUser);
       expect(items[4].route, Routes.mine);
     });
 
@@ -408,7 +408,7 @@ void main() {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
       final bullets = buildAiSummaryBullets(l10n, dashboard);
-      expect(bullets[0].icon, SemanticIcons.recordMedicineViewModels);
+      expect(bullets[0].icon, SemanticIcons.recordMedicine);
     });
 
     test(
@@ -444,7 +444,7 @@ void main() {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
       final bullets = buildAiSummaryBullets(l10n, dashboard);
-      expect(bullets[1].icon, SemanticIcons.recordWaterViewModels);
+      expect(bullets[1].icon, SemanticIcons.recordWater);
     });
 
     test(
@@ -475,7 +475,7 @@ void main() {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
       final bullets = buildAiSummaryBullets(l10n, dashboard);
-      expect(bullets[2].icon, SemanticIcons.recordSleepViewModels);
+      expect(bullets[2].icon, SemanticIcons.recordSleep);
     });
 
     test('all bullets use SemanticColor.primary', () async {

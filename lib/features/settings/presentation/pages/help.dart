@@ -357,7 +357,7 @@ class _FeedbackSection extends ConsumerWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              suffix: const Icon(SemanticIcons.actionExternalLinkHelp),
+              suffix: const Icon(SemanticIcons.actionExternalLink),
               onPress: () {
                 unawaited(_openFeedback(context, supportEmail));
               },

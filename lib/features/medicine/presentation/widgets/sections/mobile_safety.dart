@@ -128,7 +128,7 @@ class LastCheckedLabel extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            SemanticIcons.doseCheckedAtMobileSafety,
+            SemanticIcons.doseCheckedAt,
             size: IconSizeTokens.sm,
             color: SemanticColor.warning.solid(context),
           ),
@@ -149,7 +149,7 @@ class LastCheckedLabel extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
-          SemanticIcons.doseCheckedAtMobileSafety,
+          SemanticIcons.doseCheckedAt,
           size: IconSizeTokens.sm,
           color: SemanticColor.neutral.solid(context),
         ),
