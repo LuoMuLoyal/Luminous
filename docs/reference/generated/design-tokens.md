@@ -102,6 +102,12 @@ is the machine projection; the interpretive contract lives in
 | `aiMemory` | `` | `FLucideIcons.memoryStick` | 持久化记忆(能力面板摘要行)。 |
 | `aiKnowledge` | `` | `FLucideIcons.database` | 知识库 / RAG 检索(能力面板摘要行)。 |
 | `aiToolCalling` | `` | `FLucideIcons.wrench` | 工具调用(能力面板工具列表行前缀)。 |
+| `aiPermissionHint` | `` | `FLucideIcons.lockKeyhole` | 未授权访问 AI 摘要的提示。 |
+| `aiEmptyAnalysis` | `` | `FLucideIcons.circleDashed` | AI 分析结果为空。 |
+| `aiEmptySuggestion` | `` | `FLucideIcons.orbit` | AI 建议列表空态。 |
+| `aiFallbackIcon` | `` | `FLucideIcons.wandSparkles` | 后端图标字符串无法识别时的兜底图标。 |
+| `aiGenerate` | `` | `FLucideIcons.wand2` | 触发 AI 生成报告 / 总结。 |
+| `aiScanMethod` | `` | `FLucideIcons.scanText` | 扫码「AI 识别」方式入口。 |
 | `recordMedicine` | `` | `FLucideIcons.pill` |  |
 | `recordWater` | `` | `FLucideIcons.droplets` |  |
 | `recordMeal` | `` | `FLucideIcons.utensils` |  |
@@ -112,7 +118,6 @@ is the machine projection; the interpretive contract lives in
 | `recordNote` | `` | `FLucideIcons.fileText` |  |
 | `recordActivity` | `` | `FLucideIcons.activity` |  |
 | `recordWeight` | `` | `FLucideIcons.scale` |  |
-| `recordMoon` | `` | `FLucideIcons.moon` |  |
 | `recordClipboard` | `` | `FLucideIcons.clipboardList` |  |
 | `statusError` | `` | `FLucideIcons.circleAlert` |  |
 | `statusWarning` | `` | `FLucideIcons.triangleAlert` |  |
@@ -120,12 +125,32 @@ is the machine projection; the interpretive contract lives in
 | `statusInfo` | `` | `FLucideIcons.info` |  |
 | `statusPending` | `` | `FLucideIcons.clock3` |  |
 | `statusSkipped` | `` | `FLucideIcons.ban` |  |
+| `statusMissed` | `` | `FLucideIcons.calendarX` | 漏服 / 未服用。 |
 | `statusDone` | `` | `FLucideIcons.check` |  |
 | `statusAllDone` | `` | `FLucideIcons.checkCheck` |  |
 | `statusBlocked` | `` | `FLucideIcons.lock` |  |
 | `statusUnavailable` | `` | `FLucideIcons.circleSlash` |  |
 | `statusUnknown` | `` | `FLucideIcons.fileQuestion` |  |
 | `statusPaused` | `` | `FLucideIcons.circlePause` |  |
+| `statusComplete` | `` | `FLucideIcons.badgePlus` | 记录条目「已完成 / 已就绪」完成态。 |
+| `statusAnalyzed` | `` | `FLucideIcons.sparkle` | 餐食「分析已完成」。 |
+| `statusBanner` | `` | `FLucideIcons.megaphone` | 详情页信息横幅。 |
+| `statusNoContent` | `` | `FLucideIcons.fileX` | 详情页「暂无内容」空态。 |
+| `statusCoverageGap` | `` | `FLucideIcons.scanEye` | 风险检查「数据覆盖不足」。 |
+| `statusConfirmedRisk` | `` | `FLucideIcons.octagonAlert` | 风险检查「已发现风险」。 |
+| `severityHigh` | `` | `FLucideIcons.alertTriangle` | 风险严重度「高」。 |
+| `severityMedium` | `` | `FLucideIcons.alertCircle` | 风险严重度「中」。 |
+| `severityInfo` | `` | `FLucideIcons.badgeAlert` | 风险严重度「提示」。 |
+| `doseStartDate` | `` | `FLucideIcons.calendarFold` | 提醒「开始日期」。 |
+| `actionAddToCalendar` | `` | `FLucideIcons.calendarPlus` | 提醒「加入系统日历」动作。 |
+| `medicineNoneSelected` | `` | `FLucideIcons.packageOpen` | 提醒编辑页「未选择药品」空态。 |
+| `doseSound` | `` | `FLucideIcons.volumeOff` | 提醒「提示音」设置项。 |
+| `medicineReminderRow` | `` | `FLucideIcons.packageSearch` | 提醒合并展示的药品行。 |
+| `statusPermissionDenied` | `` | `FLucideIcons.cameraOff` | 扫码「相机权限被拒」空态。 |
+| `safetyFinding` | `` | `FLucideIcons.hardHat` | 风险发现条目前缀。 |
+| `safetyRedFlag` | `` | `FLucideIcons.octagonX` | 用药禁忌「红牌警告」。 |
+| `statusRuleBased` | `` | `FLucideIcons.listTodo` | 规则引擎（非 AI）生成的建议来源标签。 |
+| `statusRetryExhausted` | `` | `FLucideIcons.refreshCwOff` | AI 解释重试次数耗尽的提示。 |
 | `safetySafe` | `` | `FLucideIcons.shieldCheck` |  |
 | `safetyNeutral` | `` | `FLucideIcons.shield` |  |
 | `safetyCaution` | `` | `FLucideIcons.shieldAlert` |  |
@@ -145,11 +170,21 @@ is the machine projection; the interpretive contract lives in
 | `safetyStorage` | `` | `FPhosphorIcons.warehouse` |  |
 | `safetyTiming` | `` | `FLucideIcons.clockAlert` |  |
 | `safetyFood` | `` | `FPhosphorIcons.bowlFood` |  |
+| `safetyVerified` | `` | `FLucideIcons.shieldPlus` | 风险检查「已确认安全」结论（区别于 [safetySafe] 的通用安全等级）。 |
+| `safetyAllClear` | `` | `FLucideIcons.listChecks` | 风险检查「未发现问题 / 全部正常」结论。 |
+| `safetyLongTermUse` | `` | `FLucideIcons.hourglass` | 长期用药风险发现。 |
+| `safetyTipTiming` | `` | `FLucideIcons.clockFading` | 安全贴士「服用时机」分类。 |
+| `safetySpecialPopulation` | `` | `FLucideIcons.shieldQuestion` | 风险发现「特殊人群」。 |
+| `safetyPanelEmpty` | `` | `FLucideIcons.shieldOff` | 安全面板空态（尚未建立安全信息）。 |
+| `safetyGuard` | `` | `FLucideIcons.shieldHalf` | 药品页安全守护入口。 |
 | `reportTrend` | `` | `FLucideIcons.trendingUp` |  |
 | `reportAdherence` | `` | `FLucideIcons.badgeCheck` |  |
 | `reportInsight` | `` | `FLucideIcons.telescope` |  |
 | `reportHistory` | `` | `FLucideIcons.history` |  |
 | `reportChart` | `` | `FLucideIcons.chartLine` |  |
+| `reportMonthlyExport` | `` | `FLucideIcons.calendarDays` | 月度报告导出动作。 |
+| `reportInsightAdherence` | `` | `FLucideIcons.circleGauge` | 报告洞察条目「用药依从」分类（区别于 [reportAdherence] 的依从率指标）。 |
+| `reportCoverage` | `` | `FLucideIcons.packageCheck` | 报告「覆盖率 / 数据完备度」。 |
 | `medicineDose` | `` | `FPhosphorIcons.prescription` |  |
 | `medicineBottle` | `` | `FLucideIcons.pillBottle` |  |
 | `medicineKit` | `` | `FLucideIcons.briefcaseMedical` |  |
@@ -162,6 +197,10 @@ is the machine projection; the interpretive contract lives in
 | `dosePower` | `` | `FLucideIcons.power` |  |
 | `doseRepeat` | `` | `FLucideIcons.repeat2` |  |
 | `doseCalendarCheck` | `` | `FLucideIcons.calendarCheck` |  |
+| `doseFrequency` | `` | `FLucideIcons.timerReset` | 提醒「每日服药次数」。 |
+| `doseTime` | `` | `FLucideIcons.clockArrowDown` | 提醒「服药时间点」。 |
+| `doseCheckedAt` | `` | `FLucideIcons.calendarSync` | 风险检查「上次检查时间」。 |
+| `doseNext` | `` | `FLucideIcons.clockArrowUp` | 药箱「下一次服药」指标。 |
 | `notificationBell` | `` | `FLucideIcons.bell` |  |
 | `notificationBellRing` | `` | `FLucideIcons.bellRing` |  |
 | `notificationRead` | `` | `FLucideIcons.mailMinus` |  |
@@ -169,6 +208,8 @@ is the machine projection; the interpretive contract lives in
 | `notificationDelivered` | `` | `FLucideIcons.bellCheck` |  |
 | `notificationFailed` | `` | `FLucideIcons.circleX` |  |
 | `notificationPending` | `` | `FPhosphorIcons.hourglassMedium` |  |
+| `notificationSent` | `` | `FLucideIcons.sendHorizontal` | 提醒推送「已送达」。 |
+| `notificationSettings` | `` | `FLucideIcons.bellDot` | 通知设置项 / 提醒开关入口。 |
 | `actionAdd` | `` | `FLucideIcons.plus` |  |
 | `actionAddCard` | `` | `FLucideIcons.squarePlus` |  |
 | `actionEdit` | `` | `FLucideIcons.pencil` |  |
@@ -177,6 +218,7 @@ is the machine projection; the interpretive contract lives in
 | `actionSearch` | `` | `FLucideIcons.search` |  |
 | `actionClose` | `` | `FLucideIcons.x` |  |
 | `actionMore` | `` | `FLucideIcons.ellipsis` |  |
+| `actionMenu` | `` | `FLucideIcons.menu` |  |
 | `actionNext` | `` | `FLucideIcons.chevronRight` |  |
 | `actionPrev` | `` | `FLucideIcons.chevronLeft` |  |
 | `actionExpand` | `` | `FLucideIcons.chevronDown` |  |
@@ -190,6 +232,8 @@ is the machine projection; the interpretive contract lives in
 | `actionSettings` | `` | `FLucideIcons.settings` |  |
 | `actionHelp` | `` | `FLucideIcons.circleHelp` |  |
 | `actionScan` | `` | `FLucideIcons.scanLine` |  |
+| `actionTorchOn` | `` | `FLucideIcons.flashlight` |  |
+| `actionTorchOff` | `` | `FLucideIcons.flashlightOff` |  |
 | `actionCamera` | `` | `FLucideIcons.camera` |  |
 | `actionMic` | `` | `FLucideIcons.mic` |  |
 | `actionImage` | `` | `FLucideIcons.image` |  |
@@ -198,12 +242,90 @@ is the machine projection; the interpretive contract lives in
 | `actionMail` | `` | `FLucideIcons.mail` |  |
 | `actionSend` | `` | `FLucideIcons.send` |  |
 | `actionMinus` | `` | `FLucideIcons.minus` |  |
+| `actionAddImage` | `` | `FLucideIcons.imagePlus` | 表单「添加图片」。 |
+| `actionRemoveDish` | `` | `FLucideIcons.utensilsCrossed` | 删除菜品条目。 |
 | `actionThemeLight` | `` | `FLucideIcons.sun` |  |
+| `actionThemeDark` | `` | `FLucideIcons.moon` | 深色主题。 |
 | `actionTimeSlot` | `` | `FLucideIcons.clock4` |  |
+| `actionSecurity` | `` | `FLucideIcons.shieldBan` | 账号安全入口。 |
 | `profileUser` | `` | `FLucideIcons.userCheck` |  |
 | `profileCondition` | `` | `FLucideIcons.heartPulse` |  |
 | `profileEmergency` | `` | `FLucideIcons.phone` |  |
 | `profileContact` | `` | `FLucideIcons.contact` |  |
+| `profileArchiveBasic` | `` | `FLucideIcons.clipboardCheck` | 「我的」档案卡片：基本档案。 |
+| `authEmailVerified` | `` | `FLucideIcons.mailCheck` | 邮箱已验证标记。 |
+| `actionAddPageBody` | `` | `FLucideIcons.circlePlus` | `actionAdd` 的页面区分版本（page_body.dart）。 |
+| `actionAddNewEntryPanel` | `` | `FLucideIcons.listPlus` | `actionAdd` 的页面区分版本（new_entry_panel.dart）。 |
+| `actionAddTimeline` | `` | `FLucideIcons.calendarPlus2` | `actionAdd` 的页面区分版本（timeline.dart）。 |
+| `actionCalendarDateBar` | `` | `FLucideIcons.calendars` | `actionCalendar` 的页面区分版本（date_bar.dart）。 |
+| `actionCalendarTimelineDragHandler` | `` | `FLucideIcons.calendarCheck2` | `actionCalendar` 的页面区分版本（timeline_drag_handler.dart）。 |
+| `actionCameraContent` | `` | `FLucideIcons.webcam` | `actionCamera` 的页面区分版本（content.dart）。 |
+| `actionCopyOssLicenses` | `` | `FLucideIcons.copyCheck` | `actionCopy` 的页面区分版本（oss_licenses.dart）。 |
+| `actionDeleteListItem` | `` | `FLucideIcons.trash` | `actionDelete` 的页面区分版本（list_item.dart）。 |
+| `actionDeleteEditActions` | `` | `FLucideIcons.packageX` | `actionDelete` 的页面区分版本（edit_actions.dart）。 |
+| `actionExternalLinkHelp` | `` | `FLucideIcons.squareArrowOutUpRight` | `actionExternalLink` 的页面区分版本（help.dart）。 |
+| `actionExternalLinkGeneralSection` | `` | `FLucideIcons.arrowUpRight` | `actionExternalLink` 的页面区分版本（general_section.dart）。 |
+| `actionImageImageAttachmentField` | `` | `FLucideIcons.images` | `actionImage` 的页面区分版本（image_attachment_field.dart）。 |
+| `actionImageTimelineItem` | `` | `FLucideIcons.imageOff` | `actionImage` 的页面区分版本（timeline_item.dart）。 |
+| `actionMessageEmptySupport` | `` | `FLucideIcons.messageCircle` | `actionMessage` 的页面区分版本（empty_support.dart）。 |
+| `actionMessageAccountManageSections` | `` | `FLucideIcons.messagesSquare` | `actionMessage` 的页面区分版本（account_manage_sections.dart）。 |
+| `actionMessageFormBody` | `` | `FLucideIcons.inbox` | `actionMessage` 的页面区分版本（form_body.dart）。 |
+| `actionRefreshTopBar` | `` | `FLucideIcons.refreshCcw` | `actionRefresh` 的页面区分版本（top_bar.dart）。 |
+| `actionSearchConversationDrawerList` | `` | `FLucideIcons.searchCheck` | `actionSearch` 的页面区分版本（conversation_drawer_list.dart）。 |
+| `actionSearchResults` | `` | `FLucideIcons.searchSlash` | `actionSearch` 的页面区分版本（results.dart）。 |
+| `actionSearchInput` | `` | `FLucideIcons.searchCode` | `actionSearch` 的页面区分版本（input.dart）。 |
+| `actionSettingsPageBody` | `` | `FLucideIcons.settings2` | `actionSettings` 的页面区分版本（page_body.dart）。 |
+| `actionSettingsSessions` | `` | `FLucideIcons.columnsSettings` | `actionSettings` 的页面区分版本（sessions.dart）。 |
+| `actionSettingsTopBar` | `` | `FLucideIcons.sliders` | `actionSettings` 的页面区分版本（top_bar.dart）。 |
+| `actionSettingsGeneralSection` | `` | `FLucideIcons.slidersHorizontal` | `actionSettings` 的页面区分版本（general_section.dart）。 |
+| `aiAnalyzingExport` | `` | `FLucideIcons.loader` | `aiAnalyzing` 的页面区分版本（export.dart）。 |
+| `aiAnalyzingTopBar` | `` | `FLucideIcons.loaderPinwheel` | `aiAnalyzing` 的页面区分版本（top_bar.dart）。 |
+| `aiEntryTopBar` | `` | `FLucideIcons.cpu` | `aiEntry` 的页面区分版本（top_bar.dart）。 |
+| `aiGenerateTopBar` | `` | `FLucideIcons.star` | `aiGenerate` 的页面区分版本（top_bar.dart）。 |
+| `authEmailVerifiedAccountManageSections` | `` | `FLucideIcons.mailOpen` | `authEmailVerified` 的页面区分版本（account_manage_sections.dart）。 |
+| `doseCheckedAtMobileSafety` | `` | `FLucideIcons.clipboardClock` | `doseCheckedAt` 的页面区分版本（mobile_safety.dart）。 |
+| `medicineBottleWorkspaceView` | `` | `FLucideIcons.package` | `medicineBottle` 的页面区分版本（workspace_view.dart）。 |
+| `notificationBellTopBar` | `` | `FLucideIcons.bellOff` | `notificationBell` 的页面区分版本（top_bar.dart）。 |
+| `notificationReadListItem` | `` | `FLucideIcons.mails` | `notificationRead` 的页面区分版本（list_item.dart）。 |
+| `profileUserViewModels` | `` | `FLucideIcons.user` | `profileUser` 的页面区分版本（view_models.dart）。 |
+| `recordActivitySuggestionHistory` | `` | `FLucideIcons.footprints` | `recordActivity` 的页面区分版本（suggestion_history.dart）。 |
+| `recordClipboardSuggestionHistory` | `` | `FLucideIcons.clipboard` | `recordClipboard` 的页面区分版本（suggestion_history.dart）。 |
+| `recordMedicineViewModels` | `` | `FLucideIcons.hospital` | `recordMedicine` 的页面区分版本（view_models.dart）。 |
+| `recordSleepSuggestionIconMapping` | `` | `FLucideIcons.bedDouble` | `recordSleep` 的页面区分版本（suggestion_icon_mapping.dart）。 |
+| `recordSleepViewModels` | `` | `FLucideIcons.bed` | `recordSleep` 的页面区分版本（view_models.dart）。 |
+| `recordWaterWaterProgress` | `` | `FLucideIcons.droplet` | `recordWater` 的页面区分版本（water_progress.dart）。 |
+| `recordWaterViewModels` | `` | `FLucideIcons.dropletOff` | `recordWater` 的页面区分版本（view_models.dart）。 |
+| `reportHistoryDashboardPreview` | `` | `FLucideIcons.archive` | `reportHistory` 的页面区分版本（dashboard_preview.dart）。 |
+| `reportHistoryMoreActions` | `` | `FLucideIcons.archiveRestore` | `reportHistory` 的页面区分版本（more_actions.dart）。 |
+| `reportHistoryReviewView` | `` | `FLucideIcons.fileClock` | `reportHistory` 的页面区分版本（review_view.dart）。 |
+| `reportInsightReviewView` | `` | `FLucideIcons.eye` | `reportInsight` 的页面区分版本（review_view.dart）。 |
+| `reportTrendSuggestionHistory` | `` | `FLucideIcons.trendingDown` | `reportTrend` 的页面区分版本（suggestion_history.dart）。 |
+| `reportTrendReviewView` | `` | `FLucideIcons.trendingUpDown` | `reportTrend` 的页面区分版本（review_view.dart）。 |
+| `safetyCautionRiskCheck` | `` | `FLucideIcons.shieldEllipsis` | `safetyCaution` 的页面区分版本（risk_check.dart）。 |
+| `safetyCautionMedicineAddPrecheckDialog` | `` | `FLucideIcons.shieldUser` | `safetyCaution` 的页面区分版本（medicine_add_precheck_dialog.dart）。 |
+| `safetyInteractionResults` | `` | `FLucideIcons.arrowRightLeft` | `safetyInteraction` 的页面区分版本（results.dart）。 |
+| `safetyPanelEmptySafetyCards` | `` | `FLucideIcons.shieldQuestionMark` | `safetyPanelEmpty` 的页面区分版本（safety_cards.dart）。 |
+| `safetySchedulingConflictFormBody` | `` | `FLucideIcons.calendarOff` | `safetySchedulingConflict` 的页面区分版本（form_body.dart）。 |
+| `safetySchedulingConflictCopy` | `` | `FLucideIcons.calendarMinus` | `safetySchedulingConflict` 的页面区分版本（copy.dart）。 |
+| `safetyVerifiedSafetyCards` | `` | `FLucideIcons.bookmarkCheck` | `safetyVerified` 的页面区分版本（safety_cards.dart）。 |
+| `statusAllDoneListItem` | `` | `FLucideIcons.bookCheck` | `statusAllDone` 的页面区分版本（list_item.dart）。 |
+| `statusAnalyzedAnalysisSummaryCard` | `` | `FLucideIcons.pencilSparkles` | `statusAnalyzed` 的页面区分版本（analysis_summary_card.dart）。 |
+| `statusBlockedExport` | `` | `FLucideIcons.circleOff` | `statusBlocked` 的页面区分版本（export.dart）。 |
+| `statusBlockedDashboardView` | `` | `FLucideIcons.shieldLock` | `statusBlocked` 的页面区分版本（dashboard_view.dart）。 |
+| `statusDoneMedicineAddPrecheckDialog` | `` | `FLucideIcons.squareCheck` | `statusDone` 的页面区分版本（medicine_add_precheck_dialog.dart）。 |
+| `statusDoneResults` | `` | `FLucideIcons.checkCircle` | `statusDone` 的页面区分版本（results.dart）。 |
+| `statusDoneWhatHappened` | `` | `FLucideIcons.checkSquare` | `statusDone` 的页面区分版本（what_happened.dart）。 |
+| `statusDoneCompletedActions` | `` | `FLucideIcons.checkSquare2` | `statusDone` 的页面区分版本（completed_actions.dart）。 |
+| `statusDoneScanResultSheet` | `` | `FLucideIcons.squareCheckBig` | `statusDone` 的页面区分版本（scan_result_sheet.dart）。 |
+| `statusDoneSelectionIcon` | `` | `FLucideIcons.checkLine` | `statusDone` 的页面区分版本（selection_icon.dart）。 |
+| `statusDoneSuggestionInteractive` | `` | `FLucideIcons.fileCheck` | `statusDone` 的页面区分版本（suggestion_interactive.dart）。 |
+| `statusPendingSecurityCenter` | `` | `FLucideIcons.clock1` | `statusPending` 的页面区分版本（security_center.dart）。 |
+| `statusPendingRecognizeDialog` | `` | `FLucideIcons.clock2` | `statusPending` 的页面区分版本（recognize_dialog.dart）。 |
+| `statusPendingWhatHappened` | `` | `FLucideIcons.clock5` | `statusPending` 的页面区分版本（what_happened.dart）。 |
+| `statusSkippedOverviewStates` | `` | `FLucideIcons.circleSlash2` | `statusSkipped` 的页面区分版本（overview_states.dart）。 |
+| `statusSuccessRecognizeDialog` | `` | `FLucideIcons.checkCircle2` | `statusSuccess` 的页面区分版本（recognize_dialog.dart）。 |
+| `statusUnavailableImageAttachmentField` | `` | `FLucideIcons.squareSlash` | `statusUnavailable` 的页面区分版本（image_attachment_field.dart）。 |
+| `statusUnavailableTimelineItem` | `` | `FLucideIcons.slash` | `statusUnavailable` 的页面区分版本（timeline_item.dart）。 |
 
 ### tokens/spacing.dart
 
