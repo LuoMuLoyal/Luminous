@@ -113,17 +113,17 @@ class SettingsPage extends ConsumerWidget {
             ),
             SettingsGroup(
               label: l10n.settingsQuickEntrySection,
-              icon: SemanticIcons.safetyAllergy,
+              icon: SemanticIcons.settingsQuickEntry,
               body: const QuickEntrySection(),
             ),
             SettingsGroup(
               label: l10n.settingsPrivacySectionTitle,
-              icon: SemanticIcons.statusBlocked,
+              icon: SemanticIcons.settingsPrivacy,
               body: PrivacySection(signedIn: signedIn),
             ),
             SettingsGroup(
               label: l10n.settingsAboutSectionTitle,
-              icon: SemanticIcons.statusInfo,
+              icon: SemanticIcons.settingsAbout,
               body: AboutSection(signedIn: signedIn),
             ),
           ],

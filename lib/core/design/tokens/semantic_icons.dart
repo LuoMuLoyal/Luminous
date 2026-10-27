@@ -318,6 +318,15 @@ abstract final class SemanticIcons {
 
   /// 设置页入口：语言。
   static const settingsLanguage = FLucideIcons.languages;
+
+  /// 设置页分组：快速记录。
+  static const settingsQuickEntry = FLucideIcons.clipboardPen;
+
+  /// 设置页分组：隐私。
+  static const settingsPrivacy = FLucideIcons.eyeOff;
+
+  /// 设置页分组：关于。
+  static const settingsAbout = FLucideIcons.badgeInfo;
   static const actionTimeSlot = FLucideIcons.clock4;
 
   /// 账号安全入口。
