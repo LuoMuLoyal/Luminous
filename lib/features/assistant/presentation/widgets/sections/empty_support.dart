@@ -62,7 +62,10 @@ class _AssistantEmptySupportState extends State<AssistantEmptySupport> {
           children: [
             for (final prompt in prompts)
               FTile(
-                prefix: const Icon(SemanticIcons.actionMessage, size: 18),
+                prefix: const Icon(
+                  SemanticIcons.actionMessageEmptySupport,
+                  size: 18,
+                ),
                 title: Text(prompt),
                 onPress: () => widget.onStarterPrompt(prompt),
               ),

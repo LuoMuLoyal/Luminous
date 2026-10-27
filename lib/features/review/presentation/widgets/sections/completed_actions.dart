@@ -63,7 +63,7 @@ class CompletedActionsSection extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.sm),
         ReviewFactRow(
-          icon: SemanticIcons.statusDone,
+          icon: SemanticIcons.statusDoneCompletedActions,
           text: l10n.reviewReviewDoseConfirmedLabel(confirmed),
         ),
         ReviewFactRow(
@@ -84,7 +84,7 @@ class CompletedActionsSection extends StatelessWidget {
           const SizedBox(height: Spacing.sm),
           for (final checkIn in checkIns.take(_maxCheckInRows))
             ReviewFactRow(
-              icon: SemanticIcons.statusDone,
+              icon: SemanticIcons.statusDoneCompletedActions,
               text: l10n.reviewReviewCheckInRecordLabel(
                 _checkInDateLabel(context, reviewArgString(checkIn, 'date')),
                 reviewOutcomeLabel(

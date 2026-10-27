@@ -150,7 +150,7 @@ class SecurityCenterPage extends ConsumerWidget {
               children: [
                 FTile(
                   prefix: Icon(
-                    SemanticIcons.statusPending,
+                    SemanticIcons.statusPendingSecurityCenter,
                     color: SemanticColor.neutral.solid(context),
                     size: IconSizeTokens.md,
                   ),

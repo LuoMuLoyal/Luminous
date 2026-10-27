@@ -84,7 +84,7 @@ class OssLicenseDetailPage extends StatelessWidget {
                   license,
                   l10n.settingsAboutLicenseCopiedToast,
                 ),
-          prefix: const Icon(SemanticIcons.actionCopy),
+          prefix: const Icon(SemanticIcons.actionCopyOssLicenses),
           child: Text(l10n.commonCopy),
         ),
       ],

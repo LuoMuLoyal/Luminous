@@ -146,7 +146,7 @@ class _MedicineRiskCheckPageState extends ConsumerState<MedicineRiskCheckPage> {
         error: (_, __) => StateErrorView(
           title: l10n.medicineErrorTitle,
           description: l10n.medicineErrorDescription,
-          icon: SemanticIcons.safetyCaution,
+          icon: SemanticIcons.safetyCautionRiskCheck,
           actionLabel: l10n.todayRetryAction,
           onAction: () => ref.invalidate(medicineRiskCheckRecordsProvider),
           tone: StateTone.warning,

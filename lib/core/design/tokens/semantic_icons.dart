@@ -317,4 +317,223 @@ abstract final class SemanticIcons {
 
   /// 邮箱已验证标记。
   static const authEmailVerified = FLucideIcons.mailCheck;
+
+  // ================================================================
+  // 页面内按区块拆分的图标（同页不同区块不复用同一字形）
+  // ================================================================
+  /// `actionAdd` 的页面区分版本（page_body.dart）。
+  static const actionAddPageBody = FLucideIcons.circlePlus;
+
+  /// `actionAdd` 的页面区分版本（new_entry_panel.dart）。
+  static const actionAddNewEntryPanel = FLucideIcons.listPlus;
+
+  /// `actionAdd` 的页面区分版本（timeline.dart）。
+  static const actionAddTimeline = FLucideIcons.calendarPlus2;
+
+  /// `actionCalendar` 的页面区分版本（date_bar.dart）。
+  static const actionCalendarDateBar = FLucideIcons.calendars;
+
+  /// `actionCalendar` 的页面区分版本（timeline_drag_handler.dart）。
+  static const actionCalendarTimelineDragHandler = FLucideIcons.calendarCheck2;
+
+  /// `actionCamera` 的页面区分版本（content.dart）。
+  static const actionCameraContent = FLucideIcons.webcam;
+
+  /// `actionCopy` 的页面区分版本（oss_licenses.dart）。
+  static const actionCopyOssLicenses = FLucideIcons.copyCheck;
+
+  /// `actionDelete` 的页面区分版本（list_item.dart）。
+  static const actionDeleteListItem = FLucideIcons.trash;
+
+  /// `actionDelete` 的页面区分版本（edit_actions.dart）。
+  static const actionDeleteEditActions = FLucideIcons.packageX;
+
+  /// `actionExternalLink` 的页面区分版本（help.dart）。
+  static const actionExternalLinkHelp = FLucideIcons.squareArrowOutUpRight;
+
+  /// `actionExternalLink` 的页面区分版本（general_section.dart）。
+  static const actionExternalLinkGeneralSection = FLucideIcons.arrowUpRight;
+
+  /// `actionImage` 的页面区分版本（image_attachment_field.dart）。
+  static const actionImageImageAttachmentField = FLucideIcons.images;
+
+  /// `actionImage` 的页面区分版本（timeline_item.dart）。
+  static const actionImageTimelineItem = FLucideIcons.imageOff;
+
+  /// `actionMessage` 的页面区分版本（empty_support.dart）。
+  static const actionMessageEmptySupport = FLucideIcons.messageCircle;
+
+  /// `actionMessage` 的页面区分版本（account_manage_sections.dart）。
+  static const actionMessageAccountManageSections = FLucideIcons.messagesSquare;
+
+  /// `actionMessage` 的页面区分版本（form_body.dart）。
+  static const actionMessageFormBody = FLucideIcons.inbox;
+
+  /// `actionRefresh` 的页面区分版本（top_bar.dart）。
+  static const actionRefreshTopBar = FLucideIcons.refreshCcw;
+
+  /// `actionSearch` 的页面区分版本（conversation_drawer_list.dart）。
+  static const actionSearchConversationDrawerList = FLucideIcons.searchCheck;
+
+  /// `actionSearch` 的页面区分版本（results.dart）。
+  static const actionSearchResults = FLucideIcons.searchSlash;
+
+  /// `actionSearch` 的页面区分版本（input.dart）。
+  static const actionSearchInput = FLucideIcons.searchCode;
+
+  /// `actionSettings` 的页面区分版本（page_body.dart）。
+  static const actionSettingsPageBody = FLucideIcons.settings2;
+
+  /// `actionSettings` 的页面区分版本（sessions.dart）。
+  static const actionSettingsSessions = FLucideIcons.columnsSettings;
+
+  /// `actionSettings` 的页面区分版本（top_bar.dart）。
+  static const actionSettingsTopBar = FLucideIcons.sliders;
+
+  /// `actionSettings` 的页面区分版本（general_section.dart）。
+  static const actionSettingsGeneralSection = FLucideIcons.slidersHorizontal;
+
+  /// `aiAnalyzing` 的页面区分版本（export.dart）。
+  static const aiAnalyzingExport = FLucideIcons.loader;
+
+  /// `aiAnalyzing` 的页面区分版本（top_bar.dart）。
+  static const aiAnalyzingTopBar = FLucideIcons.loaderPinwheel;
+
+  /// `aiEntry` 的页面区分版本（top_bar.dart）。
+  static const aiEntryTopBar = FLucideIcons.cpu;
+
+  /// `aiGenerate` 的页面区分版本（top_bar.dart）。
+  static const aiGenerateTopBar = FLucideIcons.star;
+
+  /// `authEmailVerified` 的页面区分版本（account_manage_sections.dart）。
+  static const authEmailVerifiedAccountManageSections = FLucideIcons.mailOpen;
+
+  /// `doseCheckedAt` 的页面区分版本（mobile_safety.dart）。
+  static const doseCheckedAtMobileSafety = FLucideIcons.clipboardClock;
+
+  /// `medicineBottle` 的页面区分版本（workspace_view.dart）。
+  static const medicineBottleWorkspaceView = FLucideIcons.package;
+
+  /// `notificationBell` 的页面区分版本（top_bar.dart）。
+  static const notificationBellTopBar = FLucideIcons.bellOff;
+
+  /// `notificationRead` 的页面区分版本（list_item.dart）。
+  static const notificationReadListItem = FLucideIcons.mails;
+
+  /// `profileUser` 的页面区分版本（view_models.dart）。
+  static const profileUserViewModels = FLucideIcons.user;
+
+  /// `recordActivity` 的页面区分版本（suggestion_history.dart）。
+  static const recordActivitySuggestionHistory = FLucideIcons.footprints;
+
+  /// `recordClipboard` 的页面区分版本（suggestion_history.dart）。
+  static const recordClipboardSuggestionHistory = FLucideIcons.clipboard;
+
+  /// `recordMedicine` 的页面区分版本（view_models.dart）。
+  static const recordMedicineViewModels = FLucideIcons.hospital;
+
+  /// `recordSleep` 的页面区分版本（suggestion_icon_mapping.dart）。
+  static const recordSleepSuggestionIconMapping = FLucideIcons.bedDouble;
+
+  /// `recordSleep` 的页面区分版本（view_models.dart）。
+  static const recordSleepViewModels = FLucideIcons.bed;
+
+  /// `recordWater` 的页面区分版本（water_progress.dart）。
+  static const recordWaterWaterProgress = FLucideIcons.droplet;
+
+  /// `recordWater` 的页面区分版本（view_models.dart）。
+  static const recordWaterViewModels = FLucideIcons.dropletOff;
+
+  /// `reportHistory` 的页面区分版本（dashboard_preview.dart）。
+  static const reportHistoryDashboardPreview = FLucideIcons.archive;
+
+  /// `reportHistory` 的页面区分版本（more_actions.dart）。
+  static const reportHistoryMoreActions = FLucideIcons.archiveRestore;
+
+  /// `reportHistory` 的页面区分版本（review_view.dart）。
+  static const reportHistoryReviewView = FLucideIcons.fileClock;
+
+  /// `reportInsight` 的页面区分版本（review_view.dart）。
+  static const reportInsightReviewView = FLucideIcons.eye;
+
+  /// `reportTrend` 的页面区分版本（suggestion_history.dart）。
+  static const reportTrendSuggestionHistory = FLucideIcons.trendingDown;
+
+  /// `reportTrend` 的页面区分版本（review_view.dart）。
+  static const reportTrendReviewView = FLucideIcons.trendingUpDown;
+
+  /// `safetyCaution` 的页面区分版本（risk_check.dart）。
+  static const safetyCautionRiskCheck = FLucideIcons.shieldEllipsis;
+
+  /// `safetyCaution` 的页面区分版本（medicine_add_precheck_dialog.dart）。
+  static const safetyCautionMedicineAddPrecheckDialog = FLucideIcons.shieldUser;
+
+  /// `safetyInteraction` 的页面区分版本（results.dart）。
+  static const safetyInteractionResults = FLucideIcons.arrowRightLeft;
+
+  /// `safetyPanelEmpty` 的页面区分版本（safety_cards.dart）。
+  static const safetyPanelEmptySafetyCards = FLucideIcons.shieldQuestionMark;
+
+  /// `safetySchedulingConflict` 的页面区分版本（form_body.dart）。
+  static const safetySchedulingConflictFormBody = FLucideIcons.calendarOff;
+
+  /// `safetySchedulingConflict` 的页面区分版本（copy.dart）。
+  static const safetySchedulingConflictCopy = FLucideIcons.calendarMinus;
+
+  /// `safetyVerified` 的页面区分版本（safety_cards.dart）。
+  static const safetyVerifiedSafetyCards = FLucideIcons.bookmarkCheck;
+
+  /// `statusAllDone` 的页面区分版本（list_item.dart）。
+  static const statusAllDoneListItem = FLucideIcons.bookCheck;
+
+  /// `statusAnalyzed` 的页面区分版本（analysis_summary_card.dart）。
+  static const statusAnalyzedAnalysisSummaryCard = FLucideIcons.pencilSparkles;
+
+  /// `statusBlocked` 的页面区分版本（export.dart）。
+  static const statusBlockedExport = FLucideIcons.circleOff;
+
+  /// `statusBlocked` 的页面区分版本（dashboard_view.dart）。
+  static const statusBlockedDashboardView = FLucideIcons.shieldLock;
+
+  /// `statusDone` 的页面区分版本（medicine_add_precheck_dialog.dart）。
+  static const statusDoneMedicineAddPrecheckDialog = FLucideIcons.squareCheck;
+
+  /// `statusDone` 的页面区分版本（results.dart）。
+  static const statusDoneResults = FLucideIcons.checkCircle;
+
+  /// `statusDone` 的页面区分版本（what_happened.dart）。
+  static const statusDoneWhatHappened = FLucideIcons.checkSquare;
+
+  /// `statusDone` 的页面区分版本（completed_actions.dart）。
+  static const statusDoneCompletedActions = FLucideIcons.checkSquare2;
+
+  /// `statusDone` 的页面区分版本（scan_result_sheet.dart）。
+  static const statusDoneScanResultSheet = FLucideIcons.squareCheckBig;
+
+  /// `statusDone` 的页面区分版本（selection_icon.dart）。
+  static const statusDoneSelectionIcon = FLucideIcons.checkLine;
+
+  /// `statusDone` 的页面区分版本（suggestion_interactive.dart）。
+  static const statusDoneSuggestionInteractive = FLucideIcons.fileCheck;
+
+  /// `statusPending` 的页面区分版本（security_center.dart）。
+  static const statusPendingSecurityCenter = FLucideIcons.clock1;
+
+  /// `statusPending` 的页面区分版本（recognize_dialog.dart）。
+  static const statusPendingRecognizeDialog = FLucideIcons.clock2;
+
+  /// `statusPending` 的页面区分版本（what_happened.dart）。
+  static const statusPendingWhatHappened = FLucideIcons.clock5;
+
+  /// `statusSkipped` 的页面区分版本（overview_states.dart）。
+  static const statusSkippedOverviewStates = FLucideIcons.circleSlash2;
+
+  /// `statusSuccess` 的页面区分版本（recognize_dialog.dart）。
+  static const statusSuccessRecognizeDialog = FLucideIcons.checkCircle2;
+
+  /// `statusUnavailable` 的页面区分版本（image_attachment_field.dart）。
+  static const statusUnavailableImageAttachmentField = FLucideIcons.squareSlash;
+
+  /// `statusUnavailable` 的页面区分版本（timeline_item.dart）。
+  static const statusUnavailableTimelineItem = FLucideIcons.slash;
 }

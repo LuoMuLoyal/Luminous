@@ -42,21 +42,21 @@ class GeneralSection extends ConsumerWidget {
           children: [
             SettingsNavigationTile(
               tileKey: const Key('settings-row-theme'),
-              icon: SemanticIcons.actionSettings,
+              icon: SemanticIcons.actionSettingsGeneralSection,
               title: l10n.mineSettingsThemeTitle,
               value: _themeSummaryLabel(l10n, currentTheme, currentFamily),
               onTap: () => context.push(Routes.settingsTheme),
             ),
             SettingsNavigationTile(
               tileKey: const Key('settings-row-language'),
-              icon: SemanticIcons.actionExternalLink,
+              icon: SemanticIcons.actionExternalLinkGeneralSection,
               title: l10n.mineSettingsLanguageTitle,
               value: _languageLabel(l10n, currentLocale),
               onTap: () => context.push(Routes.settingsLanguage),
             ),
             SettingsNavigationTile(
               tileKey: const Key('settings-row-data-storage'),
-              icon: SemanticIcons.actionSettings,
+              icon: SemanticIcons.actionSettingsGeneralSection,
               title: l10n.settingsDataStorageTitle,
               subtitle: l10n.settingsDataStorageSubtitle,
               value: _retentionLabel(l10n, dataStorage.retentionPeriod),
@@ -64,13 +64,13 @@ class GeneralSection extends ConsumerWidget {
             ),
             SettingsNavigationTile(
               tileKey: const Key('settings-row-advanced'),
-              icon: SemanticIcons.actionSettings,
+              icon: SemanticIcons.actionSettingsGeneralSection,
               title: l10n.mineSettingsAdvancedTitle,
               onTap: () => context.push(Routes.settingsMore),
             ),
             SettingsNavigationTile(
               tileKey: const Key('settings-row-accessibility'),
-              icon: SemanticIcons.actionSettings,
+              icon: SemanticIcons.actionSettingsGeneralSection,
               title: l10n.settingsAccessibilityTitle,
               subtitle: l10n.settingsAccessibilitySubtitle,
               onTap: () => context.push(Routes.settingsAccessibility),

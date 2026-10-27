@@ -389,7 +389,7 @@ class _ReportLockedFeaturesHint extends StatelessWidget {
         FTile(
           prefix: FAvatar.raw(
             child: Icon(
-              SemanticIcons.statusBlocked,
+              SemanticIcons.statusBlockedDashboardView,
               color: SemanticColor.primary.solid(context),
               size: Spacing.lg,
             ),

@@ -231,7 +231,7 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
           child: Column(
             children: [
               Icon(
-                SemanticIcons.actionAdd,
+                SemanticIcons.actionAddTimeline,
                 size: Spacing.xl4,
                 color: SemanticColor.neutral.solid(context),
               ),
@@ -265,7 +265,7 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(
-                            SemanticIcons.actionAdd,
+                            SemanticIcons.actionAddTimeline,
                             size: IconSizeTokens.sm,
                           ),
                           const SizedBox(width: Spacing.sm),

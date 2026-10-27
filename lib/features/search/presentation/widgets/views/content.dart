@@ -29,7 +29,7 @@ final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
         ),
         const MedicineSearchQuickAction(
           type: MedicineSearchActionType.photo,
-          icon: SemanticIcons.actionCamera,
+          icon: SemanticIcons.actionCameraContent,
           accent: SemanticColor.primary,
         ),
       ]

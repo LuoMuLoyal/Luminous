@@ -40,7 +40,7 @@ class MineTopBar extends ConsumerWidget {
                 onPress: onNotificationsTap,
                 variant: FButtonVariant.ghost,
                 child: Icon(
-                  SemanticIcons.notificationBell,
+                  SemanticIcons.notificationBellTopBar,
                   color: colors.foreground,
                 ),
               ),
@@ -68,7 +68,10 @@ class MineTopBar extends ConsumerWidget {
             key: const Key('mine-settings-action'),
             onPress: onSettingsTap,
             variant: FButtonVariant.ghost,
-            child: Icon(SemanticIcons.actionSettings, color: colors.foreground),
+            child: Icon(
+              SemanticIcons.actionSettingsTopBar,
+              color: colors.foreground,
+            ),
           ),
         ),
       ],

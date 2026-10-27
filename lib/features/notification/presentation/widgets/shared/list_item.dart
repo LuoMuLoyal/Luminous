@@ -47,8 +47,8 @@ class _NotificationListItemWidgetState
         ? SemanticColor.warning.solid(context)
         : SemanticColor.info.solid(context);
     final toggleIcon = widget.item.isRead
-        ? SemanticIcons.notificationRead
-        : SemanticIcons.statusAllDone;
+        ? SemanticIcons.notificationReadListItem
+        : SemanticIcons.statusAllDoneListItem;
     final toggleLabel = widget.item.isRead
         ? l10n.notificationActionMarkUnread
         : l10n.notificationActionMarkRead;
@@ -144,7 +144,7 @@ class _NotificationListItemWidgetState
                           ),
                           const SizedBox(width: Spacing.sm),
                           _HoverActionButton(
-                            icon: SemanticIcons.actionDelete,
+                            icon: SemanticIcons.actionDeleteListItem,
                             color: SemanticColor.destructive.solid(context),
                             tooltip: l10n.notificationActionDelete,
                             onPressed: widget.onDismiss,
@@ -181,7 +181,7 @@ class _NotificationListItemWidgetState
             onPressed: (_) => widget.onDismiss(),
             backgroundColor: SemanticColor.destructive.solid(context),
             foregroundColor: colors.destructiveForeground,
-            icon: SemanticIcons.actionDelete,
+            icon: SemanticIcons.actionDeleteListItem,
             label: l10n.notificationActionDelete,
             spacing: 4,
             borderRadius: borderRadius.sm,

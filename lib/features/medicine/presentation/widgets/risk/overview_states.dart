@@ -182,7 +182,7 @@ class LlmUnavailableState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              SemanticIcons.statusSkipped,
+              SemanticIcons.statusSkippedOverviewStates,
               size: IconSizeTokens.xl2,
               color: SemanticColor.neutral.solid(context),
             ),

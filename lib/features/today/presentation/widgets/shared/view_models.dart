@@ -178,7 +178,7 @@ List<TodayOverviewItem> buildOverviewItems(
 
   return [
     TodayOverviewItem(
-      icon: SemanticIcons.recordMedicine,
+      icon: SemanticIcons.recordMedicineViewModels,
       label: l10n.todayMedicationOverviewLabel,
       value: _medicationOverviewValue(
         l10n,
@@ -190,7 +190,7 @@ List<TodayOverviewItem> buildOverviewItems(
       isDegraded: medicationDegraded,
     ),
     TodayOverviewItem(
-      icon: SemanticIcons.recordWater,
+      icon: SemanticIcons.recordWaterViewModels,
       label: l10n.todayHydrationOverviewLabel,
       value: waterDegraded
           ? l10n.todayMetricDegraded
@@ -199,7 +199,7 @@ List<TodayOverviewItem> buildOverviewItems(
       isDegraded: waterDegraded,
     ),
     TodayOverviewItem(
-      icon: SemanticIcons.recordSleep,
+      icon: SemanticIcons.recordSleepViewModels,
       label: l10n.todayVitalSleepLabel,
       value: sleep,
       color: SemanticColor.primary,
@@ -250,7 +250,7 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
 
   return [
     TodayAiSummaryItem(
-      icon: SemanticIcons.recordMedicine,
+      icon: SemanticIcons.recordMedicineViewModels,
       color: SemanticColor.primary,
       text: hasMedicationRisk
           ? l10n.todayAiSummaryMedicationPending(
@@ -259,14 +259,14 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
           : l10n.todayAiSummaryMedicationDone,
     ),
     TodayAiSummaryItem(
-      icon: SemanticIcons.recordWater,
+      icon: SemanticIcons.recordWaterViewModels,
       color: SemanticColor.primary,
       text: waterRemaining == 0
           ? l10n.todayAiSummaryWaterDone
           : l10n.todayAiSummaryWaterRemaining(waterRemaining),
     ),
     TodayAiSummaryItem(
-      icon: SemanticIcons.recordSleep,
+      icon: SemanticIcons.recordSleepViewModels,
       color: SemanticColor.primary,
       text: l10n.todayAiSummarySleepPlaceholder,
     ),
@@ -365,9 +365,10 @@ TodayAiSummaryCardContent buildAiCardContent({
 
 TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
   final icon = switch (bullet.kind) {
-    TodayAiAnalysisBulletKind.medication => SemanticIcons.recordMedicine,
-    TodayAiAnalysisBulletKind.hydration => SemanticIcons.recordWater,
-    TodayAiAnalysisBulletKind.sleep => SemanticIcons.recordSleep,
+    TodayAiAnalysisBulletKind.medication =>
+      SemanticIcons.recordMedicineViewModels,
+    TodayAiAnalysisBulletKind.hydration => SemanticIcons.recordWaterViewModels,
+    TodayAiAnalysisBulletKind.sleep => SemanticIcons.recordSleepViewModels,
     TodayAiAnalysisBulletKind.general => SemanticIcons.aiTip,
   };
 
@@ -415,7 +416,7 @@ List<TodayQuickActionItem> buildQuickActionItems(
       badge: confirmBadge,
     ),
     TodayQuickActionItem(
-      icon: SemanticIcons.recordWater,
+      icon: SemanticIcons.recordWaterViewModels,
       title: l10n.todayDrinkWaterAction,
       subtitle: l10n.todayQuickActionWaterSubtitle,
       route: '${Routes.recordCreate}?kind=water',
@@ -436,7 +437,7 @@ List<TodayQuickActionItem> buildQuickActionItems(
       usePush: true,
     ),
     TodayQuickActionItem(
-      icon: SemanticIcons.profileUser,
+      icon: SemanticIcons.profileUserViewModels,
       title: l10n.todayQuickActionProfileTitle,
       subtitle: l10n.todayQuickActionProfileSubtitle,
       route: Routes.mine,

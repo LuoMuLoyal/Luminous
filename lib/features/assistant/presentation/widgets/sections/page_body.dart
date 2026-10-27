@@ -133,7 +133,7 @@ class AssistantPageBody extends ConsumerWidget {
                     isOpeningConversation
                 ? null
                 : onStartNewConversation,
-            child: const Icon(SemanticIcons.actionAdd),
+            child: const Icon(SemanticIcons.actionAddPageBody),
           ),
         ),
         FTooltip(
@@ -145,7 +145,7 @@ class AssistantPageBody extends ConsumerWidget {
             onPress: !session.canAccessProtectedData
                 ? null
                 : () => unawaited(context.push(Routes.settingsAi)),
-            child: const Icon(SemanticIcons.actionSettings),
+            child: const Icon(SemanticIcons.actionSettingsPageBody),
           ),
         ),
         // F-10 能力详情入口:与「助手设置」同属能力类动作,放在设置按钮旁。

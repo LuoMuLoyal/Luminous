@@ -88,7 +88,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                             variant: FButtonVariant.outline,
                             onPress: enabled ? onPick : null,
                             prefix: const Icon(
-                              SemanticIcons.actionImage,
+                              SemanticIcons.actionImageImageAttachmentField,
                               size: IconSizeTokens.md,
                             ),
                             // 按钮在 Wrap 里宽度有界:标签必须 Flexible + 省略,
@@ -188,10 +188,12 @@ class _AttachmentPreview extends StatelessWidget {
             (_, final String url) => CachedNetworkImage(
               imageUrl: url,
               fit: BoxFit.cover,
-              placeholder: (context, url) =>
-                  const _PreviewFallback(icon: SemanticIcons.actionImage),
-              errorWidget: (context, url, error) =>
-                  const _PreviewFallback(icon: SemanticIcons.statusUnavailable),
+              placeholder: (context, url) => const _PreviewFallback(
+                icon: SemanticIcons.actionImageImageAttachmentField,
+              ),
+              errorWidget: (context, url, error) => const _PreviewFallback(
+                icon: SemanticIcons.statusUnavailableImageAttachmentField,
+              ),
             ),
             _ => const _PreviewFallback(icon: SemanticIcons.actionAddImage),
           },

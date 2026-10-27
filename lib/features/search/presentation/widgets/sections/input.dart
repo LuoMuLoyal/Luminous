@@ -76,7 +76,7 @@ class SearchInput extends HookWidget {
                     style,
                     variants,
                     Icon(
-                      SemanticIcons.actionSearch,
+                      SemanticIcons.actionSearchInput,
                       color: SemanticColor.neutral.solid(context),
                     ),
                   ),

@@ -200,17 +200,17 @@ class ReviewView extends StatelessWidget {
               l10n.reviewPreviewCoverageBody,
             ),
             (
-              SemanticIcons.reportInsight,
+              SemanticIcons.reportInsightReviewView,
               l10n.reviewPreviewNoteworthyTitle,
               l10n.reviewPreviewNoteworthyBody,
             ),
             (
-              SemanticIcons.reportTrend,
+              SemanticIcons.reportTrendReviewView,
               l10n.reviewPreviewTrendTitle,
               l10n.reviewPreviewTrendBody,
             ),
             (
-              SemanticIcons.reportHistory,
+              SemanticIcons.reportHistoryReviewView,
               l10n.reviewPreviewHistoryTitle,
               l10n.reviewPreviewHistoryBody,
             ),

@@ -59,7 +59,10 @@ class _AssistantEntryButton extends ConsumerWidget {
         variant: FButtonVariant.ghost,
         size: FButtonSizeVariant.sm,
         mainAxisSize: MainAxisSize.min,
-        prefix: const Icon(SemanticIcons.aiEntry, size: IconSizeTokens.md),
+        prefix: const Icon(
+          SemanticIcons.aiEntryTopBar,
+          size: IconSizeTokens.md,
+        ),
         child: Text(l10n.assistantEntryTitle),
       ),
     );

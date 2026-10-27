@@ -123,7 +123,7 @@ class ReviewDashboardPreview extends StatelessWidget {
               Expanded(
                 child: ReviewPreviewLockedSection(
                   key: const Key('report-suggestion-history-preview-locked'),
-                  icon: SemanticIcons.reportHistory,
+                  icon: SemanticIcons.reportHistoryDashboardPreview,
                   title: l10n.reviewSuggestionHistoryPreviewTitle,
                   body: l10n.reviewSuggestionHistoryPreviewBody,
                 ),
@@ -140,7 +140,7 @@ class ReviewDashboardPreview extends StatelessWidget {
           const SizedBox(height: Spacing.lg),
           ReviewPreviewLockedSection(
             key: const Key('report-suggestion-history-preview-locked'),
-            icon: SemanticIcons.reportHistory,
+            icon: SemanticIcons.reportHistoryDashboardPreview,
             title: l10n.reviewSuggestionHistoryPreviewTitle,
             body: l10n.reviewSuggestionHistoryPreviewBody,
           ),

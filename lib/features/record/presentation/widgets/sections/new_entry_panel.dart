@@ -125,7 +125,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                 ),
               ),
               prefix: Icon(
-                SemanticIcons.actionAdd,
+                SemanticIcons.actionAddNewEntryPanel,
                 color: SemanticColor.primary.solid(context),
                 size: 20,
               ),

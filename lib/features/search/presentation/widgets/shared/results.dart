@@ -162,7 +162,7 @@ class _SearchResultTileState extends State<SearchResultTile> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                SemanticIcons.statusDone,
+                                SemanticIcons.statusDoneResults,
                                 size: IconSizeTokens.sm,
                                 color: SemanticColor.primary.solid(context),
                               ),
@@ -351,7 +351,7 @@ class PreviewPanel extends StatelessWidget {
                   child: Column(
                     children: [
                       Icon(
-                        SemanticIcons.actionSearch,
+                        SemanticIcons.actionSearchResults,
                         size: IconSizeTokens.xl3,
                         color: SemanticColor.neutral.solid(context),
                       ),
@@ -390,12 +390,12 @@ class NoResultTools extends StatelessWidget {
   Widget build(BuildContext context) {
     final actions = <(IconData, String, VoidCallback?)>[
       (
-        SemanticIcons.actionSearch,
+        SemanticIcons.actionSearchResults,
         l10n.medicineSearchNoResultKeyword,
         onClearQuery,
       ),
       (
-        SemanticIcons.safetyInteraction,
+        SemanticIcons.safetyInteractionResults,
         l10n.medicineSearchNoResultSwitch,
         onSwitchSource,
       ),

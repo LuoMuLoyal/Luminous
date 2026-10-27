@@ -80,7 +80,7 @@ class _SuggestionFeedbackRowState extends ConsumerState<SuggestionFeedbackRow> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            SemanticIcons.statusDone,
+            SemanticIcons.statusDoneSuggestionInteractive,
             size: IconSizeTokens.sm,
             color: SemanticColor.primary.solid(context),
           ),

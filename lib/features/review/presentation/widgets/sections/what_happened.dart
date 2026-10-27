@@ -54,7 +54,7 @@ class WhatHappenedSection extends StatelessWidget {
       children: [
         if (startedAt != null)
           ReviewFactRow(
-            icon: SemanticIcons.statusPending,
+            icon: SemanticIcons.statusPendingWhatHappened,
             text: l10n.reviewReviewWhatHappenedWindow(
               reviewShortDateLabel(context, startedAt),
               endedAt == null
@@ -72,7 +72,7 @@ class WhatHappenedSection extends StatelessWidget {
           text: l10n.reviewReviewWhatHappenedSymptomCount(symptomCount),
         ),
         ReviewFactRow(
-          icon: SemanticIcons.statusDone,
+          icon: SemanticIcons.statusDoneWhatHappened,
           text: l10n.reviewReviewWhatHappenedCheckInCount(checkInCount),
         ),
       ],
