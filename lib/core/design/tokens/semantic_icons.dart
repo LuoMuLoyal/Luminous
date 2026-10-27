@@ -13,7 +13,7 @@ abstract final class SemanticIcons {
   // ================================================================
   static const tabToday = FLucideIcons.house;
   static const tabRecord = FLucideIcons.notebookPen;
-  static const tabMedicine = FLucideIcons.tablets;
+  static const tabMedicine = FLucideIcons.pill;
   static const tabReview = FLucideIcons.chartColumn;
   static const tabMine = FLucideIcons.userRound;
 
@@ -56,7 +56,7 @@ abstract final class SemanticIcons {
   // ================================================================
   // 健康记录类型
   // ================================================================
-  static const recordMedicine = FLucideIcons.pill;
+  static const recordMedicine = FLucideIcons.tablets;
   static const recordWater = FLucideIcons.droplets;
   static const recordMeal = FLucideIcons.utensils;
   static const recordSleep = FLucideIcons.moonStar;

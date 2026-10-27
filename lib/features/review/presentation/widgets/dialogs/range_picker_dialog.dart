@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -97,76 +98,74 @@ Future<ReviewDashboardQuery?> _showMobileRangePicker(
   AppLocalizations l10n,
   ReviewDashboardQuery selectedQuery,
 ) async {
-  return showModalBottomSheet<ReviewDashboardQuery>(
+  return showFSheet<ReviewDashboardQuery>(
     context: context,
-    isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: context.theme.style.borderRadius.md.topLeft,
-      ),
-    ),
+    side: FLayout.btt,
     builder: (sheetContext) {
-      return SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(Spacing.lg),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      l10n.reviewRangePickerTitle,
-                      style: context.theme.typography.body.md.copyWith(
-                        fontWeight: FontWeight.w700,
+      return SheetSurface(
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(Spacing.lg),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.reviewRangePickerTitle,
+                        style: context.theme.typography.body.md.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      SemanticIcons.actionClose,
-                      size: IconSizeTokens.md,
+                    IconButton(
+                      icon: const Icon(
+                        SemanticIcons.actionClose,
+                        size: IconSizeTokens.md,
+                      ),
+                      onPressed: () => Navigator.of(sheetContext).pop(),
                     ),
-                    onPressed: () => Navigator.of(sheetContext).pop(),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              _RangeOptionTile(
+                label: l10n.reviewRangeLast7Days,
+                selected: selectedQuery.range == ReviewDashboardRange.last7Days,
+                onTap: () => Navigator.of(sheetContext).pop(
+                  const ReviewDashboardQuery(
+                    range: ReviewDashboardRange.last7Days,
                   ),
-                ],
-              ),
-            ),
-            const Divider(height: 1),
-            _RangeOptionTile(
-              label: l10n.reviewRangeLast7Days,
-              selected: selectedQuery.range == ReviewDashboardRange.last7Days,
-              onTap: () => Navigator.of(sheetContext).pop(
-                const ReviewDashboardQuery(
-                  range: ReviewDashboardRange.last7Days,
                 ),
               ),
-            ),
-            _RangeOptionTile(
-              label: l10n.reviewRangeLast30Days,
-              selected: selectedQuery.range == ReviewDashboardRange.last30Days,
-              onTap: () => Navigator.of(sheetContext).pop(
-                const ReviewDashboardQuery(
-                  range: ReviewDashboardRange.last30Days,
+              _RangeOptionTile(
+                label: l10n.reviewRangeLast30Days,
+                selected:
+                    selectedQuery.range == ReviewDashboardRange.last30Days,
+                onTap: () => Navigator.of(sheetContext).pop(
+                  const ReviewDashboardQuery(
+                    range: ReviewDashboardRange.last30Days,
+                  ),
                 ),
               ),
-            ),
-            _RangeOptionTile(
-              label: l10n.reviewRangeCustom,
-              selected: selectedQuery.range == ReviewDashboardRange.custom,
-              onTap: () async {
-                final picked = await _showCalendarBottomSheet(
-                  sheetContext,
-                  l10n,
-                  selectedQuery,
-                );
-                if (picked != null && sheetContext.mounted) {
-                  Navigator.of(sheetContext).pop(picked);
-                }
-              },
-            ),
-            const SizedBox(height: Spacing.lg),
-          ],
+              _RangeOptionTile(
+                label: l10n.reviewRangeCustom,
+                selected: selectedQuery.range == ReviewDashboardRange.custom,
+                onTap: () async {
+                  final picked = await _showCalendarBottomSheet(
+                    sheetContext,
+                    l10n,
+                    selectedQuery,
+                  );
+                  if (picked != null && sheetContext.mounted) {
+                    Navigator.of(sheetContext).pop(picked);
+                  }
+                },
+              ),
+              const SizedBox(height: Spacing.lg),
+            ],
+          ),
         ),
       );
     },
@@ -188,59 +187,62 @@ Future<ReviewDashboardQuery?> _showCalendarBottomSheet(
   final rangeController = FDateSelectionController.range(initial: initialRange);
 
   try {
-    final picked = await showModalBottomSheet<(DateTime, DateTime)?>(
+    final picked = await showFSheet<(DateTime, DateTime)?>(
       context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: context.theme.style.borderRadius.md.topLeft,
-        ),
-      ),
+      side: FLayout.btt,
+      // 日历固定 360 高 + 标题/按钮，超过 showFSheet 默认的 0.85 屏高上限
+      // （852dp 屏上只有 ~720dp，日历 sheet 曾因此底部溢出 101px）。
+      mainAxisMaxRatio: 0.95,
       builder: (sheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(Spacing.lg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 360,
-                  // 同 showForuiDatePicker:日历固有宽度为 `7 × daySize`(触摸端 308dp),
-                  // 窄屏弹窗压窄它会让头部/日期列右溢出;改为横向可滚动,宽度不再被压缩。
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: FCalendar.grid(
-                      control: FGridCalendarControl(
-                        start: DateTime(2020),
-                        end: monthEnd,
-                        today: today,
-                        initial: DateTime(
-                          initialRange.$1.year,
-                          initialRange.$1.month,
+        return SheetSurface(
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(Spacing.lg),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 360,
+                      // 同 showForuiDatePicker:日历固有宽度为 `7 × daySize`(触摸端 308dp),
+                      // 窄屏弹窗压窄它会让头部/日期列右溢出;改为横向可滚动,宽度不再被压缩。
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: FCalendar.grid(
+                          control: FGridCalendarControl(
+                            start: DateTime(2020),
+                            end: monthEnd,
+                            today: today,
+                            initial: DateTime(
+                              initialRange.$1.year,
+                              initialRange.$1.month,
+                            ),
+                          ),
+                          selectionControl: FDateSelectionControl.managedRange(
+                            controller: rangeController,
+                          ),
                         ),
                       ),
-                      selectionControl: FDateSelectionControl.managedRange(
-                        controller: rangeController,
-                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: Spacing.lg),
-                DialogActionRow(
-                  actions: [
-                    DialogActionButton(
-                      label: l10n.commonCancel,
-                      variant: FButtonVariant.ghost,
-                      onPress: () => Navigator.of(sheetContext).pop(null),
-                    ),
-                    DialogActionButton(
-                      label: l10n.commonConfirm,
-                      onPress: () =>
-                          Navigator.of(sheetContext).pop(rangeController.value),
+                    const SizedBox(height: Spacing.lg),
+                    DialogActionRow(
+                      actions: [
+                        DialogActionButton(
+                          label: l10n.commonCancel,
+                          variant: FButtonVariant.ghost,
+                          onPress: () => Navigator.of(sheetContext).pop(null),
+                        ),
+                        DialogActionButton(
+                          label: l10n.commonConfirm,
+                          onPress: () => Navigator.of(
+                            sheetContext,
+                          ).pop(rangeController.value),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         );

@@ -37,20 +37,17 @@ Future<void> showSuggestionHistoryDetailSheet(
     );
   }
 
-  return showModalBottomSheet<void>(
+  return showFSheet<void>(
     context: context,
-    isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: context.theme.style.borderRadius.md.topLeft,
-      ),
-    ),
-    builder: (_) => SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.viewInsetsOf(context).bottom,
+    side: FLayout.btt,
+    builder: (_) => SheetSurface(
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.viewInsetsOf(context).bottom,
+          ),
+          child: _SuggestionHistoryDetailContent(suggestion: suggestion),
         ),
-        child: _SuggestionHistoryDetailContent(suggestion: suggestion),
       ),
     ),
   );

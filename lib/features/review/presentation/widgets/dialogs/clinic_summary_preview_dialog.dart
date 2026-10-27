@@ -12,6 +12,7 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/api_paths.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/review/presentation/providers/clinic_summary.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/utils/clinic_summary_field_mapping.dart';
@@ -47,20 +48,17 @@ Future<void> showClinicSummaryPreviewDialog(BuildContext context) {
     );
   }
 
-  return showModalBottomSheet<void>(
+  return showFSheet<void>(
     context: context,
-    isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: context.theme.style.borderRadius.md.topLeft,
-      ),
-    ),
-    builder: (_) => SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.viewInsetsOf(context).bottom,
+    side: FLayout.btt,
+    builder: (_) => SheetSurface(
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.viewInsetsOf(context).bottom,
+          ),
+          child: const _ClinicSummaryPreviewContent(),
         ),
-        child: const _ClinicSummaryPreviewContent(),
       ),
     ),
   );
