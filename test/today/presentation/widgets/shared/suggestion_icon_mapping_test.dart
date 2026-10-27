@@ -12,7 +12,10 @@ void main() {
     });
 
     test('returns moon icon for "moon"', () {
-      expect(SuggestionIconMapping.resolve('moon'), SemanticIcons.recordSleep);
+      expect(
+        SuggestionIconMapping.resolve('moon'),
+        SemanticIcons.recordSleepSuggestionIconMapping,
+      );
     });
 
     test('returns activity icon for "activity"', () {

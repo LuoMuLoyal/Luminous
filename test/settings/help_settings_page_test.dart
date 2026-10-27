@@ -69,7 +69,7 @@ void main() {
     );
     expect(
       tester.getRect(find.byType(FAccordion)).right,
-      tester.getRect(find.byIcon(SemanticIcons.actionExternalLink)).right,
+      tester.getRect(find.byIcon(SemanticIcons.actionExternalLinkHelp)).right,
     );
   });
 
