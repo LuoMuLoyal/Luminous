@@ -97,7 +97,7 @@ class LegacyDashboardCompatPage extends ConsumerWidget {
         child: StateErrorView(
           title: AppLocalizations.of(context)!.reviewErrorTitle,
           description: AppLocalizations.of(context)!.reviewErrorDescription,
-          icon: SemanticIcons.tabReview,
+          icon: SemanticIcons.statusError,
           actionLabel: AppLocalizations.of(context)!.todayRetryAction,
           onAction: () =>
               ref.invalidate(reviewDashboardProvider(selectedDashboardQuery)),

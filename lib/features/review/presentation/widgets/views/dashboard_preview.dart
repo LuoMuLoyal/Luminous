@@ -61,7 +61,7 @@ class ReviewDashboardPreview extends StatelessWidget {
     ),
     ReviewExportAction(
       kind: ReviewExportKind.monthly,
-      icon: SemanticIcons.tabReview,
+      icon: SemanticIcons.reportMonthlyExport,
       color: SemanticColor.primary,
     ),
     ReviewExportAction(

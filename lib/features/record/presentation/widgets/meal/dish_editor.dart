@@ -58,7 +58,7 @@ class MealDishEditorSection extends StatelessWidget {
                     key: Key('meal-dish-remove-$index'),
                     onPress: enabled ? () => onDishRemoved(index) : null,
                     child: Icon(
-                      SemanticIcons.actionDelete,
+                      SemanticIcons.actionRemoveDish,
                       semanticLabel: l10n.recordMealDishRemoveAction,
                     ),
                   ),

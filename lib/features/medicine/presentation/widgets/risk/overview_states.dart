@@ -67,7 +67,7 @@ class LlmEmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              SemanticIcons.aiEntry,
+              SemanticIcons.aiEmptyAnalysis,
               size: IconSizeTokens.xl2,
               color: SemanticColor.neutral.solid(context),
             ),

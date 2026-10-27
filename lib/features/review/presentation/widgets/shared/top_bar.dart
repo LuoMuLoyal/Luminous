@@ -159,7 +159,9 @@ class ReviewActionBar extends StatelessWidget {
             key: const Key('report-top-generate-action'),
             onPress: isGenerating ? null : onGenerate,
             prefix: Icon(
-              isGenerating ? SemanticIcons.aiAnalyzing : SemanticIcons.aiEntry,
+              isGenerating
+                  ? SemanticIcons.aiAnalyzing
+                  : SemanticIcons.aiGenerate,
               size: 16,
             ),
             child: Text(

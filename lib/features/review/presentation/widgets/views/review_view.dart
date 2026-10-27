@@ -146,7 +146,7 @@ class ReviewView extends StatelessWidget {
       return StateErrorView(
         title: l10n.reviewReviewErrorTitle,
         description: l10n.reviewReviewErrorDescription,
-        icon: SemanticIcons.tabReview,
+        icon: SemanticIcons.statusError,
         actionLabel: l10n.todayRetryAction,
         onAction: onRetry,
         tone: StateTone.warning,

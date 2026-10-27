@@ -316,7 +316,7 @@ final _exportActions = <ReviewExportAction>[
   ),
   const ReviewExportAction(
     kind: ReviewExportKind.monthly,
-    icon: SemanticIcons.tabReview,
+    icon: SemanticIcons.reportMonthlyExport,
     color: SemanticColor.primary,
   ),
   const ReviewExportAction(

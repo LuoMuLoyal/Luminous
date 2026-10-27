@@ -57,7 +57,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                 FAvatar.raw(
                   size: Spacing.xl4,
                   child: Icon(
-                    SemanticIcons.aiEntry,
+                    SemanticIcons.aiGenerated,
                     color: SemanticColor.primary.solid(context),
                     size: Spacing.xl,
                   ),
@@ -192,7 +192,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                   prefix: Icon(
                     aiState.isLoading
                         ? SemanticIcons.aiAnalyzing
-                        : SemanticIcons.aiEntry,
+                        : SemanticIcons.aiGenerate,
                     size: 16,
                   ),
                   child: Text(

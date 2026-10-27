@@ -47,7 +47,7 @@ class ReviewDetailPage extends ConsumerWidget {
         error: (_, __) => StateErrorView(
           title: l10n.reviewReviewErrorTitle,
           description: l10n.reviewReviewErrorDescription,
-          icon: SemanticIcons.tabReview,
+          icon: SemanticIcons.statusError,
           tone: StateTone.warning,
           actionLabel: l10n.todayRetryAction,
           onAction: () => ref.invalidate(reviewDetailProvider(eventId)),

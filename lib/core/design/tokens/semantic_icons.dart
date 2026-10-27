@@ -47,6 +47,12 @@ abstract final class SemanticIcons {
   /// 后端图标字符串无法识别时的兜底图标。
   static const aiFallbackIcon = FLucideIcons.wandSparkles;
 
+  /// 触发 AI 生成报告 / 总结。
+  static const aiGenerate = FLucideIcons.wand2;
+
+  /// 扫码「AI 识别」方式入口。
+  static const aiScanMethod = FLucideIcons.scanText;
+
   // ================================================================
   // 健康记录类型
   // ================================================================
@@ -191,6 +197,9 @@ abstract final class SemanticIcons {
   static const reportHistory = FLucideIcons.history;
   static const reportChart = FLucideIcons.chartLine;
 
+  /// 月度报告导出动作。
+  static const reportMonthlyExport = FLucideIcons.calendarDays;
+
   /// 报告洞察条目「用药依从」分类（区别于 [reportAdherence] 的依从率指标）。
   static const reportInsightAdherence = FLucideIcons.circleGauge;
 
@@ -277,6 +286,12 @@ abstract final class SemanticIcons {
   static const actionMail = FLucideIcons.mail;
   static const actionSend = FLucideIcons.send;
   static const actionMinus = FLucideIcons.minus;
+
+  /// 表单「添加图片」。
+  static const actionAddImage = FLucideIcons.imagePlus;
+
+  /// 删除菜品条目。
+  static const actionRemoveDish = FLucideIcons.utensilsCrossed;
   static const actionThemeLight = FLucideIcons.sun;
 
   /// 深色主题。
