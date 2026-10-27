@@ -77,6 +77,9 @@ abstract final class SemanticIcons {
   static const statusInfo = FLucideIcons.info;
   static const statusPending = FLucideIcons.clock3;
   static const statusSkipped = FLucideIcons.ban;
+
+  /// 漏服 / 未服用。
+  static const statusMissed = FLucideIcons.calendarX;
   static const statusDone = FLucideIcons.check;
   static const statusAllDone = FLucideIcons.checkCheck;
   static const statusBlocked = FLucideIcons.lock;
