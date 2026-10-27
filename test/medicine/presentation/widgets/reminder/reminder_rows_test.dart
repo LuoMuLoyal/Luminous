@@ -49,7 +49,7 @@ void main() {
       expect(find.text('阿莫西林胶囊'), findsOneWidget);
       // doseText is "每次1粒", strengthText is "0.25g" → "0.25g · 每次1粒"
       expect(find.textContaining('0.25g'), findsOneWidget);
-      expect(find.byIcon(SemanticIcons.recordMedicine), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.medicineReminderRow), findsOneWidget);
     });
 
     testWidgets('shows not-set text when no dose info', (tester) async {
