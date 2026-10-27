@@ -19,8 +19,8 @@ Created: 2026-10-27
 | P1 删除 iconMind | **已完成** | commit `98698f816`（112 文件 / 34.1 KB + 注册表 + pubspec + barrel） |
 | 去重（§4） | **已完成** | commit `1329ed0ff`；115 个语义名 → 115 个互异字形，跨族同形 0 组 |
 | 去重 Scope B（页面内按区块） | **已完成** | 见下方「Scope B 口径」；115 → 230 个语义名，页面内跨组件重复 0 |
-| P2 尺寸刻度收敛 | 未开工 | `Icon(size: Spacing.*)` 63 处 + 刻度外字面量 |
-| P3 衬底清理 | 未开工 | `SoftIcon` 44px 容器、23 处 `FAvatar` 托盘 |
+| P2 尺寸刻度收敛 | **已完成** | `Icon(size: Spacing.*)` 82 处 → `IconSizeTokens`；容器尺寸不动 |
+| P3 衬底清理 | **已完成** | 22 处 `FAvatar` 托盘 + 6 处 `SoftIcon` 全部删为裸字形，`SoftIcon` 组件自身删除 |
 | P4 混合图标族清理 | 未开工 | 剩余 5 个 `FPhosphorIcons`（已拆开同形冲突，仅剩族混合问题） |
 | 防复发 lint 规则 | **按指示暂缓** | 用户明确要求先不做 lint 规则 |
 

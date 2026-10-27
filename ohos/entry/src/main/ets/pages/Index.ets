@@ -11,7 +11,11 @@ const TAG = 'LuminousWeb';
 // 导致 canvaskit.wasm、main.dart.js 全部加载失败（2026-10-23 模拟器实测），
 // 必须换成 https:// 前缀 + onInterceptRequest 替换为 rawfile。
 const APP_ORIGIN = 'http://luminous.local';
-const ENTRY_PATH = '/index.html';
+// `shell=ohos` 是壳的显式标记：web/flutter_bootstrap.js 只在带这个参数时才把
+// fontFallbackBaseUrl 指向壳内的 fonts/ 目录。浏览器访问不带该参数，保持引擎
+// 默认的 fonts.gstatic.com，否则中文会因字体源指向不存在的域名而变成豆腐块。
+const ENTRY_FILE = '/index.html';
+const ENTRY_PATH = ENTRY_FILE + '?shell=ohos';
 
 // 扩展名 → MIME。wasm 必须是 application/wasm，否则
 // WebAssembly.instantiateStreaming 会失败（白屏）。
@@ -140,7 +144,9 @@ struct Index {
       p = p.substring(0, h);
     }
     if (p === '' || p === '/') {
-      p = ENTRY_PATH;
+      // ENTRY_PATH 带 `?shell=ohos` 查询串，rawfile 里没有这个名字的文件，
+      // 这里必须回退到不带查询串的入口文件。
+      p = ENTRY_FILE;
     }
     // 去掉开头的 '/'，得到 rawfile 内的相对路径
     return p.startsWith('/') ? p.substring(1) : p;
