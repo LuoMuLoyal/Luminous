@@ -39,6 +39,7 @@ YYYY-MM-DD-short-task-name.md
 
 | 计划 | 状态 | 备注 |
 | --- | --- | --- |
+| [`2026-10-27-icon-family-consolidation-lucide.md`](2026-10-27-icon-family-consolidation-lucide.md) | 待评审 / 未开工 | iconMind 弃用，统一 Lucide 单族；实测 iconMind 资产墨迹极差 2.36 倍（Lucide 1.58 倍），导致 `size: 14` 实际画出 9.3~11.7px；迁移面仅 **5 个语义位 / 6 个调用点 / 2 个文件**；衬底（`SoftIcon` 44px 容器装 24px 字形）与 iconMind 无关，单列 P3 |
 | [`2026-10-23-harmonyos-arkts-web-shell-plan.md`](2026-10-23-harmonyos-arkts-web-shell-plan.md) | 待评审 / 未开工 | 鸿蒙改走 **ArkTS 壳 + ArkWeb 渲染 Web 产物**（放弃 Flutter 鸿蒙 SDK 路线，原因见 `docs/logs/migration-log/2026-10-23.md`）；壳工程放 **`Luminous/ohos/`** 同仓（先例：`native/` 的 KMP Gradle 工程）；Dart 允许改接缝（不再要求零改动）；头号风险是 ArkWeb 是否暴露 `dart.library.js_interop`（决定 drift 能否用）与 `localStorage` 是否持久化（决定登录态）；Phase 0 打穿 U1~U8 |
 | [`2026-10-21-ddd-refactor-frontend.md`](2026-10-21-ddd-refactor-frontend.md) | 未开工 | 标准 DDD 首批：Health Logging / Medication / Identity & Access / Preferences；先落 ADR-0010、上下文映射与聚合边界，再逐 feature 迁移；UI/路由/契约零变化 |
 | [`2026-10-17-copy-length-governance.md`](2026-10-17-copy-length-governance.md) | 改写完成，审计超限 0 | 按 Apple HIG / NN-g 定槽位长度阈值（实作比规范严 20%）；53 个 key 已改写；剩余 widget 测试断言同步与 41 条人工复核 |
