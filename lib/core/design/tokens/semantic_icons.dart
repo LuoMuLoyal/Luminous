@@ -94,6 +94,27 @@ abstract final class SemanticIcons {
   /// 风险严重度「提示」。
   static const severityInfo = FLucideIcons.badgeAlert;
 
+  /// 提醒「开始日期」。
+  static const doseStartDate = FLucideIcons.calendarFold;
+
+  /// 提醒「加入系统日历」动作。
+  static const actionAddToCalendar = FLucideIcons.calendarPlus;
+
+  /// 提醒编辑页「未选择药品」空态。
+  static const medicineNoneSelected = FLucideIcons.packageOpen;
+
+  /// 提醒「提示音」设置项。
+  static const doseSound = FLucideIcons.volumeOff;
+
+  /// 提醒合并展示的药品行。
+  static const medicineReminderRow = FLucideIcons.packageSearch;
+
+  /// 扫码「相机权限被拒」空态。
+  static const statusPermissionDenied = FLucideIcons.cameraOff;
+
+  /// 风险发现条目前缀。
+  static const safetyFinding = FLucideIcons.hardHat;
+
   /// 用药禁忌「红牌警告」。
   static const safetyRedFlag = FLucideIcons.octagonX;
 

@@ -319,7 +319,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                 l10n,
                 reminders: reminders,
               ),
-              prefix: const Icon(SemanticIcons.actionCalendar),
+              prefix: const Icon(SemanticIcons.actionAddToCalendar),
               child: Text(l10n.medicineReminderAddToCalendarAction),
             ),
             const SizedBox(height: Spacing.lg),

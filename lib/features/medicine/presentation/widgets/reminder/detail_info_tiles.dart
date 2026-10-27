@@ -84,7 +84,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
         ),
         FTile(
           prefix: Icon(
-            SemanticIcons.actionCalendar,
+            SemanticIcons.doseStartDate,
             color: SemanticColor.neutral.solid(context),
             size: Spacing.xl,
           ),
@@ -146,7 +146,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
         ),
         FTile(
           prefix: Icon(
-            SemanticIcons.doseVolume,
+            SemanticIcons.doseSound,
             color: SemanticColor.neutral.solid(context),
             size: Spacing.xl,
           ),

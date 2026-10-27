@@ -343,7 +343,7 @@ class SelectedMedicineRow extends StatelessWidget {
         children: [
           FAvatar.raw(
             child: Icon(
-              SemanticIcons.recordMedicine,
+              SemanticIcons.medicineReminderRow,
               color: SemanticColor.primary.solid(context),
             ),
           ),

@@ -360,7 +360,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
         child: StateErrorView(
           title: l10n.scanPermissionDeniedTitle,
           description: l10n.scanPermissionDeniedHint,
-          icon: SemanticIcons.statusUnavailable,
+          icon: SemanticIcons.statusPermissionDenied,
           actionLabel: l10n.scanPermissionOpenSettings,
           onAction: () => openAppSettings(),
           tone: StateTone.warning,

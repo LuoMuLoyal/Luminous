@@ -85,7 +85,7 @@ class ReminderFormBody extends StatelessWidget {
       return StateErrorView(
         title: l10n.medicineNoMedicineTitle,
         description: l10n.medicineNoMedicineBody,
-        icon: SemanticIcons.recordMedicine,
+        icon: SemanticIcons.medicineNoneSelected,
         actionLabel: l10n.medicineQuickAddTitle,
         onAction: () => context.push(Routes.medicineSearch),
       );
