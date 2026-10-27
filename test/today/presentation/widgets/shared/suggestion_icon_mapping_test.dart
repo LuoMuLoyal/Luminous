@@ -69,15 +69,15 @@ void main() {
       expect(SuggestionIconMapping.resolve('info'), SemanticIcons.statusInfo);
     });
 
-    test('returns fallback sparkles icon for unknown icon name', () {
+    test('returns fallback wand icon for unknown icon name', () {
       expect(
         SuggestionIconMapping.resolve('unknown-icon'),
-        SemanticIcons.aiEntry,
+        SemanticIcons.aiFallbackIcon,
       );
     });
 
-    test('returns fallback sparkles icon for empty string', () {
-      expect(SuggestionIconMapping.resolve(''), SemanticIcons.aiEntry);
+    test('returns fallback wand icon for empty string', () {
+      expect(SuggestionIconMapping.resolve(''), SemanticIcons.aiFallbackIcon);
     });
 
     test('fallback is consistent', () {
