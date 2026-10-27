@@ -132,13 +132,10 @@ class _ExportCard extends StatelessWidget {
           padding: const EdgeInsets.all(Spacing.lg),
           child: Row(
             children: [
-              FAvatar.raw(
-                size: Spacing.xl4,
-                child: Icon(
-                  action.icon,
-                  color: action.color.solid(context),
-                  size: IconSizeTokens.sm,
-                ),
+              Icon(
+                action.icon,
+                color: action.color.solid(context),
+                size: IconSizeTokens.lg,
               ),
               const SizedBox(width: Spacing.lg),
               Expanded(

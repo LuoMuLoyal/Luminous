@@ -54,13 +54,10 @@ class ReviewAiSummarySection extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FAvatar.raw(
-                  size: Spacing.xl4,
-                  child: Icon(
-                    SemanticIcons.aiGenerated,
-                    color: SemanticColor.primary.solid(context),
-                    size: IconSizeTokens.sm,
-                  ),
+                Icon(
+                  SemanticIcons.aiGenerated,
+                  color: SemanticColor.primary.solid(context),
+                  size: IconSizeTokens.lg,
                 ),
                 const SizedBox(width: Spacing.lg),
                 Expanded(

@@ -72,22 +72,14 @@ class _PatternCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                FAvatar.raw(
+                Icon(
+                  pattern.icon,
+                  color: pattern.color.solid(context),
                   size: ResponsiveSizing.scaleByWidth(
                     context,
-                    fraction: 0.088,
-                    minValue: 30,
-                    maxValue: 38,
-                  ),
-                  child: Icon(
-                    pattern.icon,
-                    color: pattern.color.solid(context),
-                    size: ResponsiveSizing.scaleByWidth(
-                      context,
-                      fraction: 0.048,
-                      minValue: 16,
-                      maxValue: 22,
-                    ),
+                    fraction: 0.048,
+                    minValue: 16,
+                    maxValue: 22,
                   ),
                 ),
                 const SizedBox(width: Spacing.sm),

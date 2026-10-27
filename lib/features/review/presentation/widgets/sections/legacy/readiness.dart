@@ -50,13 +50,10 @@ class ReviewReadinessSection extends StatelessWidget {
             Row(
               children: [
                 ExcludeSemantics(
-                  child: FAvatar.raw(
-                    size: Spacing.xl4,
-                    child: Icon(
-                      _statusIcon,
-                      color: _statusColor.solid(context),
-                      size: IconSizeTokens.sm,
-                    ),
+                  child: Icon(
+                    _statusIcon,
+                    color: _statusColor.solid(context),
+                    size: IconSizeTokens.lg,
                   ),
                 ),
                 const SizedBox(width: Spacing.md),
@@ -85,7 +82,7 @@ class ReviewReadinessSection extends StatelessWidget {
                     child: Icon(
                       SemanticIcons.statusPending,
                       color: SemanticColor.neutral.solid(context),
-                      size: IconSizeTokens.sm,
+                      size: IconSizeTokens.lg,
                     ),
                   ),
                   const SizedBox(width: Spacing.sm),
@@ -139,7 +136,7 @@ class ReviewReadinessSection extends StatelessWidget {
                       variant: FButtonVariant.outline,
                       prefix: const Icon(
                         SemanticIcons.actionRefresh,
-                        size: IconSizeTokens.sm,
+                        size: IconSizeTokens.lg,
                       ),
                       child: Text(l10n.reviewSyncAction),
                     ),
@@ -204,14 +201,14 @@ class _PrimaryAction extends StatelessWidget {
         onPress: section.onSignIn,
         prefix: const Icon(
           SemanticIcons.statusBlocked,
-          size: IconSizeTokens.sm,
+          size: IconSizeTokens.lg,
         ),
         child: Text(section.l10n.authGoLogin),
       ),
       ReviewReadinessStatus.insufficient => FButton(
         key: const Key('report-readiness-record-action'),
         onPress: section.onContinueRecord,
-        prefix: const Icon(SemanticIcons.tabRecord, size: IconSizeTokens.sm),
+        prefix: const Icon(SemanticIcons.tabRecord, size: IconSizeTokens.lg),
         child: Text(section.l10n.reviewContinueRecordAction),
       ),
       ReviewReadinessStatus.ready => FButton(
@@ -223,7 +220,7 @@ class _PrimaryAction extends StatelessWidget {
                 height: Spacing.xl,
                 child: FCircularProgress(),
               )
-            : const Icon(SemanticIcons.aiEntry, size: IconSizeTokens.sm),
+            : const Icon(SemanticIcons.aiEntry, size: IconSizeTokens.lg),
         child: Text(section.l10n.reviewGenerateAction),
       ),
     };

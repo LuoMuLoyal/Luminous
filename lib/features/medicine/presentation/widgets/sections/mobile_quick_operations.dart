@@ -109,13 +109,10 @@ class _QuickOperationRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            FAvatar.raw(
-              size: Spacing.xl4,
-              child: Icon(
-                operation.icon,
-                color: operation.color.solid(context),
-                size: IconSizeTokens.sm,
-              ),
+            Icon(
+              operation.icon,
+              color: operation.color.solid(context),
+              size: IconSizeTokens.lg,
             ),
             const SizedBox(width: Spacing.md),
             Expanded(
@@ -145,7 +142,7 @@ class _QuickOperationRow extends StatelessWidget {
             Icon(
               SemanticIcons.actionNext,
               color: SemanticColor.neutral.solid(context),
-              size: IconSizeTokens.sm,
+              size: IconSizeTokens.lg,
             ),
           ],
         ),

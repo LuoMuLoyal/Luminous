@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
-import 'package:luminous/core/widgets/common/control/soft_icon.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -15,7 +14,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// first two + a「等 N 项/种」suffix; otherwise [subtitleKey] copy) and a
 /// right-aligned badge (authoritative [MineStatusCard.count] copy for
 /// allergy/medicine; otherwise [badgeKey] copy). Row style mirrors the archive
-/// entries (SoftIcon + w700 title + muted subtitle).
+/// entries (bare icon + w700 title + muted subtitle).
 ///
 /// 本地化与截断是展示层职责:data 层只携带结构化 items/count/kind。
 class MineStatusAlertsSection extends StatelessWidget {
@@ -73,7 +72,11 @@ class _StatusAlertRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          SoftIcon(icon: card.icon, color: card.accent),
+          Icon(
+            card.icon,
+            color: card.accent.solid(context),
+            size: IconSizeTokens.lg,
+          ),
           const SizedBox(width: Spacing.md),
           Expanded(
             child: Column(

@@ -47,9 +47,7 @@ class ReviewSuggestionHistorySection extends StatelessWidget {
               for (final suggestion in suggestions)
                 FTile(
                   key: Key('report-suggestion-${suggestion.id}'),
-                  prefix: FAvatar.raw(
-                    child: Icon(_iconForType(suggestion.type), size: 18),
-                  ),
+                  prefix: Icon(_iconForType(suggestion.type), size: 18),
                   title: Text(
                     suggestion.title,
                     maxLines: 1,

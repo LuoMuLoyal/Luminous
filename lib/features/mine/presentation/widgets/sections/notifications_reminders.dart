@@ -7,7 +7,6 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/core/widgets/common/control/soft_icon.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
@@ -38,9 +37,10 @@ class MineNotificationsReminderSection extends ConsumerWidget {
           children: [
             FTile(
               key: const Key('mine-notification-settings-tile'),
-              prefix: const SoftIcon(
-                icon: SemanticIcons.notificationBellRing,
-                color: SemanticColor.primary,
+              prefix: Icon(
+                SemanticIcons.notificationBellRing,
+                color: SemanticColor.primary.solid(context),
+                size: IconSizeTokens.lg,
               ),
               title: Text(l10n.mineReminderSectionTitle),
               subtitle: Text(
@@ -53,9 +53,10 @@ class MineNotificationsReminderSection extends ConsumerWidget {
             ),
             FTile(
               key: const Key('mine-dnd-settings-tile'),
-              prefix: const SoftIcon(
-                icon: SemanticIcons.recordSleep,
-                color: SemanticColor.info,
+              prefix: Icon(
+                SemanticIcons.recordSleep,
+                color: SemanticColor.info.solid(context),
+                size: IconSizeTokens.lg,
               ),
               title: Text(l10n.settingsNotificationsDndTitle),
               subtitle: Text(
@@ -68,9 +69,10 @@ class MineNotificationsReminderSection extends ConsumerWidget {
             ),
             FTile(
               key: const Key('mine-notification-inbox-tile'),
-              prefix: const SoftIcon(
-                icon: SemanticIcons.actionMessage,
-                color: SemanticColor.neutral,
+              prefix: Icon(
+                SemanticIcons.actionMessage,
+                color: SemanticColor.neutral.solid(context),
+                size: IconSizeTokens.lg,
               ),
               title: Text(l10n.mineNotificationInboxTitle),
               subtitle: Text(

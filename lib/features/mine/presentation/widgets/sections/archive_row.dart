@@ -7,7 +7,6 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
-import 'package:luminous/core/widgets/common/control/soft_icon.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -36,7 +35,11 @@ class ArchiveRow extends ConsumerWidget with FTileMixin {
     final typography = context.theme.typography;
 
     final tile = FTile(
-      prefix: SoftIcon(icon: entry.icon, color: entry.accent),
+      prefix: Icon(
+        entry.icon,
+        color: entry.accent.solid(context),
+        size: IconSizeTokens.lg,
+      ),
       title: Text(
         mineCopy(l10n, entry.titleKey),
         style: typography.body.md.copyWith(fontWeight: FontWeight.w700),

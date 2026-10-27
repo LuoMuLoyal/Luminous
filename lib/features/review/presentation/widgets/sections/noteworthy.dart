@@ -119,13 +119,10 @@ class _NoteworthyCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FAvatar.raw(
-                  size: Spacing.xl2,
-                  child: Icon(
-                    finding.icon,
-                    size: IconSizeTokens.sm,
-                    color: finding.color.solid(context),
-                  ),
+                Icon(
+                  finding.icon,
+                  size: IconSizeTokens.sm,
+                  color: finding.color.solid(context),
                 ),
                 const SizedBox(width: Spacing.md),
                 Expanded(

@@ -9,15 +9,7 @@ class _MedicationAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = item.color.solid(context);
-    return FAvatar.raw(
-      size: size,
-      style: .delta(backgroundColor: item.color.muted(context)),
-      child: Icon(
-        SemanticIcons.medicineBottle,
-        color: color,
-        size: size * 0.52,
-      ),
-    );
+    return Icon(SemanticIcons.medicineBottle, color: color, size: size * 0.52);
   }
 }
 

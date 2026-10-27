@@ -8,8 +8,8 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
+import 'package:luminous/core/design/tokens/icon_size.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/widgets/common/control/soft_icon.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -147,20 +147,24 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final icons = tester
-        .widgetList<SoftIcon>(
+    final iconWidgets = tester
+        .widgetList<Icon>(
           find.descendant(
             of: find.byKey(const Key('mine-notifications-reminder-section')),
-            matching: find.byType(SoftIcon),
+            matching: find.byType(Icon),
           ),
         )
+        .where((icon) => icon.size == IconSizeTokens.lg)
         .toList();
 
-    expect(icons, hasLength(3));
+    expect(iconWidgets, hasLength(3));
     // Each tile uses a distinct semantic color to convey its category.
-    expect(icons[0].color, SemanticColor.primary);
-    expect(icons[1].color, SemanticColor.info);
-    expect(icons[2].color, SemanticColor.neutral);
+    final colors = tester.element(
+      find.byKey(const Key('mine-notifications-reminder-section')),
+    );
+    expect(iconWidgets[0].color, SemanticColor.primary.solid(colors));
+    expect(iconWidgets[1].color, SemanticColor.info.solid(colors));
+    expect(iconWidgets[2].color, SemanticColor.neutral.solid(colors));
   });
 
   testWidgets('Mine notifications section routes to settings, dnd, and inbox', (

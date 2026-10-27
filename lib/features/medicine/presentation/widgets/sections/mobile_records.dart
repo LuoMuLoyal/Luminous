@@ -298,13 +298,10 @@ class _TodayPlanEmpty extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
       child: Row(
         children: [
-          FAvatar.raw(
-            size: Spacing.xl4,
-            child: Icon(
-              SemanticIcons.doseCalendarCheck,
-              color: SemanticColor.primary.solid(context),
-              size: IconSizeTokens.sm,
-            ),
+          Icon(
+            SemanticIcons.doseCalendarCheck,
+            color: SemanticColor.primary.solid(context),
+            size: IconSizeTokens.lg,
           ),
           const SizedBox(width: Spacing.lg),
           Expanded(

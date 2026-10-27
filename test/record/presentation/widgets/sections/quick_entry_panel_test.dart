@@ -111,12 +111,15 @@ void main() {
         findsNothing,
       );
 
-      // Note must contain an FAvatar with the same subtle background as grid tiles.
-      final avatarFinder = find.descendant(
-        of: noteFinder,
-        matching: find.byType(FAvatar),
+      // Decorative plates were removed app-wide: the note tile renders a bare icon.
+      expect(
+        find.descendant(of: noteFinder, matching: find.byType(FAvatar)),
+        findsNothing,
       );
-      expect(avatarFinder, findsOneWidget);
+      expect(
+        find.descendant(of: noteFinder, matching: find.byType(Icon)),
+        findsOneWidget,
+      );
 
       // Note must lay out icon and label horizontally (Row), not vertically (Column).
       final rowFinder = find.descendant(

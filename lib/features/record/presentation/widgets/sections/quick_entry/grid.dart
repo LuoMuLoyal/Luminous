@@ -118,16 +118,10 @@ class QuickRecordTile extends StatelessWidget {
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    FAvatar.raw(
-                      size: metrics.avatarSize,
-                      style: .delta(
-                        backgroundColor: action.softColor.subtle(context),
-                      ),
-                      child: Icon(
-                        isLocked ? SemanticIcons.statusBlocked : action.icon,
-                        color: action.accent.solid(context),
-                        size: IconSizeTokens.sm,
-                      ),
+                    Icon(
+                      isLocked ? SemanticIcons.statusBlocked : action.icon,
+                      color: action.accent.solid(context),
+                      size: IconSizeTokens.lg,
                     ),
                     if (badge != null)
                       Positioned(
@@ -226,16 +220,10 @@ class QuickRecordNoteButton extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FAvatar.raw(
-                  size: metrics.avatarSize,
-                  style: .delta(
-                    backgroundColor: action.softColor.subtle(context),
-                  ),
-                  child: Icon(
-                    isLocked ? SemanticIcons.statusBlocked : action.icon,
-                    color: action.accent.solid(context),
-                    size: IconSizeTokens.sm,
-                  ),
+                Icon(
+                  isLocked ? SemanticIcons.statusBlocked : action.icon,
+                  color: action.accent.solid(context),
+                  size: IconSizeTokens.lg,
                 ),
                 const SizedBox(width: Spacing.md),
                 Text(

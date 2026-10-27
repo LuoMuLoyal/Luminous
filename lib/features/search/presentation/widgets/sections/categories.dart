@@ -68,12 +68,10 @@ class _CategoryItem extends StatelessWidget {
       ),
       child: Column(
         children: [
-          FAvatar.raw(
-            size: IconSizeTokens.xl3,
-            style: .delta(
-              backgroundColor: category.softColor.fillStrong(context),
-            ),
-            child: Icon(category.icon, color: category.accent.solid(context)),
+          Icon(
+            category.icon,
+            color: category.accent.solid(context),
+            size: IconSizeTokens.lg,
           ),
           const SizedBox(height: Spacing.md),
           Text(

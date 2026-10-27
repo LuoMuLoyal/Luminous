@@ -387,12 +387,10 @@ class _ReportLockedFeaturesHint extends StatelessWidget {
       divider: FItemDivider.full,
       children: [
         FTile(
-          prefix: FAvatar.raw(
-            child: Icon(
-              SemanticIcons.statusBlockedDashboardView,
-              color: SemanticColor.primary.solid(context),
-              size: IconSizeTokens.sm,
-            ),
+          prefix: Icon(
+            SemanticIcons.statusBlockedDashboardView,
+            color: SemanticColor.primary.solid(context),
+            size: IconSizeTokens.lg,
           ),
           title: Text(
             AppLocalizations.of(context)!.reviewLockedFeaturesTitle,

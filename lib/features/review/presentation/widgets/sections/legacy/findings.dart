@@ -124,22 +124,14 @@ class _FindingCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                FAvatar.raw(
+                Icon(
+                  finding.icon,
+                  color: palette.solid,
                   size: ResponsiveSizing.scaleByWidth(
                     context,
-                    fraction: 0.1,
-                    minValue: 36,
-                    maxValue: 44,
-                  ),
-                  child: Icon(
-                    finding.icon,
-                    color: palette.solid,
-                    size: ResponsiveSizing.scaleByWidth(
-                      context,
-                      fraction: 0.052,
-                      minValue: 18,
-                      maxValue: 24,
-                    ),
+                    fraction: 0.052,
+                    minValue: 18,
+                    maxValue: 24,
                   ),
                 ),
                 // No decorative chevron — the card is informational, not

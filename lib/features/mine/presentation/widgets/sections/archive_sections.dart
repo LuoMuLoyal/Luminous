@@ -18,13 +18,10 @@ class ArchiveEmpty extends StatelessWidget {
         padding: const EdgeInsets.all(Spacing.lg),
         child: Row(
           children: [
-            FAvatar.raw(
-              size: Spacing.xl4,
-              child: Icon(
-                SemanticIcons.recordClipboard,
-                color: SemanticColor.primary.solid(context),
-                size: IconSizeTokens.sm,
-              ),
+            Icon(
+              SemanticIcons.recordClipboard,
+              color: SemanticColor.primary.solid(context),
+              size: IconSizeTokens.lg,
             ),
             const SizedBox(width: Spacing.lg),
             Expanded(

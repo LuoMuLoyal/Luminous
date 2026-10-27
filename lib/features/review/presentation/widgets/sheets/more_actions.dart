@@ -193,14 +193,7 @@ class _MoreActionTile extends StatelessWidget {
           padding: const EdgeInsets.all(Spacing.lg),
           child: Row(
             children: [
-              FAvatar.raw(
-                size: IconSizeTokens.xl2,
-                child: Icon(
-                  icon,
-                  color: color.solid(context),
-                  size: IconSizeTokens.md,
-                ),
-              ),
+              Icon(icon, color: color.solid(context), size: IconSizeTokens.md),
               const SizedBox(width: Spacing.lg),
               Expanded(
                 child: Column(

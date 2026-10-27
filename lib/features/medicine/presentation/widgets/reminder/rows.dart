@@ -341,11 +341,9 @@ class SelectedMedicineRow extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.lg),
       child: Row(
         children: [
-          FAvatar.raw(
-            child: Icon(
-              SemanticIcons.medicineReminderRow,
-              color: SemanticColor.primary.solid(context),
-            ),
+          Icon(
+            SemanticIcons.medicineReminderRow,
+            color: SemanticColor.primary.solid(context),
           ),
           const SizedBox(width: Spacing.lg),
           Expanded(

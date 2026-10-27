@@ -35,14 +35,10 @@ class RecordKindIconField extends ConsumerWidget {
       key: Key('record-kind-icon-field-${kind.name}'),
       title: Text(l10n.recordQuickIconFieldLabel),
       subtitle: Text(l10n.recordQuickIconChangeAction),
-      prefix: FAvatar.raw(
-        size: Spacing.xl2,
-        style: .delta(backgroundColor: action.softColor.subtle(context)),
-        child: Icon(
-          icon,
-          color: action.accent.solid(context),
-          size: IconSizeTokens.sm,
-        ),
+      prefix: Icon(
+        icon,
+        color: action.accent.solid(context),
+        size: IconSizeTokens.lg,
       ),
       suffix: const Icon(SemanticIcons.actionNext),
       onPress: () => _pickIcon(context, ref, entryType, icon),
