@@ -453,8 +453,8 @@ void main() {
       (DailyRecordKind.water, SemanticIcons.recordWater),
       (DailyRecordKind.meal, SemanticIcons.recordMeal),
       (DailyRecordKind.mood, SemanticIcons.recordMood),
-      (DailyRecordKind.symptom, SemanticIcons.safetyDanger),
-      (DailyRecordKind.note, SemanticIcons.tabRecord),
+      (DailyRecordKind.symptom, SemanticIcons.recordSymptom),
+      (DailyRecordKind.note, SemanticIcons.recordNote),
       (DailyRecordKind.sleep, SemanticIcons.recordSleep),
     ];
 
