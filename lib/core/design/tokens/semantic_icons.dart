@@ -73,6 +73,30 @@ abstract final class SemanticIcons {
   /// 餐食「分析已完成」。
   static const statusAnalyzed = FLucideIcons.sparkle;
 
+  /// 详情页信息横幅。
+  static const statusBanner = FLucideIcons.megaphone;
+
+  /// 详情页「暂无内容」空态。
+  static const statusNoContent = FLucideIcons.fileX;
+
+  /// 风险检查「数据覆盖不足」。
+  static const statusCoverageGap = FLucideIcons.scanEye;
+
+  /// 风险检查「已发现风险」。
+  static const statusConfirmedRisk = FLucideIcons.octagonAlert;
+
+  /// 风险严重度「高」。
+  static const severityHigh = FLucideIcons.alertTriangle;
+
+  /// 风险严重度「中」。
+  static const severityMedium = FLucideIcons.alertCircle;
+
+  /// 风险严重度「提示」。
+  static const severityInfo = FLucideIcons.badgeAlert;
+
+  /// 用药禁忌「红牌警告」。
+  static const safetyRedFlag = FLucideIcons.octagonX;
+
   // ================================================================
   // 用药安全 — 风险等级、发现类型各用不同图标
   // ================================================================
@@ -110,6 +134,15 @@ abstract final class SemanticIcons {
 
   /// 安全贴士「服用时机」分类。
   static const safetyTipTiming = FLucideIcons.clockFading;
+
+  /// 风险发现「特殊人群」。
+  static const safetySpecialPopulation = FLucideIcons.shieldQuestion;
+
+  /// 安全面板空态（尚未建立安全信息）。
+  static const safetyPanelEmpty = FLucideIcons.shieldOff;
+
+  /// 药品页安全守护入口。
+  static const safetyGuard = FLucideIcons.shieldHalf;
 
   // ================================================================
   // 报告

@@ -45,7 +45,7 @@ class RiskRedFlagItem extends StatelessWidget {
                     Row(
                       children: [
                         Icon(
-                          SemanticIcons.statusWarning,
+                          SemanticIcons.safetyRedFlag,
                           color: SemanticColor.destructive.solid(context),
                           size: IconSizeTokens.md,
                         ),

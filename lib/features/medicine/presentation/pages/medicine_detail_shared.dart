@@ -51,7 +51,7 @@ class ReferenceNotice extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            SemanticIcons.statusInfo,
+            SemanticIcons.statusBanner,
             size: Spacing.lg,
             color: SemanticColor.info.solid(context),
           ),

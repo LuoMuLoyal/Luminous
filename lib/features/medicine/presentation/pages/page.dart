@@ -343,7 +343,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
     final isNarrow = MediaQuery.sizeOf(context).width < Breakpoints.tablet;
 
     final shieldIcon = Icon(
-      SemanticIcons.safetySafe,
+      SemanticIcons.safetyGuard,
       color: SemanticColor.primary.solid(context),
       size: Spacing.xl,
     );

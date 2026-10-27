@@ -138,7 +138,7 @@ class _MedicineDetailContentState extends ConsumerState<MedicineDetailContent> {
               else
                 StateMessageView(
                   title: l10n.medicineDetailNoContentTitle,
-                  icon: SemanticIcons.statusInfo,
+                  icon: SemanticIcons.statusNoContent,
                 ),
               const SizedBox(height: Spacing.lg),
               FButton(

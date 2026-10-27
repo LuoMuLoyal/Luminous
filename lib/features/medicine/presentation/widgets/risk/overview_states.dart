@@ -131,7 +131,7 @@ class NeverCheckedState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              SemanticIcons.safetySafe,
+              SemanticIcons.safetyPanelEmpty,
               size: IconSizeTokens.xl2,
               color: SemanticColor.neutral.solid(context),
             ),

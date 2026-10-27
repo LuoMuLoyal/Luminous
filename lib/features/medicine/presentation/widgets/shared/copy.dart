@@ -217,7 +217,8 @@ IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
     MedicineRiskFindingType.duplicateIngredient =>
       SemanticIcons.safetyDuplicate,
     MedicineRiskFindingType.allergy => SemanticIcons.statusWarning,
-    MedicineRiskFindingType.specialGroup => SemanticIcons.safetySafe,
+    MedicineRiskFindingType.specialGroup =>
+      SemanticIcons.safetySpecialPopulation,
     MedicineRiskFindingType.foodInteraction =>
       SemanticIcons.safetyFoodInteraction,
     MedicineRiskFindingType.longTermUse => SemanticIcons.safetyLongTermUse,
@@ -245,9 +246,9 @@ SemanticColor medicineRiskSeveritySoftColor(MedicineRiskSeverity severity) {
 /// non-color channel for color-blind users to differentiate severity.
 IconData medicineRiskSeverityIcon(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => SemanticIcons.statusWarning,
-    MedicineRiskSeverity.medium => SemanticIcons.statusError,
-    MedicineRiskSeverity.info => SemanticIcons.statusInfo,
+    MedicineRiskSeverity.high => SemanticIcons.severityHigh,
+    MedicineRiskSeverity.medium => SemanticIcons.severityMedium,
+    MedicineRiskSeverity.info => SemanticIcons.severityInfo,
   };
 }
 
