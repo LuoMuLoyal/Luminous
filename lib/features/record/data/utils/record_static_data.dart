@@ -50,7 +50,7 @@ List<RecordCalendarDay> staticMonthDays(DateTime today) {
 const List<RecordQuickAction> staticQuickActions = [
   RecordQuickAction(
     type: RecordEntryType.symptom,
-    icon: SemanticIcons.medicineKit,
+    icon: SemanticIcons.recordSymptom,
     titleKey: RecordCopyKey.typeSymptom,
     subtitleKey: RecordCopyKey.summaryRecorded,
     accent: SemanticColor.primary,
@@ -107,7 +107,7 @@ const List<RecordQuickAction> staticQuickActions = [
   ),
   RecordQuickAction(
     type: RecordEntryType.note,
-    icon: SemanticIcons.tabRecord,
+    icon: SemanticIcons.recordNote,
     titleKey: RecordCopyKey.typeNote,
     subtitleKey: RecordCopyKey.summaryRecorded,
     accent: SemanticColor.primary,
@@ -134,7 +134,7 @@ const List<RecordFilter> staticFilters = [
   RecordFilter(
     type: RecordEntryType.symptom,
     titleKey: RecordCopyKey.typeSymptom,
-    icon: SemanticIcons.medicineKit,
+    icon: SemanticIcons.recordSymptom,
     accent: SemanticColor.primary,
     selected: true,
   ),
@@ -176,7 +176,7 @@ const List<RecordFilter> staticFilters = [
   RecordFilter(
     type: RecordEntryType.note,
     titleKey: RecordCopyKey.typeNote,
-    icon: SemanticIcons.tabRecord,
+    icon: SemanticIcons.recordNote,
     accent: SemanticColor.primary,
     selected: true,
   ),

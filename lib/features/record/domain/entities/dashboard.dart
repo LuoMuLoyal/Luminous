@@ -36,7 +36,7 @@ abstract class RecordDashboard with _$RecordDashboard {
       <RecordQuickAction>[
         const RecordQuickAction(
           type: RecordEntryType.symptom,
-          icon: SemanticIcons.medicineKit,
+          icon: SemanticIcons.recordSymptom,
           titleKey: RecordCopyKey.typeSymptom,
           subtitleKey: RecordCopyKey.summaryRecorded,
           accent: SemanticColor.primary,
@@ -84,7 +84,7 @@ abstract class RecordDashboard with _$RecordDashboard {
         ),
         const RecordQuickAction(
           type: RecordEntryType.note,
-          icon: SemanticIcons.tabRecord,
+          icon: SemanticIcons.recordNote,
           titleKey: RecordCopyKey.typeNote,
           subtitleKey: RecordCopyKey.summaryRecorded,
           accent: SemanticColor.primary,

@@ -133,9 +133,9 @@ RecordTimelineEntry toTimelineEntry(DailyRecordItem record) {
     DailyRecordKind.meal => SemanticIcons.recordMeal,
     DailyRecordKind.vital => SemanticIcons.profileCondition,
     DailyRecordKind.mood => SemanticIcons.recordMood,
-    DailyRecordKind.symptom => SemanticIcons.safetyDanger,
+    DailyRecordKind.symptom => SemanticIcons.recordSymptom,
     DailyRecordKind.activity => SemanticIcons.recordActivity,
-    DailyRecordKind.note => SemanticIcons.tabRecord,
+    DailyRecordKind.note => SemanticIcons.recordNote,
     DailyRecordKind.sleep => SemanticIcons.recordMoon,
   };
 
