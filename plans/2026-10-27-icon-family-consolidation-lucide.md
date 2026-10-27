@@ -18,6 +18,7 @@ Created: 2026-10-27
 | P0 迁移 5 个语义位 | **已完成** | commit `adde9d416` |
 | P1 删除 iconMind | **已完成** | commit `98698f816`（112 文件 / 34.1 KB + 注册表 + pubspec + barrel） |
 | 去重（§4） | **已完成** | commit `1329ed0ff`；115 个语义名 → 115 个互异字形，跨族同形 0 组 |
+| 去重 Scope B（页面内按区块） | **已完成** | 见下方「Scope B 口径」；115 → 230 个语义名，页面内跨组件重复 0 |
 | P2 尺寸刻度收敛 | 未开工 | `Icon(size: Spacing.*)` 63 处 + 刻度外字面量 |
 | P3 衬底清理 | 未开工 | `SoftIcon` 44px 容器、23 处 `FAvatar` 托盘 |
 | P4 混合图标族清理 | 未开工 | 剩余 5 个 `FPhosphorIcons`（已拆开同形冲突，仅剩族混合问题） |
@@ -29,6 +30,24 @@ Created: 2026-10-27
 因此原 §4 中「跨语境可复用、保留」的组**全部拆开**，换独立字形；并额外发现
 **Lucide/Phosphor 跨族同形**（如 `circleCheck` vs `checkCircle`）也属重复，一并处理。
 最终校验：全局唯一（含跨族归一化）+ 逐文件碰撞检测，两者均为 0。
+
+### Scope B 口径：页面内按区块去重
+
+「全局唯一」只保证不同语义名不撞字形，仍允许**同一 token 在一个页面的多个区块/组件里
+重复出现**。用户要求这部分也拆开，只保留返回、提示、错误三类确实需要复用的。
+
+- **判定**：以页面路由为根、沿 `package:luminous/...` import 求可达集合（排除
+  `app/router.dart`，它 import 了全部 feature 路由，不排除会把整仓算作一页）；
+  只统计 `features/**/presentation/**` 的引用点。同一页内某 token 出现在
+  **≥2 个 presentation 文件**即判为复用。
+- **白名单**：`actionNext/Prev/Expand/Collapse/Close`（返回与导航）、
+  `statusInfo/statusWarning/statusError/aiTip`（提示与错误）。
+- **字形选择**：新 token 的字形只能取自该 token 的**语义族**（近义变体），
+  不得随意挑字形；例如 `statusDone` 取 `checkCheck`/`circleCheck`/`squareCheck`/
+  `circleCheckBig`/`fileCheck`，`safetyCaution` 取 `shieldQuestion`/`triangleAlert`。
+- **命名**：`<原token><区块文件 PascalCase>`，注册表内注明来源文件。
+- **结果**：语义 token 115 → 230，230 个字形互不相同；同页跨 presentation 文件
+  的重复 token = 0。
 
 - 范围：`Luminous`（Flutter 客户端）
 - 目标：移除 iconMind 资产与 `SemanticIconSvg` 注册表，全部图标回到 Lucide 单一族；同时按大厂规范收敛尺寸刻度、清理既有重复语义。
