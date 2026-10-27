@@ -64,7 +64,7 @@ class RecordMobileFilter extends StatelessWidget {
                         children: [
                           Icon(
                             SemanticIcons.actionClose,
-                            size: Spacing.lg,
+                            size: IconSizeTokens.sm,
                             color: SemanticColor.neutral.solid(context),
                           ),
                           const SizedBox(width: Spacing.xs),

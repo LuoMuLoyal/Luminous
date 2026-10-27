@@ -391,7 +391,7 @@ class _ReportLockedFeaturesHint extends StatelessWidget {
             child: Icon(
               SemanticIcons.statusBlockedDashboardView,
               color: SemanticColor.primary.solid(context),
-              size: Spacing.lg,
+              size: IconSizeTokens.sm,
             ),
           ),
           title: Text(

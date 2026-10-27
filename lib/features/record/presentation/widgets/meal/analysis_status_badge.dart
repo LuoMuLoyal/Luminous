@@ -38,7 +38,7 @@ class MealAnalysisStatusBadge extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: foreground, size: Spacing.md),
+              Icon(icon, color: foreground, size: IconSizeTokens.xs),
               const SizedBox(width: Spacing.xs),
               Text(
                 label,

@@ -258,7 +258,7 @@ class _TimelineRow extends StatelessWidget {
                         child: Icon(
                           entry.icon,
                           color: entry.accent.solid(context),
-                          size: Spacing.xl,
+                          size: IconSizeTokens.sm,
                         ),
                       ),
                     ),
@@ -349,7 +349,7 @@ class _TimelineRow extends StatelessWidget {
                     Icon(
                       SemanticIcons.actionNext,
                       color: SemanticColor.neutral.solid(context),
-                      size: Spacing.xl,
+                      size: IconSizeTokens.sm,
                     ),
                   ],
                 ),
@@ -413,7 +413,7 @@ class _MobileTimelineEmptyState extends StatelessWidget {
               // timeline scrolled out of reach.
               Icon(
                 SemanticIcons.actionAdd,
-                size: Spacing.xl3,
+                size: IconSizeTokens.lg,
                 color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.lg),

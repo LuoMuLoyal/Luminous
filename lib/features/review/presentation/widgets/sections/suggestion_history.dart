@@ -98,7 +98,7 @@ class _ReviewSuggestionHistorySectionState
                 ExcludeSemantics(
                   child: Icon(
                     SemanticIcons.reportHistory,
-                    size: Spacing.xl,
+                    size: IconSizeTokens.sm,
                     color: SemanticColor.primary.solid(context),
                   ),
                 ),
@@ -271,7 +271,7 @@ class _EmptyView extends StatelessWidget {
           Icon(
             SemanticIcons.reportHistory,
             color: colors.secondary,
-            size: Spacing.xl,
+            size: IconSizeTokens.sm,
           ),
           const SizedBox(width: Spacing.md),
           Expanded(

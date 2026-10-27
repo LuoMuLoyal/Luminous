@@ -102,7 +102,7 @@ class _RedFlagList extends StatelessWidget {
               ExcludeSemantics(
                 child: Icon(
                   SemanticIcons.safetyAllergy,
-                  size: Spacing.lg,
+                  size: IconSizeTokens.sm,
                   color: warning.solid(context),
                 ),
               ),

@@ -238,7 +238,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                   color: isActive
                       ? SemanticColor.primary.solid(context)
                       : SemanticColor.neutral.solid(context),
-                  size: Spacing.xl,
+                  size: IconSizeTokens.sm,
                 ),
                 const SizedBox(width: Spacing.lg),
                 Expanded(

@@ -41,7 +41,7 @@ class RecordKindIconField extends ConsumerWidget {
         child: Icon(
           icon,
           color: action.accent.solid(context),
-          size: Spacing.lg,
+          size: IconSizeTokens.sm,
         ),
       ),
       suffix: const Icon(SemanticIcons.actionNext),

@@ -345,7 +345,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
     final shieldIcon = Icon(
       SemanticIcons.safetyGuard,
       color: SemanticColor.primary.solid(context),
-      size: Spacing.xl,
+      size: IconSizeTokens.sm,
     );
 
     return FTooltip(
@@ -468,7 +468,7 @@ class _MedicineMobileSearchBar extends StatelessWidget {
             Icon(
               SemanticIcons.actionSearch,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.xl,
+              size: IconSizeTokens.sm,
             ),
             const SizedBox(width: Spacing.md),
             Expanded(

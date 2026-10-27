@@ -48,7 +48,7 @@ class _DoseActionButton extends StatelessWidget {
       variant: filled ? FButtonVariant.primary : FButtonVariant.outline,
       size: FButtonSizeVariant.sm,
       mainAxisSize: MainAxisSize.min,
-      prefix: Icon(icon, size: Spacing.lg, color: foregroundColor),
+      prefix: Icon(icon, size: IconSizeTokens.sm, color: foregroundColor),
       child: Text(
         label,
         style: context.theme.typography.body.sm.copyWith(

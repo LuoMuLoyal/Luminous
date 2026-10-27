@@ -55,7 +55,7 @@ class ReviewReadinessSection extends StatelessWidget {
                     child: Icon(
                       _statusIcon,
                       color: _statusColor.solid(context),
-                      size: Spacing.xl,
+                      size: IconSizeTokens.sm,
                     ),
                   ),
                 ),
@@ -85,7 +85,7 @@ class ReviewReadinessSection extends StatelessWidget {
                     child: Icon(
                       SemanticIcons.statusPending,
                       color: SemanticColor.neutral.solid(context),
-                      size: Spacing.xl,
+                      size: IconSizeTokens.sm,
                     ),
                   ),
                   const SizedBox(width: Spacing.sm),
@@ -223,7 +223,7 @@ class _PrimaryAction extends StatelessWidget {
                 height: Spacing.xl,
                 child: FCircularProgress(),
               )
-            : const Icon(SemanticIcons.aiEntry, size: Spacing.xl),
+            : const Icon(SemanticIcons.aiEntry, size: IconSizeTokens.sm),
         child: Text(section.l10n.reviewGenerateAction),
       ),
     };

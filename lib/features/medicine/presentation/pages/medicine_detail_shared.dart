@@ -52,7 +52,7 @@ class ReferenceNotice extends StatelessWidget {
         children: [
           Icon(
             SemanticIcons.statusBanner,
-            size: Spacing.lg,
+            size: IconSizeTokens.sm,
             color: SemanticColor.info.solid(context),
           ),
           const SizedBox(width: Spacing.sm),
@@ -88,7 +88,7 @@ class RiskCheckEntry extends StatelessWidget {
           children: [
             Icon(
               SemanticIcons.safetyCaution,
-              size: Spacing.lg,
+              size: IconSizeTokens.sm,
               color: SemanticColor.primary.solid(context),
             ),
             const SizedBox(width: Spacing.sm),
@@ -102,7 +102,7 @@ class RiskCheckEntry extends StatelessWidget {
             ),
             Icon(
               SemanticIcons.actionNext,
-              size: Spacing.lg,
+              size: IconSizeTokens.sm,
               color: SemanticColor.neutral.solid(context),
             ),
           ],

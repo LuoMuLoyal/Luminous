@@ -110,7 +110,7 @@ class _CoverageCard extends StatelessWidget {
                 children: [
                   Icon(
                     metric.icon,
-                    size: Spacing.lg,
+                    size: IconSizeTokens.sm,
                     color: sparse
                         ? SemanticColor.neutral.solid(context)
                         : metric.color.solid(context),

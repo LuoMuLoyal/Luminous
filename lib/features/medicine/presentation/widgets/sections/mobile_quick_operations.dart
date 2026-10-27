@@ -114,7 +114,7 @@ class _QuickOperationRow extends StatelessWidget {
               child: Icon(
                 operation.icon,
                 color: operation.color.solid(context),
-                size: Spacing.xl,
+                size: IconSizeTokens.sm,
               ),
             ),
             const SizedBox(width: Spacing.md),
@@ -145,7 +145,7 @@ class _QuickOperationRow extends StatelessWidget {
             Icon(
               SemanticIcons.actionNext,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.xl,
+              size: IconSizeTokens.sm,
             ),
           ],
         ),

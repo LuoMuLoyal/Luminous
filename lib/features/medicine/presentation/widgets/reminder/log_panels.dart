@@ -41,7 +41,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
                       Icon(
                         SemanticIcons.recordClipboard,
                         color: SemanticColor.neutral.solid(context),
-                        size: Spacing.xl,
+                        size: IconSizeTokens.sm,
                       ),
                       const SizedBox(width: Spacing.md),
                       Expanded(
@@ -122,7 +122,7 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
                       Icon(
                         SemanticIcons.doseLog,
                         color: SemanticColor.neutral.solid(context),
-                        size: Spacing.xl,
+                        size: IconSizeTokens.sm,
                       ),
                       const SizedBox(width: Spacing.md),
                       Expanded(
@@ -186,7 +186,7 @@ class _DeliveryLogRow extends StatelessWidget {
           Icon(
             deliveryStatusIcon(log.status),
             color: color.solid(context),
-            size: Spacing.xl,
+            size: IconSizeTokens.sm,
           ),
           const SizedBox(width: Spacing.md),
           Expanded(
@@ -269,7 +269,7 @@ class _TodayLogRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: color.solid(context), size: Spacing.xl),
+          Icon(icon, color: color.solid(context), size: IconSizeTokens.sm),
           const SizedBox(width: Spacing.md),
           Expanded(
             child: Text(

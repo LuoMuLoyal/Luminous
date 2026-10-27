@@ -33,7 +33,7 @@ class IconActionButton extends StatelessWidget {
             onPress: onTap,
             variant: FButtonVariant.ghost,
             size: FButtonSizeVariant.sm,
-            child: Icon(icon, size: Spacing.xl),
+            child: Icon(icon, size: IconSizeTokens.sm),
           ),
           if (showBadge)
             Positioned(

@@ -137,7 +137,7 @@ class _ExportCard extends StatelessWidget {
                 child: Icon(
                   action.icon,
                   color: action.color.solid(context),
-                  size: Spacing.xl,
+                  size: IconSizeTokens.sm,
                 ),
               ),
               const SizedBox(width: Spacing.lg),

@@ -27,7 +27,7 @@ class ReminderInfoRow extends StatelessWidget {
       prefix: Icon(
         icon,
         color: SemanticColor.neutral.solid(context),
-        size: Spacing.xl,
+        size: IconSizeTokens.sm,
       ),
       title: Text(label),
       details: Text(
@@ -77,7 +77,7 @@ class ValueActionRow extends StatelessWidget {
             Icon(
               icon,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.xl,
+              size: IconSizeTokens.sm,
             ),
             const SizedBox(width: Spacing.lg),
             Expanded(
@@ -108,13 +108,13 @@ class ValueActionRow extends StatelessWidget {
                     onPress: onClear,
                     child: const Icon(
                       SemanticIcons.actionClose,
-                      size: Spacing.xl,
+                      size: IconSizeTokens.sm,
                     ),
                   )
                 : Icon(
                     SemanticIcons.actionNext,
                     color: SemanticColor.neutral.solid(context),
-                    size: Spacing.xl,
+                    size: IconSizeTokens.sm,
                   ),
           ],
         ),
@@ -151,7 +151,7 @@ class SwitchRow extends StatelessWidget {
           Icon(
             SemanticIcons.notificationBellRing,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.xl,
+            size: IconSizeTokens.sm,
           ),
           const SizedBox(width: Spacing.lg),
           Expanded(
@@ -211,7 +211,7 @@ class UnavailableMethodRow extends StatelessWidget {
             Icon(
               icon,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.xl,
+              size: IconSizeTokens.sm,
             ),
             const SizedBox(width: Spacing.lg),
             Expanded(
@@ -283,7 +283,7 @@ class SoundPreferenceRow extends StatelessWidget {
           Icon(
             SemanticIcons.doseVolume,
             color: SemanticColor.neutral.solid(context),
-            size: Spacing.xl,
+            size: IconSizeTokens.sm,
           ),
           const SizedBox(width: Spacing.lg),
           Expanded(

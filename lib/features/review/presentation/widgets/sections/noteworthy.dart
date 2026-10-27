@@ -123,7 +123,7 @@ class _NoteworthyCard extends StatelessWidget {
                   size: Spacing.xl2,
                   child: Icon(
                     finding.icon,
-                    size: Spacing.lg,
+                    size: IconSizeTokens.sm,
                     color: finding.color.solid(context),
                   ),
                 ),

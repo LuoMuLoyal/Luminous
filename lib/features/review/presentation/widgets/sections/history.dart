@@ -172,7 +172,7 @@ class _ReviewHistorySectionState extends ConsumerState<ReviewHistorySection> {
                 ExcludeSemantics(
                   child: Icon(
                     SemanticIcons.reportHistory,
-                    size: Spacing.xl,
+                    size: IconSizeTokens.sm,
                     color: SemanticColor.primary.solid(context),
                   ),
                 ),

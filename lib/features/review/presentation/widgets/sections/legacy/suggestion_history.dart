@@ -172,7 +172,7 @@ class _EmptyView extends StatelessWidget {
           Icon(
             SemanticIcons.reportHistory,
             color: colors.secondary,
-            size: Spacing.xl,
+            size: IconSizeTokens.sm,
           ),
           const SizedBox(width: Spacing.md),
           Expanded(

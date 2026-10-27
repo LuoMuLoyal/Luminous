@@ -339,7 +339,7 @@ class _ResultRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: Spacing.xs),
       child: Row(
         children: [
-          Icon(Icons.check_circle, size: Spacing.lg, color: color),
+          Icon(Icons.check_circle, size: IconSizeTokens.sm, color: color),
           const SizedBox(width: Spacing.sm),
           Text(label, style: context.theme.typography.body.md),
         ],

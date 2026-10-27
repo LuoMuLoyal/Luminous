@@ -126,7 +126,7 @@ class QuickRecordTile extends StatelessWidget {
                       child: Icon(
                         isLocked ? SemanticIcons.statusBlocked : action.icon,
                         color: action.accent.solid(context),
-                        size: Spacing.xl,
+                        size: IconSizeTokens.sm,
                       ),
                     ),
                     if (badge != null)
@@ -234,7 +234,7 @@ class QuickRecordNoteButton extends StatelessWidget {
                   child: Icon(
                     isLocked ? SemanticIcons.statusBlocked : action.icon,
                     color: action.accent.solid(context),
-                    size: Spacing.xl,
+                    size: IconSizeTokens.sm,
                   ),
                 ),
                 const SizedBox(width: Spacing.md),

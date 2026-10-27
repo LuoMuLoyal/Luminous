@@ -114,7 +114,7 @@ class _DrugBoxHeader extends StatelessWidget {
             child: Icon(
               SemanticIcons.medicineKit,
               color: SemanticColor.primary.solid(context),
-              size: Spacing.xl,
+              size: IconSizeTokens.sm,
             ),
           ),
         ),
@@ -178,7 +178,7 @@ class _DrugBoxHeader extends StatelessWidget {
                 const SizedBox(width: Spacing.xs),
                 Icon(
                   SemanticIcons.actionNext,
-                  size: Spacing.lg,
+                  size: IconSizeTokens.sm,
                   color: colors.foreground,
                 ),
               ],
@@ -304,7 +304,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
               Icon(
                 icon,
                 color: color.solid(context).withValues(alpha: 0.78),
-                size: Spacing.xl,
+                size: IconSizeTokens.sm,
               ),
               const SizedBox(width: Spacing.xs),
               Expanded(
@@ -375,7 +375,7 @@ class _DrugBoxEmpty extends StatelessWidget {
             child: Icon(
               SemanticIcons.medicineBottle,
               color: SemanticColor.primary.solid(context),
-              size: Spacing.xl,
+              size: IconSizeTokens.sm,
             ),
           ),
           const SizedBox(width: Spacing.lg),
@@ -511,7 +511,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
             Icon(
               SemanticIcons.actionNext,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.xl,
+              size: IconSizeTokens.sm,
             ),
           ],
         ),

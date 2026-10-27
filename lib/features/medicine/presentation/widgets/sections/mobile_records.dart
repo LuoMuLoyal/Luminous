@@ -303,7 +303,7 @@ class _TodayPlanEmpty extends StatelessWidget {
             child: Icon(
               SemanticIcons.doseCalendarCheck,
               color: SemanticColor.primary.solid(context),
-              size: Spacing.xl,
+              size: IconSizeTokens.sm,
             ),
           ),
           const SizedBox(width: Spacing.lg),

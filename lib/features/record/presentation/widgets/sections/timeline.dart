@@ -91,7 +91,7 @@ class RecordTimelinePanel extends StatelessWidget {
                             const SizedBox(width: Spacing.xs),
                             Icon(
                               SemanticIcons.actionExpand,
-                              size: Spacing.lg,
+                              size: IconSizeTokens.sm,
                               color: colors.foreground,
                             ),
                           ],
@@ -232,7 +232,7 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
             children: [
               Icon(
                 SemanticIcons.actionAddTimeline,
-                size: Spacing.xl4,
+                size: IconSizeTokens.xl2,
                 color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.lg),

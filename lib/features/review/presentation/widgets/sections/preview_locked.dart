@@ -36,7 +36,7 @@ class ReviewPreviewOverviewSection extends StatelessWidget {
                     child: Icon(
                       item.$1,
                       color: SemanticColor.primary.solid(context),
-                      size: Spacing.xl,
+                      size: IconSizeTokens.sm,
                     ),
                   ),
                   const SizedBox(width: Spacing.md),
@@ -96,7 +96,7 @@ class ReviewPreviewLockedSection extends StatelessWidget {
             Icon(
               icon,
               color: SemanticColor.primary.solid(context),
-              size: Spacing.xl,
+              size: IconSizeTokens.sm,
             ),
             const SizedBox(width: Spacing.md),
             Expanded(
