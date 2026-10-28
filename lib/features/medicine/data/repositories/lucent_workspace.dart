@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/database/cache_constants.dart';
+import 'package:luminous/core/database/daos/medicine_workspace.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
@@ -31,9 +35,14 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     required this.doseLogDs,
     required this.reminderDs,
     required this.riskCheckRepository,
+    required this.workspaceDao,
   });
 
   final HealthContextRepository healthRepo;
+  final MedicineWorkspaceDao workspaceDao;
+
+  /// Background refresh throttle for the cached workspace.
+  DateTime? _lastRefresh;
   final DoseLogRemoteDataSource doseLogDs;
   final MedicineReminderRemoteDataSource reminderDs;
   final MedicineRiskCheckRepository riskCheckRepository;
@@ -41,153 +50,187 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   @override
   TaskEither<LucentFailure, MedicineWorkspace> fetchWorkspace() {
     return TaskEither.tryCatch(() async {
-      final result = await healthRepo.fetchHealthContext().run();
-      final snapshot = result.fold(
-        (failure) => throw failure,
-        (value) => value,
-      );
-      MedicineRiskCheckRecords? riskRecords;
-      final riskResult = await riskCheckRepository.getRecords().run();
-      riskResult.fold(
-        (failure) => appTalker.error(
-          'LucentMedicineWorkspace.fetchWorkspace: risk records failed: '
-          '$failure',
-        ),
-        (records) => riskRecords = records,
-      );
-      final medicines = snapshot.currentMedicines
-          .where((medicine) => medicine.isCurrent)
-          .toList(growable: false);
-
-      final today = clock.now();
-      final dateStr =
-          '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-      final doseStatusByMedicine = <String, DoseLogStatus>{};
-      final doseStatusBySlot = <String, DoseLogStatus>{};
-      try {
-        final logs = await doseLogDs.fetchForDate(dateStr);
-        for (final log in logs) {
-          final medicineId = log.currentMedicineId;
-          if (log.status == DoseLogStatus.taken ||
-              log.status == DoseLogStatus.skipped) {
-            final slotKey = _doseLogSlotKey(log);
-            if (slotKey != null) {
-              doseStatusBySlot[slotKey] = log.status;
-            }
-            if (medicineId != null &&
-                !doseStatusByMedicine.containsKey(medicineId)) {
-              doseStatusByMedicine[medicineId] = log.status;
-            }
-          }
-        }
-      } catch (e) {
-        appTalker.error(
-          'LucentMedicineWorkspace.fetchWorkspace: dose logs failed: $e',
+      // Cache-first: the tab renders the previous workspace immediately instead
+      // of waiting on health context + dose logs + reminders before first paint.
+      final cached = await workspaceDao.fetch();
+      if (cached != null) {
+        _refreshInBackground();
+        return MedicineWorkspace.fromJson(
+          jsonDecode(cached) as Map<String, dynamic>,
         );
       }
 
-      final remindersByMedicine = <String, List<MedicineReminderItem>>{};
-      final remindersResult = await reminderDs.fetchActive().run();
-      remindersResult.fold(
-        (failure) => appTalker.error(
-          'LucentMedicineWorkspace.fetchWorkspace: reminders failed: $failure',
-        ),
-        (reminders) {
-          for (final reminder in reminders) {
-            final medicineId = reminder.currentMedicineId;
-            if (medicineId == null || !reminder.matchesDate(today)) continue;
-            remindersByMedicine.putIfAbsent(medicineId, () => []).add(reminder);
-          }
-          for (final reminders in remindersByMedicine.values) {
-            reminders.sort(compareReminderTime);
-          }
-        },
-      );
-
-      final planItems = medicines.map((m) {
-        final reminders =
-            remindersByMedicine[m.id] ?? const <MedicineReminderItem>[];
-        final fallbackStatus = doseStatusByMedicine[m.id];
-        final slots = reminders
-            .map((reminder) {
-              final status = _slotStatusForReminder(
-                reminder: reminder,
-                doseStatusBySlot: doseStatusBySlot,
-              );
-              return MedicineDoseSlot(
-                reminderId: reminder.id,
-                scheduledTime: reminder.timeLabel,
-                rawTime: reminder.timeLabel,
-                statusKey: _slotStateKey(status),
-                status: status,
-                // F-5 P1: 「已到期」= 当前墙钟 >= 槽位 HH:mm；不做 30 分钟宽限。
-                // 宽限只影响后端漏服分类，不影响「到期」分母。未确认但未到期不判 overdue。
-                isOverdue:
-                    status == MedicineDoseStatus.pending &&
-                    _isSlotDue(today, reminder),
-              );
-            })
-            .toList(growable: false);
-        final todayStatus = slots.isEmpty
-            ? _medicineStatusFromDoseLog(fallbackStatus)
-            : _aggregateSlotStatuses(slots);
-        final stateKey = _slotStateKey(todayStatus);
-        final stateColor = _stateColor(todayStatus);
-        return MedicinePlanItem(
-          color: SemanticColor.primary,
-          nameKey: MedicineCopyKey.genericName,
-          dosageKey: MedicineCopyKey.genericDosage,
-          scheduleKey: MedicineCopyKey.genericSchedule,
-          stateKey: stateKey,
-          stateColor: stateColor,
-          slots: slots,
-          todayStatus: todayStatus,
-          rawName: m.displayName,
-          rawDosage: m.strengthText ?? '',
-          rawSchedule: m.doseText ?? '',
-          currentMedicineId: m.id,
-          source: m.source,
-          sourceRefId: m.sourceRefId,
-        );
-      }).toList();
-
-      // F-5 P1 统一口径：分母 = 已到期槽位（taken + skipped + overdue），
-      // 分子 = taken（skipped 计入分母不计分子）；未到期槽位不计入分母。
-      // metricDosesToday 为 F-17 已标注死字段，继续填「今日计划槽位总数」。
-      final totalDoseCount = planItems.fold<int>(
-        0,
-        (sum, item) => sum + item.slots.length,
-      );
-      final dueTakenCount = planItems.fold<int>(
-        0,
-        (sum, item) => sum + _dueTakenCount(item),
-      );
-      final dueSkippedCount = planItems.fold<int>(
-        0,
-        (sum, item) => sum + _dueSkippedCount(item),
-      );
-      final dueOverdueCount = planItems.fold<int>(
-        0,
-        (sum, item) => sum + _dueOverdueCount(item),
-      );
-      final dueTotalCount = dueTakenCount + dueSkippedCount + dueOverdueCount;
-
-      return MedicineWorkspace(
-        hero: MedicineHero(
-          metricDosesToday: '$totalDoseCount',
-          metricAdherence: _formatAdherence(dueTakenCount, dueTotalCount),
-          metricNextDose: _nextPendingSlotTime(planItems) ?? '--',
-        ),
-        quickActions: _defaultQuickActions(),
-        plan: MedicinePlanSurface(items: planItems),
-        // TODO(archive): 历史占位字段，不再接入主路径——告警由 medicineAlertsFromRiskCheck
-        // 从 riskCheckRecords 派生；无渲染消费方，保留为兼容，避免误用。
-        alerts: const [],
-        // TODO(archive): 历史 dashboard 原型残留，无渲染消费方，保留为兼容；若复用需先确认 UI 出口。
-        promisePoints: _defaultPromisePoints(),
-        riskCheckRecords: riskRecords,
-      );
+      final workspace = await _assembleWorkspace();
+      await workspaceDao.replace(jsonEncode(workspace.toJson()));
+      return workspace;
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  /// Best-effort refresh: throttled, failures only logged.
+  void _refreshInBackground() {
+    final now = DateTime.now();
+    final last = _lastRefresh;
+    if (last != null && now.difference(last) < backgroundRefreshThrottle) {
+      return;
+    }
+    _lastRefresh = now;
+
+    unawaited(
+      Future(() async {
+        try {
+          final workspace = await _assembleWorkspace();
+          await workspaceDao.replace(jsonEncode(workspace.toJson()));
+        } catch (e) {
+          appTalker.warning('Medicine workspace background refresh failed: $e');
+        }
+      }),
+    );
+  }
+
+  Future<MedicineWorkspace> _assembleWorkspace() async {
+    final result = await healthRepo.fetchHealthContext().run();
+    final snapshot = result.fold((failure) => throw failure, (value) => value);
+    MedicineRiskCheckRecords? riskRecords;
+    final riskResult = await riskCheckRepository.getRecords().run();
+    riskResult.fold(
+      (failure) => appTalker.error(
+        'LucentMedicineWorkspace.fetchWorkspace: risk records failed: '
+        '$failure',
+      ),
+      (records) => riskRecords = records,
+    );
+    final medicines = snapshot.currentMedicines
+        .where((medicine) => medicine.isCurrent)
+        .toList(growable: false);
+
+    final today = clock.now();
+    final dateStr =
+        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+    final doseStatusByMedicine = <String, DoseLogStatus>{};
+    final doseStatusBySlot = <String, DoseLogStatus>{};
+    try {
+      final logs = await doseLogDs.fetchForDate(dateStr);
+      for (final log in logs) {
+        final medicineId = log.currentMedicineId;
+        if (log.status == DoseLogStatus.taken ||
+            log.status == DoseLogStatus.skipped) {
+          final slotKey = _doseLogSlotKey(log);
+          if (slotKey != null) {
+            doseStatusBySlot[slotKey] = log.status;
+          }
+          if (medicineId != null &&
+              !doseStatusByMedicine.containsKey(medicineId)) {
+            doseStatusByMedicine[medicineId] = log.status;
+          }
+        }
+      }
+    } catch (e) {
+      appTalker.error(
+        'LucentMedicineWorkspace.fetchWorkspace: dose logs failed: $e',
+      );
+    }
+
+    final remindersByMedicine = <String, List<MedicineReminderItem>>{};
+    final remindersResult = await reminderDs.fetchActive().run();
+    remindersResult.fold(
+      (failure) => appTalker.error(
+        'LucentMedicineWorkspace.fetchWorkspace: reminders failed: $failure',
+      ),
+      (reminders) {
+        for (final reminder in reminders) {
+          final medicineId = reminder.currentMedicineId;
+          if (medicineId == null || !reminder.matchesDate(today)) continue;
+          remindersByMedicine.putIfAbsent(medicineId, () => []).add(reminder);
+        }
+        for (final reminders in remindersByMedicine.values) {
+          reminders.sort(compareReminderTime);
+        }
+      },
+    );
+
+    final planItems = medicines.map((m) {
+      final reminders =
+          remindersByMedicine[m.id] ?? const <MedicineReminderItem>[];
+      final fallbackStatus = doseStatusByMedicine[m.id];
+      final slots = reminders
+          .map((reminder) {
+            final status = _slotStatusForReminder(
+              reminder: reminder,
+              doseStatusBySlot: doseStatusBySlot,
+            );
+            return MedicineDoseSlot(
+              reminderId: reminder.id,
+              scheduledTime: reminder.timeLabel,
+              rawTime: reminder.timeLabel,
+              statusKey: _slotStateKey(status),
+              status: status,
+              // F-5 P1: 「已到期」= 当前墙钟 >= 槽位 HH:mm；不做 30 分钟宽限。
+              // 宽限只影响后端漏服分类，不影响「到期」分母。未确认但未到期不判 overdue。
+              isOverdue:
+                  status == MedicineDoseStatus.pending &&
+                  _isSlotDue(today, reminder),
+            );
+          })
+          .toList(growable: false);
+      final todayStatus = slots.isEmpty
+          ? _medicineStatusFromDoseLog(fallbackStatus)
+          : _aggregateSlotStatuses(slots);
+      final stateKey = _slotStateKey(todayStatus);
+      final stateColor = _stateColor(todayStatus);
+      return MedicinePlanItem(
+        color: SemanticColor.primary,
+        nameKey: MedicineCopyKey.genericName,
+        dosageKey: MedicineCopyKey.genericDosage,
+        scheduleKey: MedicineCopyKey.genericSchedule,
+        stateKey: stateKey,
+        stateColor: stateColor,
+        slots: slots,
+        todayStatus: todayStatus,
+        rawName: m.displayName,
+        rawDosage: m.strengthText ?? '',
+        rawSchedule: m.doseText ?? '',
+        currentMedicineId: m.id,
+        source: m.source,
+        sourceRefId: m.sourceRefId,
+      );
+    }).toList();
+
+    // F-5 P1 统一口径：分母 = 已到期槽位（taken + skipped + overdue），
+    // 分子 = taken（skipped 计入分母不计分子）；未到期槽位不计入分母。
+    // metricDosesToday 为 F-17 已标注死字段，继续填「今日计划槽位总数」。
+    final totalDoseCount = planItems.fold<int>(
+      0,
+      (sum, item) => sum + item.slots.length,
+    );
+    final dueTakenCount = planItems.fold<int>(
+      0,
+      (sum, item) => sum + _dueTakenCount(item),
+    );
+    final dueSkippedCount = planItems.fold<int>(
+      0,
+      (sum, item) => sum + _dueSkippedCount(item),
+    );
+    final dueOverdueCount = planItems.fold<int>(
+      0,
+      (sum, item) => sum + _dueOverdueCount(item),
+    );
+    final dueTotalCount = dueTakenCount + dueSkippedCount + dueOverdueCount;
+
+    return MedicineWorkspace(
+      hero: MedicineHero(
+        metricDosesToday: '$totalDoseCount',
+        metricAdherence: _formatAdherence(dueTakenCount, dueTotalCount),
+        metricNextDose: _nextPendingSlotTime(planItems) ?? '--',
+      ),
+      quickActions: _defaultQuickActions(),
+      plan: MedicinePlanSurface(items: planItems),
+      // TODO(archive): 历史占位字段，不再接入主路径——告警由 medicineAlertsFromRiskCheck
+      // 从 riskCheckRecords 派生；无渲染消费方，保留为兼容，避免误用。
+      alerts: const [],
+      // TODO(archive): 历史 dashboard 原型残留，无渲染消费方，保留为兼容；若复用需先确认 UI 出口。
+      promisePoints: _defaultPromisePoints(),
+      riskCheckRecords: riskRecords,
+    );
   }
 
   /// F-5 P1：分子 = taken、分母 = 已到期槽位（taken + skipped + overdue）；
@@ -211,10 +254,8 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   static List<MedicineQuickAction> _defaultQuickActions() => [
     const MedicineQuickAction(
-      icon: SemanticIcons.actionSearch,
       titleKey: MedicineCopyKey.quickActionSearchTitle,
       subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-      accent: SemanticColor.primary,
     ),
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
       ..._mobileScanQuickActions,
@@ -224,16 +265,12 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   // 处方导入入口已删除；OCR 处方识别为未来能力不排期（F-19）。
   static final _mobileScanQuickActions = <MedicineQuickAction>[
     const MedicineQuickAction(
-      icon: SemanticIcons.actionCamera,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
-      accent: SemanticColor.primary,
     ),
     const MedicineQuickAction(
-      icon: SemanticIcons.actionScan,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
-      accent: SemanticColor.primary,
     ),
   ];
 

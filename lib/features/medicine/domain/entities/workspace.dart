@@ -4,6 +4,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 
 part 'workspace.freezed.dart';
+part 'workspace.g.dart';
 
 @freezed
 abstract class MedicineWorkspace with _$MedicineWorkspace {
@@ -19,6 +20,9 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
     MedicineRiskCheckRecords? riskCheckRecords,
   }) = _MedicineWorkspace;
 
+  factory MedicineWorkspace.fromJson(Map<String, dynamic> json) =>
+      _$MedicineWorkspaceFromJson(json);
+
   /// A minimal workspace for signed-out users with no real or mock data.
   static MedicineWorkspace signedOut() => const MedicineWorkspace(
     hero: MedicineHero(
@@ -28,10 +32,8 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
     ),
     quickActions: <MedicineQuickAction>[
       MedicineQuickAction(
-        icon: SemanticIcons.actionSearch,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-        accent: SemanticColor.primary,
       ),
     ],
     plan: MedicinePlanSurface(items: <MedicinePlanItem>[]),
@@ -48,22 +50,29 @@ abstract class MedicineHero with _$MedicineHero {
     required String metricAdherence,
     required String metricNextDose,
   }) = _MedicineHero;
+
+  factory MedicineHero.fromJson(Map<String, dynamic> json) =>
+      _$MedicineHeroFromJson(json);
 }
 
 @freezed
 abstract class MedicineQuickAction with _$MedicineQuickAction {
   const factory MedicineQuickAction({
-    required IconData icon,
     required MedicineCopyKey titleKey,
     required MedicineCopyKey subtitleKey,
-    required SemanticColor accent,
   }) = _MedicineQuickAction;
+
+  factory MedicineQuickAction.fromJson(Map<String, dynamic> json) =>
+      _$MedicineQuickActionFromJson(json);
 }
 
 @freezed
 abstract class MedicinePlanSurface with _$MedicinePlanSurface {
   const factory MedicinePlanSurface({required List<MedicinePlanItem> items}) =
       _MedicinePlanSurface;
+
+  factory MedicinePlanSurface.fromJson(Map<String, dynamic> json) =>
+      _$MedicinePlanSurfaceFromJson(json);
 }
 
 @freezed
@@ -89,6 +98,9 @@ abstract class MedicinePlanItem with _$MedicinePlanItem {
     String? source,
     String? sourceRefId,
   }) = _MedicinePlanItem;
+
+  factory MedicinePlanItem.fromJson(Map<String, dynamic> json) =>
+      _$MedicinePlanItemFromJson(json);
 }
 
 @freezed
@@ -104,14 +116,42 @@ abstract class MedicineDoseSlot with _$MedicineDoseSlot {
     // （「已超时未确认」），不新增 MedicineDoseStatus 枚举值；overdue 槽仍可补卡。
     @Default(false) bool isOverdue,
   }) = _MedicineDoseSlot;
+
+  factory MedicineDoseSlot.fromJson(Map<String, dynamic> json) =>
+      _$MedicineDoseSlotFromJson(json);
 }
 
 enum MedicineDoseStatus { taken, skipped, pending }
 
+/// Icon identity for a [MedicineAlert], resolvable to an [IconData] in the
+/// presentation layer.
+///
+/// The alert used to carry a raw `IconData`, which cannot be JSON-encoded and
+/// therefore blocked caching the workspace. The key keeps the semantic identity
+/// and stays serializable.
+enum MedicineAlertIcon {
+  statusError,
+  statusWarning,
+  statusInfo,
+  safetyDuplicate,
+  recordMeal,
+  safetyLongTermUse,
+  dosePlanned,
+  safetySafe,
+  safetySpecialPopulation,
+  safetyFoodInteraction,
+  safetyAllClear,
+  safetyAlcohol,
+  recordCaffeine,
+  recordWater,
+  safetyInteraction,
+  safetySpecialGroup,
+}
+
 @freezed
 abstract class MedicineAlert with _$MedicineAlert {
   const factory MedicineAlert({
-    required IconData icon,
+    required MedicineAlertIcon iconKey,
     MedicineCopyKey? titleKey,
     MedicineCopyKey? bodyKey,
     MedicineCopyKey? detailKey,
@@ -123,6 +163,9 @@ abstract class MedicineAlert with _$MedicineAlert {
     String? rawDetail,
     String? rawAction,
   }) = _MedicineAlert;
+
+  factory MedicineAlert.fromJson(Map<String, dynamic> json) =>
+      _$MedicineAlertFromJson(json);
 }
 
 // TODO(archive): 历史 dashboard 原型残留，无渲染消费方，保留为兼容；若复用需先确认 UI 出口。
@@ -130,6 +173,9 @@ abstract class MedicineAlert with _$MedicineAlert {
 abstract class MedicinePromisePoint with _$MedicinePromisePoint {
   const factory MedicinePromisePoint({required MedicineCopyKey copyKey}) =
       _MedicinePromisePoint;
+
+  factory MedicinePromisePoint.fromJson(Map<String, dynamic> json) =>
+      _$MedicinePromisePointFromJson(json);
 }
 
 enum MedicineCopyKey {

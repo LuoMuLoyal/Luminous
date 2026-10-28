@@ -182,22 +182,16 @@ MedicineWorkspace simulatedMedicineWorkspace() {
     ),
     quickActions: <MedicineQuickAction>[
       MedicineQuickAction(
-        icon: SemanticIcons.actionSearch,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-        accent: SemanticColor.primary,
       ),
       MedicineQuickAction(
-        icon: SemanticIcons.actionScan,
         titleKey: MedicineCopyKey.quickActionBarcodeTitle,
         subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
-        accent: SemanticColor.primary,
       ),
       MedicineQuickAction(
-        icon: SemanticIcons.actionCamera,
         titleKey: MedicineCopyKey.quickActionCameraTitle,
         subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
-        accent: SemanticColor.primary,
       ),
     ],
     plan: MedicinePlanSurface(
@@ -288,7 +282,7 @@ MedicineWorkspace simulatedMedicineWorkspace() {
     ),
     alerts: <MedicineAlert>[
       MedicineAlert(
-        icon: SemanticIcons.safetyInteraction,
+        iconKey: MedicineAlertIcon.safetyInteraction,
         rawTitle: '降压药与阿司匹林联用提示',
         rawBody: '两者之间没有需要避免的相互作用，但需留意踝部水肿与胃部不适。',
         rawDetail: '若出现黑便、持续胃痛或明显头晕，请尽快线下就诊。',
@@ -297,7 +291,7 @@ MedicineWorkspace simulatedMedicineWorkspace() {
         softColor: SemanticColor.warning,
       ),
       MedicineAlert(
-        icon: SemanticIcons.recordCaffeine,
+        iconKey: MedicineAlertIcon.recordCaffeine,
         rawTitle: '咖啡因与血压记录',
         rawBody: '近 7 天有 3 次在饮用咖啡后 1 小时内测量血压，读数普遍偏高 4-6 mmHg。',
         rawDetail: '建议测量前 30 分钟避免咖啡、浓茶与吸烟。',
@@ -306,7 +300,7 @@ MedicineWorkspace simulatedMedicineWorkspace() {
         softColor: SemanticColor.info,
       ),
       MedicineAlert(
-        icon: SemanticIcons.safetyDuplicate,
+        iconKey: MedicineAlertIcon.safetyDuplicate,
         rawTitle: '复方制剂重复成分检查',
         rawBody: '你录入的复方感冒灵颗粒含有解热镇痛成分，与阿司匹林肠溶片作用重叠。',
         rawDetail: '感冒期间请暂停其中一种，或先咨询药师。',
@@ -315,7 +309,7 @@ MedicineWorkspace simulatedMedicineWorkspace() {
         softColor: SemanticColor.destructive,
       ),
       MedicineAlert(
-        icon: SemanticIcons.safetySpecialGroup,
+        iconKey: MedicineAlertIcon.safetySpecialGroup,
         rawTitle: '二甲双胍与肾功能随访',
         rawBody: '已连续服用盐酸二甲双胍片 11 周，建议复诊时复查肾功能与血糖。',
         rawDetail: '服药期间避免饮酒，可降低乳酸酸中毒风险。',

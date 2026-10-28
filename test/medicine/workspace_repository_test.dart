@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
+import 'package:luminous/core/database/daos/medicine_workspace.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -336,6 +337,7 @@ LucentMedicineWorkspaceRepository _repository({
     doseLogDs: _FakeDoseLogDataSource(logs),
     reminderDs: _FakeReminderDataSource(reminders),
     riskCheckRepository: _FakeRiskCheckRepository(),
+    workspaceDao: _FakeWorkspaceDao(),
   );
 }
 
@@ -562,3 +564,21 @@ const _snapshot = HealthContextSnapshot(
     ),
   ],
 );
+
+/// Always a cache miss, so tests exercise the live assembly path.
+class _FakeWorkspaceDao implements MedicineWorkspaceDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}

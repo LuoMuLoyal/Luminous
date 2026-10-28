@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'palette.dart';
 import 'theme_extension.dart';
@@ -14,6 +15,7 @@ import 'theme_extension.dart';
 /// `.muted`, `.foreground`, `.background`, or `.border` — i.e. "no particular
 /// semantic meaning." Its palette derives from the theme's neutral colors
 /// (`mutedForeground`, `secondary`, `border`).
+@JsonEnum()
 enum SemanticColor { primary, success, warning, info, destructive, neutral }
 
 extension SemanticColorResolution on SemanticColor {

@@ -1,3 +1,4 @@
+import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
@@ -30,10 +31,12 @@ MedicineWorkspaceRepository medicineWorkspaceRepository(Ref ref) {
   final doseLogDs = ref.watch(doseLogRemoteDataSourceProvider);
   final reminderDs = ref.watch(medicineReminderRemoteDataSourceProvider);
   final riskCheckRepository = ref.watch(medicineRiskCheckRepositoryProvider);
+  final workspaceDao = ref.watch(medicineWorkspaceDaoProvider);
   return LucentMedicineWorkspaceRepository(
     healthRepo: healthRepo,
     doseLogDs: doseLogDs,
     reminderDs: reminderDs,
     riskCheckRepository: riskCheckRepository,
+    workspaceDao: workspaceDao,
   );
 }

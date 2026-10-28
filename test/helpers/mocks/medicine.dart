@@ -21,16 +21,12 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   static final _mobileScanQuickActions = <MedicineQuickAction>[
     const MedicineQuickAction(
-      icon: SemanticIcons.actionCamera,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
-      accent: SemanticColor.primary,
     ),
     const MedicineQuickAction(
-      icon: SemanticIcons.actionScan,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
-      accent: SemanticColor.primary,
     ),
   ];
 
@@ -42,10 +38,8 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     ),
     quickActions: [
       const MedicineQuickAction(
-        icon: SemanticIcons.actionSearch,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-        accent: SemanticColor.primary,
       ),
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
         ..._mobileScanQuickActions,
@@ -115,7 +109,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     ),
     alerts: <MedicineAlert>[
       const MedicineAlert(
-        icon: SemanticIcons.safetyAlcohol,
+        iconKey: MedicineAlertIcon.safetyAlcohol,
         titleKey: MedicineCopyKey.alertAlcoholRiskTitle,
         bodyKey: MedicineCopyKey.alertAlcoholRiskBody,
         detailKey: MedicineCopyKey.alertAlcoholRiskDetail,
@@ -124,7 +118,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         softColor: SemanticColor.primary,
       ),
       const MedicineAlert(
-        icon: SemanticIcons.recordCaffeine,
+        iconKey: MedicineAlertIcon.recordCaffeine,
         titleKey: MedicineCopyKey.alertCoffeeReminderTitle,
         bodyKey: MedicineCopyKey.alertCoffeeReminderBody,
         detailKey: MedicineCopyKey.alertCoffeeReminderDetail,
@@ -133,7 +127,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         softColor: SemanticColor.primary,
       ),
       const MedicineAlert(
-        icon: SemanticIcons.safetyDuplicate,
+        iconKey: MedicineAlertIcon.safetyDuplicate,
         titleKey: MedicineCopyKey.alertDuplicateCheckTitle,
         bodyKey: MedicineCopyKey.alertDuplicateCheckBody,
         detailKey: MedicineCopyKey.alertDuplicateCheckDetail,
@@ -142,7 +136,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         softColor: SemanticColor.primary,
       ),
       const MedicineAlert(
-        icon: SemanticIcons.recordWater,
+        iconKey: MedicineAlertIcon.recordWater,
         titleKey: MedicineCopyKey.alertSpecialGroupSafetyTitle,
         bodyKey: MedicineCopyKey.alertSpecialGroupSafetyBody,
         detailKey: MedicineCopyKey.alertSpecialGroupSafetyDetail,

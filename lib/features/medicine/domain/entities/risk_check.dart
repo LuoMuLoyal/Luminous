@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'risk_check.freezed.dart';
+part 'risk_check.g.dart';
 
 // ─── Enums ──────────────────────────────────────────────────────────────────
 
@@ -44,6 +45,9 @@ abstract class MedicineRiskFinding with _$MedicineRiskFinding {
     String? evidence,
     String? recommendation,
   }) = _MedicineRiskFinding;
+
+  factory MedicineRiskFinding.fromJson(Map<String, dynamic> json) =>
+      _$MedicineRiskFindingFromJson(json);
 }
 
 @freezed
@@ -52,6 +56,9 @@ abstract class MedicineRiskCoverageIssue with _$MedicineRiskCoverageIssue {
     required String medicineName,
     required MedicineRiskCoverageReason reason,
   }) = _MedicineRiskCoverageIssue;
+
+  factory MedicineRiskCoverageIssue.fromJson(Map<String, dynamic> json) =>
+      _$MedicineRiskCoverageIssueFromJson(json);
 }
 
 @freezed
@@ -61,6 +68,9 @@ abstract class RedFlagAlert with _$RedFlagAlert {
     required String primaryMedicineName,
     String? relatedLabel,
   }) = _RedFlagAlert;
+
+  factory RedFlagAlert.fromJson(Map<String, dynamic> json) =>
+      _$RedFlagAlertFromJson(json);
 }
 
 // ─── Check result ────────────────────────────────────────────────────────────
@@ -79,6 +89,9 @@ abstract class MedicineRiskCheckResult with _$MedicineRiskCheckResult {
     @Default([]) List<RedFlagAlert> redFlags,
     String? overallRecommendation,
   }) = _MedicineRiskCheckResult;
+
+  factory MedicineRiskCheckResult.fromJson(Map<String, dynamic> json) =>
+      _$MedicineRiskCheckResultFromJson(json);
 
   int get findingCount => findings.length;
   int get coverageCount => coverageIssues.length;
@@ -100,6 +113,9 @@ abstract class MedicineRiskCheckRecord with _$MedicineRiskCheckRecord {
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _MedicineRiskCheckRecord;
+
+  factory MedicineRiskCheckRecord.fromJson(Map<String, dynamic> json) =>
+      _$MedicineRiskCheckRecordFromJson(json);
 }
 
 // ─── Records pair (static + llm) ──────────────────────────────────────────────
@@ -112,6 +128,9 @@ abstract class MedicineRiskCheckRecords with _$MedicineRiskCheckRecords {
     MedicineRiskCheckRecord? staticRecord,
     MedicineRiskCheckRecord? llmRecord,
   }) = _MedicineRiskCheckRecords;
+
+  factory MedicineRiskCheckRecords.fromJson(Map<String, dynamic> json) =>
+      _$MedicineRiskCheckRecordsFromJson(json);
 
   /// The "best" record to show: LLM if available, else static, else null.
   MedicineRiskCheckRecord? get bestRecord => llmRecord ?? staticRecord;

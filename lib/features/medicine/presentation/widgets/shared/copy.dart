@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
+import 'package:luminous/features/medicine/presentation/utils/medicine_visuals.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 String medicineCopy(AppLocalizations l10n, MedicineCopyKey key) {
@@ -135,7 +136,7 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
   final alerts = <MedicineAlert>[
     for (final finding in result.findings.take(4))
       MedicineAlert(
-        icon: medicineRiskFindingIcon(finding),
+        iconKey: medicineRiskFindingIconKey(finding),
         color: medicineRiskSeverityColor(finding.severity),
         softColor: medicineRiskSeveritySoftColor(finding.severity),
         rawTitle: medicineRiskFindingTitle(l10n, finding),
@@ -166,7 +167,7 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
     );
     final summaryLine = summaryText.trim().isNotEmpty ? summaryText : null;
     final coverageAlert = MedicineAlert(
-      icon: SemanticIcons.statusInfo,
+      iconKey: MedicineAlertIcon.statusInfo,
       color: SemanticColor.neutral,
       softColor: SemanticColor.neutral,
       rawTitle: summaryLine ?? l10n.medicineRiskCheckCoverageAlertTitle,
@@ -183,7 +184,7 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
 
     return [
       MedicineAlert(
-        icon: coverageAlert.icon,
+        iconKey: coverageAlert.iconKey,
         color: coverageAlert.color,
         softColor: coverageAlert.softColor,
         rawTitle: coverageAlert.rawTitle,
@@ -200,7 +201,7 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
 
   return [
     MedicineAlert(
-      icon: SemanticIcons.safetyAllClear,
+      iconKey: MedicineAlertIcon.safetyAllClear,
       color: SemanticColor.primary,
       softColor: SemanticColor.primary,
       rawTitle: l10n.medicineRiskCheckAllClearAlertTitle,
@@ -211,20 +212,28 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
   ];
 }
 
-IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
+/// Serialisable icon identity for a risk finding.
+///
+/// The entity carries the key so a cached workspace can round-trip; the glyph is
+/// resolved through [MedicineVisuals.alert] at render time.
+MedicineAlertIcon medicineRiskFindingIconKey(MedicineRiskFinding finding) {
   return switch (finding.type) {
-    MedicineRiskFindingType.interaction => SemanticIcons.statusError,
+    MedicineRiskFindingType.interaction => MedicineAlertIcon.statusError,
     MedicineRiskFindingType.duplicateIngredient =>
-      SemanticIcons.safetyDuplicate,
-    MedicineRiskFindingType.allergy => SemanticIcons.statusWarning,
+      MedicineAlertIcon.safetyDuplicate,
+    MedicineRiskFindingType.allergy => MedicineAlertIcon.statusWarning,
     MedicineRiskFindingType.specialGroup =>
-      SemanticIcons.safetySpecialPopulation,
+      MedicineAlertIcon.safetySpecialPopulation,
     MedicineRiskFindingType.foodInteraction =>
-      SemanticIcons.safetyFoodInteraction,
-    MedicineRiskFindingType.longTermUse => SemanticIcons.safetyLongTermUse,
+      MedicineAlertIcon.safetyFoodInteraction,
+    MedicineRiskFindingType.longTermUse => MedicineAlertIcon.safetyLongTermUse,
     MedicineRiskFindingType.schedulingConflict =>
-      SemanticIcons.safetySchedulingConflict,
+      MedicineAlertIcon.statusWarning,
   };
+}
+
+IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
+  return MedicineVisuals.alert(medicineRiskFindingIconKey(finding));
 }
 
 SemanticColor medicineRiskSeverityColor(MedicineRiskSeverity severity) {
