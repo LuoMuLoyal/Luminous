@@ -13,6 +13,7 @@ import 'connection.dart'
     as conn;
 import 'daos/current_medicine.dart';
 import 'daos/daily_record.dart';
+import 'daos/daily_record_summary.dart';
 import 'daos/health_context.dart';
 import 'daos/medicine_dose_log.dart';
 import 'daos/pending_sync.dart';
@@ -20,6 +21,7 @@ import 'daos/review.dart';
 import 'daos/review_dashboard.dart';
 import 'daos/today_suggestion.dart';
 import 'tables/current_medicines.dart';
+import 'tables/daily_record_summaries.dart';
 import 'tables/daily_records.dart';
 import 'tables/health_context.dart';
 import 'tables/medicine_dose_logs.dart';
@@ -33,6 +35,7 @@ part 'database.g.dart';
 @DriftDatabase(
   tables: [
     DailyRecordCacheEntries,
+    DailyRecordSummaryCacheEntries,
     MedicineDoseLogCacheEntries,
     CurrentMedicineCacheEntries,
     HealthContextCacheEntries,
@@ -43,6 +46,7 @@ part 'database.g.dart';
   ],
   daos: [
     DailyRecordDao,
+    DailyRecordSummaryDao,
     MedicineDoseLogDao,
     CurrentMedicineDao,
     HealthContextDao,
@@ -58,63 +62,15 @@ class AppDatabase extends _$AppDatabase {
   /// For testing: pass an in-memory or custom executor.
   AppDatabase.forTesting(super.e);
 
-  /// Schema version history:
-  /// - 1: initial schema (all six tables as first created).
-  /// - 2: adds `lastErrorDetails` to [PendingSyncItems] (see [migration]).
-  /// - 3: adds [ReviewCacheEntries] table.
-  /// - 4: adds [ReviewDashboardCacheEntries] table.
-  /// - 5: renames `report_dashboard_cache_entries` →
-  ///   `review_dashboard_cache_entries` (report→review migration).
+  /// The local database holds only disposable cache state, so there is no
+  /// migration chain: the schema is defined as a fresh install and any older
+  /// database on disk is discarded rather than upgraded.
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
-
-    onUpgrade: (m, from, to) async {
-      // Step through each version sequentially.
-      if (from < 2) {
-        await m.addColumn(pendingSyncItems, pendingSyncItems.lastErrorDetails);
-      }
-      if (from < 3) {
-        await m.createTable(reviewCacheEntries);
-      }
-      if (from < 4) {
-        await m.createTable(reviewDashboardCacheEntries);
-      }
-      if (from < 5) {
-        // report→review rename: the table was originally created as
-        // `report_dashboard_cache_entries` in v4 (pre-d607145). After
-        // d607145 the v4 step itself uses the new class name
-        // `ReviewDashboardCacheEntries`, so users who hit v4 after that
-        // commit already have `review_dashboard_cache_entries`.
-        //
-        // Make the rename defensive: only attempt the ALTER TABLE if the
-        // old table name still exists. Users who upgraded through v4
-        // post-d607145 will skip this step cleanly.
-        //
-        // TODO(cleanup): remove this defensive sqlite_master check once
-        // every release in the field is v5+;它是 d607145 后「no such table」
-        // 启动崩溃的临时兜底,全量用户升到 v5 后即为死代码。移除前勿在
-        // v6 提前删除——未升级的小部分用户仍依赖此保护(见审查 S-1)。
-        final oldExists = await customSelect(
-          'SELECT 1 FROM sqlite_master '
-          "WHERE type='table' AND name='report_dashboard_cache_entries'",
-        ).getSingleOrNull();
-        if (oldExists != null) {
-          await m.renameTable(
-            reviewDashboardCacheEntries,
-            'report_dashboard_cache_entries',
-          );
-        }
-      }
-      //
-      // Version range strategy (if Web and native diverge):
-      // - Native: versions 1–999
-      // - Web:     versions 1000+
-      // Use kIsWeb at runtime to select the appropriate base version.
-    },
 
     beforeOpen: (details) async {
       // WAL mode is only supported on native SQLite (not WASM).

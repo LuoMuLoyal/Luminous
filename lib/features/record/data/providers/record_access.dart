@@ -10,7 +10,6 @@ import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/data/repositories/lucent_daily.dart';
-import 'package:luminous/features/record/data/utils/daily_record_json_codec.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
@@ -30,6 +29,7 @@ DailyRecordRemoteDataSource dailyRecordRemoteDataSource(Ref ref) {
 DailyRecordRepository dailyRecordRepository(Ref ref) {
   final dataSource = ref.watch(dailyRecordRemoteDataSourceProvider);
   final dao = ref.watch(dailyRecordDaoProvider);
+  final summaryDao = ref.watch(dailyRecordSummaryDaoProvider);
   final pendingSyncDao = ref.watch(pendingSyncDaoProvider);
   final syncWorker = ref.watch(syncWorkerProvider);
 
@@ -45,7 +45,7 @@ DailyRecordRepository dailyRecordRepository(Ref ref) {
     switch (entry.operation) {
       case 'create':
         // Replay create: reconstruct input from the optimistic item JSON
-        final item = DailyRecordJsonCodec.itemFromJson(entry.payload);
+        final item = DailyRecordItem.fromJson(jsonDecode(entry.payload));
         final input = DailyRecordCreateInput(
           kind: item.kind,
           occurredAt: item.occurredAt,
@@ -58,10 +58,7 @@ DailyRecordRepository dailyRecordRepository(Ref ref) {
         );
         final remote = await dataSource.create(input);
         // Replace optimistic copy with confirmed server response
-        await dao.confirmSync(
-          entityId,
-          DailyRecordJsonCodec.itemToJson(remote),
-        );
+        await dao.confirmSync(entityId, jsonEncode(remote.toJson()));
 
       case 'delete':
         await dataSource.delete(entityId);
@@ -81,6 +78,7 @@ DailyRecordRepository dailyRecordRepository(Ref ref) {
   return LucentDailyRecordRepository(
     dataSource: dataSource,
     dao: dao,
+    summaryDao: summaryDao,
     pendingSyncDao: pendingSyncDao,
     syncWorker: syncWorker,
   );

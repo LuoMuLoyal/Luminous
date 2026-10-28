@@ -1,14 +1,16 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/database/daos/daily_record.dart';
+import 'package:luminous/core/database/daos/daily_record_summary.dart';
 import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
 import 'package:luminous/features/record/data/repositories/lucent_daily.dart';
-import 'package:luminous/features/record/data/utils/daily_record_json_codec.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -20,6 +22,7 @@ import '../../../helpers/task_either.dart';
 void main() {
   late _FakeDailyRecordRemoteDataSource dataSource;
   late _MockDailyRecordDao dao;
+  late _MockDailyRecordSummaryDao summaryDao;
   late _MockPendingSyncDao pendingSyncDao;
   late _FakeSyncWorker syncWorker;
   late LucentDailyRecordRepository repository;
@@ -33,11 +36,13 @@ void main() {
   setUp(() {
     dataSource = _FakeDailyRecordRemoteDataSource();
     dao = _MockDailyRecordDao();
+    summaryDao = _MockDailyRecordSummaryDao();
     pendingSyncDao = _MockPendingSyncDao();
     syncWorker = _FakeSyncWorker(pendingSyncDao: pendingSyncDao);
     repository = LucentDailyRecordRepository(
       dataSource: dataSource,
       dao: dao,
+      summaryDao: summaryDao,
       pendingSyncDao: pendingSyncDao,
       syncWorker: syncWorker,
     );
@@ -46,7 +51,7 @@ void main() {
   group('LucentDailyRecordRepository — fetchRecords', () {
     test('returns cached items when cache is non-empty', () async {
       final cachedItem = _makeItem(id: 'cached-1');
-      final cachedJson = DailyRecordJsonCodec.itemToJson(cachedItem);
+      final cachedJson = jsonEncode(cachedItem.toJson());
       when(
         () => dao.fetchByDate('2026-07-12', kind: null),
       ).thenAnswer((_) async => [cachedJson]);
@@ -131,7 +136,7 @@ void main() {
       final cachedItem = _makeItem(id: 'water-1');
       when(
         () => dao.fetchByDate('2026-07-12', kind: 'water'),
-      ).thenAnswer((_) async => [DailyRecordJsonCodec.itemToJson(cachedItem)]);
+      ).thenAnswer((_) async => [jsonEncode(cachedItem.toJson())]);
 
       final result = await expectTaskRight(
         repository.fetchRecords('2026-07-12', kind: 'water'),
@@ -143,12 +148,36 @@ void main() {
   });
 
   group('LucentDailyRecordRepository — fetchSummary', () {
-    test('delegates to data source', () async {
+    test(
+      'cache miss falls back to the data source and writes through',
+      () async {
+        when(() => summaryDao.fetchByDate(any())).thenAnswer((_) async => null);
+        when(
+          () => summaryDao.replaceByDate(any(), any()),
+        ).thenAnswer((_) async {});
+
+        final result = await expectTaskRight(
+          repository.fetchSummary('2026-07-12'),
+        );
+        expect(result.summaries, hasLength(1));
+        expect(result.summaries.first.kind, DailyRecordKind.water);
+        verify(() => summaryDao.replaceByDate('2026-07-12', any())).called(1);
+      },
+    );
+
+    test('cache hit returns local data without awaiting the network', () async {
+      const cached = DailyRecordSummaryData(
+        summaries: [DailyRecordSummary(kind: DailyRecordKind.sleep, count: 2)],
+      );
+      when(
+        () => summaryDao.fetchByDate('2026-07-12'),
+      ).thenAnswer((_) async => jsonEncode(cached.toJson()));
+
       final result = await expectTaskRight(
         repository.fetchSummary('2026-07-12'),
       );
-      expect(result.summaries, hasLength(1));
-      expect(result.summaries.first.kind, DailyRecordKind.water);
+      expect(result.summaries.first.kind, DailyRecordKind.sleep);
+      expect(result.summaries.first.count, 2);
     });
   });
 
@@ -240,6 +269,7 @@ void main() {
         repository = LucentDailyRecordRepository(
           dataSource: dataSource,
           dao: dao,
+          summaryDao: summaryDao,
         );
 
         when(
@@ -503,6 +533,9 @@ class _FakeDailyRecordRemoteDataSource extends DailyRecordRemoteDataSource {
 }
 
 class _MockDailyRecordDao extends Mock implements DailyRecordDao {}
+
+class _MockDailyRecordSummaryDao extends Mock
+    implements DailyRecordSummaryDao {}
 
 class _MockPendingSyncDao extends Mock implements PendingSyncDao {}
 

@@ -1,5 +1,6 @@
 import 'package:luminous/core/database/daos/current_medicine.dart';
 import 'package:luminous/core/database/daos/daily_record.dart';
+import 'package:luminous/core/database/daos/daily_record_summary.dart';
 import 'package:luminous/core/database/daos/health_context.dart';
 import 'package:luminous/core/database/daos/medicine_dose_log.dart';
 import 'package:luminous/core/database/daos/pending_sync.dart';
@@ -28,6 +29,11 @@ AppDatabase appDatabase(Ref ref) {
 @Riverpod(keepAlive: true)
 DailyRecordDao dailyRecordDao(Ref ref) {
   return ref.read(appDatabaseProvider).dailyRecordDao;
+}
+
+@Riverpod(keepAlive: true)
+DailyRecordSummaryDao dailyRecordSummaryDao(Ref ref) {
+  return ref.read(appDatabaseProvider).dailyRecordSummaryDao;
 }
 
 @Riverpod(keepAlive: true)

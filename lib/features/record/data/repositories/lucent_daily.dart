@@ -1,16 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/daos/daily_record.dart';
+import 'package:luminous/core/database/daos/daily_record_summary.dart';
 import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
-import 'package:luminous/features/record/data/utils/daily_record_json_codec.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -42,12 +43,14 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
   LucentDailyRecordRepository({
     required this.dataSource,
     required this.dao,
+    required this.summaryDao,
     this.pendingSyncDao,
     this.syncWorker,
   });
 
   final DailyRecordRemoteDataSource dataSource;
   final DailyRecordDao dao;
+  final DailyRecordSummaryDao summaryDao;
   final PendingSyncDao? pendingSyncDao;
   final SyncWorker? syncWorker;
 
@@ -77,7 +80,7 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
       final cachedJson = await dao.fetchByDate(date, kind: kind);
       if (cachedJson.isNotEmpty) {
         final cachedItems = cachedJson
-            .map(DailyRecordJsonCodec.itemFromJson)
+            .map((json) => DailyRecordItem.fromJson(jsonDecode(json)))
             .toList(growable: false);
 
         // Background refresh (non-blocking, throttled, best-effort path B).
@@ -99,7 +102,7 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
       );
 
       final jsonItems = remote.items
-          .map(DailyRecordJsonCodec.itemToJson)
+          .map((item) => jsonEncode(item.toJson()))
           .toList();
       await dao.replaceByDate(date, kind: kind, jsonItems: jsonItems);
 
@@ -109,10 +112,61 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
 
   @override
   TaskEither<LucentFailure, DailyRecordSummaryData> fetchSummary(String date) {
-    // Summary is derived data; no caching needed.
-    return TaskEither.tryCatch(
-      () => dataSource.fetchSummary(date),
-      (error, stackTrace) => LucentErrorMapper.fromObject(error),
+    return TaskEither.tryCatch(() async {
+      // Cache-first: the dashboard cards render from the summary, so skipping
+      // the cache here stalled the whole first frame on the network even when
+      // the records themselves were already cached locally.
+      final cached = await summaryDao.fetchByDate(date);
+      if (cached != null) {
+        _refreshSummaryInBackground(date);
+        return DailyRecordSummaryData.fromJson(
+          jsonDecode(cached) as Map<String, dynamic>,
+        );
+      }
+
+      // Cache miss → network, and write through so the next read is local.
+      final remote = await dataSource.fetchSummary(date);
+      await summaryDao.replaceByDate(date, jsonEncode(remote.toJson()));
+      return remote;
+    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  /// Best-effort summary refresh: throttled, failures only logged.
+  void _refreshSummaryInBackground(String date) {
+    final key = 'summary:$date';
+    final now = DateTime.now();
+    final lastAttempt = _lastRefreshAttempt[key];
+    if (lastAttempt != null &&
+        now.difference(lastAttempt) < backgroundRefreshThrottle) {
+      return;
+    }
+    _lastRefreshAttempt[key] = now;
+    if (_lastRefreshAttempt.length > _kMaxTrackedRefreshKeys) {
+      _lastRefreshAttempt.remove(_lastRefreshAttempt.keys.first);
+    }
+
+    unawaited(
+      Future(() async {
+        try {
+          final remote = await dataSource.fetchSummary(date);
+          await summaryDao.replaceByDate(date, jsonEncode(remote.toJson()));
+          _backgroundRefreshFailures.remove(key);
+        } catch (e, st) {
+          final failures = (_backgroundRefreshFailures[key] ?? 0) + 1;
+          _backgroundRefreshFailures[key] = failures;
+          if (_backgroundRefreshFailures.length > _kMaxTrackedRefreshKeys) {
+            _backgroundRefreshFailures.remove(
+              _backgroundRefreshFailures.keys.first,
+            );
+          }
+          final message = 'DailyRecord summary refresh failed: $e';
+          if (failures >= _kBackgroundRefreshFailuresBeforeError) {
+            appTalker.error(message, st);
+          } else {
+            appTalker.warning(message);
+          }
+        }
+      }),
     );
   }
 
@@ -176,7 +230,7 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
       // Insert optimistic copy into cache
       await dao.insertOptimistic(
         input.occurredAt.substring(0, 10),
-        DailyRecordJsonCodec.itemToJson(optimisticItem),
+        jsonEncode(optimisticItem.toJson()),
       );
 
       try {
@@ -184,7 +238,7 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
         final remote = await dataSource.create(input);
 
         // Replace optimistic copy with confirmed server response
-        await dao.confirmSync(tempId, DailyRecordJsonCodec.itemToJson(remote));
+        await dao.confirmSync(tempId, jsonEncode(remote.toJson()));
 
         return remote;
       } on DioException catch (e) {
@@ -194,7 +248,7 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
           e,
           operation: 'create',
           entityId: tempId,
-          payload: DailyRecordJsonCodec.itemToJson(optimisticItem),
+          payload: jsonEncode(optimisticItem.toJson()),
         );
         rethrow;
       }
@@ -210,7 +264,7 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
       try {
         final remote = await dataSource.update(id, input);
         // Update cache with the confirmed response
-        await dao.updateData(id, DailyRecordJsonCodec.itemToJson(remote));
+        await dao.updateData(id, jsonEncode(remote.toJson()));
         return remote;
       } on DioException catch (e) {
         await _enqueueWriteFailure(e, operation: 'update', entityId: id);
@@ -299,7 +353,7 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
             pageSize: pageSize,
           );
           final jsonItems = remote.items
-              .map(DailyRecordJsonCodec.itemToJson)
+              .map((item) => jsonEncode(item.toJson()))
               .toList();
           await dao.replaceByDate(date, kind: kind, jsonItems: jsonItems);
           // Clear failure counter on success.
