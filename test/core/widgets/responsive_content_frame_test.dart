@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 Widget _appShell({required double width, required Widget child}) {
@@ -15,6 +16,10 @@ Widget _appShell({required double width, required Widget child}) {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('ResponsiveContentFrame', () {
     testWidgets('applies default horizontal padding', (tester) async {
       const width = Breakpoints.mobile - 100;

@@ -13,10 +13,15 @@ import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/repositories/ai.dart';
 import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';
 import 'test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   TestWidgetsFlutterBinding.ensureInitialized();
   test('Today AI provider stays idle when signed out', () async {
     final container = ProviderContainer(

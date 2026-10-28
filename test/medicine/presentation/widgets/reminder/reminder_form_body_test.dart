@@ -10,6 +10,7 @@ import 'package:luminous/features/medicine/presentation/widgets/reminder/form_bo
 import 'package:luminous/features/medicine/presentation/widgets/reminder/form_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';
 
 HealthContextSnapshot _buildSnapshot({List<CurrentMedicineItem>? medicines}) {
@@ -143,6 +144,10 @@ Future<void> _pumpForm(
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('ReminderFormBody', () {
     testWidgets('shows error view when no current medicines', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));

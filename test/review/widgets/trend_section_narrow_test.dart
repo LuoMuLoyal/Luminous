@@ -5,6 +5,7 @@ import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 import '../../helpers/test_helpers.dart';
 
@@ -18,6 +19,10 @@ import '../../helpers/test_helpers.dart';
 /// 两条断言分别锁住两个缺陷：窗口标签里不得出现 `T00:00:00` / `Z`，且
 /// 360dp / 320dp 两个真机逻辑宽下都不得有 `RenderFlex overflowed`。
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   const viewports = <(String, void Function(WidgetTester))>[
     ('compact 360x800', setCompactPhoneScreenSize),
     ('narrow 320x720', setNarrowPhoneScreenSize),

@@ -185,7 +185,7 @@ class QuickEntryPreferencesController
         prefs.getOrNull<List<String>>(_kCustomOrder) ?? const [];
     final collapsed = prefs.get<bool>(_kCollapsed, fallback: false);
     final waterDefault = _parseWaterDefault(prefs);
-    final waterCustomMl = prefs.get<int>(_kWaterCustomMl, fallback: 0);
+    final waterCustomMl = prefs.get<int>(_kWaterCustomMl, fallback: 250);
     final waterBadgeMode = _parseWaterBadgeMode(
       prefs.getOrNull<String>(_kWaterBadgeMode),
     );
@@ -198,11 +198,11 @@ class QuickEntryPreferencesController
     );
     final medicationAutoRecordSingle = prefs.get<bool>(
       _kMedicationAutoRecordSingle,
-      fallback: false,
+      fallback: true,
     );
     final medicationShowAlreadyRecordedHint = prefs.get<bool>(
       _kMedicationShowAlreadyRecordedHint,
-      fallback: false,
+      fallback: true,
     );
 
     // Load custom icons: stored as ['water:droplets', 'meal:utensils', ...].

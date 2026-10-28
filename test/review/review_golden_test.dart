@@ -4,12 +4,17 @@ import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import 'widgets/review_fixtures.dart';
 
 /// Review 四状态（active / ended / partial / no-event）的 zh/en、dark、
 /// 大字体矩阵不溢出校验。
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Future<void> pumpReviewView(
     WidgetTester tester, {
     required AsyncValue<EventReview?> current,

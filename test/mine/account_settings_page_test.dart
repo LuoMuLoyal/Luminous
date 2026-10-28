@@ -18,8 +18,13 @@ import 'package:luminous/features/support/domain/repositories/support.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Account settings page renders auth account sections', (
     tester,
   ) async {

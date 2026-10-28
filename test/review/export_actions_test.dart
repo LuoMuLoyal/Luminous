@@ -16,6 +16,7 @@ import 'package:luminous/features/settings/presentation/providers/data_export.da
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 
@@ -134,6 +135,10 @@ Future<void> _tapExport(WidgetTester tester) async {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _MockDataExportApi api;
   late _RecordingProductEventService service;
 

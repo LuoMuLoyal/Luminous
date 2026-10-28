@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
+import '../../../../helpers/kv_test_store.dart';
 
 /// A simple mutable state for the test notifier.
 class _TestState {
@@ -35,6 +36,10 @@ final _testProvider = NotifierProvider<_TestNotifier, _TestState>(
 );
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('CooldownTimerMixin', () {
     late ProviderContainer container;
     late _TestNotifier notifier;

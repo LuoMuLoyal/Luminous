@@ -4,8 +4,13 @@ import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/features/settings/presentation/utils/theme_preference_labels.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import '../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Future<AppLocalizations> loadL10n(Locale locale) async {
     return AppLocalizations.delegate.load(locale);
   }

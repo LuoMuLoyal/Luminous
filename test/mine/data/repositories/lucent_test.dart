@@ -8,6 +8,7 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/mine/data/providers/mine.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/task_either.dart';
 
 const _snapshot = HealthContextSnapshot(
@@ -38,6 +39,10 @@ const _snapshot = HealthContextSnapshot(
 );
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('LucentMineRepository.fetchDashboard', () {
     test(
       'returns a Right dashboard when the health-context snapshot loads',

@@ -29,6 +29,7 @@ import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/pages/risk_check.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 import '../../helpers/test_helpers.dart';
 
@@ -174,6 +175,10 @@ Future<void> _openLlmTabAndRun(
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late AppLocalizations l10n;
 
   setUpAll(() async {

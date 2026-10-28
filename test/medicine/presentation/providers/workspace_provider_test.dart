@@ -5,8 +5,13 @@ import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 
 import '../../../helpers/feature_mocks.dart';
+import '../../../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('medicineWorkspaceProvider', () {
     test('returns preview workspace when not authenticated', () async {
       final c = ProviderContainer(

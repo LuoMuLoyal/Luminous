@@ -4,6 +4,7 @@ import 'package:luminous/core/accessibility/motion.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 Widget _appShell(Widget child) {
@@ -30,6 +31,10 @@ Widget _reducedMotionShell(
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('StateSkeletonView', () {
     testWidgets('renders shimmer blocks', (tester) async {
       await tester.pumpWidget(

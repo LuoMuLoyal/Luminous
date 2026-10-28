@@ -9,9 +9,14 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/security_center.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Security center page renders when signed in', (tester) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     await tester.pumpWidget(

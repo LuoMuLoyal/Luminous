@@ -11,9 +11,14 @@ import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/auth/presentation/pages/register.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/kv_test_store.dart';
 import 'test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Register page sends register verification code', (tester) async {
     final remote = FakeLucentAuthRepository();
 

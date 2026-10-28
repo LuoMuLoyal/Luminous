@@ -5,8 +5,13 @@ import 'package:luminous/features/record/application/usecases/water_quick_entry.
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import '../../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('WaterQuickEntryFlow', () {
     test('creates a water record with the default 250 ml amount', () async {
       DailyRecordCreateInput? created;

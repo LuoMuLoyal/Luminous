@@ -7,6 +7,7 @@ import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
+import '../../../helpers/kv_test_store.dart';
 
 /// A fake [HealthContextRepository] that returns a fixed snapshot for all
 /// write methods, or a Left if [throwOnNext] is set.
@@ -166,6 +167,10 @@ HealthContextSnapshot _testSnapshot() => const HealthContextSnapshot(
 );
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _FakeHealthContextRepository fakeRepo;
 
   ProviderContainer buildContainer() {

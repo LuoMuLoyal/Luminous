@@ -37,9 +37,14 @@ import 'package:luminous/features/notification/data/providers/unread_count.dart'
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Medicine page renders mobile north-star sections', (
     tester,
   ) async {

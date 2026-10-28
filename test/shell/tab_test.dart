@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import '../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('ShellTab', () {
     test('has 5 tabs in correct order', () {
       expect(ShellTab.values, hasLength(5));

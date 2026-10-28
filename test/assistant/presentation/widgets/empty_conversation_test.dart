@@ -3,9 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/empty_conversation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('AssistantEmptyConversation', () {
     // gen_ai wraps `WelcomeMessageConfig.builder` with a SingleChildScrollView +
     // Center (see `AiChatWidget`); mirror that here so the widget is exercised

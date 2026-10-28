@@ -5,9 +5,14 @@ import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/controllers/meal_analysis_poller.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   /// Reads the poller out of a host widget so the test can drive [sync].
   Future<MealAnalysisPoller> pumpPoller(
     WidgetTester tester,

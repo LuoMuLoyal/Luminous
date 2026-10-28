@@ -12,6 +12,7 @@ import 'package:luminous/features/auth/domain/repositories/sessions.dart';
 import 'package:luminous/features/auth/presentation/pages/sessions.dart';
 import 'package:luminous/features/auth/presentation/providers/sessions.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 
@@ -26,6 +27,10 @@ Future<T> _right<T>(TaskEither<LucentFailure, T> task) async {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   final session = AuthDeviceSession(
     id: 'session-1',
     deviceType: 'desktop',

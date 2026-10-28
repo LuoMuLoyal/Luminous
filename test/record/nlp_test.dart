@@ -10,8 +10,13 @@ import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/presentation/controllers/nlp.dart';
+import '../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   test(
     'RecordNlpController saveSelected keeps failed selected items only',
     () async {

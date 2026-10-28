@@ -9,6 +9,7 @@ import 'package:luminous/features/mine/presentation/pages/sync_failures.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/sync_failed_banner.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 class _MockPendingSyncDao extends Mock implements PendingSyncDao {}
@@ -54,6 +55,10 @@ Widget _app({
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('hides the banner when there are no failed items', (
     tester,
   ) async {

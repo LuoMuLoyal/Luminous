@@ -14,6 +14,7 @@ import 'package:luminous/features/notification/data/repositories/lucent.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 
 import '../auth/test_helpers.dart' as auth_helpers;
+import '../helpers/kv_test_store.dart';
 import '../helpers/task_either.dart';
 
 // ── Response helper ─────────────────────────────────────────────────────────
@@ -319,6 +320,10 @@ NotificationListResponseItems _item({
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late auth_helpers.SignedInAuthSessionNotifier signedInSession;
 
   setUp(() {

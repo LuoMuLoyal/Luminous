@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 /// Wraps widget tree with Forui-aware MaterialApp + GoRouter.
@@ -30,6 +31,10 @@ Widget _appShell(Widget child) {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('AppBackButton', () {
     testWidgets('renders a Forui icon button', (tester) async {
       await tester.pumpWidget(_appShell(const AppBackButton()));

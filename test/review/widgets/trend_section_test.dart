@@ -5,9 +5,14 @@ import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late AppLocalizations l10n;
 
   setUp(() async {

@@ -5,9 +5,14 @@ import 'package:luminous/features/search/presentation/providers/medicine_search.
 import 'package:luminous/features/search/presentation/widgets/shared/results.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('PreviewPanel', () {
     testWidgets('preview with conditions/checklist renders no clinical or '
         'safety labels', (tester) async {

@@ -6,9 +6,14 @@ import 'package:luminous/features/settings/presentation/pages/oss_licenses.dart'
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/oss_licenses.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   const l10n = AppLocalizations.delegate;
 
   test('generated manifest covers the dependencies added in this plan', () {

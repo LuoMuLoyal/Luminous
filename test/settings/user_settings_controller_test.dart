@@ -12,9 +12,14 @@ import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _FakeUserSettingsApi fakeApi;
   late ProviderContainer container;
 

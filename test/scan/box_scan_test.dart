@@ -19,10 +19,15 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/mocks/scan.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late MockPaddleOcrEngine mockOcr;
   late FakeImagePickerPlatform fakePicker;
   late MockScanRepository mockRepo;

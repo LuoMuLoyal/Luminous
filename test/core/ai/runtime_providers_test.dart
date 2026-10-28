@@ -2,8 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/ai/runtime_config.dart';
 import 'package:luminous/core/ai/runtime_providers.dart';
+import '../../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('AiRuntimeProviderKind', () {
     test('parses known provider names', () {
       expect(

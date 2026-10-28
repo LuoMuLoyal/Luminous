@@ -359,7 +359,10 @@ void main() {
           mOptions: any(named: 'mOptions'),
           wOptions: any(named: 'wOptions'),
         ),
-      ).thenAnswer((_) async => 'access-only');
+      ).thenAnswer(
+        (_) async =>
+            jsonEncode({'accessToken': 'access-only', 'refreshToken': ''}),
+      );
 
       final tokens = await store.read();
       expect(tokens, isNotNull);
@@ -385,7 +388,12 @@ void main() {
           mOptions: any(named: 'mOptions'),
           wOptions: any(named: 'wOptions'),
         ),
-      ).thenAnswer((_) async => '  access-token  ');
+      ).thenAnswer(
+        (_) async => jsonEncode({
+          'accessToken': '  access-token  ',
+          'refreshToken': 'r',
+        }),
+      );
 
       final token = await store.readAccessToken();
       expect(token, 'access-token');
@@ -409,7 +417,12 @@ void main() {
           mOptions: any(named: 'mOptions'),
           wOptions: any(named: 'wOptions'),
         ),
-      ).thenAnswer((_) async => '  refresh-token  ');
+      ).thenAnswer(
+        (_) async => jsonEncode({
+          'accessToken': 'a',
+          'refreshToken': '  refresh-token  ',
+        }),
+      );
 
       final token = await store.readRefreshToken();
       expect(token, 'refresh-token');

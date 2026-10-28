@@ -12,6 +12,7 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../test_helpers.dart';
 
 /// Extends [FakeLucentAuthRepository] with overrides for methods used by
@@ -239,6 +240,10 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('AuthAccountNotifier — sendVerificationCode', () {
     test('sets isSendingCode and cooldown on success', () async {
       final remote = _AccountFakeRemote();

@@ -31,6 +31,7 @@ import 'package:luminous/features/settings/presentation/providers/data_export.da
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 import '../../helpers/test_helpers.dart';
 import 'review_fixtures.dart';
@@ -43,6 +44,10 @@ import 'review_fixtures.dart';
 ///    且不出现「分享给医生」类暗示文案；
 /// 3. 各入口点击后触发对应流程（诊所摘要预览、导出 PIN 验证、legacy 路由）。
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets(
     'review first screen has no export cards and shows the More entry',
     (tester) async {

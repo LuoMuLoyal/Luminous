@@ -49,19 +49,25 @@ String? _firstNonEmpty(String? value) =>
     value == null || value.isEmpty ? null : value;
 
 /// Encodes the token pair as the single atomic payload.
+///
+/// Tokens are trimmed on the way in: a token wrapped in stray whitespace would
+/// otherwise be sent verbatim and rejected by the backend as invalid.
 String _encodePayload(LucentSessionTokens tokens) => jsonEncode({
-  'accessToken': tokens.accessToken,
-  'refreshToken': tokens.refreshToken,
+  'accessToken': tokens.accessToken.trim(),
+  'refreshToken': tokens.refreshToken.trim(),
 });
 
 /// Decodes the payload; null when it is absent or unreadable.
+///
+/// Trims on the way out as well, so payloads written by older builds (which did
+/// not trim) still read back clean.
 LucentSessionTokens? _decodePayload(String stored) {
   try {
     final map = jsonDecode(stored);
     if (map is! Map<String, dynamic>) return null;
     return LucentSessionTokens(
-      accessToken: _stringOrNull(map['accessToken']) ?? '',
-      refreshToken: _stringOrNull(map['refreshToken']) ?? '',
+      accessToken: (_stringOrNull(map['accessToken']) ?? '').trim(),
+      refreshToken: (_stringOrNull(map['refreshToken']) ?? '').trim(),
     );
   } catch (error) {
     appTalker.warning('Session store: payload decode failed: $error');

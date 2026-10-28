@@ -330,10 +330,7 @@ void main() {
 
         expect(c.read(healthAutoSyncPreferenceProvider), isFalse);
         final prefs = KvStore.instance;
-        expect(
-          prefs.get<bool>(PrefKeys.healthAutoSyncEnabled, fallback: false),
-          isNull,
-        );
+        expect(prefs.getOrNull<bool>(PrefKeys.healthAutoSyncEnabled), isNull);
       },
     );
   });

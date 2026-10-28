@@ -3,9 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/score_ring.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('RiskScoreRing', () {
     Future<void> pumpRing(
       WidgetTester tester, {

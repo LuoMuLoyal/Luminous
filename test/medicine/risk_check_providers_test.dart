@@ -8,6 +8,7 @@ import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/risk_check.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';
 
 class _FakeRiskCheckRepository implements MedicineRiskCheckRepository {
@@ -54,6 +55,10 @@ MedicineRiskCheckRecord _record(
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _FakeRiskCheckRepository repo;
 
   setUp(() {

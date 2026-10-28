@@ -1,8 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
+import '../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   test('initial state', () {
     final c = ProviderContainer();
     addTearDown(c.dispose);

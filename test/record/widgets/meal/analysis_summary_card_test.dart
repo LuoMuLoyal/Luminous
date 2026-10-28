@@ -5,6 +5,7 @@ import 'package:luminous/features/record/presentation/models/meal_analysis_view_
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_summary_card.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/test_forui_app.dart';
 
 MealAnalysisViewData _mkData({
@@ -46,6 +47,10 @@ MealAnalysisViewData _mkData({
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('MealAnalysisSummaryCard', () {
     Future<void> pumpCard(
       WidgetTester tester,

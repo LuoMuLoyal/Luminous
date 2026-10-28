@@ -9,9 +9,14 @@ import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _FakeDataExportApi fakeApi;
   late ProviderContainer container;
 

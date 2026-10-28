@@ -6,8 +6,13 @@ import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 
 import '../../../helpers/feature_mocks.dart';
+import '../../../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('mineDashboardProvider', () {
     test('returns signed-out dashboard when not authenticated', () async {
       final c = ProviderContainer(

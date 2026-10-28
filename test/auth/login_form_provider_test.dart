@@ -11,9 +11,14 @@ import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
 import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
 
+import '../helpers/kv_test_store.dart';
 import 'test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   test('startWechatMobileLogin completes SDK callback login', () async {
     final remote = FakeLucentAuthRepository();
     final mobileClient = _FakeWechatMobileAuthClient(code: 'mobile-code');

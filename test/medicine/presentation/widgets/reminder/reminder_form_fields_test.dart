@@ -7,9 +7,14 @@ import 'package:luminous/features/medicine/presentation/providers/reminders.dart
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/form_fields.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('FrequencySegments', () {
     testWidgets('renders all three frequency labels', (tester) async {
       await tester.pumpWidget(

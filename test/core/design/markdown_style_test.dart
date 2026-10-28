@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 /// Pumps the app Forui theme (with the `SemanticColors` extension injected)
@@ -21,6 +22,10 @@ Future<BuildContext> _themedContext(WidgetTester tester) async {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('legal 样式：正文 md、行高 1.7', (tester) async {
     final context = await _themedContext(tester);
     final sheet = MarkdownStyle.legal(context);

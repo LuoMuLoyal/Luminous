@@ -27,6 +27,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 class _MockFilesApi extends Mock implements api.FilesApi {}
@@ -34,6 +35,10 @@ class _MockFilesApi extends Mock implements api.FilesApi {}
 class _MockDio extends Mock implements Dio {}
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Profile avatar row opens the actions dialog', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(393, 852);

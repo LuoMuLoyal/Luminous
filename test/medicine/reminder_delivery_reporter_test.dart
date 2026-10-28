@@ -11,8 +11,13 @@ import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_delivery_reporter.dart';
+import '../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   const payload =
       '{"reminderId":"reminder-1","date":"2026-06-10","time":"21:30"}';
 

@@ -16,11 +16,16 @@ import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 import 'test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets(
     'Today summary shows preview hint and hides refresh action when signed out',
     (tester) async {

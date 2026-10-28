@@ -7,8 +7,13 @@ import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/features/support/data/repositories/lucent.dart';
 import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/features/support/domain/repositories/support.dart';
+import '../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('appInfoProvider', () {
     test('returns app info from repository', () async {
       final container = ProviderContainer(

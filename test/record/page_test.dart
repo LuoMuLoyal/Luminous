@@ -42,9 +42,14 @@ import 'package:luminous/features/record/presentation/widgets/views/skeleton_vie
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   /// Runs a [LucentRecordRepository] dashboard task, failing the test on Left.
   Future<RecordDashboard> fetchDashboard(
     LucentRecordRepository repo,

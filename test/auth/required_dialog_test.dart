@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import '../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('loginRouteForReturnTo', () {
     test('encodes simple tab paths', () {
       expect(loginRouteForReturnTo('/today'), '/login?return-to=%2Ftoday');

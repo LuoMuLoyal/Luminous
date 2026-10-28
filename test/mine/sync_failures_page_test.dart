@@ -14,6 +14,7 @@ import 'package:luminous/features/mine/presentation/pages/sync_failures.dart';
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 class _MockPendingSyncDao extends Mock implements PendingSyncDao {}
@@ -57,6 +58,10 @@ Widget _app({
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('renders the failed item with the user-facing message', (
     tester,
   ) async {

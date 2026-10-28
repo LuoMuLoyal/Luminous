@@ -10,9 +10,14 @@ import 'package:luminous/features/auth/domain/entities/auth_verification_scene.d
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/password_reset.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late FakeLucentAuthRepository remote;
   late ProviderContainer container;
 

@@ -8,9 +8,14 @@ import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('authGuarded', () {
     test('calls fetch when authenticated', () async {
       final container = ProviderContainer(

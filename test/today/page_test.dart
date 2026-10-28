@@ -21,6 +21,7 @@ import 'package:luminous/features/today/presentation/widgets/views/skeleton_view
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 import 'test_helpers.dart';
@@ -48,6 +49,10 @@ class _TrackingActiveHealthEventNotifier extends ActiveHealthEvent {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets(
     'Today page prioritizes primary suggestion above summary on mobile',
     (tester) async {

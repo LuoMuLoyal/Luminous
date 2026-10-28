@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import '../../../helpers/kv_test_store.dart';
 
 /// 登录提示弹窗按 Apple HIG 的 alert 规格渲染。
 ///
@@ -15,6 +16,10 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// 回归点：该弹窗曾用自适应宽度，在浏览器窗口里被拉成一条横亘整屏的长条，
 /// 按钮挤在左边，完全不像 alert。
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Future<void> pumpAndOpen(WidgetTester tester, Size size) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = size;

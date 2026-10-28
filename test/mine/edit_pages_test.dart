@@ -15,9 +15,14 @@ import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   // ── Allergy ──
 
   testWidgets('Allergy create saves with label', (tester) async {

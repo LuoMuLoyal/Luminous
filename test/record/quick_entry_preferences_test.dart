@@ -186,10 +186,7 @@ void main() {
       expect(state.collapsed, isTrue);
 
       final prefs = KvStore.instance;
-      expect(
-        prefs.get<bool>('record.quickEntry.collapsed', fallback: false),
-        isTrue,
-      );
+      expect(prefs.getOrNull<bool>('record.quickEntry.collapsed'), isTrue);
     });
 
     test('recordTap increments frequency count', () async {
@@ -399,24 +396,15 @@ void main() {
 
       final prefs = KvStore.instance;
       expect(
-        prefs.get<bool>(
-          'record.quickEntry.dynamicSortEnabled',
-          fallback: false,
-        ),
+        prefs.getOrNull<bool>('record.quickEntry.dynamicSortEnabled'),
         isNull,
       );
       expect(
         prefs.getOrNull<List<String>>('record.quickEntry.customOrder'),
         isNull,
       );
-      expect(
-        prefs.get<bool>('record.quickEntry.collapsed', fallback: false),
-        isNull,
-      );
-      expect(
-        prefs.get<int>('record.quickEntry.freq.meal', fallback: 0),
-        isNull,
-      );
+      expect(prefs.getOrNull<bool>('record.quickEntry.collapsed'), isNull);
+      expect(prefs.getOrNull<int>('record.quickEntry.freq.meal'), isNull);
     });
   });
 }

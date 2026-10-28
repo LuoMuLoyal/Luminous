@@ -8,9 +8,14 @@ import 'package:paddle_ocr_native/paddle_ocr_native.dart';
 import 'package:paddle_ocr_native/src/paddle_ocr_platform.dart'
     show PaddleOcrNativePlatform;
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/mocks/scan.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late FakePaddleOcrNativePlatform fakePlatform;
   late FakeOcrModelManager fakeModelManager;
 

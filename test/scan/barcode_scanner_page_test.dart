@@ -24,6 +24,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/mocks/health_context.dart';
 import '../helpers/mocks/scan.dart';
 import '../helpers/test_forui_app.dart';
@@ -31,6 +32,10 @@ import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart' as screen;
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late FakePermissionHandlerPlatform fakePermission;
   late FakeMobileScannerPlatform fakeScanner;
   late MockScanRepository mockRepo;

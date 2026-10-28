@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/features/notification/presentation/widgets/shared/list_item.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 Widget _appShell(Widget child) {
@@ -28,6 +29,10 @@ NotificationItem _item({
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('NotificationListItemWidget', () {
     testWidgets('renders title and content', (tester) async {
       await tester.pumpWidget(

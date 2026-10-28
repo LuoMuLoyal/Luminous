@@ -7,9 +7,14 @@ import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/presentation/pages/forgot_password.dart';
 
+import '../helpers/kv_test_store.dart';
 import 'test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Forgot password page sends a verification code', (tester) async {
     final remote = FakeLucentAuthRepository();
 

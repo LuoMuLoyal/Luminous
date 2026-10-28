@@ -15,10 +15,15 @@ import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/presentation/quick_entry/meal_flow.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/test_forui_app.dart';
 import '../../../helpers/tiny_png.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late AppLocalizations l10n;
 
   setUpAll(() async {

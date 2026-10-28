@@ -8,8 +8,13 @@ import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:luminous/features/legal/domain/entities/document.dart';
 import 'package:luminous/features/legal/domain/repositories/documents.dart';
 import 'package:luminous/features/legal/presentation/providers/legal.dart';
+import '../../../../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('legalDocumentsProvider', () {
     test('returns summaries from repository', () async {
       final container = ProviderContainer(

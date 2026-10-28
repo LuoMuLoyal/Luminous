@@ -5,6 +5,7 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/clinic_summary_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 ClinicSummaryResponseCoverageCheckIns _checkInsCoverage() {
@@ -134,6 +135,10 @@ ClinicSummaryResponse _dto({
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Future<void> pumpContent(
     WidgetTester tester,
     ClinicSummaryResponse dto, {

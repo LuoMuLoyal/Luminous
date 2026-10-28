@@ -15,6 +15,7 @@ import 'package:luminous/features/today/data/utils/suggestion_json_codec.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:mocktail/mocktail.dart';
+import '../../../helpers/kv_test_store.dart';
 
 class _MockRemoteDataSource extends Mock
     implements TodaySuggestionRemoteDataSource {}
@@ -69,6 +70,10 @@ TodaySuggestionBundle _bundle({
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late _MockRemoteDataSource mockDataSource;

@@ -16,6 +16,7 @@ import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 import 'review_fixtures.dart';
 
@@ -25,6 +26,10 @@ import 'review_fixtures.dart';
 /// 接下来怎么办）→ 历史 → More。测试按语义树深度优先遍历收集 label，
 /// 用首次出现位置断言相对顺序（中间允许存在日期、用药数等次要 label）。
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late AppLocalizations l10n;
 
   setUp(() async {

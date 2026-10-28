@@ -4,9 +4,14 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('DailyRecordFormFields shows water fields', (tester) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 

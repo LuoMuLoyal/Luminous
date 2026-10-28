@@ -3,9 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('localizeToolName', () {
     testWidgets('maps every tool the server can advertise', (tester) async {
       // The tool list is server-driven (`ASSISTANT_TOOL_NAMES`, code-generated

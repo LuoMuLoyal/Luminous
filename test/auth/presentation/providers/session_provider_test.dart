@@ -13,9 +13,14 @@ import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _SessionTestRemoteDataSource remote;
   late _MemorySessionStore sessionStore;
   late _CallbackCapturingDioClient dioClient;

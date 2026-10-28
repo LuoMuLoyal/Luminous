@@ -60,14 +60,17 @@ class FeatureFlagsController extends AsyncNotifier<FeatureFlagsState> {
 
     final onDeviceAiRuntime = preferences.get<bool>(
       _onDeviceAiRuntimeKey,
-      fallback: false,
+      fallback: envConfig.enabled,
     );
     final aiRuntimeProvider = _providerFromStorage(
       preferences.getOrNull<String>(_aiProviderKey),
       envConfig.provider,
     );
-    final genUiEnabled = preferences.get<bool>(_genUiKey, fallback: false);
-    final streamMode = preferences.get<bool>(_streamModeKey, fallback: false);
+    final genUiEnabled = preferences.get<bool>(
+      _genUiKey,
+      fallback: envConfig.genUiEnabled,
+    );
+    final streamMode = preferences.get<bool>(_streamModeKey, fallback: true);
     final barcodeScan = preferences.get<bool>(_barcodeScanKey, fallback: false);
     final pdfExport = preferences.get<bool>(_pdfExportKey, fallback: false);
 

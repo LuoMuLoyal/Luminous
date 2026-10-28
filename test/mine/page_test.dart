@@ -27,9 +27,14 @@ import 'package:luminous/features/settings/presentation/providers/notification.d
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Mine page renders mobile north-star sections', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(393, 852);

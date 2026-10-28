@@ -29,10 +29,15 @@ import 'package:luminous/features/review/presentation/widgets/views/skeleton_vie
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../review/widgets/review_fixtures.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets(
     'Review top bar shows the assistant entry for both signed-in and signed-out',
     (tester) async {

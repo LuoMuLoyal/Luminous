@@ -29,9 +29,14 @@ import 'package:luminous/features/settings/domain/repositories/user_settings.dar
 import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/task_either.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   test(
     'Lucent today repository uses earliest pending medicine reminder',
     () async {

@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/tile_value.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 /// The group is laid out inside a fixed-width box so the assertions are about
@@ -20,6 +21,10 @@ const _tileRightInset = 13.0;
 const _suffixIconSpacing = 5.0;
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('pins the value and the chevron to the group trailing edge', (
     tester,
   ) async {

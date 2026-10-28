@@ -10,6 +10,7 @@ import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 
 class _CountingTodayRepository implements TodayRepository {
   _CountingTodayRepository({required this.dashboard});
@@ -38,6 +39,10 @@ class _AuthenticatedSessionNotifier extends AuthSessionNotifier {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   test('returns placeholderDashboard when signed out', () async {
     final c = ProviderContainer(
       overrides: [

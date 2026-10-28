@@ -28,9 +28,14 @@ import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   test('restoring auth attempts cache-first fetches (offline-first)', () async {
     final todayRepository = _CountingTodayRepository();
     final medicineRepository = _CountingMedicineWorkspaceRepository();

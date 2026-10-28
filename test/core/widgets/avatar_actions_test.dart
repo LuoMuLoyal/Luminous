@@ -4,9 +4,14 @@ import 'package:luminous/core/widgets/common/avatar/avatar_actions.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('avatar actions dialog lists the management actions', (
     tester,
   ) async {

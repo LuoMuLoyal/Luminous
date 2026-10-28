@@ -14,6 +14,7 @@ import 'package:luminous/features/notification/data/providers/unread_count.dart'
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
 import 'package:mocktail/mocktail.dart';
+import '../../helpers/kv_test_store.dart';
 
 class _FakeJPush extends JPushFlutterInterface {
   EventHandler? receiveHandler;
@@ -64,6 +65,10 @@ class _FakeTodayAiAnalysisNotifier extends TodayAiAnalysisNotifier {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('routeForPushEvent', () {
     test('uses the notifications route by default', () {
       expect(routeForPushEvent(<String, dynamic>{}), Routes.notifications);

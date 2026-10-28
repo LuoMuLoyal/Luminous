@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/widgets/common/control/date_picker.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 import '../../helpers/test_helpers.dart';
 
@@ -10,6 +11,10 @@ import '../../helpers/test_helpers.dart';
 /// 左右各 40dp inset 只留约 240dp，而 `FCalendar` 的网格需要 7×daySize(44)=308dp，
 /// 结果分隔头部右溢 44px、日期列被裁。这两条用例按真机逻辑尺寸 + 1.3 字缩放回归。
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   const viewports = <(String, void Function(WidgetTester))>[
     ('compact 360x800', setCompactPhoneScreenSize),
     ('narrow 320x720', setNarrowPhoneScreenSize),

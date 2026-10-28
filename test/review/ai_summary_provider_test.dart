@@ -9,10 +9,15 @@ import 'package:luminous/features/review/domain/repositories/ai_summary.dart';
 import 'package:luminous/features/review/presentation/providers/ai_summary.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';
 import '../today/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('ReviewAiSummaryController – build', () {
     test('idle when signed out', () {
       final container = ProviderContainer(

@@ -7,6 +7,7 @@ import 'package:luminous/features/settings/data/datasources/profile_remote.dart'
 import 'package:luminous/features/settings/data/providers/profile.dart';
 import 'package:luminous/features/settings/presentation/providers/profile_sync.dart';
 import 'package:mocktail/mocktail.dart';
+import '../../../helpers/kv_test_store.dart';
 
 class _MockSettingsProfileRemoteDataSource extends Mock
     implements SettingsProfileRemoteDataSource {}
@@ -69,6 +70,10 @@ HealthContextResponse _testDto() => HealthContextResponse(
 );
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _MockSettingsProfileRemoteDataSource mockDataSource;
 
   ProviderContainer buildContainer({

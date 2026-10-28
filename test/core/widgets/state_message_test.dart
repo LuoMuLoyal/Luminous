@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/feedback/state_message.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 Widget _appShell(Widget child) {
@@ -13,6 +14,10 @@ Widget _appShell(Widget child) {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('StateMessageView', () {
     testWidgets('renders title, description and icon', (tester) async {
       await tester.pumpWidget(

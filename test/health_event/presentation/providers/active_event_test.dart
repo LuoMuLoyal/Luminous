@@ -11,6 +11,7 @@ import 'package:luminous/features/health_event/data/providers/health_event.dart'
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
+import '../../../helpers/kv_test_store.dart';
 
 class _FakeHealthEventRepository implements HealthEventRepository {
   _FakeHealthEventRepository({this.event, this.failure});
@@ -127,6 +128,10 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   test('loads active event data and supports explicit refresh', () async {
     final repository = _FakeHealthEventRepository(event: _event);
     final container = ProviderContainer(

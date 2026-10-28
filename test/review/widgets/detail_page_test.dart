@@ -18,12 +18,17 @@ import 'package:luminous/features/review/presentation/widgets/views/skeleton_vie
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 import 'review_fixtures.dart';
 
 /// `/report/review/:eventId` 详情页：loading / error / data 三态 + 复用事件
 /// 头部与四段 + review_opened 埋点。
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late AppLocalizations l10n;
 
   setUp(() async {

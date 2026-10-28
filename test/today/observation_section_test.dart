@@ -11,6 +11,7 @@ import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/observation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 import 'test_helpers.dart';
@@ -129,6 +130,10 @@ const _emptyObservationsBundle = TodaySuggestionBundle(
 );
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Widget buildApp({
     required TodaySuggestionNotifier Function() notifierFactory,
     required TodayDashboard dashboard,

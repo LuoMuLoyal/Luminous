@@ -4,8 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
+import '../../../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late ProviderContainer container;
 
   /// Builds a container with the auth session overridden to confirmed-signed-out

@@ -11,6 +11,7 @@ import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 class _FakeItem extends Fake implements DailyRecordItem {}
@@ -20,6 +21,10 @@ class _FakeUpdate extends Fake implements DailyRecordUpdateInput {}
 class _MockRepo extends Mock implements DailyRecordRepository {}
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   setUpAll(() {
     registerFallbackValue(_FakeUpdate());
   });

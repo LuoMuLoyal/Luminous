@@ -12,9 +12,14 @@ import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/review/presentation/providers/review.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('reviewCurrentProvider', () {
     test(
       'loads the current review and caches it as the last success',

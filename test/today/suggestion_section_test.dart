@@ -22,6 +22,7 @@ import 'package:luminous/features/today/presentation/widgets/shared/components.d
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/mocks.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
@@ -34,6 +35,10 @@ const _testLanguage = 'zh';
 const _explainParams = (suggestionId: 'sug_test_001', language: _testLanguage);
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   // ── Helpers ───────────────────────────────────────────────────────────
 
   /// Builds a test [ProviderScope] wrapping [TodayPrimarySuggestionSection].

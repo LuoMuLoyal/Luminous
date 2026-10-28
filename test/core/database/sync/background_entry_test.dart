@@ -5,6 +5,7 @@ import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/session_store.dart';
 import 'package:mocktail/mocktail.dart';
+import '../../../helpers/kv_test_store.dart';
 
 class _MockSyncWorker extends Mock implements SyncWorker {}
 
@@ -30,6 +31,10 @@ class _FakeSessionStore implements LucentSessionStore {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _MockSyncWorker worker;
 
   setUp(() {

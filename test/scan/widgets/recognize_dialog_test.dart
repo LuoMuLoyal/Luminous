@@ -19,10 +19,15 @@ import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_di
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../auth/test_helpers.dart';
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/mocks/health_context.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late String tempImagePath;
 
   setUpAll(() {

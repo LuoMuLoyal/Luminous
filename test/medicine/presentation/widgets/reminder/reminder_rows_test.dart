@@ -5,6 +5,7 @@ import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/rows.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';
 
 AppLocalizations _getL10n(WidgetTester tester) {
@@ -36,6 +37,10 @@ CurrentMedicineItem _buildMedicine({
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('SelectedMedicineRow', () {
     testWidgets('renders medicine display name and dose text', (tester) async {
       final medicine = _buildMedicine();

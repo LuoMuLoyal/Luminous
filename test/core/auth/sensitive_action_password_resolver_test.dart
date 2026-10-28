@@ -14,6 +14,8 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart'
     show MaterialApp, Scaffold, ElevatedButton, GlobalMaterialLocalizations;
 
+import '../../helpers/kv_test_store.dart';
+
 UserSettings _testSettings({required bool passwordReauthenticationRequired}) {
   return UserSettings(
     aiSummariesEnabled: true,
@@ -55,6 +57,10 @@ Widget _toastShell(Widget child) {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('resolveSensitiveActionPassword', () {
     testWidgets(
       'returns empty string when passwordReauthenticationRequired is false',

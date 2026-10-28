@@ -8,9 +8,14 @@ import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   PackageInfo fakePackageInfo({
     String appName = 'Luminous',
     String version = '0.1.0',

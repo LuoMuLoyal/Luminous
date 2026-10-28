@@ -15,10 +15,15 @@ import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/quick_actions.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';
 import '../../../../helpers/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('TodayQuickActionsSection', () {
     testWidgets(
       'one-tap water action opens amount sheet and creates a record on pick',

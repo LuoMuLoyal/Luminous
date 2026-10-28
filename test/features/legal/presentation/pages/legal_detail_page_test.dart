@@ -11,6 +11,7 @@ import 'package:luminous/features/legal/domain/repositories/documents.dart';
 import 'package:luminous/features/legal/presentation/pages/detail.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';
 
 class _FakeLegalRepository implements LegalRepository {
@@ -58,6 +59,10 @@ class _FailingLegalRepository implements LegalRepository {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('LegalDetailPage', () {
     Future<void> pumpPage(
       WidgetTester tester, {

@@ -7,9 +7,14 @@ import 'package:luminous/features/record/presentation/utils/sleep_formatters.dar
 import 'package:luminous/features/record/presentation/widgets/dialogs/sleep_quick_entry_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late AppLocalizations l10n;
 
   setUpAll(() async {

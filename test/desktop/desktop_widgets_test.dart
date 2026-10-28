@@ -5,10 +5,15 @@ import 'package:luminous/core/widgets/common/control/desktop_hover.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/timeline_drag_data.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('TimelineDragData', () {
     test('carries recordId and entry', () {
       const entry = RecordTimelineEntry(

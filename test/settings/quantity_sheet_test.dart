@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/widgets/common/dialog/edit_sheet.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/quantity_sheet.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 Future<void> _pump(WidgetTester tester, Widget body) async {
@@ -15,6 +16,10 @@ Future<void> _pump(WidgetTester tester, Widget body) async {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('HeightPickerSheetBody (metric)', () {
     testWidgets('leaves an in-range value untouched', (tester) async {
       final slot = SheetValueSlot<double>(170);

@@ -172,12 +172,11 @@ void main() {
     expect(repository.patches, isEmpty);
     // The migration marker stays unset so the next build retries the sync.
     expect(
-      KvStore.instance.get<bool>(
+      KvStore.instance.getOrNull<bool>(
         PrefKeys.settingsNotificationsScoped(
           PrefKeys.settingsNotificationsRemoteMigrationCompleted,
           'user-a',
         ),
-        fallback: false,
       ),
       isNull,
     );

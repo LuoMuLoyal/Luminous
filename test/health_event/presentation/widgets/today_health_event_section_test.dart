@@ -17,6 +17,7 @@ import 'package:luminous/features/today/presentation/widgets/views/dashboard_vie
 import 'package:timezone/data/latest.dart' as timezone_data;
 import 'package:timezone/timezone.dart' as timezone;
 
+import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/test_forui_app.dart';
 import '../../../today/test_helpers.dart';
 
@@ -97,6 +98,10 @@ class _FakeHealthEventRepository implements HealthEventRepository {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('shows the start entry when there is no active event', (
     tester,
   ) async {

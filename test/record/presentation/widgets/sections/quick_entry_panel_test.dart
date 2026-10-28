@@ -7,9 +7,14 @@ import 'package:luminous/features/record/presentation/widgets/sections/quick_ent
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry_panel.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('RecordQuickEntryPanel', () {
     late AppLocalizations l10n;
 

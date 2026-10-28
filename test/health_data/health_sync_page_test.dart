@@ -11,10 +11,15 @@ import 'package:luminous/features/health_data/domain/entities/health_sync_result
 import 'package:luminous/features/health_data/presentation/pages/health_sync.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/mocks/health_data.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late FakeHealthSyncRepository repo;
 
   setUp(() {

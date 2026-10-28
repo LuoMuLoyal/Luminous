@@ -10,9 +10,14 @@ import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/presentation/pages/login.dart';
 
+import '../helpers/kv_test_store.dart';
 import 'test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Login page submits password login and updates session', (
     tester,
   ) async {

@@ -10,6 +10,7 @@ import 'package:luminous/features/review/presentation/widgets/sheets/share_manag
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 
@@ -58,6 +59,10 @@ Response<ClinicSummaryShareListResponse> _shareListResponse(
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _MockReportsApi reportsApi;
   late _FakeLucentClient client;
 
