@@ -1,6 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/database/cache_constants.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/notification_page.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
@@ -15,6 +22,7 @@ part 'lucent.g.dart';
 NotificationRepository notificationRepository(Ref ref) {
   return LucentNotificationRepository(
     api: ref.watch(lucentClientProvider).notifications,
+    dao: ref.watch(notificationPageDaoProvider),
   );
 }
 
@@ -28,9 +36,13 @@ NotificationRepository notificationRepository(Ref ref) {
 /// Protocol violations (non `problem+json` error bodies) keep the mapper's
 /// `FormatException` which propagates from `.run()`.
 class LucentNotificationRepository implements NotificationRepository {
-  LucentNotificationRepository({required this.api});
+  LucentNotificationRepository({required this.api, required this.dao});
 
   final NotificationsApi api;
+  final NotificationPageDao dao;
+
+  /// Background refresh throttle: one attempt per scope per window.
+  final Map<String, DateTime> _lastRefresh = {};
 
   @override
   TaskEither<LucentFailure, NotificationPage> findAll({
@@ -38,18 +50,65 @@ class LucentNotificationRepository implements NotificationRepository {
     required int pageSize,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await api.listNotifications(
-        page: page,
-        pageSize: pageSize,
-      );
-      final dto = _requireData(response.data, operation: 'findAll');
-      return NotificationPage(
-        items: dto.items.map(_mapItem).toList(),
-        total: dto.total.toInt(),
-        page: page,
-        pageSize: pageSize,
-      );
+      final scope = 'page=$page&size=$pageSize';
+
+      // 1. Cache-first: the inbox renders the previous page immediately instead
+      // of holding a skeleton until the network answers.
+      final cached = await dao.fetch(scope);
+      if (cached != null) {
+        _refreshInBackground(scope, page: page, pageSize: pageSize);
+        return NotificationPage.fromJson(
+          jsonDecode(cached) as Map<String, dynamic>,
+        );
+      }
+
+      // 2. Cache miss → network, then write through.
+      final remote = await _fetchPage(page: page, pageSize: pageSize);
+      await dao.replace(scope, jsonEncode(remote.toJson()));
+      return remote;
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  Future<NotificationPage> _fetchPage({
+    required int page,
+    required int pageSize,
+  }) async {
+    final response = await api.listNotifications(
+      page: page,
+      pageSize: pageSize,
+    );
+    final dto = _requireData(response.data, operation: 'findAll');
+    return NotificationPage(
+      items: dto.items.map(_mapItem).toList(),
+      total: dto.total.toInt(),
+      page: page,
+      pageSize: pageSize,
+    );
+  }
+
+  /// Best-effort refresh: throttled, failures only logged.
+  void _refreshInBackground(
+    String scope, {
+    required int page,
+    required int pageSize,
+  }) {
+    final now = DateTime.now();
+    final last = _lastRefresh[scope];
+    if (last != null && now.difference(last) < backgroundRefreshThrottle) {
+      return;
+    }
+    _lastRefresh[scope] = now;
+
+    unawaited(
+      Future(() async {
+        try {
+          final remote = await _fetchPage(page: page, pageSize: pageSize);
+          await dao.replace(scope, jsonEncode(remote.toJson()));
+        } catch (e) {
+          appTalker.warning('Notification background refresh failed: $e');
+        }
+      }),
+    );
   }
 
   @override
@@ -59,7 +118,7 @@ class LucentNotificationRepository implements NotificationRepository {
       final d = _requireData(response.data, operation: 'findOne');
       return NotificationDetail(
         id: d.id,
-        type: NotificationType.fromJson(d.type.value),
+        type: NotificationType.fromWire(d.type.value),
         title: d.title,
         content: d.content,
         action: d.action,
@@ -84,6 +143,9 @@ class LucentNotificationRepository implements NotificationRepository {
   TaskEither<LucentFailure, void> markAllAsRead() {
     return TaskEither.tryCatch(() async {
       await api.markAllAsRead();
+      // A read/unread/delete changes unread counts and read flags across every
+      // cached page, so the whole page cache is dropped rather than patched.
+      await dao.invalidateAll();
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
@@ -91,6 +153,9 @@ class LucentNotificationRepository implements NotificationRepository {
   TaskEither<LucentFailure, void> markAsRead(String id) {
     return TaskEither.tryCatch(() async {
       await api.markAsRead(id: id);
+      // A read/unread/delete changes unread counts and read flags across every
+      // cached page, so the whole page cache is dropped rather than patched.
+      await dao.invalidateAll();
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
@@ -98,6 +163,9 @@ class LucentNotificationRepository implements NotificationRepository {
   TaskEither<LucentFailure, void> markAsUnread(String id) {
     return TaskEither.tryCatch(() async {
       await api.markAsUnread(id: id);
+      // A read/unread/delete changes unread counts and read flags across every
+      // cached page, so the whole page cache is dropped rather than patched.
+      await dao.invalidateAll();
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
@@ -105,6 +173,9 @@ class LucentNotificationRepository implements NotificationRepository {
   TaskEither<LucentFailure, void> delete(String id) {
     return TaskEither.tryCatch(() async {
       await api.remove(id: id);
+      // A read/unread/delete changes unread counts and read flags across every
+      // cached page, so the whole page cache is dropped rather than patched.
+      await dao.invalidateAll();
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
@@ -125,7 +196,7 @@ class LucentNotificationRepository implements NotificationRepository {
   NotificationItem _mapItem(NotificationListResponseItems dto) {
     return NotificationItem(
       id: dto.id,
-      type: NotificationType.fromJson(dto.type.value),
+      type: NotificationType.fromWire(dto.type.value),
       title: dto.title,
       content: dto.content,
       action: dto.action,

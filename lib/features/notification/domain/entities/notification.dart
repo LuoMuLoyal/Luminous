@@ -1,133 +1,104 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'notification.freezed.dart';
+part 'notification.g.dart';
+
 /// Notification type identifiers, mirroring the backend enum.
 ///
 /// Domain-level enum decoupled from the generated [UserNotificationType].
-/// The `$unknown` sentinel preserves forward compatibility when the backend
+/// The `unknown` sentinel preserves forward compatibility when the backend
 /// adds new notification types.
+@JsonEnum(valueField: 'wire')
 enum NotificationType {
-  aiTodaySummary,
-  aiWeeklyInsight,
-  aiProactiveSuggestion,
-  medicineMissedDose,
-  passwordChanged,
-  reportGenerated,
-  medicineReminder,
-  systemAnnouncement,
-  oauthLogin,
-  identityLinked,
-  unknown;
+  aiTodaySummary('ai_today_summary'),
+  aiWeeklyInsight('ai_weekly_insight'),
+  aiProactiveSuggestion('ai_proactive_suggestion'),
+  medicineMissedDose('medicine_missed_dose'),
+  passwordChanged('password_changed'),
+  reportGenerated('report_generated'),
+  medicineReminder('medicine_reminder'),
+  systemAnnouncement('system_announcement'),
+  oauthLogin('oauth_login'),
+  identityLinked('identity_linked'),
+  unknown('');
+
+  const NotificationType(this.wire);
+
+  /// Backend string value.
+  final String wire;
 
   /// Maps from the backend string value.
-  static NotificationType fromJson(String? json) {
-    return switch (json) {
-      'ai_today_summary' => NotificationType.aiTodaySummary,
-      'ai_weekly_insight' => NotificationType.aiWeeklyInsight,
-      'ai_proactive_suggestion' => NotificationType.aiProactiveSuggestion,
-      'medicine_missed_dose' => NotificationType.medicineMissedDose,
-      'password_changed' => NotificationType.passwordChanged,
-      'report_generated' => NotificationType.reportGenerated,
-      'medicine_reminder' => NotificationType.medicineReminder,
-      'system_announcement' => NotificationType.systemAnnouncement,
-      'oauth_login' => NotificationType.oauthLogin,
-      'identity_linked' => NotificationType.identityLinked,
-      _ => NotificationType.unknown,
-    };
+  static NotificationType fromWire(String? value) {
+    for (final type in NotificationType.values) {
+      if (type != NotificationType.unknown && type.wire == value) {
+        return type;
+      }
+    }
+    return NotificationType.unknown;
   }
 }
 
 /// A notification list item shown in the inbox.
-class NotificationItem {
-  const NotificationItem({
-    required this.id,
-    required this.type,
-    required this.title,
-    required this.content,
-    required this.isRead,
-    required this.createdAt,
-    this.action,
-    this.actionPayload,
-  });
+@freezed
+abstract class NotificationItem with _$NotificationItem {
+  const factory NotificationItem({
+    required String id,
+    required NotificationType type,
+    required String title,
+    required String content,
+    required bool isRead,
 
-  final String id;
-  final NotificationType type;
-  final String title;
-  final String content;
-  final String? action;
-
-  /// Extra payload for the action (opaque to the domain layer).
-  final dynamic actionPayload;
-  final bool isRead;
-
-  /// ISO-8601 timestamp.
-  final String createdAt;
-
-  /// Returns a copy with updated fields.
-  NotificationItem copyWith({
-    String? id,
-    NotificationType? type,
-    String? title,
-    String? content,
+    /// ISO-8601 timestamp.
+    required String createdAt,
     String? action,
-    dynamic actionPayload,
-    bool? isRead,
-    String? createdAt,
-  }) {
-    return NotificationItem(
-      id: id ?? this.id,
-      type: type ?? this.type,
-      title: title ?? this.title,
-      content: content ?? this.content,
-      action: action ?? this.action,
-      actionPayload: actionPayload ?? this.actionPayload,
-      isRead: isRead ?? this.isRead,
-      createdAt: createdAt ?? this.createdAt,
-    );
-  }
+
+    /// Extra payload for the action (opaque to the domain layer).
+    Object? actionPayload,
+  }) = _NotificationItem;
+
+  factory NotificationItem.fromJson(Map<String, dynamic> json) =>
+      _$NotificationItemFromJson(json);
 }
 
 /// Full notification detail with read timestamp.
-class NotificationDetail {
-  const NotificationDetail({
-    required this.id,
-    required this.type,
-    required this.title,
-    required this.content,
-    required this.isRead,
-    required this.createdAt,
-    this.action,
-    this.actionPayload,
-    this.readAt,
-  });
+@freezed
+abstract class NotificationDetail with _$NotificationDetail {
+  const factory NotificationDetail({
+    required String id,
+    required NotificationType type,
+    required String title,
+    required String content,
+    required bool isRead,
 
-  final String id;
-  final NotificationType type;
-  final String title;
-  final String content;
-  final String? action;
-  final dynamic actionPayload;
-  final bool isRead;
+    /// ISO-8601 timestamp.
+    required String createdAt,
+    String? action,
+    Object? actionPayload,
 
-  /// ISO-8601 timestamp.
-  final String createdAt;
+    /// ISO-8601 timestamp when the notification was read, or null.
+    String? readAt,
+  }) = _NotificationDetail;
 
-  /// ISO-8601 timestamp when the notification was read, or null.
-  final String? readAt;
+  factory NotificationDetail.fromJson(Map<String, dynamic> json) =>
+      _$NotificationDetailFromJson(json);
 }
 
 /// A page of notification list results.
-class NotificationPage {
-  const NotificationPage({
-    required this.items,
-    required this.total,
-    required this.page,
-    required this.pageSize,
-  });
+@freezed
+abstract class NotificationPage with _$NotificationPage {
+  const NotificationPage._();
 
-  final List<NotificationItem> items;
+  const factory NotificationPage({
+    required List<NotificationItem> items,
 
-  /// Total notification count for the user.
-  final int total;
-  final int page;
-  final int pageSize;
+    /// Total notification count for the user.
+    required int total,
+    required int page,
+    required int pageSize,
+  }) = _NotificationPage;
+
+  factory NotificationPage.fromJson(Map<String, dynamic> json) =>
+      _$NotificationPageFromJson(json);
 
   bool get hasMore => items.length < total;
 }

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/notification_page.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
@@ -327,6 +329,7 @@ void main() {
     test('getUnreadCount returns the count as Right', () async {
       final repo = LucentNotificationRepository(
         api: FakeNotificationsApi(unreadCount: 3),
+        dao: _FakeNotificationPageDao(),
       );
 
       final count = await expectTaskRight(repo.getUnreadCount());
@@ -336,6 +339,7 @@ void main() {
     test('getUnreadCount maps a network error to Left(network)', () async {
       final repo = LucentNotificationRepository(
         api: FakeNotificationsApi()..shouldThrow = true,
+        dao: _FakeNotificationPageDao(),
       );
 
       final failure = await expectTaskLeft(repo.getUnreadCount());
@@ -347,6 +351,7 @@ void main() {
       () async {
         final repo = LucentNotificationRepository(
           api: FakeNotificationsApi(error: _problemDetails404()),
+          dao: _FakeNotificationPageDao(),
         );
 
         final failure = await expectTaskLeft(repo.getUnreadCount());
@@ -361,6 +366,7 @@ void main() {
       () async {
         final repo = LucentNotificationRepository(
           api: FakeNotificationsApi()..nullUnreadCountBody = true,
+          dao: _FakeNotificationPageDao(),
         );
 
         final failure = await expectTaskLeft(repo.getUnreadCount());
@@ -372,6 +378,7 @@ void main() {
     test('findAll maps a network error to Left(network)', () async {
       final repo = LucentNotificationRepository(
         api: FakeNotificationsApi()..shouldThrow = true,
+        dao: _FakeNotificationPageDao(),
       );
 
       final failure = await expectTaskLeft(repo.findAll(page: 1, pageSize: 20));
@@ -381,6 +388,7 @@ void main() {
     test('findAll empty success body is Left(network/emptyResponse)', () async {
       final repo = LucentNotificationRepository(
         api: FakeNotificationsApi()..nullFindAllBody = true,
+        dao: _FakeNotificationPageDao(),
       );
 
       final failure = await expectTaskLeft(repo.findAll(page: 1, pageSize: 20));
@@ -391,6 +399,7 @@ void main() {
     test('findOne keeps 404 Problem Details code/status as Left', () async {
       final repo = LucentNotificationRepository(
         api: FakeNotificationsApi(error: _problemDetails404()),
+        dao: _FakeNotificationPageDao(),
       );
 
       final failure = await expectTaskLeft(repo.findOne('missing-id'));
@@ -403,6 +412,7 @@ void main() {
         'from run()', () async {
       final repo = LucentNotificationRepository(
         api: FakeNotificationsApi(error: _nonProblemHtml500()),
+        dao: _FakeNotificationPageDao(),
       );
 
       // 协议违反（500 + text/html 而非 problem+json）保持 mapper 抛出的
@@ -416,6 +426,7 @@ void main() {
     test('markAllAsRead maps a network error to Left(network)', () async {
       final repo = LucentNotificationRepository(
         api: FakeNotificationsApi()..shouldThrow = true,
+        dao: _FakeNotificationPageDao(),
       );
 
       final failure = await expectTaskLeft(repo.markAllAsRead());
@@ -423,7 +434,10 @@ void main() {
     });
 
     test('delete succeeds on empty 204-style body', () async {
-      final repo = LucentNotificationRepository(api: FakeNotificationsApi());
+      final repo = LucentNotificationRepository(
+        api: FakeNotificationsApi(),
+        dao: _FakeNotificationPageDao(),
+      );
 
       await expectTaskRight(repo.delete('1'));
     });
@@ -431,6 +445,7 @@ void main() {
     test('delete maps a network error to Left(network)', () async {
       final repo = LucentNotificationRepository(
         api: FakeNotificationsApi()..shouldThrow = true,
+        dao: _FakeNotificationPageDao(),
       );
 
       final failure = await expectTaskLeft(repo.delete('1'));
@@ -446,6 +461,9 @@ void main() {
           authSessionProvider.overrideWith(() => signedInSession),
           lucentClientProvider.overrideWithValue(
             _FakeLucentClient(notificationsApi: api),
+          ),
+          notificationPageDaoProvider.overrideWithValue(
+            _FakeNotificationPageDao(),
           ),
         ],
       );
@@ -464,6 +482,9 @@ void main() {
           authSessionProvider.overrideWith(() => signedInSession),
           lucentClientProvider.overrideWithValue(
             _FakeLucentClient(notificationsApi: api),
+          ),
+          notificationPageDaoProvider.overrideWithValue(
+            _FakeNotificationPageDao(),
           ),
         ],
       );
@@ -521,6 +542,9 @@ void main() {
           lucentClientProvider.overrideWithValue(
             _FakeLucentClient(notificationsApi: api),
           ),
+          notificationPageDaoProvider.overrideWithValue(
+            _FakeNotificationPageDao(),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -544,6 +568,9 @@ void main() {
           lucentClientProvider.overrideWithValue(
             _FakeLucentClient(notificationsApi: api),
           ),
+          notificationPageDaoProvider.overrideWithValue(
+            _FakeNotificationPageDao(),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -563,6 +590,9 @@ void main() {
           lucentClientProvider.overrideWithValue(
             _FakeLucentClient(notificationsApi: api),
           ),
+          notificationPageDaoProvider.overrideWithValue(
+            _FakeNotificationPageDao(),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -581,6 +611,9 @@ void main() {
           authSessionProvider.overrideWith(() => signedInSession),
           lucentClientProvider.overrideWithValue(
             _FakeLucentClient(notificationsApi: api),
+          ),
+          notificationPageDaoProvider.overrideWithValue(
+            _FakeNotificationPageDao(),
           ),
         ],
       );
@@ -602,6 +635,9 @@ void main() {
           authSessionProvider.overrideWith(() => signedInSession),
           lucentClientProvider.overrideWithValue(
             _FakeLucentClient(notificationsApi: api),
+          ),
+          notificationPageDaoProvider.overrideWithValue(
+            _FakeNotificationPageDao(),
           ),
         ],
       );
@@ -626,6 +662,9 @@ void main() {
           lucentClientProvider.overrideWithValue(
             _FakeLucentClient(notificationsApi: api),
           ),
+          notificationPageDaoProvider.overrideWithValue(
+            _FakeNotificationPageDao(),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -641,4 +680,22 @@ void main() {
       expect(result.items, hasLength(1));
     });
   });
+}
+
+/// Cache DAO stub: always a miss, so repository tests exercise the network path.
+class _FakeNotificationPageDao implements NotificationPageDao {
+  @override
+  Future<String?> fetch(String scope) async => null;
+
+  @override
+  Future<void> replace(String scope, String json) async {}
+
+  @override
+  Future<void> invalidateAll() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
