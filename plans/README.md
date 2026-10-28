@@ -33,12 +33,13 @@ YYYY-MM-DD-short-task-name.md
 
 ## Current Plans
 
-> 更新于 2026-10-22。每份计划的状态以文件自身头部的状态段为准；此处只列当前仍在驱动工作、
+> 更新于 2026-10-28。每份计划的状态以文件自身头部的状态段为准；此处只列当前仍在驱动工作、
 > 或已裁决暂缓但保留触发条件的计划。已执行完毕的计划按约定直接删除（文件已删），
 > 历史记录见当日迁移日志。
 
 | 计划 | 状态 | 备注 |
 | --- | --- | --- |
+| [`2026-10-28-composable-tabs.md`](2026-10-28-composable-tabs.md) | 未开工（依赖已就位） | 五个 tab 全部组件化：`lib/core/composition/` 组件目录 + 用户自选组件/顺序/变体 + 持久化布局；P1 接通后端 **10 个已存在但前端未调用**的药品关系/用药全景端点；P4 记录页大日历需 Lucent 新增 `GET /daily-records/month-overview`；P6 底部 tab **图标/名称/顺序全部可配，名称接受自由文本**（l10n 铁律的显式例外，需补 `docs/reference/localization.md`）；P7 生成式 UI 走 `genui ^0.10.4` 并**由 AI 真正生成 A2UI 布局**，安全边界靠 `LuminousCatalog` 白名单（无 Button、无表单控件）+ 领域 item 只收引用键、真值从 provider 读；需 Lucent 新增 `POST /ui/generate-layout`（SSE）；P8 合并已存在的 assistant 组件化计划（不重复计价） |
 | [`2026-10-27-local-storage-overhaul.md`](2026-10-27-local-storage-overhaul.md) | 未开工 | 三项独立整改：**P0** 补全 cache-first 覆盖面（23 个 repository 只有 4 个读缓存；`fetchSummary` 以「derived data」为由跳过缓存，导致首页首帧必出骨架屏）；**P1** shared_preferences → `hive_ce`（破坏性，不迁移旧偏好）；**P2** 引入 SQLCipher 加密本地库（破坏性，检测到明文库即删除重建）。同时删除误导性的 `PrefKeys.accessToken/refreshToken` 与 `SharedPrefsLucentSessionStore`。修订 ADR-0006 §4/§5 |
 | [`2026-10-27-icon-family-consolidation-lucide.md`](2026-10-27-icon-family-consolidation-lucide.md) | 待评审 / 未开工 | iconMind 弃用，统一 Lucide 单族；实测 iconMind 资产墨迹极差 2.36 倍（Lucide 1.58 倍），导致 `size: 14` 实际画出 9.3~11.7px；迁移面仅 **5 个语义位 / 6 个调用点 / 2 个文件**；衬底（`SoftIcon` 44px 容器装 24px 字形）与 iconMind 无关，单列 P3 |
 | [`2026-10-23-harmonyos-arkts-web-shell-plan.md`](2026-10-23-harmonyos-arkts-web-shell-plan.md) | 待评审 / 未开工 | 鸿蒙改走 **ArkTS 壳 + ArkWeb 渲染 Web 产物**（放弃 Flutter 鸿蒙 SDK 路线，原因见 `docs/logs/migration-log/2026-10-23.md`）；壳工程放 **`Luminous/ohos/`** 同仓（先例：`native/` 的 KMP Gradle 工程）；Dart 允许改接缝（不再要求零改动）；头号风险是 ArkWeb 是否暴露 `dart.library.js_interop`（决定 drift 能否用）与 `localStorage` 是否持久化（决定登录态）；Phase 0 打穿 U1~U8 |

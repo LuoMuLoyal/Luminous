@@ -67,7 +67,7 @@ dependencies:
   url_launcher: ^6.3.3
   fluwx: ^6.0.6 # 6.x required: UISceneDelegate + Android Kotlin build fix (3.47 升级)
   flutter_markdown_plus: ^1.0.12
-  email_validator: ^2.1.17
+  email_validator: ^3.0.0
   mobile_scanner: ^7.4.2
   paddle_ocr_native: ^0.1.1
   health: ^13.3.2
@@ -113,6 +113,7 @@ dependencies:
   workmanager: ^0.10.10
   hive_ce: ^2.22.0
   sqlcipher_flutter_libs: ^0.7.0+eol
+  genui: ^0.10.4
 
 dev_dependencies:
   flutter_test:

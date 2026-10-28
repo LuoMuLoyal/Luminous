@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
+  audioplayers_windows
   connectivity_plus
   file_selector_windows
   flutter_secure_storage_windows
@@ -12,6 +13,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   sentry_flutter
   share_plus
   url_launcher_windows
+  video_player_win
   window_manager
 )
 
