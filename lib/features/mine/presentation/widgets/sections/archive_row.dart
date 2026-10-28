@@ -12,6 +12,7 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/utils/archive_handlers.dart';
+import 'package:luminous/features/mine/presentation/utils/mine_visuals.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -33,13 +34,10 @@ class ArchiveRow extends ConsumerWidget with FTileMixin {
     final l10n = AppLocalizations.of(context)!;
     final statusKey = entry.statusKey ?? _derivedStatusKey();
     final typography = context.theme.typography;
+    final (icon, accent) = MineVisuals.archiveEntry(entry.titleKey);
 
     final tile = FTile(
-      prefix: Icon(
-        entry.icon,
-        color: entry.accent.solid(context),
-        size: IconSizeTokens.lg,
-      ),
+      prefix: Icon(icon, color: accent.solid(context), size: IconSizeTokens.lg),
       title: Text(
         mineCopy(l10n, entry.titleKey),
         style: typography.body.md.copyWith(fontWeight: FontWeight.w700),

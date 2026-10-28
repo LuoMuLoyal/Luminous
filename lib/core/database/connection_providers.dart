@@ -3,6 +3,7 @@ import 'package:luminous/core/database/daos/daily_record.dart';
 import 'package:luminous/core/database/daos/daily_record_summary.dart';
 import 'package:luminous/core/database/daos/health_context.dart';
 import 'package:luminous/core/database/daos/medicine_dose_log.dart';
+import 'package:luminous/core/database/daos/mine_dashboard.dart';
 import 'package:luminous/core/database/daos/notification_page.dart';
 import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/daos/review.dart';
@@ -45,6 +46,11 @@ MedicineDoseLogDao medicineDoseLogDao(Ref ref) {
 @Riverpod(keepAlive: true)
 NotificationPageDao notificationPageDao(Ref ref) {
   return ref.read(appDatabaseProvider).notificationPageDao;
+}
+
+@Riverpod(keepAlive: true)
+MineDashboardDao mineDashboardDao(Ref ref) {
+  return ref.read(appDatabaseProvider).mineDashboardDao;
 }
 
 @Riverpod(keepAlive: true)

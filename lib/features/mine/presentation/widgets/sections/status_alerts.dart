@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
+import 'package:luminous/features/mine/presentation/utils/mine_visuals.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -64,6 +65,7 @@ class _StatusAlertRow extends StatelessWidget {
     final subtitle = _resolveSubtitle(l10n, card);
     final badge = _resolveBadge(l10n, card);
     final typography = context.theme.typography;
+    final (icon, accent) = MineVisuals.statusCard(card.kind);
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -72,11 +74,7 @@ class _StatusAlertRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            card.icon,
-            color: card.accent.solid(context),
-            size: IconSizeTokens.lg,
-          ),
+          Icon(icon, color: accent.solid(context), size: IconSizeTokens.lg),
           const SizedBox(width: Spacing.md),
           Expanded(
             child: Column(

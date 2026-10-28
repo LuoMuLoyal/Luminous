@@ -1,11 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/design/design.dart';
 
 part 'dashboard.freezed.dart';
+part 'dashboard.g.dart';
 
+/// Everything the「我的」tab renders.
+///
+/// The entities here are pure data: icons and accent colors are presentation
+/// concerns and live in `presentation/utils/mine_visuals.dart`, which keeps the
+/// whole graph JSON-serializable so the dashboard can be cached.
 @freezed
 abstract class MineDashboard with _$MineDashboard {
+  const MineDashboard._();
+
   const factory MineDashboard({
     required MineAccount account,
     required MineCompletion completion,
@@ -14,6 +20,9 @@ abstract class MineDashboard with _$MineDashboard {
     required List<MineArchiveEntry> archiveEntries,
     required MinePrivacyNotice privacyNotice,
   }) = _MineDashboard;
+
+  factory MineDashboard.fromJson(Map<String, dynamic> json) =>
+      _$MineDashboardFromJson(json);
 
   /// A minimal dashboard for signed-out users with no real or mock data.
   static MineDashboard signedOut() => const MineDashboard(
@@ -43,7 +52,6 @@ abstract class MineDashboard with _$MineDashboard {
     alerts: <MineStatusCard>[],
     archiveEntries: <MineArchiveEntry>[],
     privacyNotice: MinePrivacyNotice(
-      icon: SemanticIcons.safetyNeutral,
       titleKey: MineCopyKey.privacyNoticeTitle,
       actionKey: MineCopyKey.privacyNoticeAction,
     ),
@@ -65,6 +73,9 @@ abstract class MineProfileSnapshot with _$MineProfileSnapshot {
     required int currentMedicineCount,
     required bool basicInfoCompleted,
   }) = _MineProfileSnapshot;
+
+  factory MineProfileSnapshot.fromJson(Map<String, dynamic> json) =>
+      _$MineProfileSnapshotFromJson(json);
 }
 
 @freezed
@@ -82,6 +93,9 @@ abstract class MineAccount with _$MineAccount {
     @Default(0) int linkedIdentityCount,
     DateTime? lastLoginAt,
   }) = _MineAccount;
+
+  factory MineAccount.fromJson(Map<String, dynamic> json) =>
+      _$MineAccountFromJson(json);
 }
 
 @freezed
@@ -91,6 +105,9 @@ abstract class MineCompletion with _$MineCompletion {
     required String percentLabel,
     required MineCopyKey titleKey,
   }) = _MineCompletion;
+
+  factory MineCompletion.fromJson(Map<String, dynamic> json) =>
+      _$MineCompletionFromJson(json);
 }
 
 /// The kind of a Mine「档案提醒」status card; drives how the presentation
@@ -101,8 +118,6 @@ enum MineStatusCardKind { allergy, medicine, privacy }
 @freezed
 abstract class MineStatusCard with _$MineStatusCard {
   const factory MineStatusCard({
-    required IconData icon,
-    required SemanticColor accent,
     required MineCopyKey titleKey,
     required MineStatusCardKind kind,
 
@@ -119,27 +134,33 @@ abstract class MineStatusCard with _$MineStatusCard {
     /// presentation layer renders it as the badge and the「等 N 项/种」suffix.
     int? count,
   }) = _MineStatusCard;
+
+  factory MineStatusCard.fromJson(Map<String, dynamic> json) =>
+      _$MineStatusCardFromJson(json);
 }
 
 @freezed
 abstract class MineArchiveEntry with _$MineArchiveEntry {
   const factory MineArchiveEntry({
-    required IconData icon,
-    required SemanticColor accent,
     required MineCopyKey titleKey,
     required MineCopyKey subtitleKey,
     MineCopyKey? statusKey,
     String? route,
   }) = _MineArchiveEntry;
+
+  factory MineArchiveEntry.fromJson(Map<String, dynamic> json) =>
+      _$MineArchiveEntryFromJson(json);
 }
 
 @freezed
 abstract class MinePrivacyNotice with _$MinePrivacyNotice {
   const factory MinePrivacyNotice({
-    required IconData icon,
     required MineCopyKey titleKey,
     required MineCopyKey actionKey,
   }) = _MinePrivacyNotice;
+
+  factory MinePrivacyNotice.fromJson(Map<String, dynamic> json) =>
+      _$MinePrivacyNoticeFromJson(json);
 }
 
 enum MineCopyKey {
