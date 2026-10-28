@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/user_settings_cache.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
@@ -21,6 +23,7 @@ void main() {
     fakeApi = fake;
     final c = ProviderContainer(
       overrides: [
+        userSettingsDaoProvider.overrideWithValue(_FakeUserSettingsDao()),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         lucentClientProvider.overrideWithValue(
           LucentClient(_FakeLucentApi(userSettingsApi: fake)),
@@ -574,4 +577,22 @@ class _FakeLucentApi extends LucentApi {
 
   @override
   UserSettingsApi getUserSettingsApi() => userSettingsApi;
+}
+
+/// Always a cache miss, so the repository exercises the API path.
+class _FakeUserSettingsDao implements UserSettingsDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/daily_record.dart';
 import 'package:luminous/core/database/daos/medicine_dose_log.dart';
+import 'package:luminous/core/database/daos/user_settings_cache.dart';
 import 'package:luminous/features/settings/data/providers/cache_cleanup.dart'
     as cache_cleanup;
 import 'package:luminous/features/settings/data/providers/data_storage.dart';
@@ -57,6 +58,7 @@ void main() {
 
       return ProviderContainer(
         overrides: [
+          userSettingsDaoProvider.overrideWithValue(_FakeUserSettingsDao()),
           dailyRecordDaoProvider.overrideWithValue(dailyRecordDao),
           medicineDoseLogDaoProvider.overrideWithValue(doseLogDao),
         ],
@@ -180,4 +182,22 @@ void main() {
       expect(diff, closeTo(90, 1));
     });
   });
+}
+
+/// Always a cache miss, so the repository exercises the API path.
+class _FakeUserSettingsDao implements UserSettingsDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

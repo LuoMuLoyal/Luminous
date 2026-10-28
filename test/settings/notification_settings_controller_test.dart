@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/user_settings_cache.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
@@ -16,6 +18,7 @@ void main() {
     );
     final c = ProviderContainer(
       overrides: [
+        userSettingsDaoProvider.overrideWithValue(_FakeUserSettingsDao()),
         notificationPermissionServiceProvider.overrideWithValue(
           _FakeNotificationPermissionService(),
         ),
@@ -335,4 +338,22 @@ class _FakeNotificationPermissionService extends NotificationPermissionService {
   Future<NotificationPermissionState> requestPermission() async {
     return NotificationPermissionState.unsupported;
   }
+}
+
+/// Always a cache miss, so the repository exercises the API path.
+class _FakeUserSettingsDao implements UserSettingsDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

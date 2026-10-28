@@ -9,6 +9,8 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart' as api;
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/user_settings_cache.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_action_view.dart';
@@ -401,6 +403,7 @@ ProviderContainer _container({
 }) {
   final container = ProviderContainer(
     overrides: [
+      userSettingsDaoProvider.overrideWithValue(_FakeUserSettingsDao()),
       if (remote != null) authRepositoryProvider.overrideWithValue(remote),
       if (repository != null)
         healthContextRepositoryProvider.overrideWithValue(repository),
@@ -553,3 +556,21 @@ const _snapshot = HealthContextSnapshot(
   conditions: [],
   currentMedicines: [],
 );
+
+/// Always a cache miss, so the repository exercises the API path.
+class _FakeUserSettingsDao implements UserSettingsDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}

@@ -9,6 +9,8 @@ import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/user_settings_cache.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -244,6 +246,7 @@ Future<void> _pumpApp(
 }) async {
   final container = ProviderContainer(
     overrides: [
+      userSettingsDaoProvider.overrideWithValue(_FakeUserSettingsDao()),
       authSessionProvider.overrideWith(() => _StaticAuthSessionNotifier()),
       notificationPreferencesRepositoryProvider.overrideWithValue(
         _FakeNotificationPreferencesRepository(),
@@ -483,4 +486,22 @@ GoRouter _buildSettingsTestRouter() {
       ),
     ],
   );
+}
+
+/// Always a cache miss, so the repository exercises the API path.
+class _FakeUserSettingsDao implements UserSettingsDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

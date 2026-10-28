@@ -1,6 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/database/cache_constants.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/user_settings_cache.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
@@ -14,6 +21,7 @@ part 'lucent.g.dart';
 UserSettingsRepository userSettingsRepository(Ref ref) {
   return LucentUserSettingsRepository(
     api: ref.watch(lucentClientProvider).userSettings,
+    cacheDao: ref.watch(userSettingsDaoProvider),
   );
 }
 
@@ -26,18 +34,57 @@ UserSettingsRepository userSettingsRepository(Ref ref) {
 /// Protocol violations (non `problem+json` error bodies) keep the mapper's
 /// `FormatException` which propagates from `.run()`.
 class LucentUserSettingsRepository implements UserSettingsRepository {
-  LucentUserSettingsRepository({required this.api});
+  LucentUserSettingsRepository({required this.api, required this.cacheDao});
 
   final UserSettingsApi api;
+  final UserSettingsDao cacheDao;
+
+  /// Background refresh throttle for the cached settings.
+  DateTime? _lastRefresh;
 
   @override
   TaskEither<LucentFailure, UserSettings> getSettings() {
     return TaskEither.tryCatch(() async {
-      final response = await api.getSettings();
-      return _mapSettings(
-        _requireData(response.data, operation: 'getSettings'),
-      );
+      // Cache-first: settings gate several pages, so a cached copy avoids a
+      // round trip before those pages can decide what to render.
+      final cached = await cacheDao.fetch();
+      if (cached != null) {
+        _refreshInBackground();
+        return UserSettings.fromJson(
+          jsonDecode(cached) as Map<String, dynamic>,
+        );
+      }
+
+      final settings = await _fetchRemote();
+      await cacheDao.replace(jsonEncode(settings.toJson()));
+      return settings;
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  Future<UserSettings> _fetchRemote() async {
+    final response = await api.getSettings();
+    return _mapSettings(_requireData(response.data, operation: 'getSettings'));
+  }
+
+  /// Best-effort refresh: throttled, failures only logged.
+  void _refreshInBackground() {
+    final now = DateTime.now();
+    final last = _lastRefresh;
+    if (last != null && now.difference(last) < backgroundRefreshThrottle) {
+      return;
+    }
+    _lastRefresh = now;
+
+    unawaited(
+      Future(() async {
+        try {
+          final settings = await _fetchRemote();
+          await cacheDao.replace(jsonEncode(settings.toJson()));
+        } catch (e) {
+          appTalker.warning('User settings background refresh failed: $e');
+        }
+      }),
+    );
   }
 
   @override
@@ -65,9 +112,13 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
           ),
         ),
       );
-      return _mapSettings(
+      final settings = _mapSettings(
         _requireData(response.data, operation: 'updateSettings'),
       );
+      // The stored copy is now stale: drop it so the next read fetches the
+      // updated values instead of serving the pre-update snapshot.
+      await cacheDao.invalidate();
+      return settings;
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 

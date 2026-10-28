@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/user_settings_cache.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
@@ -211,6 +213,7 @@ ProviderContainer _buildContainer(
 ) {
   return ProviderContainer(
     overrides: [
+      userSettingsDaoProvider.overrideWithValue(_FakeUserSettingsDao()),
       authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
       notificationPreferencesRepositoryProvider.overrideWithValue(repository),
       notificationPermissionServiceProvider.overrideWithValue(
@@ -307,3 +310,21 @@ AuthUser _user(String id) => AuthUser(
   createdAt: DateTime.utc(2026, 1, 1),
   updatedAt: DateTime.utc(2026, 1, 1),
 );
+
+/// Always a cache miss, so the repository exercises the API path.
+class _FakeUserSettingsDao implements UserSettingsDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}

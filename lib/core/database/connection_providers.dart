@@ -11,6 +11,7 @@ import 'package:luminous/core/database/daos/review.dart';
 import 'package:luminous/core/database/daos/review_dashboard.dart';
 import 'package:luminous/core/database/daos/search_result.dart';
 import 'package:luminous/core/database/daos/today_suggestion.dart';
+import 'package:luminous/core/database/daos/user_settings_cache.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -63,6 +64,11 @@ MedicineWorkspaceDao medicineWorkspaceDao(Ref ref) {
 @Riverpod(keepAlive: true)
 SearchResultDao searchResultDao(Ref ref) {
   return ref.read(appDatabaseProvider).searchResultDao;
+}
+
+@Riverpod(keepAlive: true)
+UserSettingsDao userSettingsDao(Ref ref) {
+  return ref.read(appDatabaseProvider).userSettingsDao;
 }
 
 @Riverpod(keepAlive: true)
