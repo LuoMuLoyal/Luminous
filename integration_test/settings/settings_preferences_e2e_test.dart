@@ -1,4 +1,6 @@
 import 'package:integration_test/integration_test.dart';
+import 'package:luminous/core/storage/kv_store.dart';
+
 import '../support/e2e_test_helpers.dart';
 
 void main() {
@@ -23,8 +25,8 @@ void main() {
     await tester.tap(find.byKey(const Key('theme-row-dark')));
     await settleE2e(tester);
 
-    final preferences = await SharedPreferences.getInstance();
-    expect(preferences.getString('theme.mode'), 'dark');
+    final preferences = KvStore.instance;
+    expect(preferences.getOrNull<String>('theme.mode'), 'dark');
 
     await tester.tap(find.byType(BackButton).first);
     await settleE2e(tester);
@@ -57,8 +59,8 @@ void main() {
     await tester.tap(find.byKey(const Key('language-row-en')));
     await settleE2e(tester);
 
-    final preferences = await SharedPreferences.getInstance();
-    expect(preferences.getString('app.locale'), 'en');
+    final preferences = KvStore.instance;
+    expect(preferences.getOrNull<String>('app.locale'), 'en');
 
     await tester.tap(find.byType(BackButton).first);
     await settleE2e(tester);
@@ -128,9 +130,12 @@ void main() {
     final after = readSwitchValue(tester, switchIn(medicationSwitch));
     expect(after, isNot(before));
 
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
     expect(
-      preferences.getBool('settings.notifications.medicationReminders'),
+      preferences.get<bool>(
+        'settings.notifications.medicationReminders',
+        fallback: false,
+      ),
       after,
     );
 

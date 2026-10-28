@@ -18,9 +18,9 @@ import 'package:luminous/features/record/presentation/pages/detail.dart';
 import 'package:luminous/features/settings/data/repositories/lucent.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 class _FakeRepo extends DailyRecordRepository {
@@ -263,7 +263,7 @@ void main() {
   testWidgets('RecordDetailPage loads and displays record when authenticated', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       ProviderScope(
@@ -302,7 +302,7 @@ void main() {
   testWidgets('water detail shows daily progress and adjacent navigation', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _WaterFakeRepo();
 
     await tester.pumpWidget(
@@ -363,7 +363,7 @@ void main() {
 
   testWidgets('water detail reads daily water target from user-settings '
       '(waterTargetCount × 250 ml)', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _WaterFakeRepo();
 
     await tester.pumpWidget(
@@ -412,7 +412,7 @@ void main() {
 
   testWidgets('water detail falls back to the default target when '
       'user-settings are unavailable', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _WaterFakeRepo();
 
     await tester.pumpWidget(
@@ -458,7 +458,7 @@ void main() {
   testWidgets('water detail shows fl oz totals when unit system is imperial', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _WaterFakeRepo();
 
     await tester.pumpWidget(
@@ -509,7 +509,7 @@ void main() {
 
   testWidgets('water detail falls back to metric when the health snapshot is '
       'unavailable', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _WaterFakeRepo();
 
     await tester.pumpWidget(
@@ -554,7 +554,7 @@ void main() {
 
   testWidgets('meal detail retries a failed analysis by re-submitting the '
       'existing image', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _FakeRepo();
     final container = ProviderContainer(
       overrides: [
@@ -626,7 +626,7 @@ void main() {
 
   testWidgets('meal detail retry failure keeps the retry action and shows '
       'an error toast', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _FakeRepo()..updateThrows = true;
 
     await tester.pumpWidget(

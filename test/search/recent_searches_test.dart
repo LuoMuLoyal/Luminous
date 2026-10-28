@@ -7,22 +7,25 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/widgets/sections/recent_searches.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 
 void main() {
   testWidgets('renders persisted recent keywords on the empty-query state', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues({
-      PrefKeys.medicineSearchRecentKeywords: ['布洛芬', '阿司匹林'],
-    });
+    KvTestStore.install(
+      seed: {
+        PrefKeys.medicineSearchRecentKeywords: ['布洛芬', '阿司匹林'],
+      },
+    );
     await _pumpSearchApp(tester);
 
     await tester.pump();
@@ -38,7 +41,7 @@ void main() {
   testWidgets('hides the recent searches section when nothing is stored', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues({});
+    KvTestStore.install(seed: {});
     await _pumpSearchApp(tester);
 
     await tester.pump();
@@ -49,9 +52,11 @@ void main() {
   });
 
   testWidgets('tapping a recent keyword triggers a search', (tester) async {
-    SharedPreferences.setMockInitialValues({
-      PrefKeys.medicineSearchRecentKeywords: ['布洛芬'],
-    });
+    KvTestStore.install(
+      seed: {
+        PrefKeys.medicineSearchRecentKeywords: ['布洛芬'],
+      },
+    );
     await _pumpSearchApp(tester);
 
     await tester.pump();
@@ -68,9 +73,11 @@ void main() {
   testWidgets('tapping clear empties the section and the store', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues({
-      PrefKeys.medicineSearchRecentKeywords: ['布洛芬', '阿司匹林'],
-    });
+    KvTestStore.install(
+      seed: {
+        PrefKeys.medicineSearchRecentKeywords: ['布洛芬', '阿司匹林'],
+      },
+    );
     await _pumpSearchApp(tester);
 
     await tester.pump();
@@ -84,14 +91,17 @@ void main() {
     // Section collapses back to shrink and storage is wiped.
     expect(find.text('最近搜索'), findsNothing);
     expect(find.text('清空'), findsNothing);
-    final prefs = await SharedPreferences.getInstance();
-    expect(prefs.getStringList(PrefKeys.medicineSearchRecentKeywords), isNull);
+    final prefs = KvStore.instance;
+    expect(
+      prefs.getOrNull<List<String>>(PrefKeys.medicineSearchRecentKeywords),
+      isNull,
+    );
   });
 
   testWidgets('a successful search shows up in recent searches', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues({});
+    KvTestStore.install(seed: {});
     await _pumpSearchApp(tester);
 
     await tester.pump();
@@ -117,9 +127,11 @@ void main() {
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
-    SharedPreferences.setMockInitialValues({
-      PrefKeys.medicineSearchRecentKeywords: ['布洛芬'],
-    });
+    KvTestStore.install(
+      seed: {
+        PrefKeys.medicineSearchRecentKeywords: ['布洛芬'],
+      },
+    );
     await _pumpSearchApp(tester);
 
     await tester.pump();

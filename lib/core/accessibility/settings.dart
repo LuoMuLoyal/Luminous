@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/config/pref_keys.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 
 part 'settings.freezed.dart';
 
@@ -43,13 +43,16 @@ class AccessibilitySettingsController
 
   @override
   Future<AccessibilitySettingsState> build() async {
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
     return AccessibilitySettingsState(
       fontSize: FontSizePreference.fromStorage(
-        preferences.getString(_fontSizeKey),
+        preferences.getOrNull<String>(_fontSizeKey),
       ),
-      reduceAnimations: preferences.getBool(_reduceAnimationsKey) ?? false,
-      highContrast: preferences.getBool(_highContrastKey) ?? false,
+      reduceAnimations: preferences.get<bool>(
+        _reduceAnimationsKey,
+        fallback: false,
+      ),
+      highContrast: preferences.get<bool>(_highContrastKey, fallback: false),
     );
   }
 
@@ -57,29 +60,29 @@ class AccessibilitySettingsController
     final next = (state.asData?.value ?? const AccessibilitySettingsState())
         .copyWith(fontSize: preference);
     state = AsyncData(next);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_fontSizeKey, preference.storageValue);
+    final preferences = KvStore.instance;
+    await preferences.set(_fontSizeKey, preference.storageValue);
   }
 
   Future<void> setReduceAnimations(bool enabled) async {
     final next = (state.asData?.value ?? const AccessibilitySettingsState())
         .copyWith(reduceAnimations: enabled);
     state = AsyncData(next);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setBool(_reduceAnimationsKey, enabled);
+    final preferences = KvStore.instance;
+    await preferences.set(_reduceAnimationsKey, enabled);
   }
 
   Future<void> setHighContrast(bool enabled) async {
     final next = (state.asData?.value ?? const AccessibilitySettingsState())
         .copyWith(highContrast: enabled);
     state = AsyncData(next);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setBool(_highContrastKey, enabled);
+    final preferences = KvStore.instance;
+    await preferences.set(_highContrastKey, enabled);
   }
 
   Future<void> reset() async {
     state = const AsyncData(AccessibilitySettingsState());
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
     await preferences.remove(_fontSizeKey);
     await preferences.remove(_reduceAnimationsKey);
     await preferences.remove(_highContrastKey);

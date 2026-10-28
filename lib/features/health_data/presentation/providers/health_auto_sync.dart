@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/health_data/data/providers/health_sync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'health_auto_sync.g.dart';
 
@@ -60,8 +60,8 @@ class HealthAutoSyncPreference extends _$HealthAutoSyncPreference {
   }
 
   Future<void> _initFromPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    state = prefs.getBool(PrefKeys.healthAutoSyncEnabled) ?? false;
+    final prefs = KvStore.instance;
+    state = prefs.get<bool>(PrefKeys.healthAutoSyncEnabled, fallback: false);
   }
 
   Future<void> toggle() async {
@@ -69,9 +69,9 @@ class HealthAutoSyncPreference extends _$HealthAutoSyncPreference {
         HealthAutoSyncAvailability.available) {
       return;
     }
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = KvStore.instance;
     final newValue = !state;
-    await prefs.setBool(PrefKeys.healthAutoSyncEnabled, newValue);
+    await prefs.set(PrefKeys.healthAutoSyncEnabled, newValue);
     state = newValue;
   }
 }

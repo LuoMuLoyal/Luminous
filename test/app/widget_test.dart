@@ -4,15 +4,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/kv_test_store.dart';
 
 void main() {
   testWidgets('App restores auth session on startup', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     final notifier = _TrackingAuthSessionNotifier();
     final container = ProviderContainer(
@@ -34,7 +36,7 @@ void main() {
   });
 
   testWidgets('App should render', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       ProviderScope(
@@ -53,9 +55,7 @@ void main() {
   testWidgets('App backfills locale from Lucent health-context profile', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{
-      'app.locale': 'en',
-    });
+    KvTestStore.install(seed: const <String, Object>{'app.locale': 'en'});
 
     const snapshot = HealthContextSnapshot(
       summary: HealthSummary(
@@ -108,8 +108,8 @@ void main() {
 
     expect(find.text('设置'), findsOneWidget);
 
-    final preferences = await SharedPreferences.getInstance();
-    expect(preferences.getString('app.locale'), 'zh-CN');
+    final preferences = KvStore.instance;
+    expect(preferences.getOrNull<String>('app.locale'), 'zh-CN');
   });
 }
 

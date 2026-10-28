@@ -28,8 +28,8 @@ import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/ai.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 // The gen_ai chat surface renders with framework (`package:flutter/material.dart`)
@@ -57,7 +57,7 @@ void main() {
   testWidgets('AI chat page shows sign-in gate when signed out', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       ProviderScope(
@@ -97,7 +97,7 @@ void main() {
   ) async {
     tester.view.physicalSize = const Size(1200, 1600);
     tester.view.devicePixelRatio = 1.0;
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repository = _ErrorStreamAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -119,7 +119,7 @@ void main() {
   });
 
   testWidgets('assistant message shows proposal card', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _buildTestApp(repository: _ProposalAssistantRepository()),
@@ -144,7 +144,7 @@ void main() {
   testWidgets(
     'confirm create proposal confirms on the backend without a client write',
     (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final repository = _ProposalAssistantRepository();
       final dailyRecordRepository = _FakeDailyRecordRepository();
 
@@ -185,7 +185,7 @@ void main() {
   testWidgets(
     'confirm settings proposal confirms on the backend without a client patch',
     (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final repository = _SettingsProposalAssistantRepository();
       final settingsController = _TrackingUserSettingsController();
 
@@ -219,7 +219,7 @@ void main() {
   );
 
   testWidgets('dismiss proposal hides proposal card', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _buildTestApp(repository: _ProposalAssistantRepository()),
@@ -244,7 +244,7 @@ void main() {
   testWidgets('expired proposal cannot be confirmed and shows expiry hint', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final dailyRecordRepository = _FakeDailyRecordRepository();
 
     await tester.pumpWidget(
@@ -286,7 +286,7 @@ void main() {
   testWidgets('disabled AI chat shows hint about toggle above', (tester) async {
     tester.view.physicalSize = const Size(1200, 1600);
     tester.view.devicePixelRatio = 1.0;
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repository = _DisabledAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -309,7 +309,7 @@ void main() {
   testWidgets('disabled AI chat still shows restored history', (tester) async {
     tester.view.physicalSize = const Size(1200, 1600);
     tester.view.devicePixelRatio = 1.0;
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repository = _DisabledWithHistoryAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -323,7 +323,7 @@ void main() {
   testWidgets('latest persisted conversation is restored on assistant page', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repository = _RestoredConversationAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -336,7 +336,7 @@ void main() {
   testWidgets(
     'new conversation action archives latest conversation through repository',
     (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final repository = _RestoredConversationAssistantRepository();
 
       await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -364,7 +364,7 @@ void main() {
   testWidgets('retry does not duplicate failed user message', (tester) async {
     tester.view.physicalSize = const Size(1200, 1600);
     tester.view.devicePixelRatio = 1.0;
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repository = _RetryAwareAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -389,7 +389,7 @@ void main() {
   testWidgets('recent conversation drawer opens and switches conversation', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repository = _RecentConversationsAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -434,7 +434,7 @@ void main() {
   });
 
   testWidgets('drawer long-press menu renames a conversation', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repository = _RecentConversationsAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -487,7 +487,7 @@ void main() {
   testWidgets(
     'tap-to-name opens the rename dialog for an untitled conversation',
     (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final repository = _DrawerMenuAssistantRepository();
 
       await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -513,7 +513,7 @@ void main() {
   testWidgets('drawer delete flow confirms before deleting and toasts', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repository = _RecentConversationsAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -551,7 +551,7 @@ void main() {
   testWidgets('assistant header keeps back history new and settings actions', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _buildTestApp(repository: _FakeAssistantRepository()),
@@ -580,7 +580,7 @@ void main() {
   testWidgets('assistant settings action navigates to the dedicated AI page', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _buildTestApp(repository: _FakeAssistantRepository()),
@@ -596,7 +596,7 @@ void main() {
   testWidgets('F-10: capabilities action opens the capability details panel', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _buildTestApp(repository: _FakeAssistantRepository()),
@@ -618,7 +618,7 @@ void main() {
       tester.view.resetDevicePixelRatio();
       tester.view.resetPhysicalSize();
     });
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repository = _FakeAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -632,7 +632,7 @@ void main() {
   testWidgets('page send trims input and clears the shared controller', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repository = _RecordingAssistantRepository();
 
     await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -652,7 +652,7 @@ void main() {
   testWidgets(
     'page composer sends on hardware Enter and keeps Shift+Enter newline',
     (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final repository = _RecordingAssistantRepository();
 
       await tester.pumpWidget(_buildTestApp(repository: repository));
@@ -680,7 +680,7 @@ void main() {
   testWidgets('page composer preserves the gen_ai input contract', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _buildTestApp(repository: _FakeAssistantRepository()),
@@ -699,7 +699,7 @@ void main() {
   testWidgets('normal assistant page uses the gen_ai chat surface', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _buildTestApp(repository: _RestoredConversationAssistantRepository()),
@@ -722,7 +722,7 @@ void main() {
       tester.view.resetDevicePixelRatio();
       tester.view.resetPhysicalSize();
     });
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _buildTestApp(repository: _LongConversationAssistantRepository()),
@@ -751,7 +751,7 @@ void main() {
   testWidgets('empty assistant page keeps greeting and welcome support copy', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _buildTestApp(repository: _FakeAssistantRepository()),
@@ -800,7 +800,7 @@ void main() {
   testWidgets('empty assistant page shows the memory hint when enabled', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _buildTestApp(repository: _MemoryEnabledAssistantRepository()),
@@ -814,7 +814,7 @@ void main() {
   testWidgets('AssistantPage scopes one chat theme bridge below MaterialApp', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _buildTestApp(repository: _FakeAssistantRepository()),
@@ -845,7 +845,7 @@ void main() {
       tester.view.resetDevicePixelRatio();
       tester.view.resetPhysicalSize();
     });
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     final pendingCapabilities = Completer<AssistantCapabilities>();
     final pendingConversation = Completer<AssistantConversation?>();

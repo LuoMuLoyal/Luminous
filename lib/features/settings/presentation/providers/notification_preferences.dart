@@ -1,7 +1,7 @@
 import 'package:luminous/core/config/pref_keys.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 
-/// A user-scoped wrapper around [SharedPreferences].
+/// A user-scoped wrapper around [KvStore].
 ///
 /// Currently only used by the notification preferences module. When a second
 /// feature needs user-isolated local storage, extract this into
@@ -10,9 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// keeping it here avoids a premature abstraction that may not fit future
 /// use cases.
 class ScopedPreferences {
-  ScopedPreferences(this._preferences, this._userId);
+  ScopedPreferences(this._store, this._userId);
 
-  final SharedPreferences _preferences;
+  final KvStore _store;
   final String? _userId;
 
   String _key(String key) {
@@ -22,20 +22,23 @@ class ScopedPreferences {
         : PrefKeys.settingsNotificationsScoped(key, userId);
   }
 
-  bool? getBool(String key) => _preferences.getBool(_key(key));
+  /// Nullable reads, mirroring the previous SharedPreferences accessors.
+  bool? getBool(String key) => getOrNull<bool>(key);
 
-  int? getInt(String key) => _preferences.getInt(_key(key));
+  int? getInt(String key) => getOrNull<int>(key);
 
-  String? getString(String key) => _preferences.getString(_key(key));
+  String? getString(String key) => getOrNull<String>(key);
 
-  Future<bool> setBool(String key, bool value) =>
-      _preferences.setBool(_key(key), value);
+  /// Reads [key] as [T], falling back to [fallback] when absent or mistyped.
+  T get<T>(String key, {required T fallback}) =>
+      _store.get<T>(_key(key), fallback: fallback);
 
-  Future<bool> setInt(String key, int value) =>
-      _preferences.setInt(_key(key), value);
+  /// Reads [key] as [T], or null when absent / of another type.
+  T? getOrNull<T>(String key) => _store.getOrNull<T>(_key(key));
 
-  Future<bool> setString(String key, String value) =>
-      _preferences.setString(_key(key), value);
+  /// Writes [value] under [key].
+  Future<void> set(String key, Object? value) => _store.set(_key(key), value);
 
-  Future<bool> remove(String key) => _preferences.remove(_key(key));
+  /// Removes [key].
+  Future<void> remove(String key) => _store.remove(_key(key));
 }

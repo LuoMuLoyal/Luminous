@@ -17,6 +17,7 @@ import 'package:luminous/core/network/client/client_providers.dart'
         lucentSessionStoreProvider;
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/client/session_store.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -68,9 +69,9 @@ import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../test/helpers/feature_mocks.dart';
+import '../../test/helpers/kv_test_store.dart';
 
 export 'package:flutter/material.dart';
 export 'package:flutter_test/flutter_test.dart';
@@ -93,7 +94,6 @@ export 'package:luminous/features/record/domain/entities/record.dart'
 export 'package:luminous/features/review/data/providers/review.dart'
     show reviewRepositoryProvider;
 export 'package:luminous/features/settings/domain/services/notification_permission.dart';
-export 'package:shared_preferences/shared_preferences.dart';
 
 export '../../test/helpers/feature_mocks.dart'
     show MockReviewDashboardRepository;
@@ -116,10 +116,10 @@ Future<ProviderContainer> pumpOfflineApp(
   TodayRepository? todayRepository,
   TodaySuggestionBundle? todaySuggestionBundle,
 }) async {
-  SharedPreferences.setMockInitialValues(const <String, Object>{});
-  final prefs = await SharedPreferences.getInstance();
+  KvTestStore.install(seed: const <String, Object>{});
+  final prefs = KvStore.instance;
   await prefs.clear();
-  await prefs.setString('app.locale', 'zh-CN');
+  await prefs.set('app.locale', 'zh-CN');
   final sessionStore = _MemorySessionStore();
   final container = ProviderContainer(
     overrides: [
@@ -562,7 +562,6 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
     resetPasswordValue = password;
     return TaskEither.right(null);
   }
-
 
   @override
   TaskEither<LucentFailure, AuthUser> changeEmail({

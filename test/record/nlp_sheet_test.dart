@@ -4,13 +4,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/nlp_sheet.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('RecordNlpSheet renders', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     await tester.pumpWidget(
       ProviderScope(
         overrides: [

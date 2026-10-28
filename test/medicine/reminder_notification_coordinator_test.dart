@@ -8,6 +8,7 @@ import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
@@ -21,7 +22,8 @@ import 'package:luminous/features/settings/domain/entities/notification_preferen
 import 'package:luminous/features/settings/domain/repositories/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/kv_test_store.dart';
 
 void main() {
   const texts = MedicineReminderNotificationTexts(
@@ -34,9 +36,11 @@ void main() {
   test(
     'coordinator cancels old ids schedules new ones and persists them',
     () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        PrefKeys.medicineReminderScheduledNotificationIds: <String>['7', '8'],
-      });
+      KvTestStore.install(
+        seed: <String, Object>{
+          PrefKeys.medicineReminderScheduledNotificationIds: <String>['7', '8'],
+        },
+      );
       final gateway = _FakeLocalNotificationGateway();
       final coordinator = MedicineReminderNotificationCoordinator(
         gateway: gateway,
@@ -57,9 +61,9 @@ void main() {
       expect(gateway.cancelledIds, <int>[7, 8]);
       expect(gateway.scheduledCalls, hasLength(14));
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getStringList(
+        preferences.getOrNull<List<String>>(
           PrefKeys.medicineReminderScheduledNotificationIds,
         ),
         hasLength(14),
@@ -70,9 +74,11 @@ void main() {
   test(
     'coordinator leaves preferences untouched when gateway is unavailable',
     () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        PrefKeys.medicineReminderScheduledNotificationIds: <String>['7'],
-      });
+      KvTestStore.install(
+        seed: <String, Object>{
+          PrefKeys.medicineReminderScheduledNotificationIds: <String>['7'],
+        },
+      );
       final gateway = _FakeLocalNotificationGateway(available: false);
       final coordinator = MedicineReminderNotificationCoordinator(
         gateway: gateway,
@@ -92,9 +98,9 @@ void main() {
       expect(gateway.cancelledIds, isEmpty);
       expect(gateway.scheduledCalls, isEmpty);
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getStringList(
+        preferences.getOrNull<List<String>>(
           PrefKeys.medicineReminderScheduledNotificationIds,
         ),
         <String>['7'],
@@ -103,9 +109,11 @@ void main() {
   );
 
   test('coordinator clears stored ids when reminders are disabled', () async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      PrefKeys.medicineReminderScheduledNotificationIds: <String>['5', '6'],
-    });
+    KvTestStore.install(
+      seed: <String, Object>{
+        PrefKeys.medicineReminderScheduledNotificationIds: <String>['5', '6'],
+      },
+    );
     final gateway = _FakeLocalNotificationGateway();
     final coordinator = MedicineReminderNotificationCoordinator(
       gateway: gateway,
@@ -123,9 +131,9 @@ void main() {
     expect(gateway.cancelledIds, <int>[5, 6]);
     expect(gateway.scheduledCalls, isEmpty);
 
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
     expect(
-      preferences.getStringList(
+      preferences.getOrNull<List<String>>(
         PrefKeys.medicineReminderScheduledNotificationIds,
       ),
       isEmpty,
@@ -135,7 +143,7 @@ void main() {
   test(
     'sync provider schedules on first run and reschedules after list invalidation',
     () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final gateway = _FakeLocalNotificationGateway();
       final reminderSource = _FakeReminderSource([
         _reminder(id: 'reminder-1', hour: 10),
@@ -194,9 +202,14 @@ void main() {
   test(
     'sync provider keeps previous schedule when reminder fetch fails',
     () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        PrefKeys.medicineReminderScheduledNotificationIds: <String>['11', '12'],
-      });
+      KvTestStore.install(
+        seed: <String, Object>{
+          PrefKeys.medicineReminderScheduledNotificationIds: <String>[
+            '11',
+            '12',
+          ],
+        },
+      );
       final gateway = _FakeLocalNotificationGateway();
       final reminderSource = _FakeReminderSource(const <MedicineReminderItem>[])
         ..throwOnFetch = true;
@@ -233,9 +246,9 @@ void main() {
       expect(gateway.cancelledIds, isEmpty);
       expect(gateway.scheduledCalls, isEmpty);
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getStringList(
+        preferences.getOrNull<List<String>>(
           PrefKeys.medicineReminderScheduledNotificationIds,
         ),
         <String>['11', '12'],
@@ -246,9 +259,14 @@ void main() {
   test(
     'sync provider clears notifications after medication reminders are turned off',
     () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        PrefKeys.medicineReminderScheduledNotificationIds: <String>['21', '22'],
-      });
+      KvTestStore.install(
+        seed: <String, Object>{
+          PrefKeys.medicineReminderScheduledNotificationIds: <String>[
+            '21',
+            '22',
+          ],
+        },
+      );
       final gateway = _FakeLocalNotificationGateway();
       final reminderSource = _FakeReminderSource([
         _reminder(id: 'reminder-1', hour: 10),
@@ -295,9 +313,9 @@ void main() {
       expect(gateway.scheduledCalls, isEmpty);
       expect(gateway.cancelledIds, isNotEmpty);
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getStringList(
+        preferences.getOrNull<List<String>>(
           PrefKeys.medicineReminderScheduledNotificationIds,
         ),
         isEmpty,
@@ -308,7 +326,7 @@ void main() {
   test(
     'sync provider reports active capability when every schedule succeeds',
     () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final gateway = _FakeLocalNotificationGateway();
       final reminderSource = _FakeReminderSource([
         _reminder(id: 'reminder-1', hour: 10),
@@ -328,7 +346,7 @@ void main() {
   );
 
   test('sync provider reports unavailable when some schedules fail', () async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final gateway = _FakeLocalNotificationGateway();
     // The planner allocates FNV-hashed ids, so failing literal ids would
     // never match; fail every schedule instead.
@@ -353,7 +371,7 @@ void main() {
   test(
     'sync provider reports unavailable when gateway is not available',
     () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final gateway = _FakeLocalNotificationGateway(available: false);
       final reminderSource = _FakeReminderSource([
         _reminder(id: 'reminder-1', hour: 10),
@@ -375,7 +393,7 @@ void main() {
   test(
     'sync provider reports disabled when medication reminders are turned off',
     () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final gateway = _FakeLocalNotificationGateway();
       final reminderSource = _FakeReminderSource([
         _reminder(id: 'reminder-1', hour: 10),
@@ -399,7 +417,7 @@ void main() {
   );
 
   test('sync provider never reports capability when signed out', () async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final gateway = _FakeLocalNotificationGateway();
     final reminderSource = _FakeReminderSource([
       _reminder(id: 'reminder-1', hour: 10),

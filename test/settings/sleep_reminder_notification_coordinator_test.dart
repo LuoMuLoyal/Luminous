@@ -1,9 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/settings/application/sleep_reminder_notification_coordinator.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/kv_test_store.dart';
 
 void main() {
   const texts = SleepReminderNotificationTexts(
@@ -16,11 +18,13 @@ void main() {
   test(
     'cancels old plans and schedules bedtime only across the next week',
     () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        PrefKeys.settingsNotificationsSleepScheduledNotificationIds: <String>[
-          '41',
-        ],
-      });
+      KvTestStore.install(
+        seed: <String, Object>{
+          PrefKeys.settingsNotificationsSleepScheduledNotificationIds: <String>[
+            '41',
+          ],
+        },
+      );
       final gateway = _FakeLocalNotificationGateway();
       final coordinator = SleepReminderNotificationCoordinator(
         gateway: gateway,
@@ -48,7 +52,7 @@ void main() {
         isTrue,
       );
       expect(
-        (await SharedPreferences.getInstance()).getStringList(
+        KvStore.instance.getOrNull<List<String>>(
           PrefKeys.settingsNotificationsSleepScheduledNotificationIds,
         ),
         hasLength(7),
@@ -59,11 +63,13 @@ void main() {
   test(
     'does not schedule while permission is denied and clears old plans',
     () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        PrefKeys.settingsNotificationsSleepScheduledNotificationIds: <String>[
-          '41',
-        ],
-      });
+      KvTestStore.install(
+        seed: <String, Object>{
+          PrefKeys.settingsNotificationsSleepScheduledNotificationIds: <String>[
+            '41',
+          ],
+        },
+      );
       final gateway = _FakeLocalNotificationGateway();
       final coordinator = SleepReminderNotificationCoordinator(
         gateway: gateway,
@@ -79,7 +85,7 @@ void main() {
 
       expect(gateway.scheduledCalls, isEmpty);
       expect(
-        (await SharedPreferences.getInstance()).getStringList(
+        KvStore.instance.getOrNull<List<String>>(
           PrefKeys.settingsNotificationsSleepScheduledNotificationIds,
         ),
         isEmpty,
@@ -90,7 +96,7 @@ void main() {
   test(
     'skips bedtime moments inside DND without creating a wake alarm',
     () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final gateway = _FakeLocalNotificationGateway();
       final coordinator = SleepReminderNotificationCoordinator(
         gateway: gateway,
@@ -114,11 +120,13 @@ void main() {
   test(
     'clears stored plans when the local notification gateway is unavailable',
     () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        PrefKeys.settingsNotificationsSleepScheduledNotificationIds: <String>[
-          '41',
-        ],
-      });
+      KvTestStore.install(
+        seed: <String, Object>{
+          PrefKeys.settingsNotificationsSleepScheduledNotificationIds: <String>[
+            '41',
+          ],
+        },
+      );
       final gateway = _FakeLocalNotificationGateway(initialized: false);
       final coordinator = SleepReminderNotificationCoordinator(
         gateway: gateway,
@@ -136,7 +144,7 @@ void main() {
 
       expect(gateway.cancelledIds, <int>[41]);
       expect(
-        (await SharedPreferences.getInstance()).getStringList(
+        KvStore.instance.getOrNull<List<String>>(
           PrefKeys.settingsNotificationsSleepScheduledNotificationIds,
         ),
         isEmpty,

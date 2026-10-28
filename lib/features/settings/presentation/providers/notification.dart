@@ -4,13 +4,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/providers/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_preferences.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'notification_mapping.dart';
 
@@ -105,10 +105,10 @@ abstract class NotificationSettingsControllerCore
 
   Future<void> _save(
     NotificationSettingsState next, {
-    required Future<void> Function(SharedPreferences preferences) update,
+    required Future<void> Function(KvStore preferences) update,
   }) async {
     state = AsyncData(next);
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
     await update(preferences);
     // medicineReminderNotificationSyncProvider watches this controller and
     // handles reminder rescheduling after the schedule data layer is available.
@@ -155,11 +155,11 @@ abstract class NotificationSettingsControllerCore
           .patchPreferences(patch)
           .run();
       final remote = result.fold((failure) => throw failure, (value) => value);
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       await _cacheRemote(preferences, remote, userId);
       state = AsyncData(_applyRemote(next, remote));
     } catch (error) {
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       await _writeRemoteLocal(ScopedPreferences(preferences, userId), current);
       state = AsyncData(current);
       rethrow;
@@ -167,7 +167,7 @@ abstract class NotificationSettingsControllerCore
   }
 
   Future<void> _claimLegacyMigration(
-    SharedPreferences preferences,
+    KvStore preferences,
     String userId, {
     required String? legacyOwner,
   }) async {
@@ -175,7 +175,7 @@ abstract class NotificationSettingsControllerCore
 
     final legacy = ScopedPreferences(preferences, null);
     if (legacyOwner == null) {
-      await preferences.setString(_legacyMigrationOwnerKey, userId);
+      await preferences.set(_legacyMigrationOwnerKey, userId);
     }
     for (final key in _legacyRemoteKeys) {
       await legacy.remove(key);
@@ -198,7 +198,7 @@ abstract class NotificationSettingsControllerCore
   }
 
   Future<void> _cacheRemote(
-    SharedPreferences preferences,
+    KvStore preferences,
     NotificationPreferences remote,
     String userId,
   ) async {
@@ -213,14 +213,14 @@ abstract class NotificationSettingsControllerCore
     ScopedPreferences scoped,
     NotificationSettingsState value,
   ) async {
-    await scoped.setBool(_healthAlertsKey, value.healthAlerts);
-    await scoped.setBool(_weeklySummaryKey, value.weeklySummary);
-    await scoped.setBool(_waterRemindersKey, value.waterReminders);
-    await scoped.setBool(_sleepReminderEnabledKey, value.sleepReminderEnabled);
+    await scoped.set(_healthAlertsKey, value.healthAlerts);
+    await scoped.set(_weeklySummaryKey, value.weeklySummary);
+    await scoped.set(_waterRemindersKey, value.waterReminders);
+    await scoped.set(_sleepReminderEnabledKey, value.sleepReminderEnabled);
     if (value.sleepBedtime == null) {
       await scoped.remove(_sleepBedtimeKey);
     } else {
-      await scoped.setString(
+      await scoped.set(
         _sleepBedtimeKey,
         NotificationUtils.formatTime(value.sleepBedtime!),
       );
@@ -228,7 +228,7 @@ abstract class NotificationSettingsControllerCore
     if (value.sleepWakeTime == null) {
       await scoped.remove(_sleepWakeTimeKey);
     } else {
-      await scoped.setString(
+      await scoped.set(
         _sleepWakeTimeKey,
         NotificationUtils.formatTime(value.sleepWakeTime!),
       );
@@ -244,54 +244,66 @@ class NotificationSettingsController extends NotificationSettingsControllerCore
     with NotificationLocalSetters, NotificationRemoteSync {
   @override
   Future<NotificationSettingsState> build() async {
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
     final auth = ref.watch(authSessionProvider);
     final userId = auth.canAccessProtectedData ? auth.user?.id : null;
     final scoped = ScopedPreferences(preferences, userId);
     final legacy = ScopedPreferences(preferences, null);
-    final legacyOwner = preferences.getString(_legacyMigrationOwnerKey);
+    final legacyOwner = preferences.getOrNull<String>(_legacyMigrationOwnerKey);
     final canConsumeLegacy =
         userId != null && (legacyOwner == null || legacyOwner == userId);
     final permissionState = await ref
         .read(notificationPermissionServiceProvider)
         .getPermissionState();
     final local = NotificationSettingsState(
-      medicationReminders: legacy.getBool(_medicationKey) ?? true,
+      medicationReminders: legacy.getOrNull<bool>(_medicationKey) ?? true,
       healthAlerts:
           scoped.getBool(_healthAlertsKey) ??
-          (canConsumeLegacy ? legacy.getBool(_healthAlertsKey) : null) ??
+          (canConsumeLegacy
+              ? legacy.getOrNull<bool>(_healthAlertsKey)
+              : null) ??
           true,
       weeklySummary:
           scoped.getBool(_weeklySummaryKey) ??
-          (canConsumeLegacy ? legacy.getBool(_weeklySummaryKey) : null) ??
+          (canConsumeLegacy
+              ? legacy.getOrNull<bool>(_weeklySummaryKey)
+              : null) ??
           false,
       waterReminders:
           scoped.getBool(_waterRemindersKey) ??
-          (canConsumeLegacy ? legacy.getBool(_waterRemindersKey) : null) ??
+          (canConsumeLegacy
+              ? legacy.getOrNull<bool>(_waterRemindersKey)
+              : null) ??
           true,
-      sleepReminders: legacy.getBool(_sleepRemindersKey) ?? true,
+      sleepReminders: legacy.getOrNull<bool>(_sleepRemindersKey) ?? true,
       sleepReminderEnabled:
           scoped.getBool(_sleepReminderEnabledKey) ??
           (canConsumeLegacy
-              ? legacy.getBool(_sleepReminderEnabledKey)
+              ? legacy.getOrNull<bool>(_sleepReminderEnabledKey)
               : null) ??
           false,
       sleepBedtime: _parseTime(
         scoped.getString(_sleepBedtimeKey) ??
-            (canConsumeLegacy ? legacy.getString(_sleepBedtimeKey) : null),
+            (canConsumeLegacy
+                ? legacy.getOrNull<String>(_sleepBedtimeKey)
+                : null),
       ),
       sleepWakeTime: _parseTime(
         scoped.getString(_sleepWakeTimeKey) ??
-            (canConsumeLegacy ? legacy.getString(_sleepWakeTimeKey) : null),
+            (canConsumeLegacy
+                ? legacy.getOrNull<String>(_sleepWakeTimeKey)
+                : null),
       ),
       permissionState: permissionState,
-      dndEnabled: legacy.getBool(_dndEnabledKey) ?? false,
-      dndStartTime: _parseTime(legacy.getString(_dndStartTimeKey)),
-      dndEndTime: _parseTime(legacy.getString(_dndEndTimeKey)),
-      notificationSoundEnabled: legacy.getBool(_soundEnabledKey) ?? true,
+      dndEnabled: legacy.getOrNull<bool>(_dndEnabledKey) ?? false,
+      dndStartTime: _parseTime(legacy.getOrNull<String>(_dndStartTimeKey)),
+      dndEndTime: _parseTime(legacy.getOrNull<String>(_dndEndTimeKey)),
+      notificationSoundEnabled:
+          legacy.getOrNull<bool>(_soundEnabledKey) ?? true,
       notificationVibrationEnabled:
-          legacy.getBool(_vibrationEnabledKey) ?? true,
-      reminderAdvanceMinutes: legacy.getInt(_reminderAdvanceMinutesKey) ?? 0,
+          legacy.getOrNull<bool>(_vibrationEnabledKey) ?? true,
+      reminderAdvanceMinutes:
+          legacy.getOrNull<int>(_reminderAdvanceMinutesKey) ?? 0,
     );
 
     if (userId == null) {
@@ -328,7 +340,7 @@ class NotificationSettingsController extends NotificationSettingsControllerCore
             (failure) => throw failure,
             (value) => value,
           );
-          await scoped.setBool(
+          await scoped.set(
             PrefKeys.settingsNotificationsRemoteMigrationCompleted,
             true,
           );
@@ -343,7 +355,7 @@ class NotificationSettingsController extends NotificationSettingsControllerCore
         return local;
       }
 
-      await scoped.setBool(
+      await scoped.set(
         PrefKeys.settingsNotificationsRemoteMigrationCompleted,
         true,
       );

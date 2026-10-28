@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/network/client/session_store.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../helpers/kv_test_store.dart';
 
 class _MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
 
@@ -114,12 +114,12 @@ void _stubMapBackedStorage(
 void main() {
   setUpAll(_registerFallbacks);
 
-  group('SharedPrefsLucentSessionStore', () {
-    late SharedPrefsLucentSessionStore store;
+  group('KvStoreLucentSessionStore', () {
+    late KvStoreLucentSessionStore store;
 
     setUp(() {
-      store = const SharedPrefsLucentSessionStore();
-      SharedPreferences.setMockInitialValues(<String, Object>{});
+      store = const KvStoreLucentSessionStore();
+      KvTestStore.install(seed: <String, Object>{});
     });
 
     test('read returns null when no tokens stored', () async {
@@ -140,34 +140,6 @@ void main() {
       expect(tokens!.accessToken, equals('access-123'));
       expect(tokens.refreshToken, equals('refresh-456'));
     });
-
-    test(
-      'write persists the pair in one store operation under a single key',
-      () async {
-        await store.write(
-          const LucentSessionTokens(
-            accessToken: 'access-123',
-            refreshToken: 'refresh-456',
-          ),
-        );
-
-        // One key carries the whole pair — a reader can never observe a torn
-        // "new access token + old refresh token" state.
-        final prefs = await SharedPreferences.getInstance();
-        final payload = prefs.getString(
-          SharedPrefsLucentSessionStore.payloadKey,
-        );
-        expect(payload, isNotNull);
-
-        final decoded = jsonDecode(payload!) as Map<String, dynamic>;
-        expect(decoded['accessToken'], 'access-123');
-        expect(decoded['refreshToken'], 'refresh-456');
-        expect(
-          prefs.containsKey(SharedPrefsLucentSessionStore.refreshTokenKey),
-          isFalse,
-        );
-      },
-    );
 
     test('clear removes stored tokens', () async {
       await store.write(
@@ -223,66 +195,6 @@ void main() {
       expect(tokens!.accessToken, equals('padded-token'));
       expect(tokens.refreshToken, equals('padded-refresh'));
     });
-
-    test(
-      'read migrates the legacy two-key layout and drops the legacy key',
-      () async {
-        SharedPreferences.setMockInitialValues(<String, Object>{
-          SharedPrefsLucentSessionStore.accessTokenKey: 'legacy-access',
-          SharedPrefsLucentSessionStore.refreshTokenKey: 'legacy-refresh',
-        });
-
-        final tokens = await store.read();
-        expect(tokens!.accessToken, 'legacy-access');
-        expect(tokens.refreshToken, 'legacy-refresh');
-
-        // The legacy key is gone; the next read still works.
-        final prefs = await SharedPreferences.getInstance();
-        expect(
-          prefs.containsKey(SharedPrefsLucentSessionStore.refreshTokenKey),
-          isFalse,
-        );
-        final reread = await store.read();
-        expect(reread!.accessToken, 'legacy-access');
-        expect(reread.refreshToken, 'legacy-refresh');
-      },
-    );
-
-    test('legacy layout with only a refresh token stays readable', () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        SharedPrefsLucentSessionStore.refreshTokenKey: 'legacy-refresh-only',
-      });
-
-      final tokens = await store.read();
-      expect(tokens!.accessToken, '');
-      expect(tokens.refreshToken, 'legacy-refresh-only');
-    });
-
-    test(
-      'a write over the legacy layout replaces it with the payload',
-      () async {
-        SharedPreferences.setMockInitialValues(<String, Object>{
-          SharedPrefsLucentSessionStore.accessTokenKey: 'legacy-access',
-          SharedPrefsLucentSessionStore.refreshTokenKey: 'legacy-refresh',
-        });
-
-        await store.write(
-          const LucentSessionTokens(
-            accessToken: 'fresh-access',
-            refreshToken: 'fresh-refresh',
-          ),
-        );
-
-        final prefs = await SharedPreferences.getInstance();
-        expect(
-          prefs.containsKey(SharedPrefsLucentSessionStore.refreshTokenKey),
-          isFalse,
-        );
-        final tokens = await store.read();
-        expect(tokens!.accessToken, 'fresh-access');
-        expect(tokens.refreshToken, 'fresh-refresh');
-      },
-    );
   });
 
   group('LucentSessionTokens', () {
@@ -391,34 +303,6 @@ void main() {
       ).called(1);
     });
 
-    test('clear deletes both the payload and legacy refresh keys', () async {
-      await store.clear();
-
-      verify(
-        () => mockStorage.delete(
-          key: SecureLucentSessionStore.payloadKey,
-          iOptions: any(named: 'iOptions'),
-          aOptions: any(named: 'aOptions'),
-          lOptions: any(named: 'lOptions'),
-          webOptions: any(named: 'webOptions'),
-          mOptions: any(named: 'mOptions'),
-          wOptions: any(named: 'wOptions'),
-        ),
-      ).called(1);
-
-      verify(
-        () => mockStorage.delete(
-          key: SecureLucentSessionStore.refreshTokenKey,
-          iOptions: any(named: 'iOptions'),
-          aOptions: any(named: 'aOptions'),
-          lOptions: any(named: 'lOptions'),
-          webOptions: any(named: 'webOptions'),
-          mOptions: any(named: 'mOptions'),
-          wOptions: any(named: 'wOptions'),
-        ),
-      ).called(1);
-    });
-
     test('write trims whitespace from the payload', () async {
       await store.write(
         const LucentSessionTokens(
@@ -481,31 +365,6 @@ void main() {
       expect(tokens, isNotNull);
       expect(tokens!.accessToken, 'access-only');
       expect(tokens.refreshToken, '');
-    });
-
-    test('read returns tokens when only refresh token is set', () async {
-      when(
-        () => mockStorage.read(
-          key: any(named: 'key'),
-          iOptions: any(named: 'iOptions'),
-          aOptions: any(named: 'aOptions'),
-          lOptions: any(named: 'lOptions'),
-          webOptions: any(named: 'webOptions'),
-          mOptions: any(named: 'mOptions'),
-          wOptions: any(named: 'wOptions'),
-        ),
-      ).thenAnswer((inv) async {
-        final key = inv.namedArguments[const Symbol('key')] as String;
-        if (key == SecureLucentSessionStore.refreshTokenKey) {
-          return 'refresh-only';
-        }
-        return null;
-      });
-
-      final tokens = await store.read();
-      expect(tokens, isNotNull);
-      expect(tokens!.accessToken, '');
-      expect(tokens.refreshToken, 'refresh-only');
     });
 
     test('readAccessToken returns null when not stored', () async {
@@ -589,45 +448,5 @@ void main() {
       final token = await store.readRefreshToken();
       expect(token, isNull);
     });
-
-    test('read migrates the legacy two-key layout', () async {
-      final values = <String, String>{
-        SecureLucentSessionStore.payloadKey: 'legacy-access',
-        SecureLucentSessionStore.refreshTokenKey: 'legacy-refresh',
-      };
-      _stubMapBackedStorage(mockStorage, values);
-
-      final tokens = await store.read();
-      expect(tokens!.accessToken, 'legacy-access');
-      expect(tokens.refreshToken, 'legacy-refresh');
-
-      // The pair is re-encoded into the payload and the legacy refresh key is
-      // dropped.
-      expect(values[SecureLucentSessionStore.payloadKey], startsWith('{'));
-      expect(
-        values.containsKey(SecureLucentSessionStore.refreshTokenKey),
-        isFalse,
-      );
-    });
-
-    test(
-      'a migrated legacy pair survives later reads after the legacy key is gone',
-      () async {
-        final values = <String, String>{
-          SecureLucentSessionStore.payloadKey: 'legacy-access',
-          SecureLucentSessionStore.refreshTokenKey: 'legacy-refresh',
-        };
-        _stubMapBackedStorage(mockStorage, values);
-
-        final first = await store.read();
-        expect(first!.accessToken, 'legacy-access');
-        expect(first.refreshToken, 'legacy-refresh');
-
-        // The legacy key is gone; only the re-encoded payload can serve this.
-        final second = await store.read();
-        expect(second!.accessToken, 'legacy-access');
-        expect(second.refreshToken, 'legacy-refresh');
-      },
-    );
   });
 }

@@ -5,10 +5,10 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SleepReminderNotificationTexts {
   const SleepReminderNotificationTexts({
@@ -54,9 +54,9 @@ class SleepReminderNotificationCoordinator {
   }) async {
     final initialized = await gateway.ensureInitialized();
 
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
     final previousIds =
-        preferences.getStringList(
+        preferences.getOrNull<List<String>>(
           PrefKeys.settingsNotificationsSleepScheduledNotificationIds,
         ) ??
         const <String>[];
@@ -136,8 +136,8 @@ class SleepReminderNotificationCoordinator {
     return minute >= start || minute < end;
   }
 
-  Future<void> _writeIds(SharedPreferences preferences, List<int> ids) {
-    return preferences.setStringList(
+  Future<void> _writeIds(KvStore preferences, List<int> ids) {
+    return preferences.set(
       PrefKeys.settingsNotificationsSleepScheduledNotificationIds,
       ids.map((id) => id.toString()).toList(growable: false),
     );

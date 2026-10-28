@@ -104,9 +104,9 @@ import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/mocks/health_context.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
@@ -116,8 +116,8 @@ import '../today/test_helpers.dart';
 const double _textScale = 1.3;
 
 void main() {
-  setUp(() {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+  setUp(() async {
+    KvTestStore.install(seed: const <String, Object>{});
   });
 
   _registerSweep(known: false);

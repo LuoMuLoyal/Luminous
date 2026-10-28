@@ -5,6 +5,7 @@ import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';
@@ -14,8 +15,8 @@ import 'package:luminous/features/settings/presentation/pages/feature_flags.dart
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 // -- Stub controllers --------------------------------------------------
@@ -72,7 +73,7 @@ UserSettings _buildSettings({
 
 void main() {
   setUpAll(() {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
   });
 
   Future<void> pumpPage(WidgetTester tester, Widget page) async {
@@ -555,7 +556,7 @@ void main() {
     testWidgets('confirming a custom endpoint persists the typed URL', (
       tester,
     ) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const AdvancedSettingsPage());
 
@@ -578,10 +579,13 @@ void main() {
 
       // 输入框里敲的地址必须落盘：否则 endpoint=custom 而 customApiUrl 为空，
       // resolvedBaseUrl 回落到编译期默认值 —— 「点了确认但根本没换」。
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getString(PrefKeys.developerApiEndpoint), 'custom');
+      final preferences = KvStore.instance;
       expect(
-        preferences.getString(PrefKeys.developerCustomApiUrl),
+        preferences.getOrNull<String>(PrefKeys.developerApiEndpoint),
+        'custom',
+      );
+      expect(
+        preferences.getOrNull<String>(PrefKeys.developerCustomApiUrl),
         'http://192.168.1.50:3000',
       );
     });

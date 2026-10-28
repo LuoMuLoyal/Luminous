@@ -13,13 +13,13 @@ import 'package:luminous/features/support/data/repositories/lucent.dart';
 import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/features/support/domain/repositories/support.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
-  setUp(() {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+  setUp(() async {
+    KvTestStore.install(seed: const <String, Object>{});
   });
 
   testWidgets('Help page renders FAQ items from assets and feedback section', (

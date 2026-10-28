@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-/// SharedPreferences keys for quick-entry preferences.
+/// KvStore keys for quick-entry preferences.
 const _kDynamicSortEnabled = PrefKeys.recordQuickEntryDynamicSort;
 const _kCustomOrder = PrefKeys.recordQuickEntryCustomOrder;
 const _kCollapsed = PrefKeys.recordQuickEntryCollapsed;
@@ -176,28 +176,38 @@ class QuickEntryPreferencesController
   }
 
   Future<QuickEntryPreferences> _load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final dynamicSortEnabled = prefs.getBool(_kDynamicSortEnabled) ?? false;
-    final customOrder = prefs.getStringList(_kCustomOrder) ?? const [];
-    final collapsed = prefs.getBool(_kCollapsed) ?? false;
+    final prefs = KvStore.instance;
+    final dynamicSortEnabled = prefs.get<bool>(
+      _kDynamicSortEnabled,
+      fallback: false,
+    );
+    final customOrder =
+        prefs.getOrNull<List<String>>(_kCustomOrder) ?? const [];
+    final collapsed = prefs.get<bool>(_kCollapsed, fallback: false);
     final waterDefault = _parseWaterDefault(prefs);
-    final waterCustomMl = prefs.getInt(_kWaterCustomMl) ?? 250;
+    final waterCustomMl = prefs.get<int>(_kWaterCustomMl, fallback: 0);
     final waterBadgeMode = _parseWaterBadgeMode(
-      prefs.getString(_kWaterBadgeMode),
+      prefs.getOrNull<String>(_kWaterBadgeMode),
     );
     final symptomDefaultSeverity =
-        prefs.getString(_kSymptomDefaultSeverity) ?? 'mild';
+        prefs.getOrNull<String>(_kSymptomDefaultSeverity) ?? 'mild';
     final symptomEnabledChoices =
-        prefs.getStringList(_kSymptomEnabledChoices) ?? const [];
-    final moodBadgeMode = _parseMoodBadgeMode(prefs.getString(_kMoodBadgeMode));
-    final medicationAutoRecordSingle =
-        prefs.getBool(_kMedicationAutoRecordSingle) ?? true;
-    final medicationShowAlreadyRecordedHint =
-        prefs.getBool(_kMedicationShowAlreadyRecordedHint) ?? true;
+        prefs.getOrNull<List<String>>(_kSymptomEnabledChoices) ?? const [];
+    final moodBadgeMode = _parseMoodBadgeMode(
+      prefs.getOrNull<String>(_kMoodBadgeMode),
+    );
+    final medicationAutoRecordSingle = prefs.get<bool>(
+      _kMedicationAutoRecordSingle,
+      fallback: false,
+    );
+    final medicationShowAlreadyRecordedHint = prefs.get<bool>(
+      _kMedicationShowAlreadyRecordedHint,
+      fallback: false,
+    );
 
     // Load custom icons: stored as ['water:droplets', 'meal:utensils', ...].
     final customIcons = <String, String>{};
-    final rawIcons = prefs.getStringList(_kCustomIcons);
+    final rawIcons = prefs.getOrNull<List<String>>(_kCustomIcons);
     if (rawIcons != null) {
       for (final entry in rawIcons) {
         final colonIndex = entry.indexOf(':');
@@ -212,7 +222,10 @@ class QuickEntryPreferencesController
     // Load frequency counts for all known entry types.
     final frequency = <String, int>{};
     for (final type in RecordEntryType.values) {
-      final count = prefs.getInt('$_kFrequencyPrefix${type.name}') ?? 0;
+      final count = prefs.get<int>(
+        '$_kFrequencyPrefix${type.name}',
+        fallback: 0,
+      );
       if (count > 0) {
         frequency[type.name] = count;
       }
@@ -251,14 +264,14 @@ class QuickEntryPreferencesController
 
   /// Parses the stored water default. Supports both the current enum-name
   /// format and the legacy int (ml) format stored under the same key.
-  QuickEntryWaterDefault _parseWaterDefault(SharedPreferences prefs) {
-    final stored = prefs.get(_kWaterDefaultAmountMl);
+  QuickEntryWaterDefault _parseWaterDefault(KvStore prefs) {
+    final stored = prefs.getOrNull<Object>(_kWaterDefaultAmountMl);
     if (stored is String) {
       for (final option in QuickEntryWaterDefault.values) {
         if (option.name == stored) return option;
       }
     }
-    return prefs.getInt(_kWaterDefaultAmountMl) == 500
+    return prefs.get<int>(_kWaterDefaultAmountMl, fallback: 0) == 500
         ? QuickEntryWaterDefault.ml500
         : QuickEntryWaterDefault.ml250;
   }
@@ -266,78 +279,78 @@ class QuickEntryPreferencesController
   Future<void> setDynamicSortEnabled(bool enabled) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(dynamicSortEnabled: enabled));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_kDynamicSortEnabled, enabled);
+    final prefs = KvStore.instance;
+    await prefs.set(_kDynamicSortEnabled, enabled);
   }
 
   Future<void> setCustomOrder(List<String> order) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(customOrder: order));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(_kCustomOrder, order);
+    final prefs = KvStore.instance;
+    await prefs.set(_kCustomOrder, order);
   }
 
   Future<void> resetCustomOrder() async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(customOrder: const []));
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = KvStore.instance;
     await prefs.remove(_kCustomOrder);
   }
 
   Future<void> setCollapsed(bool collapsed) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(collapsed: collapsed));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_kCollapsed, collapsed);
+    final prefs = KvStore.instance;
+    await prefs.set(_kCollapsed, collapsed);
   }
 
   Future<void> setWaterDefault(QuickEntryWaterDefault option) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(waterDefault: option));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_kWaterDefaultAmountMl, option.name);
+    final prefs = KvStore.instance;
+    await prefs.set(_kWaterDefaultAmountMl, option.name);
   }
 
   Future<void> setWaterCustomMl(int ml) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(waterCustomMl: ml));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_kWaterCustomMl, ml);
+    final prefs = KvStore.instance;
+    await prefs.set(_kWaterCustomMl, ml);
   }
 
   Future<void> setWaterBadgeMode(QuickEntryWaterBadgeMode mode) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(waterBadgeMode: mode));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_kWaterBadgeMode, mode.name);
+    final prefs = KvStore.instance;
+    await prefs.set(_kWaterBadgeMode, mode.name);
   }
 
   Future<void> setSymptomDefaultSeverity(String severity) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(symptomDefaultSeverity: severity));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_kSymptomDefaultSeverity, severity);
+    final prefs = KvStore.instance;
+    await prefs.set(_kSymptomDefaultSeverity, severity);
   }
 
   Future<void> setSymptomEnabledChoices(List<String> choices) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(symptomEnabledChoices: choices));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(_kSymptomEnabledChoices, choices);
+    final prefs = KvStore.instance;
+    await prefs.set(_kSymptomEnabledChoices, choices);
   }
 
   Future<void> setMoodBadgeMode(QuickEntryMoodBadgeMode mode) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(moodBadgeMode: mode));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_kMoodBadgeMode, mode.name);
+    final prefs = KvStore.instance;
+    await prefs.set(_kMoodBadgeMode, mode.name);
   }
 
   Future<void> setMedicationAutoRecordSingle(bool enabled) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(medicationAutoRecordSingle: enabled));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_kMedicationAutoRecordSingle, enabled);
+    final prefs = KvStore.instance;
+    await prefs.set(_kMedicationAutoRecordSingle, enabled);
   }
 
   Future<void> setMedicationShowAlreadyRecordedHint(bool enabled) async {
@@ -345,8 +358,8 @@ class QuickEntryPreferencesController
     state = AsyncData(
       current.copyWith(medicationShowAlreadyRecordedHint: enabled),
     );
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_kMedicationShowAlreadyRecordedHint, enabled);
+    final prefs = KvStore.instance;
+    await prefs.set(_kMedicationShowAlreadyRecordedHint, enabled);
   }
 
   /// Sets a custom icon name for the given entry [type].
@@ -360,8 +373,8 @@ class QuickEntryPreferencesController
       updated.remove(type);
     }
     state = AsyncData(current.copyWith(customIcons: updated));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(
+    final prefs = KvStore.instance;
+    await prefs.set(
       _kCustomIcons,
       updated.entries.map((e) => '${e.key}:${e.value}').toList(),
     );
@@ -374,7 +387,7 @@ class QuickEntryPreferencesController
   Future<void> resetAllCustomIcons() async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(customIcons: const {}));
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = KvStore.instance;
     await prefs.remove(_kCustomIcons);
   }
 
@@ -394,8 +407,8 @@ class QuickEntryPreferencesController
     }
 
     state = AsyncData(current.copyWith(frequency: frequency));
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(
+    final prefs = KvStore.instance;
+    await prefs.set(
       '$_kFrequencyPrefix${type.name}',
       frequency[type.name] ?? 0,
     );
@@ -403,7 +416,7 @@ class QuickEntryPreferencesController
 
   Future<void> reset() async {
     state = const AsyncData(QuickEntryPreferences());
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = KvStore.instance;
     await prefs.remove(_kDynamicSortEnabled);
     await prefs.remove(_kCustomOrder);
     await prefs.remove(_kCollapsed);

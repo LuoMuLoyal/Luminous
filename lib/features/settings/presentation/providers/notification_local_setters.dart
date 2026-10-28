@@ -12,7 +12,7 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
         .copyWith(medicationReminders: enabled);
     await _save(
       next,
-      update: (preferences) => preferences.setBool(_medicationKey, enabled),
+      update: (preferences) => preferences.set(_medicationKey, enabled),
     );
   }
 
@@ -21,7 +21,7 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
         .copyWith(sleepReminders: enabled);
     await _save(
       next,
-      update: (preferences) => preferences.setBool(_sleepRemindersKey, enabled),
+      update: (preferences) => preferences.set(_sleepRemindersKey, enabled),
     );
   }
 
@@ -43,15 +43,15 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
     await _save(
       next,
       update: (preferences) async {
-        await preferences.setBool(_dndEnabledKey, enabled);
+        await preferences.set(_dndEnabledKey, enabled);
         if (start != null) {
-          await preferences.setString(
+          await preferences.set(
             _dndStartTimeKey,
             NotificationUtils.formatTime(start),
           );
         }
         if (end != null) {
-          await preferences.setString(
+          await preferences.set(
             _dndEndTimeKey,
             NotificationUtils.formatTime(end),
           );
@@ -69,7 +69,7 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
         if (time == null) {
           await preferences.remove(_dndStartTimeKey);
         } else {
-          await preferences.setString(
+          await preferences.set(
             _dndStartTimeKey,
             NotificationUtils.formatTime(time),
           );
@@ -87,7 +87,7 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
         if (time == null) {
           await preferences.remove(_dndEndTimeKey);
         } else {
-          await preferences.setString(
+          await preferences.set(
             _dndEndTimeKey,
             NotificationUtils.formatTime(time),
           );
@@ -101,7 +101,7 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
         .copyWith(notificationSoundEnabled: enabled);
     await _save(
       next,
-      update: (preferences) => preferences.setBool(_soundEnabledKey, enabled),
+      update: (preferences) => preferences.set(_soundEnabledKey, enabled),
     );
   }
 
@@ -110,8 +110,7 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
         .copyWith(notificationVibrationEnabled: enabled);
     await _save(
       next,
-      update: (preferences) =>
-          preferences.setBool(_vibrationEnabledKey, enabled),
+      update: (preferences) => preferences.set(_vibrationEnabledKey, enabled),
     );
   }
 
@@ -121,7 +120,7 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
     await _save(
       next,
       update: (preferences) =>
-          preferences.setInt(_reminderAdvanceMinutesKey, minutes),
+          preferences.set(_reminderAdvanceMinutesKey, minutes),
     );
   }
 

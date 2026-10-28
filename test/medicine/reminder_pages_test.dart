@@ -26,16 +26,16 @@ import 'package:luminous/features/medicine/presentation/providers/medicine_detai
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('Medicine reminder detail renders schedule and dose logs', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _testApp(
@@ -100,7 +100,7 @@ void main() {
   testWidgets('Medicine reminder detail shows not found for missing medicine', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await tester.pumpWidget(
@@ -123,7 +123,7 @@ void main() {
   testWidgets('Medicine reminder detail shows generic error on load failure', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await tester.pumpWidget(
@@ -154,7 +154,7 @@ void main() {
   testWidgets('medicine card opens detail page when source is cn', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _testApp(
@@ -186,7 +186,7 @@ void main() {
   testWidgets('medicine card does not navigate when sourceRefId is null', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _testApp(
@@ -208,7 +208,7 @@ void main() {
   testWidgets('Medicine reminder create page prompts to select medicine', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await tester.pumpWidget(

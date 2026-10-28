@@ -1,4 +1,6 @@
 import 'package:integration_test/integration_test.dart';
+import 'package:luminous/core/storage/kv_store.dart';
+
 import '../support/e2e_test_helpers.dart';
 
 void main() {
@@ -46,12 +48,15 @@ void main() {
     await tester.tap(find.byType(BackButton).first);
     await settleE2e(tester);
 
-    var preferences = await SharedPreferences.getInstance();
-    expect(preferences.getString('theme.mode'), 'dark');
-    expect(preferences.getString('theme.palette'), 'blue-pink');
-    expect(preferences.getString('app.locale'), 'en');
+    var preferences = KvStore.instance;
+    expect(preferences.getOrNull<String>('theme.mode'), 'dark');
+    expect(preferences.getOrNull<String>('theme.palette'), 'blue-pink');
+    expect(preferences.getOrNull<String>('app.locale'), 'en');
     expect(
-      preferences.getBool('settings.notifications.medicationReminders'),
+      preferences.get<bool>(
+        'settings.notifications.medicationReminders',
+        fallback: false,
+      ),
       isFalse,
     );
 
@@ -61,12 +66,15 @@ void main() {
     );
     await settleE2e(tester);
 
-    preferences = await SharedPreferences.getInstance();
-    expect(preferences.getString('theme.mode'), 'system');
-    expect(preferences.getString('theme.palette'), 'classic');
-    expect(preferences.getString('app.locale'), 'system');
+    preferences = KvStore.instance;
+    expect(preferences.getOrNull<String>('theme.mode'), 'system');
+    expect(preferences.getOrNull<String>('theme.palette'), 'classic');
+    expect(preferences.getOrNull<String>('app.locale'), 'system');
     expect(
-      preferences.getBool('settings.notifications.medicationReminders'),
+      preferences.get<bool>(
+        'settings.notifications.medicationReminders',
+        fallback: false,
+      ),
       isNull,
     );
 

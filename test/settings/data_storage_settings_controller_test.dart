@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/settings/data/providers/data_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/kv_test_store.dart';
 
 void main() {
   late ProviderContainer container;
 
   ProviderContainer buildContainer({Map<String, Object>? initialValues}) {
-    SharedPreferences.setMockInitialValues(
-      initialValues ?? const <String, Object>{},
-    );
+    KvTestStore.install(seed: initialValues ?? const <String, Object>{});
     final c = ProviderContainer();
     addTearDown(c.dispose);
     return c;
@@ -185,9 +185,9 @@ void main() {
       final state = container.read(dataStorageSettingsControllerProvider);
       expect(state.value?.retentionPeriod, DataRetentionPeriod.forever);
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getString('settings.dataStorage.retentionPeriod'),
+        preferences.getOrNull<String>('settings.dataStorage.retentionPeriod'),
         'forever',
       );
     });
@@ -206,9 +206,9 @@ void main() {
       final state = container.read(dataStorageSettingsControllerProvider);
       expect(state.value?.imageQuality, ImageQualityPreference.dataSaver);
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getString('settings.dataStorage.imageQuality'),
+        preferences.getOrNull<String>('settings.dataStorage.imageQuality'),
         'dataSaver',
       );
     });
@@ -227,9 +227,9 @@ void main() {
       final state = container.read(dataStorageSettingsControllerProvider);
       expect(state.value?.syncPreference, SyncPreference.wifiOnly);
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getString('settings.dataStorage.syncPreference'),
+        preferences.getOrNull<String>('settings.dataStorage.syncPreference'),
         'wifiOnly',
       );
     });
@@ -258,7 +258,7 @@ void main() {
         expect(state.value?.imageQuality, ImageQualityPreference.standard);
         expect(state.value?.syncPreference, SyncPreference.wifiAndMobile);
 
-        final preferences = await SharedPreferences.getInstance();
+        final preferences = KvStore.instance;
         expect(
           preferences.containsKey('settings.dataStorage.retentionPeriod'),
           isFalse,

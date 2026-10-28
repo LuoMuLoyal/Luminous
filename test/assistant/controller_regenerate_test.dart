@@ -5,8 +5,8 @@ import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/utils/message_id.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import 'controller_test_helpers.dart';
 
 void main() {
@@ -14,7 +14,7 @@ void main() {
     test(
       'regenerateExpiredProposal resends the preceding user message',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final userMessage = AssistantMessage(
           role: AssistantMessageRole.user,
           content: '帮我记一杯水',
@@ -75,7 +75,7 @@ void main() {
     test(
       'regenerateExpiredProposal throws when no user message precedes it',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final assistantMessage = buildAssistantMessage(
           content: '建议已过期。',
           proposedActions: <AssistantProposedAction>[
@@ -111,7 +111,7 @@ void main() {
     test(
       'regenerateExpiredProposal is skipped while a send is in flight',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final streamController = StreamController<AssistantGenerationEvent>();
         addTearDown(streamController.close);
         final userMessage = AssistantMessage(
@@ -166,7 +166,7 @@ void main() {
     test(
       'regenerateLastMessage appends the new answer and keeps the old one',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final oldAnswer = buildAssistantMessage(content: '旧回答');
         final fake = FakeAssistantRepository(
           latestConversation: conversationWith(
@@ -216,7 +216,7 @@ void main() {
     test(
       'F-5b: regenerateLastMessage marks the old answer as replaced',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final oldAnswer = buildAssistantMessage(content: '旧回答');
         final fake = FakeAssistantRepository(
           latestConversation: conversationWith(
@@ -265,7 +265,7 @@ void main() {
     );
 
     test('F-5b: failed regenerate keeps the old answer normal', () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final fake = FakeAssistantRepository(
         latestConversation: conversationWith(
           id: 'persisted-1',
@@ -312,7 +312,7 @@ void main() {
     test(
       'regenerateLastMessage throws without a persisted conversation',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final fake = FakeAssistantRepository();
         final container = buildContainer(fake);
         addTearDown(container.dispose);
@@ -330,7 +330,7 @@ void main() {
     );
 
     test('regenerateLastMessage surfaces streaming errors', () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final fake = FakeAssistantRepository(
         latestConversation: conversationWith(
           id: 'persisted-1',

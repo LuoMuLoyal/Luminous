@@ -4,9 +4,9 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 class _SignedOut extends AuthSessionNotifier {
@@ -45,7 +45,7 @@ const _mockSnapshot = HealthContextSnapshot(
 
 void main() {
   testWidgets('CurrentMedicineEditPage renders (signed out)', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     await tester.pumpWidget(
       ProviderScope(
         overrides: [authSessionProvider.overrideWith(() => _SignedOut())],
@@ -59,7 +59,7 @@ void main() {
   testWidgets('CurrentMedicineEditPage renders form when authenticated', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     await tester.pumpWidget(
       ProviderScope(
         overrides: [

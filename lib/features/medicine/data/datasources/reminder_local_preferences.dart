@@ -1,48 +1,42 @@
 import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-/// Data-layer service for medicine reminder SharedPreferences access.
+/// Data-layer service for medicine reminder KvStore access.
 ///
 /// Moves persistence out of presentation providers so that
 /// `MedicineReminderSoundController` and
 /// `MedicineReminderNotificationCoordinator` no longer call
-/// `SharedPreferences.getInstance()` directly.
+/// `KvStore.instance` directly.
 class MedicineReminderLocalPreferences {
   const MedicineReminderLocalPreferences();
 
   // ── Sound preference ───────────────────────────────────────────────────
 
   Future<MedicineReminderSoundPreference> readSound() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = KvStore.instance;
     return MedicineReminderSoundPreference.fromStorage(
-      prefs.getString(PrefKeys.medicineReminderSound),
+      prefs.getOrNull<String>(PrefKeys.medicineReminderSound),
     );
   }
 
   Future<void> writeSound(MedicineReminderSoundPreference preference) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      PrefKeys.medicineReminderSound,
-      preference.storageValue,
-    );
+    final prefs = KvStore.instance;
+    await prefs.set(PrefKeys.medicineReminderSound, preference.storageValue);
   }
 
   // ── Scheduled notification IDs ─────────────────────────────────────────
 
   Future<List<String>> readScheduledNotificationIds() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList(
+    final prefs = KvStore.instance;
+    return prefs.getOrNull<List<String>>(
           PrefKeys.medicineReminderScheduledNotificationIds,
         ) ??
         const <String>[];
   }
 
   Future<void> writeScheduledNotificationIds(List<String> ids) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(
-      PrefKeys.medicineReminderScheduledNotificationIds,
-      ids,
-    );
+    final prefs = KvStore.instance;
+    await prefs.set(PrefKeys.medicineReminderScheduledNotificationIds, ids);
   }
 }

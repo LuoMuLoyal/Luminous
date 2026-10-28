@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/base_url.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker;
 
 part 'developer_settings.freezed.dart';
@@ -108,14 +108,16 @@ class DeveloperSettingsController
 
   @override
   Future<DeveloperSettingsState> build() async {
-    final preferences = await SharedPreferences.getInstance();
-    final storedEndpoint = preferences.getString(_apiEndpointKey);
+    final preferences = KvStore.instance;
+    final storedEndpoint = preferences.getOrNull<String>(_apiEndpointKey);
     final endpoint = storedEndpoint == null
         ? _defaultEndpoint
         : ApiEndpoint.fromStorage(storedEndpoint);
     final customUrl =
-        preferences.getString(_customApiUrlKey) ?? _defaultCustomApiUrl;
-    final level = LogLevel.fromString(preferences.getString(_logLevelKey));
+        preferences.getOrNull<String>(_customApiUrlKey) ?? _defaultCustomApiUrl;
+    final level = LogLevel.fromString(
+      preferences.getOrNull<String>(_logLevelKey),
+    );
 
     // Apply log level immediately.
     _applyLogLevel(level);
@@ -139,16 +141,16 @@ class DeveloperSettingsController
     final current = state.asData?.value ?? const DeveloperSettingsState();
     final next = current.copyWith(apiEndpoint: endpoint);
     state = AsyncData(next);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_apiEndpointKey, endpoint.storageValue);
+    final preferences = KvStore.instance;
+    await preferences.set(_apiEndpointKey, endpoint.storageValue);
   }
 
   Future<void> setCustomApiUrl(String url) async {
     final current = state.asData?.value ?? const DeveloperSettingsState();
     final next = current.copyWith(customApiUrl: url);
     state = AsyncData(next);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_customApiUrlKey, url);
+    final preferences = KvStore.instance;
+    await preferences.set(_customApiUrlKey, url);
   }
 
   Future<void> setLogLevel(LogLevel level) async {
@@ -156,14 +158,14 @@ class DeveloperSettingsController
     final next = current.copyWith(logLevel: level);
     state = AsyncData(next);
     _applyLogLevel(level);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_logLevelKey, level.name);
+    final preferences = KvStore.instance;
+    await preferences.set(_logLevelKey, level.name);
   }
 
   Future<void> reset() async {
     state = AsyncData(_defaultState);
     _applyLogLevel(LogLevel.info);
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
     await preferences.remove(_apiEndpointKey);
     await preferences.remove(_customApiUrlKey);
     await preferences.remove(_logLevelKey);

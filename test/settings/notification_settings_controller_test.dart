@@ -4,18 +4,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/user_settings_cache.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/kv_test_store.dart';
 
 void main() {
   late ProviderContainer container;
 
   ProviderContainer buildContainer({Map<String, Object>? initialValues}) {
-    SharedPreferences.setMockInitialValues(
-      initialValues ?? const <String, Object>{},
-    );
+    KvTestStore.install(seed: initialValues ?? const <String, Object>{});
     final c = ProviderContainer(
       overrides: [
         userSettingsDaoProvider.overrideWithValue(_FakeUserSettingsDao()),
@@ -97,9 +97,12 @@ void main() {
       final state = container.read(notificationSettingsControllerProvider);
       expect(state.value?.sleepReminderEnabled, isTrue);
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getBool('settings.notifications.sleepReminderEnabled'),
+        preferences.get<bool>(
+          'settings.notifications.sleepReminderEnabled',
+          fallback: false,
+        ),
         isTrue,
       );
     });
@@ -119,13 +122,13 @@ void main() {
         expect(state.value?.sleepBedtime, const TimeOfDay(hour: 23, minute: 0));
         expect(state.value?.sleepWakeTime, const TimeOfDay(hour: 7, minute: 0));
 
-        final preferences = await SharedPreferences.getInstance();
+        final preferences = KvStore.instance;
         expect(
-          preferences.getString('settings.notifications.sleepBedtime'),
+          preferences.getOrNull<String>('settings.notifications.sleepBedtime'),
           '23:00',
         );
         expect(
-          preferences.getString('settings.notifications.sleepWakeTime'),
+          preferences.getOrNull<String>('settings.notifications.sleepWakeTime'),
           '07:00',
         );
       },
@@ -175,17 +178,22 @@ void main() {
       expect(state.value?.dndStartTime, const TimeOfDay(hour: 22, minute: 0));
       expect(state.value?.dndEndTime, const TimeOfDay(hour: 7, minute: 0));
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getBool(PrefKeys.settingsNotificationsDndEnabled),
+        preferences.get<bool>(
+          PrefKeys.settingsNotificationsDndEnabled,
+          fallback: false,
+        ),
         isTrue,
       );
       expect(
-        preferences.getString(PrefKeys.settingsNotificationsDndStartTime),
+        preferences.getOrNull<String>(
+          PrefKeys.settingsNotificationsDndStartTime,
+        ),
         '22:00',
       );
       expect(
-        preferences.getString(PrefKeys.settingsNotificationsDndEndTime),
+        preferences.getOrNull<String>(PrefKeys.settingsNotificationsDndEndTime),
         '07:00',
       );
     });
@@ -204,9 +212,9 @@ void main() {
       final state = container.read(notificationSettingsControllerProvider);
       expect(state.value?.sleepBedtime, const TimeOfDay(hour: 22, minute: 0));
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getString('settings.notifications.sleepBedtime'),
+        preferences.getOrNull<String>('settings.notifications.sleepBedtime'),
         '22:00',
       );
     });
@@ -227,7 +235,7 @@ void main() {
       final state = container.read(notificationSettingsControllerProvider);
       expect(state.value?.sleepBedtime, isNull);
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
         preferences.containsKey('settings.notifications.sleepBedtime'),
         isFalse,
@@ -248,9 +256,9 @@ void main() {
       final state = container.read(notificationSettingsControllerProvider);
       expect(state.value?.sleepWakeTime, const TimeOfDay(hour: 7, minute: 30));
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getString('settings.notifications.sleepWakeTime'),
+        preferences.getOrNull<String>('settings.notifications.sleepWakeTime'),
         '07:30',
       );
     });
@@ -289,7 +297,7 @@ void main() {
       expect(state.value?.dndStartTime, isNull);
       expect(state.value?.dndEndTime, isNull);
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
         preferences.containsKey('settings.notifications.medicationReminders'),
         isFalse,

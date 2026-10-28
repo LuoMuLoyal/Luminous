@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/kv_test_store.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -74,8 +76,8 @@ void main() {
   group('QuickEntryPreferencesController', () {
     late ProviderContainer container;
 
-    setUp(() {
-      SharedPreferences.setMockInitialValues({});
+    setUp(() async {
+      KvTestStore.install(seed: {});
       container = ProviderContainer();
       addTearDown(container.dispose);
     });
@@ -96,16 +98,18 @@ void main() {
     });
 
     test('build loads stored values from SharedPreferences', () async {
-      SharedPreferences.setMockInitialValues({
-        'record.quickEntry.dynamicSortEnabled': true,
-        'record.quickEntry.customOrder': ['meal', 'water'],
-        'record.quickEntry.collapsed': true,
-        'record.quickEntry.freq.meal': 5,
-        'record.quickEntry.freq.water': 3,
-        'record.quickEntry.water.defaultAmountMl': 'ml500',
-        'record.quickEntry.water.badgeMode': 'dailyCount',
-        'record.quickEntry.sleep.inProgressBadgeEnabled': false,
-      });
+      KvTestStore.install(
+        seed: {
+          'record.quickEntry.dynamicSortEnabled': true,
+          'record.quickEntry.customOrder': ['meal', 'water'],
+          'record.quickEntry.collapsed': true,
+          'record.quickEntry.freq.meal': 5,
+          'record.quickEntry.freq.water': 3,
+          'record.quickEntry.water.defaultAmountMl': 'ml500',
+          'record.quickEntry.water.badgeMode': 'dailyCount',
+          'record.quickEntry.sleep.inProgressBadgeEnabled': false,
+        },
+      );
 
       final c = ProviderContainer();
       addTearDown(c.dispose);
@@ -123,9 +127,9 @@ void main() {
     test(
       'build migrates legacy int water default from SharedPreferences',
       () async {
-        SharedPreferences.setMockInitialValues({
-          'record.quickEntry.water.defaultAmountMl': 500,
-        });
+        KvTestStore.install(
+          seed: {'record.quickEntry.water.defaultAmountMl': 500},
+        );
 
         final c = ProviderContainer();
         addTearDown(c.dispose);
@@ -145,8 +149,14 @@ void main() {
       final state = container.read(quickEntryPreferencesProvider).requireValue;
       expect(state.dynamicSortEnabled, isTrue);
 
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool('record.quickEntry.dynamicSortEnabled'), isTrue);
+      final prefs = KvStore.instance;
+      expect(
+        prefs.get<bool>(
+          'record.quickEntry.dynamicSortEnabled',
+          fallback: false,
+        ),
+        isTrue,
+      );
     });
 
     test('setCustomOrder updates state and persists', () async {
@@ -158,8 +168,8 @@ void main() {
       final state = container.read(quickEntryPreferencesProvider).requireValue;
       expect(state.customOrder, ['meal', 'sleep', 'water']);
 
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getStringList('record.quickEntry.customOrder'), [
+      final prefs = KvStore.instance;
+      expect(prefs.getOrNull<List<String>>('record.quickEntry.customOrder'), [
         'meal',
         'sleep',
         'water',
@@ -175,8 +185,11 @@ void main() {
       final state = container.read(quickEntryPreferencesProvider).requireValue;
       expect(state.collapsed, isTrue);
 
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool('record.quickEntry.collapsed'), isTrue);
+      final prefs = KvStore.instance;
+      expect(
+        prefs.get<bool>('record.quickEntry.collapsed', fallback: false),
+        isTrue,
+      );
     });
 
     test('recordTap increments frequency count', () async {
@@ -201,8 +214,8 @@ void main() {
       final controller = container.read(quickEntryPreferencesProvider.notifier);
       await controller.recordTap(RecordEntryType.mood);
 
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getInt('record.quickEntry.freq.mood'), 1);
+      final prefs = KvStore.instance;
+      expect(prefs.get<int>('record.quickEntry.freq.mood', fallback: 0), 1);
     });
 
     test('setWaterDefault updates state and persists', () async {
@@ -214,9 +227,9 @@ void main() {
       final state = container.read(quickEntryPreferencesProvider).requireValue;
       expect(state.waterDefault, QuickEntryWaterDefault.ml500);
 
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = KvStore.instance;
       expect(
-        prefs.getString('record.quickEntry.water.defaultAmountMl'),
+        prefs.getOrNull<String>('record.quickEntry.water.defaultAmountMl'),
         'ml500',
       );
     });
@@ -230,8 +243,11 @@ void main() {
       final state = container.read(quickEntryPreferencesProvider).requireValue;
       expect(state.waterCustomMl, 300);
 
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getInt('record.quickEntry.water.customMl'), 300);
+      final prefs = KvStore.instance;
+      expect(
+        prefs.get<int>('record.quickEntry.water.customMl', fallback: 0),
+        300,
+      );
     });
 
     test(
@@ -245,12 +261,15 @@ void main() {
         await controller.setWaterCustomMl(350);
         await controller.setWaterDefault(QuickEntryWaterDefault.custom);
 
-        final prefs = await SharedPreferences.getInstance();
+        final prefs = KvStore.instance;
         expect(
-          prefs.getString('record.quickEntry.water.defaultAmountMl'),
+          prefs.getOrNull<String>('record.quickEntry.water.defaultAmountMl'),
           'custom',
         );
-        expect(prefs.getInt('record.quickEntry.water.customMl'), 350);
+        expect(
+          prefs.get<int>('record.quickEntry.water.customMl', fallback: 0),
+          350,
+        );
 
         // A fresh container re-reads the persisted values.
         final c = ProviderContainer();
@@ -270,9 +289,9 @@ void main() {
       final state = container.read(quickEntryPreferencesProvider).requireValue;
       expect(state.waterBadgeMode, QuickEntryWaterBadgeMode.dailyCount);
 
-      final prefs = await SharedPreferences.getInstance();
+      final prefs = KvStore.instance;
       expect(
-        prefs.getString('record.quickEntry.water.badgeMode'),
+        prefs.getOrNull<String>('record.quickEntry.water.badgeMode'),
         'dailyCount',
       );
     });
@@ -295,10 +314,13 @@ void main() {
         expect(state.customOrder, isEmpty);
         expect(state.waterDefault, QuickEntryWaterDefault.ml500);
 
-        final prefs = await SharedPreferences.getInstance();
-        expect(prefs.getStringList('record.quickEntry.customOrder'), isNull);
+        final prefs = KvStore.instance;
         expect(
-          prefs.getString('record.quickEntry.water.defaultAmountMl'),
+          prefs.getOrNull<List<String>>('record.quickEntry.customOrder'),
+          isNull,
+        );
+        expect(
+          prefs.getOrNull<String>('record.quickEntry.water.defaultAmountMl'),
           'ml500',
         );
       },
@@ -352,12 +374,14 @@ void main() {
     });
 
     test('reset clears all state and SharedPreferences', () async {
-      SharedPreferences.setMockInitialValues({
-        'record.quickEntry.dynamicSortEnabled': true,
-        'record.quickEntry.customOrder': ['meal'],
-        'record.quickEntry.collapsed': true,
-        'record.quickEntry.freq.meal': 5,
-      });
+      KvTestStore.install(
+        seed: {
+          'record.quickEntry.dynamicSortEnabled': true,
+          'record.quickEntry.customOrder': ['meal'],
+          'record.quickEntry.collapsed': true,
+          'record.quickEntry.freq.meal': 5,
+        },
+      );
 
       final c = ProviderContainer();
       addTearDown(c.dispose);
@@ -373,11 +397,26 @@ void main() {
       expect(state.collapsed, isFalse);
       expect(state.frequency, isEmpty);
 
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool('record.quickEntry.dynamicSortEnabled'), isNull);
-      expect(prefs.getStringList('record.quickEntry.customOrder'), isNull);
-      expect(prefs.getBool('record.quickEntry.collapsed'), isNull);
-      expect(prefs.getInt('record.quickEntry.freq.meal'), isNull);
+      final prefs = KvStore.instance;
+      expect(
+        prefs.get<bool>(
+          'record.quickEntry.dynamicSortEnabled',
+          fallback: false,
+        ),
+        isNull,
+      );
+      expect(
+        prefs.getOrNull<List<String>>('record.quickEntry.customOrder'),
+        isNull,
+      );
+      expect(
+        prefs.get<bool>('record.quickEntry.collapsed', fallback: false),
+        isNull,
+      );
+      expect(
+        prefs.get<int>('record.quickEntry.freq.meal', fallback: 0),
+        isNull,
+      );
     });
   });
 }

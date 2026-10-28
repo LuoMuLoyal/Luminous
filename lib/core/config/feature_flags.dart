@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/ai/runtime_config.dart';
 import 'package:luminous/core/config/pref_keys.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 
 part 'feature_flags.freezed.dart';
 
@@ -51,24 +51,25 @@ class FeatureFlagsController extends AsyncNotifier<FeatureFlagsState> {
 
   @override
   Future<FeatureFlagsState> build() async {
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
 
     // Seed from compile-time env on first launch.
     final envConfig = AiRuntimeConfig.fromEnvironment(
       AiRuntimeEnvironment.fromPlatform(),
     );
 
-    final onDeviceAiRuntime =
-        preferences.getBool(_onDeviceAiRuntimeKey) ?? envConfig.enabled;
+    final onDeviceAiRuntime = preferences.get<bool>(
+      _onDeviceAiRuntimeKey,
+      fallback: false,
+    );
     final aiRuntimeProvider = _providerFromStorage(
-      preferences.getString(_aiProviderKey),
+      preferences.getOrNull<String>(_aiProviderKey),
       envConfig.provider,
     );
-    final genUiEnabled =
-        preferences.getBool(_genUiKey) ?? envConfig.genUiEnabled;
-    final streamMode = preferences.getBool(_streamModeKey) ?? true;
-    final barcodeScan = preferences.getBool(_barcodeScanKey) ?? false;
-    final pdfExport = preferences.getBool(_pdfExportKey) ?? false;
+    final genUiEnabled = preferences.get<bool>(_genUiKey, fallback: false);
+    final streamMode = preferences.get<bool>(_streamModeKey, fallback: false);
+    final barcodeScan = preferences.get<bool>(_barcodeScanKey, fallback: false);
+    final pdfExport = preferences.get<bool>(_pdfExportKey, fallback: false);
 
     return FeatureFlagsState(
       onDeviceAiRuntime: onDeviceAiRuntime,
@@ -83,48 +84,48 @@ class FeatureFlagsController extends AsyncNotifier<FeatureFlagsState> {
   Future<void> setOnDeviceAiRuntime(bool enabled) async {
     final current = state.asData?.value ?? const FeatureFlagsState();
     state = AsyncData(current.copyWith(onDeviceAiRuntime: enabled));
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setBool(_onDeviceAiRuntimeKey, enabled);
+    final preferences = KvStore.instance;
+    await preferences.set(_onDeviceAiRuntimeKey, enabled);
   }
 
   Future<void> setAiRuntimeProvider(AiRuntimeProviderKind provider) async {
     final current = state.asData?.value ?? const FeatureFlagsState();
     state = AsyncData(current.copyWith(aiRuntimeProvider: provider));
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_aiProviderKey, provider.name);
+    final preferences = KvStore.instance;
+    await preferences.set(_aiProviderKey, provider.name);
   }
 
   Future<void> setGenUiEnabled(bool enabled) async {
     final current = state.asData?.value ?? const FeatureFlagsState();
     state = AsyncData(current.copyWith(genUiEnabled: enabled));
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setBool(_genUiKey, enabled);
+    final preferences = KvStore.instance;
+    await preferences.set(_genUiKey, enabled);
   }
 
   Future<void> setAssistantStreamMode(bool enabled) async {
     final current = state.asData?.value ?? const FeatureFlagsState();
     state = AsyncData(current.copyWith(assistantStreamMode: enabled));
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setBool(_streamModeKey, enabled);
+    final preferences = KvStore.instance;
+    await preferences.set(_streamModeKey, enabled);
   }
 
   Future<void> setMedicineBarcodeScan(bool enabled) async {
     final current = state.asData?.value ?? const FeatureFlagsState();
     state = AsyncData(current.copyWith(medicineBarcodeScan: enabled));
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setBool(_barcodeScanKey, enabled);
+    final preferences = KvStore.instance;
+    await preferences.set(_barcodeScanKey, enabled);
   }
 
   Future<void> setReportExportPdf(bool enabled) async {
     final current = state.asData?.value ?? const FeatureFlagsState();
     state = AsyncData(current.copyWith(reportExportPdf: enabled));
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setBool(_pdfExportKey, enabled);
+    final preferences = KvStore.instance;
+    await preferences.set(_pdfExportKey, enabled);
   }
 
   Future<void> reset() async {
     state = const AsyncData(FeatureFlagsState());
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
     await preferences.remove(_onDeviceAiRuntimeKey);
     await preferences.remove(_aiProviderKey);
     await preferences.remove(_genUiKey);

@@ -5,17 +5,17 @@ import 'package:luminous/core/config/developer_settings.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker;
+
+import '../../helpers/kv_test_store.dart';
 
 void main() {
   late ProviderContainer container;
   late talker.Talker testTalker;
 
   ProviderContainer buildContainer({Map<String, Object>? initialValues}) {
-    SharedPreferences.setMockInitialValues(
-      initialValues ?? const <String, Object>{},
-    );
+    KvTestStore.install(seed: initialValues ?? const <String, Object>{});
     final c = ProviderContainer(
       overrides: [talkerProvider.overrideWithValue(testTalker)],
     );
@@ -292,8 +292,8 @@ void main() {
       final state = container.read(developerSettingsControllerProvider);
       expect(state.value?.apiEndpoint, ApiEndpoint.staging);
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getString('developer.apiEndpoint'), 'staging');
+      final preferences = KvStore.instance;
+      expect(preferences.getOrNull<String>('developer.apiEndpoint'), 'staging');
     });
   });
 
@@ -310,9 +310,9 @@ void main() {
       final state = container.read(developerSettingsControllerProvider);
       expect(state.value?.customApiUrl, 'http://192.168.1.1:3000');
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getString('developer.customApiUrl'),
+        preferences.getOrNull<String>('developer.customApiUrl'),
         'http://192.168.1.1:3000',
       );
     });
@@ -331,8 +331,8 @@ void main() {
       final state = container.read(developerSettingsControllerProvider);
       expect(state.value?.logLevel, LogLevel.error);
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getString('developer.logLevel'), 'error');
+      final preferences = KvStore.instance;
+      expect(preferences.getOrNull<String>('developer.logLevel'), 'error');
     });
   });
 
@@ -359,7 +359,7 @@ void main() {
         expect(state.value?.customApiUrl, '');
         expect(state.value?.logLevel, LogLevel.info);
 
-        final preferences = await SharedPreferences.getInstance();
+        final preferences = KvStore.instance;
         expect(preferences.containsKey('developer.apiEndpoint'), isFalse);
         expect(preferences.containsKey('developer.customApiUrl'), isFalse);
         expect(preferences.containsKey('developer.logLevel'), isFalse);

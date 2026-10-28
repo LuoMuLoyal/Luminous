@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemePreference {
   const ThemePreference({
@@ -64,29 +64,28 @@ class ThemeController extends AsyncNotifier<ThemePreference> {
   static const _modeStorageKey = PrefKeys.themeMode;
   static const _familyStorageKey = PrefKeys.themeFamily;
 
+  KvStore get _store => KvStore.instance;
+
   @override
   Future<ThemePreference> build() async {
-    final preferences = await SharedPreferences.getInstance();
     return ThemePreference(
       mode: AppThemeModePreference.fromStorage(
-        preferences.getString(_modeStorageKey),
+        _store.getOrNull<String>(_modeStorageKey),
       ),
       family: AppThemeFamily.fromStorage(
-        preferences.getString(_familyStorageKey),
+        _store.getOrNull<String>(_familyStorageKey),
       ),
     );
   }
 
   Future<void> setMode(AppThemeModePreference preference) async {
     state = AsyncData(_currentPreference.copyWith(mode: preference));
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_modeStorageKey, preference.storageValue);
+    await _store.set(_modeStorageKey, preference.storageValue);
   }
 
   Future<void> setFamily(AppThemeFamily family) async {
     state = AsyncData(_currentPreference.copyWith(family: family));
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_familyStorageKey, family.storageValue);
+    await _store.set(_familyStorageKey, family.storageValue);
   }
 
   ThemePreference get _currentPreference =>

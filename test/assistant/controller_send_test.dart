@@ -5,15 +5,15 @@ import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 import 'controller_test_helpers.dart';
 
 void main() {
   group('AssistantController', () {
     test('build returns loading state when authenticated', () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final session = SignedInAuthSessionNotifier();
       final container = ProviderContainer(
         overrides: [
@@ -30,7 +30,7 @@ void main() {
     });
 
     test('loadCapabilities populates capabilities on success', () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final session = SignedInAuthSessionNotifier();
       final container = ProviderContainer(
         overrides: [
@@ -52,7 +52,7 @@ void main() {
     });
 
     test('loadCapabilities handles error gracefully', () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final session = SignedInAuthSessionNotifier();
       final container = ProviderContainer(
         overrides: [
@@ -73,7 +73,7 @@ void main() {
     });
 
     test('sendMessage forwards the persisted conversation id', () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final session = SignedInAuthSessionNotifier();
       final fake = FakeAssistantRepository(
         latestConversation: AssistantConversation(
@@ -115,7 +115,7 @@ void main() {
     test(
       'resendMessage reuses the pipeline without appending the user message',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final fake = FakeAssistantRepository(
           latestConversation: conversationWith(
             id: 'persisted-1',
@@ -163,7 +163,7 @@ void main() {
     test(
       'F-3: streamInterrupted preserves the partial draft as a copyable message',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final fake = FakeAssistantRepository(
           streamOverride: Stream<AssistantGenerationEvent>.multi((controller) {
             controller.add(const AssistantGenerationChunkEvent('部分内容'));
@@ -202,7 +202,7 @@ void main() {
     );
 
     test('F-3: non-interrupted errors drop the partial draft', () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final fake = FakeAssistantRepository(
         streamOverride: Stream<AssistantGenerationEvent>.multi((controller) {
           controller.add(const AssistantGenerationChunkEvent('残句'));

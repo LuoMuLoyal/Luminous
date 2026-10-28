@@ -4,15 +4,15 @@ import 'package:luminous/core/ai/runtime_config.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/config/feature_flags.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/core/storage/kv_store.dart';
+
+import '../../helpers/kv_test_store.dart';
 
 void main() {
   late ProviderContainer container;
 
   ProviderContainer buildContainer({Map<String, Object>? initialValues}) {
-    SharedPreferences.setMockInitialValues(
-      initialValues ?? const <String, Object>{},
-    );
+    KvTestStore.install(seed: initialValues ?? const <String, Object>{});
     final c = ProviderContainer();
     addTearDown(c.dispose);
     return c;
@@ -155,8 +155,14 @@ void main() {
       final state = container.read(featureFlagsControllerProvider);
       expect(state.value?.onDeviceAiRuntime, isTrue);
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getBool('featureFlags.onDeviceAiRuntime'), isTrue);
+      final preferences = KvStore.instance;
+      expect(
+        preferences.get<bool>(
+          'featureFlags.onDeviceAiRuntime',
+          fallback: false,
+        ),
+        isTrue,
+      );
     });
   });
 
@@ -173,8 +179,11 @@ void main() {
       final state = container.read(featureFlagsControllerProvider);
       expect(state.value?.aiRuntimeProvider, AiRuntimeProviderKind.genUi);
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getString('featureFlags.aiRuntimeProvider'), 'genUi');
+      final preferences = KvStore.instance;
+      expect(
+        preferences.getOrNull<String>('featureFlags.aiRuntimeProvider'),
+        'genUi',
+      );
     });
   });
 
@@ -191,8 +200,11 @@ void main() {
       final state = container.read(featureFlagsControllerProvider);
       expect(state.value?.genUiEnabled, isTrue);
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getBool('featureFlags.genUiEnabled'), isTrue);
+      final preferences = KvStore.instance;
+      expect(
+        preferences.get<bool>('featureFlags.genUiEnabled', fallback: false),
+        isTrue,
+      );
     });
   });
 
@@ -209,8 +221,14 @@ void main() {
       final state = container.read(featureFlagsControllerProvider);
       expect(state.value?.assistantStreamMode, isFalse);
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getBool('featureFlags.assistantStreamMode'), isFalse);
+      final preferences = KvStore.instance;
+      expect(
+        preferences.get<bool>(
+          'featureFlags.assistantStreamMode',
+          fallback: false,
+        ),
+        isFalse,
+      );
     });
   });
 
@@ -227,8 +245,14 @@ void main() {
       final state = container.read(featureFlagsControllerProvider);
       expect(state.value?.medicineBarcodeScan, isTrue);
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getBool('featureFlags.medicineBarcodeScan'), isTrue);
+      final preferences = KvStore.instance;
+      expect(
+        preferences.get<bool>(
+          'featureFlags.medicineBarcodeScan',
+          fallback: false,
+        ),
+        isTrue,
+      );
     });
   });
 
@@ -245,8 +269,11 @@ void main() {
       final state = container.read(featureFlagsControllerProvider);
       expect(state.value?.reportExportPdf, isTrue);
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getBool('featureFlags.reportExportPdf'), isTrue);
+      final preferences = KvStore.instance;
+      expect(
+        preferences.get<bool>('featureFlags.reportExportPdf', fallback: false),
+        isTrue,
+      );
     });
   });
 
@@ -275,7 +302,7 @@ void main() {
       expect(state.value?.medicineBarcodeScan, isFalse);
       expect(state.value?.reportExportPdf, isFalse);
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
         preferences.containsKey('featureFlags.onDeviceAiRuntime'),
         isFalse,

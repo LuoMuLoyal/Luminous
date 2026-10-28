@@ -6,16 +6,16 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('AllergyEditPage renders without crashing when signed out', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     await tester.pumpWidget(
       ProviderScope(
         overrides: [authSessionProvider.overrideWith(() => _SignedOut())],
@@ -30,7 +30,7 @@ void main() {
   testWidgets('AllergyEditPage renders create form when authenticated', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await tester.pumpWidget(

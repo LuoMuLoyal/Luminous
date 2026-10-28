@@ -25,11 +25,11 @@ import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/widgets/views/content.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/test_helpers.dart';
 // `show` keeps this import from clashing with the `SignedInAuthSessionNotifier`
 // that test/auth/test_helpers.dart also exports.
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart'
     show scaledForTextScale, setNarrowPhoneScreenSize;
 
@@ -543,7 +543,7 @@ Future<void> _pumpSearchApp(
 }) async {
   // The page watches the persisted recent-searches provider, which is backed
   // by SharedPreferences.
-  SharedPreferences.setMockInitialValues({});
+  KvTestStore.install(seed: {});
   await tester.pumpWidget(
     ProviderScope(
       overrides: [

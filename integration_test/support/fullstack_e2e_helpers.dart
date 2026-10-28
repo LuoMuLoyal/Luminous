@@ -9,6 +9,7 @@ import 'package:luminous/features/auth/presentation/providers/forms/login.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 
+import '../../test/helpers/kv_test_store.dart';
 import 'e2e_test_helpers.dart';
 
 class FullstackE2eConfig {
@@ -156,9 +157,7 @@ Future<ProviderContainer> pumpFullstackApp(
   required FullstackE2eConfig config,
   MemoryLucentSessionStore? sessionStore,
 }) async {
-  SharedPreferences.setMockInitialValues(const <String, Object>{
-    'app.locale': 'zh-CN',
-  });
+  KvTestStore.install(seed: const <String, Object>{'app.locale': 'zh-CN'});
   final container = ProviderContainer(
     overrides: [
       lucentBaseUrlProvider.overrideWithValue(config.baseUrl),

@@ -12,6 +12,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/user_settings_cache.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_manage.dart';
@@ -36,9 +37,13 @@ import 'package:luminous/features/settings/presentation/pages/theme.dart';
 import 'package:material_ui/material_ui.dart'
     as mui
     show MaterialApp, ThemeMode;
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/kv_test_store.dart';
 
 late _FakeSettingsProfileRemoteDataSource _fakeSettingsProfileRemote;
+
+Map<String, Object?> _snapshotPreferences(KvStore preferences) =>
+    preferences.snapshot();
 
 void main() {
   setUp(() {
@@ -48,9 +53,7 @@ void main() {
   testWidgets(
     'Language settings updates a visible localized string and persists preference',
     (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{
-        'app.locale': 'zh-CN',
-      });
+      KvTestStore.install(seed: const <String, Object>{'app.locale': 'zh-CN'});
 
       await _pumpApp(
         tester,
@@ -68,8 +71,8 @@ void main() {
       await tester.tap(find.text('English').last);
       await tester.pumpAndSettle();
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getString('app.locale'), 'en');
+      final preferences = KvStore.instance;
+      expect(preferences.getOrNull<String>('app.locale'), 'en');
       expect(_fakeSettingsProfileRemote.lastLocale, 'en');
 
       await tester.tap(_settingsBackButton());
@@ -81,7 +84,7 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pumpAndSettle();
 
-      SharedPreferences.setMockInitialValues(snapshot);
+      KvTestStore.install(seed: snapshot);
       await _pumpApp(tester);
 
       expect(find.text('Settings'), findsOneWidget);
@@ -91,9 +94,7 @@ void main() {
   testWidgets(
     'Medication reminder toggles from notification settings page and persists the value',
     (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{
-        'app.locale': 'zh-CN',
-      });
+      KvTestStore.install(seed: const <String, Object>{'app.locale': 'zh-CN'});
 
       await _pumpApp(
         tester,
@@ -122,9 +123,12 @@ void main() {
       final afterValue = _readSwitchValue(tester, medicationSwitchFinder);
       expect(afterValue, isNot(beforeValue));
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(
-        preferences.getBool('settings.notifications.medicationReminders'),
+        preferences.get<bool>(
+          'settings.notifications.medicationReminders',
+          fallback: false,
+        ),
         afterValue,
       );
     },
@@ -133,9 +137,7 @@ void main() {
   testWidgets('Notification settings shows granted permission state', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{
-      'app.locale': 'zh-CN',
-    });
+    KvTestStore.install(seed: const <String, Object>{'app.locale': 'zh-CN'});
 
     await _pumpApp(
       tester,
@@ -153,9 +155,7 @@ void main() {
   testWidgets('Notification settings shows denied permission state', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{
-      'app.locale': 'zh-CN',
-    });
+    KvTestStore.install(seed: const <String, Object>{'app.locale': 'zh-CN'});
 
     await _pumpApp(
       tester,
@@ -173,9 +173,7 @@ void main() {
   testWidgets('Advanced settings page is reachable and shows actions', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{
-      'app.locale': 'zh-CN',
-    });
+    KvTestStore.install(seed: const <String, Object>{'app.locale': 'zh-CN'});
 
     await _pumpApp(tester);
 
@@ -194,9 +192,7 @@ void main() {
   testWidgets('Theme settings updates mode and family selection', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{
-      'app.locale': 'zh-CN',
-    });
+    KvTestStore.install(seed: const <String, Object>{'app.locale': 'zh-CN'});
 
     await _pumpApp(tester);
 
@@ -213,9 +209,9 @@ void main() {
     await tester.tap(find.byKey(const Key('theme-family-row-green')));
     await tester.pumpAndSettle();
 
-    final preferences = await SharedPreferences.getInstance();
-    expect(preferences.getString('theme.mode'), 'dark');
-    expect(preferences.getString('theme.family'), 'green');
+    final preferences = KvStore.instance;
+    expect(preferences.getOrNull<String>('theme.mode'), 'dark');
+    expect(preferences.getOrNull<String>('theme.family'), 'green');
 
     final app = tester.widget<mui.MaterialApp>(find.byType(mui.MaterialApp));
     expect(app.themeMode, mui.ThemeMode.dark);
@@ -229,7 +225,7 @@ void main() {
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pumpAndSettle();
 
-    SharedPreferences.setMockInitialValues(snapshot);
+    KvTestStore.install(seed: snapshot);
     await _pumpApp(tester);
 
     final restoredApp = tester.widget<mui.MaterialApp>(
@@ -305,17 +301,6 @@ Finder _settingsBackButton() {
     of: find.byType(AppBackButton).first,
     matching: find.byType(FButton),
   );
-}
-
-Map<String, Object> _snapshotPreferences(SharedPreferences preferences) {
-  final snapshot = <String, Object>{};
-  for (final key in preferences.getKeys()) {
-    final value = preferences.get(key);
-    if (value is Object) {
-      snapshot[key] = value;
-    }
-  }
-  return snapshot;
 }
 
 class _StaticAuthSessionNotifier extends AuthSessionNotifier {

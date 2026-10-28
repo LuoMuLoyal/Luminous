@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/record/presentation/pages/quick_entry_reorder.dart';
 import 'package:luminous/features/record/presentation/pages/quick_entry_settings.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('quick-entry settings exposes first-version settings sections', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       const ProviderScope(child: TestForuiApp(home: QuickEntrySettingsPage())),
@@ -45,9 +46,9 @@ void main() {
   testWidgets('manual reorder row explains disabled state under dynamic sort', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      'record.quickEntry.dynamicSortEnabled': true,
-    });
+    KvTestStore.install(
+      seed: <String, Object>{'record.quickEntry.dynamicSortEnabled': true},
+    );
 
     await tester.pumpWidget(
       const ProviderScope(child: TestForuiApp(home: QuickEntrySettingsPage())),
@@ -62,10 +63,12 @@ void main() {
   });
 
   testWidgets('reset default order clears custom order only', (tester) async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      'record.quickEntry.customOrder': ['water', 'meal'],
-      'record.quickEntry.water.defaultAmountMl': 'ml500',
-    });
+    KvTestStore.install(
+      seed: <String, Object>{
+        'record.quickEntry.customOrder': ['water', 'meal'],
+        'record.quickEntry.water.defaultAmountMl': 'ml500',
+      },
+    );
 
     await tester.pumpWidget(
       const ProviderScope(child: TestForuiApp(home: QuickEntrySettingsPage())),
@@ -77,15 +80,21 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final prefs = await SharedPreferences.getInstance();
-    expect(prefs.getStringList('record.quickEntry.customOrder'), isNull);
-    expect(prefs.getString('record.quickEntry.water.defaultAmountMl'), 'ml500');
+    final prefs = KvStore.instance;
+    expect(
+      prefs.getOrNull<List<String>>('record.quickEntry.customOrder'),
+      isNull,
+    );
+    expect(
+      prefs.getOrNull<String>('record.quickEntry.water.defaultAmountMl'),
+      'ml500',
+    );
   });
 
   testWidgets('custom water default prompts for ml and persists', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       const ProviderScope(child: TestForuiApp(home: QuickEntrySettingsPage())),
@@ -111,18 +120,21 @@ void main() {
 
     // The select now shows the custom amount and preferences persist.
     expect(find.text('自定义 (400 ml)'), findsOneWidget);
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = KvStore.instance;
     expect(
-      prefs.getString('record.quickEntry.water.defaultAmountMl'),
+      prefs.getOrNull<String>('record.quickEntry.water.defaultAmountMl'),
       'custom',
     );
-    expect(prefs.getInt('record.quickEntry.water.customMl'), 400);
+    expect(
+      prefs.get<int>('record.quickEntry.water.customMl', fallback: 0),
+      400,
+    );
   });
 
   testWidgets('custom icon section lists every quick type with reset', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       const ProviderScope(child: TestForuiApp(home: QuickEntrySettingsPage())),
@@ -153,9 +165,11 @@ void main() {
   });
 
   testWidgets('custom icon reset clears stored custom icons', (tester) async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      'record.quickEntry.customIcons': ['water:coffee'],
-    });
+    KvTestStore.install(
+      seed: <String, Object>{
+        'record.quickEntry.customIcons': ['water:coffee'],
+      },
+    );
 
     await tester.pumpWidget(
       const ProviderScope(child: TestForuiApp(home: QuickEntrySettingsPage())),
@@ -175,14 +189,17 @@ void main() {
     await tester.tap(resetFinder);
     await tester.pumpAndSettle();
 
-    final prefs = await SharedPreferences.getInstance();
-    expect(prefs.getStringList('record.quickEntry.customIcons'), isNull);
+    final prefs = KvStore.instance;
+    expect(
+      prefs.getOrNull<List<String>>('record.quickEntry.customIcons'),
+      isNull,
+    );
   });
 
   testWidgets(
     'manual reorder page lists quick actions when dynamic sort is off',
     (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
 
       await tester.pumpWidget(
         const ProviderScope(child: TestForuiApp(home: QuickEntryReorderPage())),
@@ -207,9 +224,9 @@ void main() {
   testWidgets('manual reorder page blocks editing when dynamic sort is on', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      'record.quickEntry.dynamicSortEnabled': true,
-    });
+    KvTestStore.install(
+      seed: <String, Object>{'record.quickEntry.dynamicSortEnabled': true},
+    );
 
     await tester.pumpWidget(
       const ProviderScope(child: TestForuiApp(home: QuickEntryReorderPage())),

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/config/pref_keys.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 
 part 'data_storage.freezed.dart';
 
@@ -86,16 +86,16 @@ class DataStorageSettingsController
 
   @override
   Future<DataStorageSettingsState> build() async {
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
     return DataStorageSettingsState(
       retentionPeriod: DataRetentionPeriod.fromStorage(
-        preferences.getString(_retentionKey),
+        preferences.getOrNull<String>(_retentionKey),
       ),
       imageQuality: ImageQualityPreference.fromStorage(
-        preferences.getString(_imageQualityKey),
+        preferences.getOrNull<String>(_imageQualityKey),
       ),
       syncPreference: SyncPreference.fromStorage(
-        preferences.getString(_syncKey),
+        preferences.getOrNull<String>(_syncKey),
       ),
     );
   }
@@ -104,29 +104,29 @@ class DataStorageSettingsController
     final next = (state.asData?.value ?? const DataStorageSettingsState())
         .copyWith(retentionPeriod: period);
     state = AsyncData(next);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_retentionKey, period.storageValue);
+    final preferences = KvStore.instance;
+    await preferences.set(_retentionKey, period.storageValue);
   }
 
   Future<void> setImageQuality(ImageQualityPreference quality) async {
     final next = (state.asData?.value ?? const DataStorageSettingsState())
         .copyWith(imageQuality: quality);
     state = AsyncData(next);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_imageQualityKey, quality.storageValue);
+    final preferences = KvStore.instance;
+    await preferences.set(_imageQualityKey, quality.storageValue);
   }
 
   Future<void> setSyncPreference(SyncPreference pref) async {
     final next = (state.asData?.value ?? const DataStorageSettingsState())
         .copyWith(syncPreference: pref);
     state = AsyncData(next);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_syncKey, pref.storageValue);
+    final preferences = KvStore.instance;
+    await preferences.set(_syncKey, pref.storageValue);
   }
 
   Future<void> reset() async {
     state = const AsyncData(DataStorageSettingsState());
-    final preferences = await SharedPreferences.getInstance();
+    final preferences = KvStore.instance;
     await preferences.remove(_retentionKey);
     await preferences.remove(_imageQualityKey);
     await preferences.remove(_syncKey);

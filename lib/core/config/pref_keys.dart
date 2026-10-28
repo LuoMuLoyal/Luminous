@@ -1,17 +1,12 @@
-/// Centralized SharedPreferences key registry.
+/// Centralized preference key registry.
 ///
-/// All SharedPreferences keys used across the app are defined here to:
+/// All preference keys used across the app are defined here to:
 ///   - Prevent key collisions between features.
 ///   - Make it easy to audit what is persisted locally.
 ///   - Enable centralized key renaming/migration if needed.
 ///
 /// Convention: `domain.subdomain.field` in dot notation.
 abstract final class PrefKeys {
-  // ── Auth / Session ─────────────────────────────────────────────────────
-
-  static const accessToken = 'lucent_access_token';
-  static const refreshToken = 'lucent_refresh_token';
-
   // ── App ────────────────────────────────────────────────────────────────
 
   static const appLocale = 'app.locale';

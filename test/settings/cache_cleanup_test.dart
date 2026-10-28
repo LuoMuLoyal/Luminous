@@ -7,7 +7,7 @@ import 'package:luminous/core/database/daos/user_settings_cache.dart';
 import 'package:luminous/features/settings/data/providers/cache_cleanup.dart'
     as cache_cleanup;
 import 'package:luminous/features/settings/data/providers/data_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../helpers/kv_test_store.dart';
 
 // ── Fake DAOs ───────────────────────────────────────────────────
 
@@ -49,9 +49,9 @@ void main() {
     late _FakeMedicineDoseLogDao doseLogDao;
 
     ProviderContainer makeContainer({String retentionStorageValue = '90'}) {
-      SharedPreferences.setMockInitialValues({
-        'settings.dataStorage.retentionPeriod': retentionStorageValue,
-      });
+      KvTestStore.install(
+        seed: {'settings.dataStorage.retentionPeriod': retentionStorageValue},
+      );
 
       dailyRecordDao = _FakeDailyRecordDao();
       doseLogDao = _FakeMedicineDoseLogDao();

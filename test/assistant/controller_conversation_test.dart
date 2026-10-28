@@ -8,8 +8,8 @@ import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/utils/message_id.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import 'controller_test_helpers.dart';
 
 void main() {
@@ -17,7 +17,7 @@ void main() {
     test(
       'confirmProposedAction confirms on the backend and emits dailyRecords',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final proposal = createDailyRecordProposal(id: 'proposal-1');
         final assistantMessage = buildAssistantMessage(
           content: '建议：记录喝水。',
@@ -71,7 +71,7 @@ void main() {
     test(
       'confirmProposedAction emits userSettings for settings proposals',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final proposal = updateUserSettingsProposal(id: 'proposal-settings-1');
         final assistantMessage = buildAssistantMessage(
           content: '建议：关闭记忆。',
@@ -113,7 +113,7 @@ void main() {
     test(
       'confirmProposedAction marks the proposal failed and rethrows',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final proposal = createDailyRecordProposal(id: 'proposal-1');
         final assistantMessage = buildAssistantMessage(
           content: '建议：记录喝水。',
@@ -156,7 +156,7 @@ void main() {
     test(
       'confirmProposedAction throws without a persisted conversation',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final fake = FakeAssistantRepository(
           streamOverride: Stream<AssistantGenerationEvent>.fromIterable([
             AssistantGenerationResultEvent(
@@ -193,7 +193,7 @@ void main() {
     );
 
     test('renameConversation updates the title optimistically', () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final now = DateTime(2026, 6, 1);
       final fake = FakeAssistantRepository()
         ..recentList = <AssistantConversationSummary>[
@@ -229,7 +229,7 @@ void main() {
     test(
       'renameConversation ignores a concurrent rename for the same conversation',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final now = DateTime(2026, 6, 1);
         final fake = FakeAssistantRepository()
           ..recentList = <AssistantConversationSummary>[
@@ -281,7 +281,7 @@ void main() {
     test(
       'renameConversation rolls back the title and rethrows on failure',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final now = DateTime(2026, 6, 1);
         final fake = FakeAssistantRepository()
           ..recentList = <AssistantConversationSummary>[
@@ -321,7 +321,7 @@ void main() {
     test(
       'deleteConversation clears the current conversation and falls back to latest',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final now = DateTime(2026, 6, 1);
         final fake =
             FakeAssistantRepository(
@@ -384,7 +384,7 @@ void main() {
     test(
       'deleteConversation loads the next latest when the deleted one was current',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final now = DateTime(2026, 6, 1);
         final fake =
             FakeAssistantRepository(
@@ -442,7 +442,7 @@ void main() {
     test(
       'deleteConversation keeps the current conversation when deleting another',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final now = DateTime(2026, 6, 1);
         final message = AssistantMessage(
           role: AssistantMessageRole.user,
@@ -498,7 +498,7 @@ void main() {
     test(
       'clearConversation exposes isClearingConversation while archiving',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final fake = FakeAssistantRepository();
         final gate = Completer<bool>();
         fake.clearGate = gate;
@@ -527,7 +527,7 @@ void main() {
     test(
       'clearConversation resets isClearingConversation on failure',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final fake = FakeAssistantRepository()..throwOnClear = true;
         final container = buildContainer(fake);
         addTearDown(container.dispose);
@@ -547,7 +547,7 @@ void main() {
 
   group('AssistantController.classifySendError', () {
     AssistantController buildController() {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final container = buildContainer(FakeAssistantRepository());
       addTearDown(container.dispose);
       return container.read(assistantControllerProvider.notifier);

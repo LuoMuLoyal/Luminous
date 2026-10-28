@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/config/pref_keys.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 
 enum AppLocale {
   system('system'),
@@ -68,14 +68,14 @@ class LocaleController extends AsyncNotifier<AppLocale> {
 
   @override
   Future<AppLocale> build() async {
-    final preferences = await SharedPreferences.getInstance();
-    return AppLocale.fromStorage(preferences.getString(_storageKey));
+    final preferences = KvStore.instance;
+    return AppLocale.fromStorage(preferences.getOrNull<String>(_storageKey));
   }
 
   Future<void> setLocale(AppLocale locale) async {
     state = AsyncData(locale);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_storageKey, locale.storageValue);
+    final preferences = KvStore.instance;
+    await preferences.set(_storageKey, locale.storageValue);
   }
 }
 

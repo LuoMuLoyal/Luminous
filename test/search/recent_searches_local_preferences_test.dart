@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/features/search/data/datasources/recent_searches.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../helpers/kv_test_store.dart';
 
 void main() {
   const store = RecentSearchesLocalPreferences();
 
-  setUp(() {
-    SharedPreferences.setMockInitialValues({});
+  setUp(() async {
+    KvTestStore.install(seed: {});
   });
 
   test('load returns an empty list when nothing is stored', () async {
@@ -15,9 +15,11 @@ void main() {
   });
 
   test('load returns persisted keywords latest-first', () async {
-    SharedPreferences.setMockInitialValues({
-      PrefKeys.medicineSearchRecentKeywords: ['布洛芬', '阿司匹林'],
-    });
+    KvTestStore.install(
+      seed: {
+        PrefKeys.medicineSearchRecentKeywords: ['布洛芬', '阿司匹林'],
+      },
+    );
 
     expect(await store.load(), ['布洛芬', '阿司匹林']);
   });

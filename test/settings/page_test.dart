@@ -17,15 +17,15 @@ import 'package:luminous/features/settings/domain/services/notification_permissi
 import 'package:luminous/features/settings/presentation/pages/page.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('Settings page renders grouped settings sections', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await _pumpSettingsPage(
@@ -91,7 +91,7 @@ void main() {
   });
 
   testWidgets('Settings back button routes to previous page', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final router = GoRouter(
       initialLocation: '/',
       routes: [
@@ -125,7 +125,7 @@ void main() {
   testWidgets('Settings account row routes to account settings page', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     await _pumpSettingsPage(
       tester,
       router: GoRouter(
@@ -154,7 +154,7 @@ void main() {
   testWidgets('Settings account row shows login dialog when signed out', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       ProviderScope(
@@ -213,7 +213,7 @@ void main() {
   testWidgets('Settings language row routes to language settings page', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     await _pumpSettingsPage(
       tester,
       router: GoRouter(
@@ -247,7 +247,7 @@ void main() {
   testWidgets('Settings theme row routes to theme settings page', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     await _pumpSettingsPage(
       tester,
       router: GoRouter(
@@ -281,7 +281,7 @@ void main() {
   testWidgets(
     'Settings notifications row routes to notification settings page',
     (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       await _pumpSettingsPage(
         tester,
         router: GoRouter(
@@ -316,7 +316,7 @@ void main() {
   testWidgets('Settings advanced row routes to advanced settings page', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     await _pumpSettingsPage(
       tester,
       router: GoRouter(
@@ -350,7 +350,7 @@ void main() {
   testWidgets('Settings assistant row routes to assistant page', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     await _pumpSettingsPage(
       tester,
       router: GoRouter(
@@ -382,7 +382,7 @@ void main() {
   });
 
   testWidgets('Settings export row routes to data export page', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -424,7 +424,7 @@ void main() {
   testWidgets('Data sharing toggle shows confirmation dialog before changing', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final fakeController = _FakeUserSettingsController();
 
@@ -491,7 +491,7 @@ void main() {
   testWidgets('Settings footer action logs out and routes to login page', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final container = ProviderContainer(
       overrides: [
         authSessionProvider.overrideWith(

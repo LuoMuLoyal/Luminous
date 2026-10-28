@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/health_data/data/providers/health_sync.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
 import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
@@ -9,8 +10,8 @@ import 'package:luminous/features/health_data/domain/entities/health_sync_result
 import 'package:luminous/features/health_data/presentation/providers/health_auto_sync.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_sync.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_sync_controller.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/mocks/health_data.dart';
 
 HealthMetric _metric() {
@@ -298,9 +299,7 @@ void main() {
     });
 
     test('reports notConfigured and ignores persisted enablement', () async {
-      SharedPreferences.setMockInitialValues({
-        PrefKeys.healthAutoSyncEnabled: true,
-      });
+      KvTestStore.install(seed: {PrefKeys.healthAutoSyncEnabled: true});
       repo.available = true;
       final c = ProviderContainer(
         overrides: [healthSyncRepositoryProvider.overrideWithValue(repo)],
@@ -319,7 +318,7 @@ void main() {
     test(
       'toggle is a no-op until a background executor is configured',
       () async {
-        SharedPreferences.setMockInitialValues({});
+        KvTestStore.install(seed: {});
         repo.available = true;
         final c = ProviderContainer(
           overrides: [healthSyncRepositoryProvider.overrideWithValue(repo)],
@@ -330,8 +329,11 @@ void main() {
         await notifier.toggle();
 
         expect(c.read(healthAutoSyncPreferenceProvider), isFalse);
-        final prefs = await SharedPreferences.getInstance();
-        expect(prefs.getBool(PrefKeys.healthAutoSyncEnabled), isNull);
+        final prefs = KvStore.instance;
+        expect(
+          prefs.get<bool>(PrefKeys.healthAutoSyncEnabled, fallback: false),
+          isNull,
+        );
       },
     );
   });

@@ -37,6 +37,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart'
     show assistantRepositoryProvider;
@@ -89,10 +90,10 @@ import 'package:luminous/features/support/data/repositories/lucent.dart'
 import 'package:luminous/features/today/data/providers/today_suggestion.dart'
     show todayRepositoryProvider;
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../integration_test/screenshots/page_catalog_screenshot_test.dart'
     as catalog;
+import '../../test/helpers/kv_test_store.dart';
 import 'simulated_fakes_assistant.dart';
 import 'simulated_fakes_misc.dart';
 import 'simulated_fakes_review.dart';
@@ -400,10 +401,10 @@ Future<ProviderContainer> _pumpPage(
   bool signedIn = true,
 }) async {
   // ignore: invalid_use_of_visible_for_testing_member -- this file is a test-run generator.
-  SharedPreferences.setMockInitialValues(const <String, Object>{});
-  final prefs = await SharedPreferences.getInstance();
+  KvTestStore.install(seed: const <String, Object>{});
+  final prefs = KvStore.instance;
   await prefs.clear();
-  await prefs.setString('app.locale', 'zh-CN');
+  await prefs.set('app.locale', 'zh-CN');
 
   const healthContext = SimulatedHealthContextRepository();
 

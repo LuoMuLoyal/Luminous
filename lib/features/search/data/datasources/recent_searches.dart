@@ -1,5 +1,5 @@
 import 'package:luminous/core/config/pref_keys.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 
 /// Data-layer service for recent search keyword persistence.
 ///
@@ -16,8 +16,10 @@ class RecentSearchesLocalPreferences {
   /// Loads recent search keywords, latest first. Returns an empty list when
   /// nothing has been persisted yet.
   Future<List<String>> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList(PrefKeys.medicineSearchRecentKeywords) ??
+    final prefs = KvStore.instance;
+    return prefs.getOrNull<List<String>>(
+          PrefKeys.medicineSearchRecentKeywords,
+        ) ??
         const <String>[];
   }
 
@@ -26,19 +28,19 @@ class RecentSearchesLocalPreferences {
   /// Returns the updated list (latest first) so callers can keep in-memory
   /// state in sync with storage.
   Future<List<String>> add(String keyword) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = KvStore.instance;
     final current =
-        prefs.getStringList(PrefKeys.medicineSearchRecentKeywords) ??
+        prefs.getOrNull<List<String>>(PrefKeys.medicineSearchRecentKeywords) ??
         const <String>[];
     final updated = <String>[keyword, ...current.where((k) => k != keyword)];
     final capped = updated.take(maxKeywords).toList();
-    await prefs.setStringList(PrefKeys.medicineSearchRecentKeywords, capped);
+    await prefs.set(PrefKeys.medicineSearchRecentKeywords, capped);
     return capped;
   }
 
   /// Removes all recent search keywords.
   Future<void> clear() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = KvStore.instance;
     await prefs.remove(PrefKeys.medicineSearchRecentKeywords);
   }
 }

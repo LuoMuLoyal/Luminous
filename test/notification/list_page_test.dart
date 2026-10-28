@@ -7,8 +7,8 @@ import 'package:luminous/features/notification/domain/entities/notification.dart
 import 'package:luminous/features/notification/presentation/pages/list.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 Widget _testApp(Widget child) {
@@ -17,7 +17,7 @@ Widget _testApp(Widget child) {
 
 void main() {
   testWidgets('NotificationListPage shows empty state', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     // Use a ProviderContainer to control the provider
@@ -53,7 +53,7 @@ void main() {
   });
 
   testWidgets('NotificationListPage shows items', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     final now = DateTime.now();
     final today =
