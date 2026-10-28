@@ -1,5 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/database/cache_constants.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/search_result.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:luminous/features/search/data/mappers/medicine_search.dart';
@@ -20,10 +27,15 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
   LucentMedicineSearchRepository({
     required this.dataSource,
     required this.mapper,
+    required this.cacheDao,
   });
 
   final MedicineSearchRemoteDataSource dataSource;
   final MedicineSearchMapper mapper;
+  final SearchResultDao cacheDao;
+
+  /// Background refresh throttle per query scope.
+  final Map<String, DateTime> _lastRefresh = {};
 
   @override
   TaskEither<LucentFailure, List<MedicineSearchResult>> search({
@@ -33,15 +45,86 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
     int pageSize = 20,
   }) {
     return TaskEither.tryCatch(() async {
-      final response = await dataSource.search(
-        source: source.name,
+      final scope = '${source.name}|$query|$page|$pageSize';
+
+      // Cache-first: re-running the same query renders instantly.
+      final cached = await cacheDao.fetch(scope);
+      if (cached != null) {
+        _refreshInBackground(
+          scope,
+          query: query,
+          source: source,
+          page: page,
+          pageSize: pageSize,
+        );
+        return (jsonDecode(cached) as List<dynamic>)
+            .cast<Map<String, dynamic>>()
+            .map(MedicineSearchResult.fromJson)
+            .toList();
+      }
+
+      final results = await _searchRemote(
         query: query,
+        source: source,
         page: page,
         pageSize: pageSize,
       );
-
-      return response.items.map(mapper.dtoToResult).toList();
+      await cacheDao.replace(
+        scope,
+        jsonEncode(results.map((r) => r.toJson()).toList()),
+      );
+      return results;
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
+  }
+
+  Future<List<MedicineSearchResult>> _searchRemote({
+    required String query,
+    required MedicineSearchSource source,
+    required int page,
+    required int pageSize,
+  }) async {
+    final response = await dataSource.search(
+      source: source.name,
+      query: query,
+      page: page,
+      pageSize: pageSize,
+    );
+    return response.items.map(mapper.dtoToResult).toList();
+  }
+
+  /// Best-effort refresh: throttled, failures only logged.
+  void _refreshInBackground(
+    String scope, {
+    required String query,
+    required MedicineSearchSource source,
+    required int page,
+    required int pageSize,
+  }) {
+    final now = DateTime.now();
+    final last = _lastRefresh[scope];
+    if (last != null && now.difference(last) < backgroundRefreshThrottle) {
+      return;
+    }
+    _lastRefresh[scope] = now;
+
+    unawaited(
+      Future(() async {
+        try {
+          final results = await _searchRemote(
+            query: query,
+            source: source,
+            page: page,
+            pageSize: pageSize,
+          );
+          await cacheDao.replace(
+            scope,
+            jsonEncode(results.map((r) => r.toJson()).toList()),
+          );
+        } catch (e) {
+          appTalker.warning('Search background refresh failed: $e');
+        }
+      }),
+    );
   }
 
   /// 桌面端旧预览面板遗留的详情拉取（F-11 去造假后保留但**不接入主路径**）。
@@ -77,6 +160,7 @@ LucentMedicineSearchRepository lucentMedicineSearchRepository(Ref ref) {
   return LucentMedicineSearchRepository(
     dataSource: ref.watch(medicineSearchRemoteDataSourceProvider),
     mapper: MedicineSearchMapper(),
+    cacheDao: ref.watch(searchResultDaoProvider),
   );
 }
 

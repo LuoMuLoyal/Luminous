@@ -22,16 +22,8 @@ import 'package:shimmer/shimmer.dart';
 
 final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
     ? <MedicineSearchQuickAction>[
-        const MedicineSearchQuickAction(
-          type: MedicineSearchActionType.barcode,
-          icon: SemanticIcons.actionScan,
-          accent: SemanticColor.primary,
-        ),
-        const MedicineSearchQuickAction(
-          type: MedicineSearchActionType.photo,
-          icon: SemanticIcons.actionCamera,
-          accent: SemanticColor.primary,
-        ),
+        const MedicineSearchQuickAction(type: MedicineSearchActionType.barcode),
+        const MedicineSearchQuickAction(type: MedicineSearchActionType.photo),
       ]
     : <MedicineSearchQuickAction>[];
 

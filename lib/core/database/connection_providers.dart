@@ -9,6 +9,7 @@ import 'package:luminous/core/database/daos/notification_page.dart';
 import 'package:luminous/core/database/daos/pending_sync.dart';
 import 'package:luminous/core/database/daos/review.dart';
 import 'package:luminous/core/database/daos/review_dashboard.dart';
+import 'package:luminous/core/database/daos/search_result.dart';
 import 'package:luminous/core/database/daos/today_suggestion.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -57,6 +58,11 @@ MineDashboardDao mineDashboardDao(Ref ref) {
 @Riverpod(keepAlive: true)
 MedicineWorkspaceDao medicineWorkspaceDao(Ref ref) {
   return ref.read(appDatabaseProvider).medicineWorkspaceDao;
+}
+
+@Riverpod(keepAlive: true)
+SearchResultDao searchResultDao(Ref ref) {
+  return ref.read(appDatabaseProvider).searchResultDao;
 }
 
 @Riverpod(keepAlive: true)

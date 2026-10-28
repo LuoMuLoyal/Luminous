@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/database/daos/search_result.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:luminous/features/search/data/mappers/medicine_search.dart';
@@ -190,6 +191,7 @@ void main() {
       repo = LucentMedicineSearchRepository(
         dataSource: dataSource,
         mapper: mapper,
+        cacheDao: _FakeSearchResultDao(),
       );
     });
 
@@ -488,4 +490,19 @@ void main() {
       });
     });
   });
+}
+
+/// Always a cache miss, so tests exercise the data source path.
+class _FakeSearchResultDao implements SearchResultDao {
+  @override
+  Future<String?> fetch(String scope) async => null;
+
+  @override
+  Future<void> replace(String scope, String json) async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

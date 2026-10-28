@@ -22,6 +22,7 @@ import 'daos/notification_page.dart';
 import 'daos/pending_sync.dart';
 import 'daos/review.dart';
 import 'daos/review_dashboard.dart';
+import 'daos/search_result.dart';
 import 'daos/today_suggestion.dart';
 import 'tables/current_medicines.dart';
 import 'tables/daily_record_summaries.dart';
@@ -34,6 +35,7 @@ import 'tables/notification_pages.dart';
 import 'tables/pending_sync_queue.dart';
 import 'tables/review_dashboards.dart';
 import 'tables/reviews.dart';
+import 'tables/search_results.dart';
 import 'tables/today_suggestions.dart';
 
 part 'database.g.dart';
@@ -52,6 +54,7 @@ part 'database.g.dart';
     NotificationPageCacheEntries,
     MineDashboardCacheEntries,
     MedicineWorkspaceCacheEntries,
+    SearchResultCacheEntries,
   ],
   daos: [
     DailyRecordDao,
@@ -66,6 +69,7 @@ part 'database.g.dart';
     NotificationPageDao,
     MineDashboardDao,
     MedicineWorkspaceDao,
+    SearchResultDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {

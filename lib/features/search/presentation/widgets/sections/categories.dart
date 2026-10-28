@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
+import 'package:luminous/features/search/presentation/utils/search_visuals.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class Categories extends StatelessWidget {
@@ -56,6 +57,7 @@ class _CategoryItem extends StatelessWidget {
   final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
+    final (icon, accent, _) = SearchVisuals.category(category.type);
     return FButton.raw(
       onPress:
           onTap ??
@@ -68,11 +70,7 @@ class _CategoryItem extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(
-            category.icon,
-            color: category.accent.solid(context),
-            size: IconSizeTokens.lg,
-          ),
+          Icon(icon, color: accent.solid(context), size: IconSizeTokens.lg),
           const SizedBox(height: Spacing.md),
           Text(
             categoryLabel(l10n, category.type),

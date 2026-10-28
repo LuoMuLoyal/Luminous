@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/design/color/semantic_color.dart';
 
 part 'entities.freezed.dart';
+part 'entities.g.dart';
 
 enum MedicineSearchSource { cn, drugbank }
 
@@ -23,9 +22,10 @@ enum MedicineSearchActionType { photo, barcode, keyword, switchSource }
 abstract class MedicineSearchQuickAction with _$MedicineSearchQuickAction {
   const factory MedicineSearchQuickAction({
     required MedicineSearchActionType type,
-    required IconData icon,
-    required SemanticColor accent,
   }) = _MedicineSearchQuickAction;
+
+  factory MedicineSearchQuickAction.fromJson(Map<String, dynamic> json) =>
+      _$MedicineSearchQuickActionFromJson(json);
 }
 
 /// 分类快捷实体，保留但**不接入主路径**（F-12）。
@@ -36,10 +36,10 @@ abstract class MedicineSearchQuickAction with _$MedicineSearchQuickAction {
 abstract class MedicineSearchCategory with _$MedicineSearchCategory {
   const factory MedicineSearchCategory({
     required MedicineSearchCategoryType type,
-    required IconData icon,
-    required SemanticColor accent,
-    required SemanticColor softColor,
   }) = _MedicineSearchCategory;
+
+  factory MedicineSearchCategory.fromJson(Map<String, dynamic> json) =>
+      _$MedicineSearchCategoryFromJson(json);
 }
 
 @freezed
@@ -53,6 +53,9 @@ abstract class MedicineSearchResult with _$MedicineSearchResult {
     required List<String> tags,
     required MedicineSearchMatchType matchType,
   }) = _MedicineSearchResult;
+
+  factory MedicineSearchResult.fromJson(Map<String, dynamic> json) =>
+      _$MedicineSearchResultFromJson(json);
 }
 
 /// 桌面端旧预览面板（F-11 去造假）遗留的数据形态，保留但**不接入主路径**。
