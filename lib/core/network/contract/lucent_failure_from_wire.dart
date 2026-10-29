@@ -1,5 +1,4 @@
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/contract/problem_details.dart';
 
 /// Wire -> [LucentFailure] translation.

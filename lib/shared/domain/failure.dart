@@ -3,61 +3,257 @@
 ///
 /// `domain/` may not import `lib/core/**` (clean-layers R1/R2), so the failure
 /// type that repository interfaces put in their `TaskEither` left slot cannot
-/// live beside the wire types. It lives here instead: a pure-Dart value family
-/// with no framework, no I/O and no `core/` dependency.
+/// live beside the wire types. It lives here instead: pure Dart, zero imports,
+/// no framework and no I/O.
 ///
-/// Mapping to and from the wire representation (`core/errors/LucentFailure`,
-/// RFC 9457 `ProblemDetails`) belongs to the `data/` layer — that is the
-/// anti-corruption layer's job, and `data/` is allowed to see both sides.
+/// The `core/` files remain thin re-export façades so existing imports keep
+/// working; mapping to and from the wire representation (`ProblemDetails`,
+/// `LucentFailureFromWire`) stays in `core/network` and the `data/` layer.
 library;
 
-/// A recoverable failure at a feature's repository boundary.
+/// Failure codes for errors the **client** detects itself.
 ///
-/// Sealed so consumers switch exhaustively: a new variant forces every mapping
-/// site to be updated at compile time instead of silently falling through.
-sealed class DomainFailure {
-  const DomainFailure({this.message, this.code, this.cause});
+/// The failing layer (data service, platform client, interceptor) carries this
+/// enum instead of user-visible copy; the presentation layer maps it to a
+/// localized string through `ClientErrorL10n.map`, normally via
+/// `userMessageFromError`.
+///
+/// [NetworkErrorCode] stays the vocabulary for transport failures, and
+/// `LucentFailure.code` for codes the server sent. Client codes fill the third
+/// gap: "the client refused before/without a server answer".
+enum ClientErrorCode {
+  /// The action needs a signed-in user, but the session has none.
+  notSignedIn,
 
-  /// Developer-facing diagnostic (logs, tests). Never user copy — user copy is
-  /// resolved in the presentation layer from [code] (see the feature's
-  /// `presentation/` error mapping).
-  final String? message;
+  /// WeChat mobile SDK login is unavailable in this build (no app id).
+  wechatSdkNotConfigured,
 
-  /// Stable server or client code, when one exists.
-  final String? code;
+  /// WeChat mobile SDK login is not available on this platform.
+  wechatMobileUnsupported,
 
-  /// Underlying error, kept for logging; never rendered.
-  final Object? cause;
+  /// WeChat desktop OAuth callback listener is not available on this platform.
+  wechatDesktopUnsupported,
+
+  /// `Fluwx.registerApi` returned false.
+  wechatSdkRegistrationFailed,
+
+  /// The WeChat app is not installed on the device.
+  wechatNotInstalled,
+
+  /// WeChat authorization was cancelled or reported failure.
+  wechatAuthFailed,
+
+  /// WeChat authorization could not be started.
+  wechatAuthStartFailed,
+
+  /// WeChat authorization did not complete before the deadline.
+  wechatAuthTimeout,
+
+  /// No refresh token in the store, so the session cannot be renewed.
+  refreshTokenUnavailable,
+
+  /// Avatar upload refused: the picked file is empty.
+  avatarFileEmpty,
+
+  /// Avatar upload refused: the content type is not allowed.
+  avatarFileTypeUnsupported,
+
+  /// Avatar upload refused: the file exceeds the client size limit.
+  avatarFileTooLarge,
+
+  /// The reminder group has no usable occurrence to export to the calendar.
+  reminderCalendarUnavailable,
+
+  /// The system calendar refused or could not accept the event.
+  reminderCalendarWriteFailed,
 }
 
-/// Transport-level failure: timeouts, no connectivity, TLS, cancellation.
-final class NetworkFailure extends DomainFailure {
-  const NetworkFailure({
-    super.message,
-    super.code,
-    super.cause,
-    this.retryable = true,
+/// Network-layer error codes used to map l10n strings in the presentation layer.
+///
+/// The network layer carries this enum (not hardcoded message text) when
+/// throwing [LucentFailure]. The presentation layer maps it to a localized
+/// string via `NetworkErrorL10n`.
+enum NetworkErrorCode {
+  /// A domain/business failure that is not represented by a transport error.
+  businessFailure,
+
+  /// Stream response is empty
+  emptyStreamResponse,
+
+  /// SSE payload cannot be parsed as a Map
+  invalidSsePayload,
+
+  /// Response body is empty
+  emptyResponse,
+
+  /// Connection timeout
+  connectionTimeout,
+
+  /// Request send timeout
+  sendTimeout,
+
+  /// Response receive timeout
+  receiveTimeout,
+
+  /// Server certificate validation failed
+  badCertificate,
+
+  /// Network connection failed
+  connectionError,
+
+  /// Request cancelled
+  cancelled,
+
+  /// HTTP status code error
+  badResponse,
+
+  /// Unknown network error
+  unknown,
+}
+
+enum LucentFailureKind { network, authentication, business, server, unknown }
+
+/// A normalized, actionable failure at the repository boundary.
+///
+/// HTTP status is retained as transport metadata. `ProblemDetails` remains
+/// the wire representation and is not replaced by this application type.
+final class LucentFailure {
+  const LucentFailure({
+    required this.kind,
+    required this.message,
+    this.type,
+    this.title,
+    this.detail,
+    this.code,
+    this.statusCode,
+    this.errors,
+    this.retryable,
+    this.retryAfter,
+    this.traceId,
+    this.networkErrorCode,
+    this.clientErrorCode,
+    this.cause,
   });
 
-  final bool retryable;
-}
+  factory LucentFailure.network({
+    required String message,
+    required NetworkErrorCode networkErrorCode,
+    String? traceId,
+    Object? cause,
+  }) {
+    return LucentFailure(
+      kind: LucentFailureKind.network,
+      message: message,
+      traceId: traceId,
+      networkErrorCode: networkErrorCode,
+      cause: cause,
+    );
+  }
 
-/// The caller is not (or no longer) authenticated, or lacks permission.
-final class AuthenticationFailure extends DomainFailure {
-  const AuthenticationFailure({super.message, super.code, super.cause});
-}
+  factory LucentFailure.business({
+    required String message,
+    String? code,
+    Object? cause,
+  }) {
+    return LucentFailure(
+      kind: LucentFailureKind.business,
+      message: message,
+      code: code,
+      cause: cause,
+    );
+  }
 
-/// The request was understood and rejected — validation, conflict, not found.
-final class BusinessFailure extends DomainFailure {
-  const BusinessFailure({super.message, super.code, super.cause});
-}
+  /// A failure the client itself detected — no server code exists for it.
+  ///
+  /// [message] stays a developer-facing diagnostic (logs, tests); the user
+  /// copy comes from [clientErrorCode] via `ClientErrorL10n.map`.
+  factory LucentFailure.client({
+    required ClientErrorCode clientErrorCode,
+    required String message,
+    LucentFailureKind kind = LucentFailureKind.business,
+    NetworkErrorCode? networkErrorCode,
+    Object? cause,
+  }) {
+    return LucentFailure(
+      kind: kind,
+      message: message,
+      clientErrorCode: clientErrorCode,
+      networkErrorCode: networkErrorCode,
+      cause: cause,
+    );
+  }
 
-/// The server failed (5xx). Retrying later is reasonable.
-final class ServerFailure extends DomainFailure {
-  const ServerFailure({super.message, super.code, super.cause});
-}
+  factory LucentFailure.unknown({
+    required String message,
+    NetworkErrorCode networkErrorCode = NetworkErrorCode.unknown,
+    String? traceId,
+    Object? cause,
+  }) {
+    return LucentFailure(
+      kind: LucentFailureKind.unknown,
+      message: message,
+      traceId: traceId,
+      networkErrorCode: networkErrorCode,
+      cause: cause,
+    );
+  }
 
-/// Unclassified failure — the caller could not determine a better variant.
-final class UnknownFailure extends DomainFailure {
-  const UnknownFailure({super.message, super.code, super.cause});
+  final LucentFailureKind kind;
+  final String message;
+  final String? type;
+  final String? title;
+  final String? detail;
+  final String? code;
+  final int? statusCode;
+  final Map<String, dynamic>? errors;
+  final bool? retryable;
+  final Duration? retryAfter;
+  final String? traceId;
+  final NetworkErrorCode? networkErrorCode;
+
+  /// Set when the failure originates in this client rather than the wire.
+  /// Takes precedence over [networkErrorCode] when resolving user copy.
+  final ClientErrorCode? clientErrorCode;
+  final Object? cause;
+
+  bool get isTokenExpired => code == 'AUTH_TOKEN_EXPIRED';
+
+  /// The backend error code returned when a request carries no access token the
+  /// guard can accept: missing header, malformed token, or a signature that no
+  /// longer verifies (`JWT_ACCESS_SECRET` rotated).
+  ///
+  /// Refreshable — the opaque refresh token outlives the access token, so a
+  /// stored one can still renew the session (see `AuthInterceptor`).
+  static const kAuthRequiredCode = 'AUTH_REQUIRED';
+
+  bool get isAuthRequired => code == kAuthRequiredCode;
+
+  bool get isRefreshTokenInvalid => code == 'AUTH_REFRESH_TOKEN_INVALID';
+
+  /// The backend error code returned when an OAuth-only user has no local
+  /// password and a sensitive action requires password re-authentication.
+  static const kPasswordNotSetCode = 'AUTH_PASSWORD_NOT_SET';
+
+  bool get isPasswordNotSet => code == kPasswordNotSetCode;
+
+  bool get isNetworkConnectivityError =>
+      networkErrorCode == NetworkErrorCode.connectionTimeout ||
+      networkErrorCode == NetworkErrorCode.sendTimeout ||
+      networkErrorCode == NetworkErrorCode.receiveTimeout ||
+      networkErrorCode == NetworkErrorCode.connectionError ||
+      networkErrorCode == NetworkErrorCode.badCertificate;
+
+  @override
+  String toString() {
+    final parts = <String>[
+      'LucentFailure(kind: $kind',
+      if (code != null) ', code: $code',
+      if (statusCode != null) ', statusCode: $statusCode',
+      if (traceId != null && traceId!.isNotEmpty) ', traceId: $traceId',
+      if (clientErrorCode != null) ', clientErrorCode: $clientErrorCode',
+      if (networkErrorCode != null) ', networkErrorCode: $networkErrorCode',
+      ')',
+    ];
+    return parts.join();
+  }
 }

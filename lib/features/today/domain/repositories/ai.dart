@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 sealed class TodayAiGenerationEvent {
   const TodayAiGenerationEvent();

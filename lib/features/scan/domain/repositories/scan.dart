@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Repository for barcode/OCR/AI medicine scan operations.
 abstract interface class ScanRepository {

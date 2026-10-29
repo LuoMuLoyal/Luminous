@@ -1,4 +1,3 @@
-import 'package:luminous/core/errors/client_error_code.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client_base.dart';
 

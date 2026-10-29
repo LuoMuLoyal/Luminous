@@ -9,7 +9,6 @@ import 'package:luminous/core/database/daos/notification_page.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

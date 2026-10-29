@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/sse.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 
 /// A mock Dio adapter that returns a controlled SSE byte stream.
 class _MockSseAdapter implements HttpClientAdapter {

@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Domain interface for reading and writing daily records.
 ///
