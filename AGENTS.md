@@ -44,6 +44,10 @@ pre-commit still blocks.
 
 - Flutter, Riverpod (not GetX), GoRouter (not `Navigator.push(MaterialPageRoute(...))`).
 - Backend: Lucent.
+- 目标平台：`android` / `ios` / `windows` / `macos` / `linux` / `web` / `ohos`（鸿蒙壳：
+  `ohos/` 内嵌 Web 制品，流水线 `.github/workflows/deploy-harmonyos.yml`）。
+- 本地存储：原生平台 drift + **SQLCipher 加密**（密钥在平台安全存储）；Web 端不加密；
+  键值偏好走 `hive_ce`（`lib/core/storage/kv_store.dart`）。
 
 ## Commands
 
@@ -61,22 +65,68 @@ dart run scripts/docs/generate.dart               # 再生成 reference/generate
 dart run scripts/workflows/daily.dart           # 仓库安全级检查(analyze+test+文档+生成文档新鲜度)
 dart run scripts/workflows/fullstack.dart       # 全栈检查(需 Lucent 运行时)
 dart run scripts/docs/verify.dart               # 文档新鲜度通报(--verify 全量治理)
-Push-Location tool/luminous_lints; dart run bin/luminous_lints.dart; Pop-Location   # 八条自定义规则扫描(warn 观察模式)
+Push-Location tool/luminous_lints; dart run bin/luminous_lints.dart; Pop-Location   # 观察模式八条规则(warn，永远 exit 0)
+Push-Location tool/luminous_lints; dart run bin/luminous_lints.dart --clean-layers --quiet; Pop-Location   # 分层门禁 R1–R9(违规 exit 1)
 ```
 
 窄命令迭代，收尾前跑宽检查(`scripts/workflows/daily.dart`)。
 
 ## Architecture
 
-- `lib/core/` — shared design system, theme, feedback, network, widgets.
-- `lib/features/{feature}/` — per-feature vertical slices:
-  - `application/` — business orchestration: use cases (function-style) and orchestrators (class-style)
-  - `data/` — repositories, data sources, providers, mappers, utils
-  - `domain/` — entities, repository interfaces, services, constants
-  - `presentation/` — pages, widgets, controllers, providers, utils, models, services
+架构是 **DDD-lite + Clean**，由 `luminous_lints --clean-layers` 强制执行（见下节）。
+叙述文档：`docs/reference/architecture.md`、`docs/reference/data-layer.md`、
+`docs/reference/state-management.md`。
+
+- `lib/app/` — 组合根：`bootstrap.dart`、`router.dart`、`auth_session_adapter.dart`、
+  `push_handlers.dart`、`sync_handlers.dart`、`settings_adapters.dart`，以及
+  `composition/**`（provider 装配、跨 feature 接线、快照 hub 出口）。
+- `lib/core/` — 横切基础设施：`network`（唯一网络入口）、`database`（drift）、`storage`、
+  `design`、`widgets`、`i18n`、`router`、`logger`、`providers`、`feedback`、`forms`、`errors`、
+  `config`、`accessibility`、`analytics`、`notifications`、`push`、`native`、`shortcuts`、
+  `ai`、`theme`、`utils`。
+- `lib/shared/` — 共享内核：`domain/failure.dart`（failure 词汇）、`domain/semantic.dart`、
+  `design/`（跨 feature 视图令牌）。纯值类型，无 I/O。
+- `lib/features/{feature}/` — 按 feature 的垂直切片，四层各有严格依赖方向：
+  - `domain/` — 纯 Dart：只允许 `fpdart` / `freezed_annotation` / `meta` / `clock`、
+    同 feature 的 `domain/`，以及 `lib/shared/domain/` 共享内核（纯值类型与 failure 词汇）。
+    实体、repository 接口、纯规则服务、常量。
+  - `application/` — use case（函数式）与 orchestrator（类式）：只允许 `domain/`
+    （**含别的 feature 的 domain 接口/实体**，用于跨 feature 编排）、`lib/shared/domain/`
+    与纯 Dart 包。不出现 `Ref` / `BuildContext` / 导航 / Toast。
+  - `data/` — repository 实现、datasource、mapper、`@riverpod` 装配。只允许同 feature 的
+    `domain/`、自身层，以及 `core/network` / `core/database` / `core/storage` / `lib/shared/`。
+  - `presentation/` — pages / widgets / providers / controllers / utils。只允许同 feature 的
+    `application/` + `domain/`、自身层、纯 UI 的 `core/` 子树与 `lib/app/composition`；
+    **import `data/` 永远违规**。
+- 依赖方向：`presentation → application → domain`；`data → domain`（实现接口）。
+  组合根在 `lib/app/composition/`，把 data 实现注入 domain 接口。
 - New code goes only under `lib/features/`, `lib/core/`, or `lib/shared/`. **Do not**
   add to legacy `lib/pages/`, `lib/stores/`, `lib/viewmodels/`, `lib/components/`.
 - The five tabs are `today / record / medicine / review / mine`.
+
+### Layering Rules（`--clean-layers`，R1–R9，无白名单）
+
+```powershell
+cd tool/luminous_lints; dart run bin/luminous_lints.dart --clean-layers --quiet
+```
+
+违规即 exit 1。pre-push（`scripts/hooks/git.dart`）、`scripts/workflows/daily.dart`、CI
+都跑同一条命令（CI 在架构清理期带 `continue-on-error`，本地推送是真门禁）。
+
+| 规则 | 约束 |
+| --- | --- |
+| `domain_purity` | `domain/**` 只允许 `dart:*` + `fpdart`/`freezed_annotation`/`meta`/`clock` + 同 feature `domain/` + `lib/shared/domain/`；**框架/插件包**（`flutter_riverpod`/`dio`/`drift`/`permission_handler`/`flutter_local_notifications`/`path_provider`/`hive_ce`）由 CLI 的文本级检查补充拦截 |
+| `application_layer` | `application/**` 只允许 `domain/`（含别的 feature 的 domain）+ `lib/shared/domain/` + 纯 Dart 包 |
+| `data_layer` | `data/**` 只允许同 feature `domain/`、自身层、`core/network`、`core/database`、`core/storage`、`lib/shared/` |
+| `presentation_layer` | `presentation/**` 只允许同 feature `application/`+`domain/`、自身层、纯 UI 的 `core/` 子树（`design`/`widgets`/`i18n`/`feedback`/`utils`/`theme`/`logger`/`providers`/`accessibility`/`config`/`errors`/`forms`/`router`/`ai` + `l10n/` + `app/router` + `app/composition` + `app/auth_session_adapter.dart` + `lib/shared/`）；**import `data/` 永远违规** |
+| `core_not_import_features` | `lib/core/**` 不得 import `lib/features/**`（旧 `core/auth`、`core/push` 豁免已取消） |
+| `cross_feature_import` | 不得 import 别的 feature 的 `data/**` 或 `presentation/**`；跨 feature 读走对方 `domain/` |
+| `directory_file_cap` | 单目录直挂源文件 **≤ 8**（生成文件不计） |
+| `forbidden_directory` | 禁止 `presentation/services/`、`data/providers/`、`presentation/flows/` |
+
+口径差异（待对齐）：观察模式的 `layered_import` 允许 providers 接缝与 `shell` 外壳，
+`cross_feature_import` 目前两项都不允许——后者更严。按
+`plans/2026-10-28-composable-tabs.md` A0 收敛到前者口径，届时以本文件为准同步。
 
 ### Cross-Feature Import Rules
 
@@ -88,8 +138,9 @@ Push-Location tool/luminous_lints; dart run bin/luminous_lints.dart; Pop-Locatio
 3. **application → domain allowed** — the `application/` layer may import other features'
    `domain/` layer (interfaces + entities) for cross-feature orchestration.
 
-这三条禁令由 `layered_import` 规则在 `lib/` 上扫描(见 Testing 一节的八规则 CLI)。
-feature 间消费 domain/provider 公共接缝是 sanctioned 形态，规则不报。
+这三条禁令由 `layered_import`（观察模式）扫描；严格分层由 `--clean-layers` 的
+`cross_feature_import` 扫描（见 §Layering Rules）。feature 间消费 domain 公共接缝是
+sanctioned 形态。两组规则对 providers 接缝的口径目前不一致，见 §Layering Rules 末段。
 
 ## Barrel Exports
 
@@ -117,15 +168,17 @@ feature 间消费 domain/provider 公共接缝是 sanctioned 形态，规则不�
 5. **Keep business words and implementation qualifiers** (`session`, `lucent`, `remote`, `mock`).
 6. **Class names are unaffected** — only file names change.
 7. **Test files mirror source** with `_test.dart` suffix.
-8. **Directory file-count cap** — a directory holding more than 10 direct source files
-   (generated files excluded) should be split into subdirectories; exemptions must be
-   recorded in the migration log.
+8. **Directory file-count cap** — a directory holding more than **8** direct source files
+   (generated files excluded) is a gate violation (`directory_file_cap`, §Layering Rules).
+   Split into subdirectories instead of exempting; there is no whitelist.
 
 ## State Management
 
 - Riverpod `Notifier` + `NotifierProvider`; `@freezed` for immutable state.
 - `ref.watch()` for reading, `ref.read()` for callbacks.
 - Prefer `ref.watch(provider.select(...))` to slice state and avoid unnecessary rebuilds.
+- Provider 放置：跨 feature 装配与注入放 `lib/app/composition/**`；feature 内读模型放
+  `presentation/providers/`。`domain/` 与 `application/` 里不出现 Riverpod 类型。
 
 ## Routing
 
@@ -158,10 +211,14 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
 - Mock repositories: `Mock*Repository`. Test helpers: `test/helpers/`.
 - Tests never launch real device capabilities; inject platform-interface fakes
   (e.g. `PermissionHandlerPlatform`, `MobileScannerPlatform`, `PaddleOcrNativePlatform`).
-- **八条自定义规则(`tool/luminous_lints`)**：扫描命令见 Commands(默认 warn 观察模式,
-  永远 exit 0;`--fatal` 才作门禁)。观察期收敛后按计划逐条转 error。规则包自身测试
-  `cd tool/luminous_lints && dart test`。当前未接入 IDE 插件(依赖图 analyzer 版本与
-  analysis server 不一致,接入待主包升级后重评)。
+- **自定义规则两组(`tool/luminous_lints`)**，命令见 Commands：
+  - **观察模式八条** — 默认 warn、永远 exit 0，`--fatal` 才阻断；清单见下节。
+    观察期收敛后按计划逐条转 error。
+  - **分层门禁九条（R1–R9）** — `--clean-layers` 模式下违规即 exit 1，无白名单；
+    pre-push、`scripts/workflows/daily.dart`、CI 都跑同一条（CI 带 `continue-on-error`）。
+    清单见 §Layering Rules。
+  - 规则包自身测试 `cd tool/luminous_lints && dart test`。当前未接入 IDE 插件（analyzer
+    版本与 analysis server 不一致，接入待主包升级后重评）。
 - `analysis_options.yaml` 中 `avoid_print` / `unawaited_futures` / `discarded_futures` /
   `use_build_context_synchronously` 以 **error 级**生效(基线 0 违规);豁免必须在
   代码行内附理由注释。
@@ -176,8 +233,8 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
 
 ### Custom Lint Rules(`tool/luminous_lints`)
 
-八条规则的一句话清单(默认 warn 观察模式,`--fatal` 才作门禁;规则细节见
-`tool/luminous_lints/lib/src/`)。**扫描范围排除生成文件**(`*.g.dart` /
+**观察模式八条**的一句话清单(默认 warn,`--fatal` 才作门禁;规则细节见
+`tool/luminous_lints/lib/src/`)。分层门禁 R1–R9 见 §Layering Rules。**扫描范围排除生成文件**(`*.g.dart` /
 `*.freezed.dart`):它们是 gitignored 的 build_runner 产物,报在它们上面既无法靠改代码
 消除,也会随生成器版本漂移——按上文"不得手改生成文件"的口径,规则同样不报。
 
@@ -216,7 +273,18 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
 
 ## Data Layer
 
-- Repository pattern: `domain/repositories/` interfaces, `data/repositories/` implements.
+- Repository pattern：`domain/repositories/` 接口 + `data/repositories/` 实现。
+- **cache-first（ADR-0006）**：先读本地（drift / KV），命中即返回并节流后台刷新、刷新结果
+  写回缓存。新增 repository 默认按此模式；跳过缓存必须在代码里写清理由。
+- 装配：`@riverpod` 的 repository provider 与实现同文件（`data/repositories/*.dart`）；
+  presentation 通过该 feature 的 `presentation/providers/data_access.dart` 再导出访问，
+  **不直接 import `data/`**。`data/providers/` 目录已废弃并被门禁禁止。
+- 跨 feature 读：共享快照 hub（`healthContextSnapshotProvider`）、DataChangeBus
+  （`lib/core/providers/instrumentation/data_change_bus.dart`）或对方 `domain/` 接口。
+- 离线写队列：`pending_sync_queue` + `SyncWorker`（`lib/core/database/sync/`），
+  handler 在 `lib/app/sync_handlers.dart` 注册。
+- 本地库：原生平台 drift + SQLCipher（`lib/core/database/connection_io.dart`），Web 端
+  `connection_web.dart` 为未加密实现——跨端差异在 repository 之上不可见。
 - Generated API client: `generated/lucent_api/`.
 
 ## L10n
@@ -252,6 +320,8 @@ Direct edits to `app_zh.arb` / `app_en.arb` **will be lost** on the next merge.
   experiment seam, not the place to replace current Lucent production flows by default.
 - Fix the requested problem directly — do not loosen lint rules or refactor nearby
   working code.
+- `domain/` 保持零框架依赖（`domain_purity`）；不要在 `data/` 下新建 provider 目录。
+- 不得用逐文件白名单绕过 `--clean-layers` 门禁；口径要改就改规则本身并同步本文件。
 - Do not touch unrelated dirty or untracked files in sibling projects.
 - Do not hand-edit generated files (`lib/l10n/app_localizations*.dart`,
 `generated/lucent_api/**`, merged `app_*.arb`, `docs/reference/generated/**`).

@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-08-31
+updated: 2026-10-29
 ---
 
 # Luminous Architecture
@@ -16,40 +16,54 @@ updated: 2026-08-31
 
 ## Directory Architecture
 
-The codebase follows a feature-first Clean Architecture structure:
+代码库是 feature-first 的 **DDD-lite + Clean** 结构，分层依赖由
+`luminous_lints --clean-layers` 强制（见 [Layering](#layering-enforced)）。
 
 ```
 lib/
 ├── main.dart              # App entry point
 │
-├── app/                   # App-level configuration
-│   ├── bootstrap.dart     # LuminousApp bootstrap (providers, theme, locale)
-│   └── router.dart        # GoRouter configuration (StatefulShellRoute + top-level routes)
+├── app/                   # 组合根（composition root）
+│   ├── bootstrap.dart     # LuminousApp bootstrap (providers, theme, locale, log sink)
+│   ├── router.dart        # GoRouter configuration (StatefulShellRoute + top-level routes)
+│   ├── router_helpers.dart        # 路由辅助（外部链接、action route 映射）
+│   ├── auth_session_adapter.dart  # 会话快照 → 具体 AuthUser 的只读接缝
+│   ├── push_handlers.dart         # 推送 → 深链/刷新
+│   ├── sync_handlers.dart         # SyncWorker 的实体重放 handler 注册
+│   ├── settings_adapters.dart     # 设置项与 provider 的接线
+│   ├── window_manager_setup.dart  # 桌面窗口初始化
+│   └── composition/       # provider 装配、跨 feature 接线、快照 hub 出口（按 domain 分目录）
 │
-├── core/                  # Cross-cutting infrastructure
+├── core/                  # 横切基础设施（不得 import lib/features/**）
 │   ├── accessibility/     # Accessibility settings (font size, reduce animations, high contrast)
 │   ├── ai/                # AI runtime config and providers (experiment seam)
 │   ├── analytics/         # Usage analytics
-│   ├── auth/              # Session state and auth guard (cross-cutting)
+│   ├── auth/              # 会话状态与鉴权守卫（feature-free 值模型）
 │   ├── config/            # Developer settings, feature flags, env keys, pref keys
-│   ├── database/          # Drift database, DAOs, connection (io/web), sync worker, cache cleanup
-│   ├── design/            # Design tokens (SemanticColor, Spacing, motion, markdown style) and layout helpers
+│   ├── database/          # Drift schema/DAOs/connection(io+web)/sync worker/cache cleanup
+│   ├── design/            # 设计令牌：color/（SemanticColor）、tokens/（Spacing、图标、动效、断点）、layout/
 │   ├── errors/            # Shared error types and handling
-│   ├── feedback/          # AppToast, page state views, user-facing notifications
+│   ├── feedback/          # AppToast, page state views
 │   ├── forms/             # Shared form primitives
 │   ├── i18n/              # Locale enum and controller
-│   ├── logger/            # Talker logging infrastructure
-│   ├── network/           # Dio HTTP client, API session, SSE, error mapping, client providers
+│   ├── logger/            # Talker 单例、级别过滤、Sentry observer
+│   ├── native/            # 平台通道（OCR、健康数据等原生桥）
+│   ├── network/           # Dio client、API session、SSE、错误映射、contract 词汇、app_log
 │   ├── notifications/     # Local notification gateway
-│   ├── providers/         # Cross-cutting providers (data change bus, auth guard, sensitive-action password prompt)
+│   ├── providers/         # 横切 provider：instrumentation/（DataChangeBus 等）、session/、storage/
 │   ├── push/              # Push notification integration
-│   ├── router/            # Shared route helpers (action_route_mapper, external_url_launcher)
+│   ├── router/            # Shared route helpers
 │   ├── shortcuts/         # Keyboard shortcuts
-│   ├── theme/             # App theme family catalog, theme controller, theme extensions
+│   ├── storage/           # 键值偏好（hive_ce 之上的 KvStore）
+│   ├── theme/             # Forui theme family catalog + 主题偏好持久化
 │   ├── utils/             # Shared utilities
 │   └── widgets/           # Shared UI components
-│       ├── common/        # State views, dialog shell, date picker, back button, icon action button
+│       ├── common/        # State views, dialog shell, date picker, back button, icon action
 │       └── layout/        # PageScaffold, ResponsiveContentFrame
+│
+├── shared/                # 共享内核：纯值类型，无 I/O、无 Flutter
+│   ├── domain/            # failure 词汇（failure.dart）、语义枚举（semantic.dart）
+│   └── design/            # 跨 feature 共用的视图令牌（medicine workspace / review dashboard）
 │
 ├── features/              # Business feature modules (17)
 │   ├── assistant/         # AI health assistant chat
@@ -66,11 +80,11 @@ lib/
 │   ├── scan/              # Barcode/QR medicine scanning
 │   ├── search/            # Global medicine search
 │   ├── settings/          # App settings (preferences, account, help, sleep reminder)
-│   ├── shell/             # Main tab shell (bottom navigation, desktop sidebar)
-│   ├── support/           # Support resources data provider
+│   ├── shell/             # 主 tab 外壳（底部导航、桌面侧栏），presentation-only
+│   ├── support/           # Support resources (data + domain only)
 │   └── today/             # Today dashboard + AI analysis
 │
-├── theme/                 # Forui CLI-generated custom styles (do not hand-edit)
+├── theme/                 # Forui CLI 生成的样式（hand-edit 禁止）
 │
 └── l10n/                  # Localization
     ├── src/               # ARB source fragments (hand-edited, single source of truth)
@@ -78,68 +92,103 @@ lib/
 ```
 
 Legacy directories (`lib/pages/`, `lib/stores/`, `lib/viewmodels/`, `lib/components/`) have been
-removed. All runtime code lives under `lib/app/`, `lib/core/`, `lib/features/`, `lib/theme/`, and
-`lib/l10n/`.
+removed. All runtime code lives under `lib/app/`, `lib/core/`, `lib/features/`, `lib/shared/`,
+`lib/theme/`, and `lib/l10n/`.
 
 ### Feature Module Inner Structure
 
-Each feature follows a Clean-Architecture-inspired inner split with an optional application layer
-for business orchestration. Not every feature has all four layers — some are lightweight:
+每个 feature 按依赖方向分四层。**依赖只能向内**：`presentation → application → domain`，
+`data → domain`（实现接口）；组合根在 `lib/app/composition/` 把 data 实现注入 domain 接口。
 
 ```
 lib/features/<feature>/
-├── application/            # Business orchestration layer (optional)
-│   ├── usecases/           # Single-operation use cases (function-style)
-│   └── orchestrators/      # Multi-step flow orchestrators (class-style)
+├── application/            # use case 与 orchestrator（纯 Dart，不出现 Ref/BuildContext）
+│   ├── usecases/           # 单操作 use case（函数式）
+│   └── orchestrators/      # 多步流程 orchestrator（类式）
 │
-├── data/                   # Data access layer
-│   ├── datasources/        # Remote API, local storage, cached sources
-│   ├── mappers/            # DTO ↔ domain entity mappers
-│   ├── providers/          # Riverpod providers for data sources
-│   └── repositories/      # Repository implementations
+├── data/                   # 数据访问
+│   ├── datasources/        # Remote API、本地源、缓存源（含平台适配器）
+│   ├── mappers/            # DTO ↔ domain entity
+│   └── repositories/       # Repository 实现 + 同文件的 @riverpod 装配
+│                           # （data/providers/ 已废弃，且被门禁禁止）
 │
-├── domain/                 # Business logic layer
-│   ├── entities/           # Domain entities (freezed models)
-│   ├── repositories/       # Repository interfaces (abstract)
-│   └── services/           # Domain services (pure business logic)
+├── domain/                 # 纯 Dart：仅 fpdart / freezed_annotation / meta / clock + lib/shared/domain
+│   ├── entities/           # 领域实体（freezed）
+│   ├── repositories/       # Repository 接口
+│   ├── services/           # 纯规则服务
+│   └── constants/          # 领域常量 / 目录
 │
-└── presentation/           # UI layer (thin: build + route + trigger use case)
-    ├── pages/              # Full-page widgets (and sub-pages like reminder/)
-    ├── providers/          # UI-state Riverpod providers (forms/, session/)
-    ├── controllers/        # UI controllers (record-specific)
-    ├── utils/              # Presentation utilities
-    └── widgets/            # Page-specific widgets
-        ├── dialogs/        # Modal dialogs
-        ├── forms/          # Form components
-        ├── sections/       # Page sections
-        ├── shared/         # Shared within feature
-        └── views/          # View-level widgets
+└── presentation/           # UI（薄：build + 路由 + 触发 use case）
+    ├── pages/              # 整页 widget
+    ├── providers/          # 读模型 provider + data_access.dart 接缝
+    ├── controllers/        # UI 控制器
+    ├── utils/              # 展示层工具
+    └── widgets/            # 页面级 widget
+        ├── dialogs/        # 弹窗
+        ├── forms/          # 表单组件
+        ├── sections/       # 页面分区
+        ├── shared/         # feature 内共用
+        └── views/          # 视图级 widget
 ```
 
-**Full Clean Architecture** (application + data + domain + presentation): `record`, `settings`,
-`today`
+禁止目录（`forbidden_directory`）：`presentation/services/`、`data/providers/`、
+`presentation/flows/`。
 
-**Standard** (data + domain + presentation): `assistant`, `auth`, `health_data`, `health_event`,
-`legal`, `medicine`, `mine`, `notification`, `review`, `scan`, `search`
+**四层齐全**（application + data + domain + presentation）：`record`、`settings`、`today`
 
-**Data + domain only** (no presentation): `health_context`, `support`
+**标准**（data + domain + presentation）：`assistant`、`auth`、`health_data`、`health_event`、
+`legal`、`medicine`、`mine`、`notification`、`review`、`scan`、`search`
 
-**Presentation-only** (no data/domain): `shell`
+**仅 data + domain**：`health_context`、`support`
+
+**仅 presentation**：`shell`
+
+`application/` 是逐 feature 推广中的层：目前只有 `record`、`settings`、`today` 有 use case，
+其余 feature 的编排仍在 `presentation/providers/` 里；推广范围见
+`plans/2026-10-21-ddd-refactor-frontend.md`。
+
+### Presentation → Data 的接缝
+
+`presentation/` **不得 import `data/`**。每个 feature 用
+`presentation/providers/data_access.dart` 再导出（`export`）自己 data 层的 provider，
+作为展示层唯一取数入口。该文件是纯中转、不含逻辑；`export` 不构成 import，因此不违反
+`presentation_layer` 规则，但语义上它是「展示层不认识 data 实现」的边界。
 
 ### Application Layer
 
-The application layer holds business orchestration logic that was previously inlined in page
-widgets. It uses two forms:
+application 层承载原先内联在页面里的业务编排，两种形态：
 
-- **Function-style use cases** (`application/usecases/`): Single operations like
-  `changeRecordDate()`, `quickEntryMeal()`. Receive `Ref` and `BuildContext` as parameters,
-  coordinate repository calls + DataChangeBus emission + UI feedback.
-- **Class-style orchestrators** (`application/orchestrators/`): Multi-step flows like the Record
-  `NlpFlow` and the settings sleep-reminder notification coordinator. Encapsulate complex
-  sequencing with injected dependencies.
+- **函数式 use case**（`application/usecases/`）：单一操作。**只接收纯参数**
+  （实体、值对象、领域类型），不接收 `Ref` / `BuildContext`；副作用通过与编排无关的返回值表达。
+- **类式 orchestrator**（`application/orchestrators/`）：多步流程，依赖通过构造注入。
 
-The application layer may import other features' **domain** layer (interfaces + entities) for
-cross-feature orchestration, but must never touch their data or presentation layers.
+application 层可以 import **别的 feature 的 `domain/`**（接口 + 实体）做跨 feature 编排，
+但**永不**触碰对方的 `data/` 或 `presentation/`。
+
+---
+
+## Layering (enforced)
+
+分层不是约定而是门禁：`tool/luminous_lints` 的 `--clean-layers` 模式跑 R1–R9，违规即 exit 1，
+无白名单。命令、允许清单与门禁挂载点（pre-push / `scripts/workflows/daily.dart` / CI）见
+`AGENTS.md` §Layering Rules。
+
+- `domain_purity` — `domain/**` 只允许 `dart:*`、纯 Dart 包、同 feature `domain/`、
+  `lib/shared/domain/`；框架与插件包另由 CLI 的文本级检查拦截
+- `application_layer` — `application/**` 只允许 `domain/`（含别的 feature）+ `lib/shared/domain/`
+- `data_layer` — `data/**` 只允许同 feature `domain/`、自身层、`core/network|database|storage`、
+  `lib/shared/`
+- `presentation_layer` — `presentation/**` 不得 import `data/**`；只允许同 feature
+  `application/`+`domain/`、自身层、纯 UI 的 `core/` 子树、`app/router`、`app/composition`、
+  `app/auth_session_adapter.dart`、`lib/shared/`
+- `core_not_import_features` — `lib/core/**` 不得 import `lib/features/**`
+- `cross_feature_import` — 不得 import 别的 feature 的 `data/**` 或 `presentation/**`
+- `directory_file_cap` — 单目录直挂源文件 ≤ 8
+- `forbidden_directory` — 见上
+
+已知待对齐项：观察模式的 `layered_import` 允许跨 feature 的 `presentation/providers/` 接缝与
+`shell` 外壳，而 `cross_feature_import` 目前两项都不允许。收敛计划见
+`plans/2026-10-28-composable-tabs.md` A0。
 
 ---
 
@@ -216,7 +265,9 @@ User-visible text goes through ARB fragment files + `flutter gen-l10n`. Locale i
 
 ### Cross-Feature Import Boundaries
 
-Three rules govern cross-feature imports to prevent coupling:
+Three rules govern cross-feature imports to prevent coupling. 它们由
+`layered_import`（观察模式）与 `--clean-layers` 的 `cross_feature_import`（门禁）共同覆盖，
+口径差异见 [Layering](#layering-enforced)。
 
 1. **data → data prohibited**: A feature's `data/` layer must not import another feature's
    `data/` layer. Cross-feature data access goes through **domain interfaces**
