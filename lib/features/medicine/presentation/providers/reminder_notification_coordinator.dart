@@ -111,7 +111,12 @@ class MedicineReminderNotificationCoordinator {
 MedicineReminderNotificationPlanner medicineReminderNotificationPlanner(
   Ref ref,
 ) {
-  return const MedicineReminderNotificationPlanner();
+  // The planner is pure domain code, so the logger comes in as an injected
+  // sink rather than a `core/logger` import inside `domain/`.
+  return MedicineReminderNotificationPlanner(
+    onError: (error, _) =>
+        appTalker.error('MedicineReminderNotificationPlanner: $error'),
+  );
 }
 
 @riverpod
