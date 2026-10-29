@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
-import 'package:luminous/features/auth/presentation/pages/change_email.dart';
+import 'package:luminous/features/auth/presentation/pages/account/change_email.dart';
 
 import '../helpers/kv_test_store.dart';
 import 'test_helpers.dart';

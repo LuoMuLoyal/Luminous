@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/router/deep_link.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/pages/oauth_navigation.dart';
+import 'package:luminous/features/auth/presentation/pages/oauth/oauth_navigation.dart';
 import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/oauth_deep_link.dart';
 

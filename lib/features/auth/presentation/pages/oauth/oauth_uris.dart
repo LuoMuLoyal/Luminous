@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/router/deep_link.dart';
-import 'package:luminous/features/auth/presentation/pages/oauth_navigation.dart';
+import 'package:luminous/features/auth/presentation/pages/oauth/oauth_navigation.dart';
 
 /// Builds the OAuth callback URI for the native in-app WebView flow.
 ///

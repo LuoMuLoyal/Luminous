@@ -11,7 +11,7 @@ import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
-import 'package:luminous/features/auth/presentation/pages/account_manage_helpers.dart';
+import 'package:luminous/features/auth/presentation/pages/account/manage/helpers.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/auth_scroll_body.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';

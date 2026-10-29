@@ -8,7 +8,7 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
-import 'package:luminous/features/auth/presentation/pages/login.dart';
+import 'package:luminous/features/auth/presentation/pages/login/login.dart';
 
 import '../helpers/kv_test_store.dart';
 import 'test_helpers.dart';
