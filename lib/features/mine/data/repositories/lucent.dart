@@ -6,7 +6,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/cache_constants.dart';
-import 'package:luminous/core/database/daos/mine_dashboard.dart';
+import 'package:luminous/core/database/daos/mine/mine_dashboard.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';

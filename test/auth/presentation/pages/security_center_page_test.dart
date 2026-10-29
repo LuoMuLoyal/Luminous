@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/providers/sensitive_action_password.dart';
+import 'package:luminous/core/providers/session/sensitive_action_password.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/pages/security_center.dart';
+import 'package:luminous/features/auth/presentation/pages/account/security_center.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../../helpers/kv_test_store.dart';

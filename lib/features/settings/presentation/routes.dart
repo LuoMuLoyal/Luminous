@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router_helpers.dart';
-import 'package:luminous/features/settings/presentation/pages/about.dart';
-import 'package:luminous/features/settings/presentation/pages/accessibility.dart';
-import 'package:luminous/features/settings/presentation/pages/advanced.dart';
-import 'package:luminous/features/settings/presentation/pages/ai.dart';
-import 'package:luminous/features/settings/presentation/pages/data_export.dart';
-import 'package:luminous/features/settings/presentation/pages/data_storage.dart';
-import 'package:luminous/features/settings/presentation/pages/dnd.dart';
-import 'package:luminous/features/settings/presentation/pages/feature_flags.dart';
-import 'package:luminous/features/settings/presentation/pages/help.dart';
-import 'package:luminous/features/settings/presentation/pages/language.dart';
-import 'package:luminous/features/settings/presentation/pages/notification.dart';
-import 'package:luminous/features/settings/presentation/pages/oss_licenses.dart';
+import 'package:luminous/features/settings/presentation/pages/about/about.dart';
+import 'package:luminous/features/settings/presentation/pages/about/help.dart';
+import 'package:luminous/features/settings/presentation/pages/about/oss_licenses.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/advanced.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/feature_flags.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/accessibility.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/language.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/theme.dart';
+import 'package:luminous/features/settings/presentation/pages/data/data_export.dart';
+import 'package:luminous/features/settings/presentation/pages/data/data_storage.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/dnd.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/notification.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/sleep_reminder.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart';
 import 'package:luminous/features/settings/presentation/pages/profile.dart';
-import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
-import 'package:luminous/features/settings/presentation/pages/theme.dart';
 
 part 'routes.g.dart';
 

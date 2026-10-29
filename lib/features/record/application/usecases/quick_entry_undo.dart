@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 
 typedef DeleteDailyRecord = Future<void> Function(String recordId);
 typedef DeleteDoseLog = Future<void> Function(String doseLogId);

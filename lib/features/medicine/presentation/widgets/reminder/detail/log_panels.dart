@@ -1,0 +1,305 @@
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
+import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+class ReminderTodayLogPanel extends StatelessWidget {
+  const ReminderTodayLogPanel({super.key, required this.logs});
+
+  final List<DoseLogItem> logs;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final visibleLogs = logs.isEmpty
+        ? <DoseLogItem>[]
+        : logs.take(3).toList(growable: false);
+    final typography = context.theme.typography;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: Spacing.sm),
+          child: Text(
+            l10n.medicineReminderTodayLogsTitle,
+            style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
+          ),
+        ),
+        const SizedBox(height: Spacing.md),
+        FCard(
+          child: visibleLogs.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(Spacing.lg),
+                  child: Row(
+                    children: [
+                      Icon(
+                        SemanticIcons.recordClipboard,
+                        color: SemanticColor.neutral.solid(context),
+                        size: IconSizeTokens.sm,
+                      ),
+                      const SizedBox(width: Spacing.md),
+                      Expanded(
+                        child: Text(
+                          l10n.medicineReminderNoTodayLogs,
+                          style: typography.body.xs.copyWith(
+                            color: SemanticColor.neutral.solid(context),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Column(
+                  children: [
+                    for (var index = 0; index < visibleLogs.length; index += 1)
+                      _TodayLogRow(
+                        log: visibleLogs[index],
+                        isLast: index == visibleLogs.length - 1,
+                      ),
+                  ],
+                ),
+        ),
+        if (logs.length > visibleLogs.length)
+          Padding(
+            padding: const EdgeInsets.only(top: Spacing.sm),
+            child: Text(
+              l10n.medicineReminderLogCountTotal(logs.length),
+              style: typography.body.xs2.copyWith(
+                color: SemanticColor.neutral.solid(context),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class ReminderDeliveryLogPanel extends StatefulWidget {
+  const ReminderDeliveryLogPanel({super.key, required this.logs});
+
+  final List<ReminderDeliveryItem> logs;
+
+  @override
+  State<ReminderDeliveryLogPanel> createState() =>
+      _ReminderDeliveryLogPanelState();
+}
+
+class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
+  bool _showAll = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final visibleLogs = (_showAll ? widget.logs : widget.logs.take(5)).toList(
+      growable: false,
+    );
+    final hasMore = widget.logs.length > 5;
+    final typography = context.theme.typography;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: Spacing.sm),
+          child: Text(
+            l10n.medicineReminderDeliveryLogsTitle,
+            style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
+          ),
+        ),
+        const SizedBox(height: Spacing.md),
+        FCard(
+          child: visibleLogs.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(Spacing.lg),
+                  child: Row(
+                    children: [
+                      Icon(
+                        SemanticIcons.doseLog,
+                        color: SemanticColor.neutral.solid(context),
+                        size: IconSizeTokens.sm,
+                      ),
+                      const SizedBox(width: Spacing.md),
+                      Expanded(
+                        child: Text(
+                          l10n.medicineReminderNoDeliveryLogs,
+                          style: typography.body.xs.copyWith(
+                            color: SemanticColor.neutral.solid(context),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Column(
+                  children: [
+                    for (var index = 0; index < visibleLogs.length; index += 1)
+                      _DeliveryLogRow(
+                        log: visibleLogs[index],
+                        isLast: index == visibleLogs.length - 1 && !hasMore,
+                      ),
+                    if (hasMore)
+                      Padding(
+                        padding: const EdgeInsets.all(Spacing.md),
+                        child: FButton(
+                          onPress: () => setState(() => _showAll = !_showAll),
+                          variant: FButtonVariant.ghost,
+                          size: FButtonSizeVariant.xs,
+                          child: Text(
+                            _showAll
+                                ? l10n.medicineReminderLogCollapse
+                                : l10n.medicineTodayPlanInspectAction,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DeliveryLogRow extends StatelessWidget {
+  const _DeliveryLogRow({required this.log, required this.isLast});
+
+  final ReminderDeliveryItem log;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final color = _deliveryStatusColor(log.status);
+    final typography = context.theme.typography;
+    final row = Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Spacing.lg,
+        vertical: Spacing.md,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            deliveryStatusIcon(log.status),
+            color: color.solid(context),
+            size: IconSizeTokens.sm,
+          ),
+          const SizedBox(width: Spacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  dateTimeShortLabel(
+                    l10n,
+                    log.scheduledFor,
+                    Localizations.localeOf(context),
+                  ),
+                  style: typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: Spacing.xs),
+                Text(
+                  deliveryChannelLabel(l10n, log.channel),
+                  style: typography.body.xs.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: Spacing.md),
+          // 徽标是固有宽度组件,裸放进 Row 会挤掉左侧 Expanded 文本的宽度;
+          // 限宽 + chip 内 ellipsis 让它收缩省略,右对齐位置不变。
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 120),
+            child: TintedStatusBadge(
+              color: color,
+              label: deliveryStatusLabel(l10n, log.status),
+            ),
+          ),
+        ],
+      ),
+    );
+    if (isLast) return row;
+    return Column(children: [row, const AppDivider()]);
+  }
+}
+
+class _TodayLogRow extends StatelessWidget {
+  const _TodayLogRow({required this.log, required this.isLast});
+
+  final DoseLogItem log;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final color = switch (log.status) {
+      DoseLogStatus.taken => SemanticColor.success,
+      DoseLogStatus.skipped => SemanticColor.neutral,
+      // missed 为防御性分支，主路径不产生该状态。
+      DoseLogStatus.missed => SemanticColor.destructive,
+      DoseLogStatus.planned => SemanticColor.warning,
+    };
+    final icon = switch (log.status) {
+      DoseLogStatus.taken => SemanticIcons.statusSuccess,
+      DoseLogStatus.skipped => SemanticIcons.statusSkipped,
+      // missed 为防御性分支，主路径不产生该状态。
+      DoseLogStatus.missed => SemanticIcons.statusMissed,
+      DoseLogStatus.planned => SemanticIcons.dosePlanned,
+    };
+    final label = switch (log.status) {
+      DoseLogStatus.taken => l10n.medicineDoseStatusTaken,
+      DoseLogStatus.skipped => l10n.medicineDoseStatusSkipped,
+      // missed 为防御性分支，主路径不产生该状态。
+      DoseLogStatus.missed => l10n.medicineReminderMissedStatus,
+      DoseLogStatus.planned => l10n.medicineRecordScheduledStatus,
+    };
+
+    final row = Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Spacing.lg,
+        vertical: Spacing.md,
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color.solid(context), size: IconSizeTokens.sm),
+          const SizedBox(width: Spacing.md),
+          Expanded(
+            child: Text(
+              dateTimeTimeLabel(
+                log.scheduledFor,
+                Localizations.localeOf(context),
+              ),
+              style: context.theme.typography.body.xs.copyWith(
+                color: SemanticColor.neutral.solid(context),
+              ),
+            ),
+          ),
+          const SizedBox(width: Spacing.md),
+          // 同上:限宽而不是让徽标占满固有宽度。
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 120),
+            child: TintedStatusBadge(color: color, label: label),
+          ),
+        ],
+      ),
+    );
+    if (isLast) return row;
+    return Column(children: [row, const AppDivider()]);
+  }
+}
+
+SemanticColor _deliveryStatusColor(String value) {
+  return switch (value) {
+    'delivered' => SemanticColor.primary,
+    'failed' => SemanticColor.destructive,
+    'scheduled' => SemanticColor.primary,
+    _ => SemanticColor.neutral,
+  };
+}

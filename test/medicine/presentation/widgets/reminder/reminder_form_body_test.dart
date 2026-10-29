@@ -6,8 +6,8 @@ import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/form_body.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/form_fields.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/form/form_body.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/form/form_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../../../helpers/kv_test_store.dart';

@@ -1,8 +1,8 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/database/daos/daily_record.dart';
-import 'package:luminous/core/database/daos/medicine_dose_log.dart';
-import 'package:luminous/core/database/daos/pending_sync.dart';
+import 'package:luminous/core/database/daos/medicine/medicine_dose_log.dart';
+import 'package:luminous/core/database/daos/records/daily_record.dart';
+import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/database.dart';
 
 /// Creates an in-memory [AppDatabase] for testing.

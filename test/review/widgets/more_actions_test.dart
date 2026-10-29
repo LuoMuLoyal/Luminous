@@ -11,7 +11,7 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/providers/sensitive_action_password.dart';
+import 'package:luminous/core/providers/session/sensitive_action_password.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';

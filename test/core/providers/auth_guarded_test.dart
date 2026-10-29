@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/session_store.dart';
-import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
 import '../../helpers/kv_test_store.dart';

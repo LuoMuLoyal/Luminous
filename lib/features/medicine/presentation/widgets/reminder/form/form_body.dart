@@ -1,0 +1,322 @@
+import 'package:collection/collection.dart';
+import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
+import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
+import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/rows.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/form/form_fields.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
+
+class ReminderFormBody extends StatelessWidget {
+  const ReminderFormBody({
+    super.key,
+    required this.snapshot,
+    required this.reminders,
+    required this.selectedMedicineId,
+    required this.frequency,
+    required this.selectedWeekdays,
+    required this.times,
+    required this.startDate,
+    required this.endDate,
+    required this.isActive,
+    required this.soundPreference,
+    required this.noteController,
+    required this.isSaving,
+    required this.isEdit,
+    required this.onMedicineChanged,
+    required this.onFrequencyChanged,
+    required this.onWeekdayToggled,
+    required this.onAddTime,
+    required this.onRemoveTime,
+    required this.onStartDateTap,
+    required this.onEndDateTap,
+    required this.onClearEndDate,
+    required this.onActiveChanged,
+    required this.onSoundChanged,
+    required this.onSave,
+    required this.onDelete,
+  });
+
+  final HealthContextSnapshot snapshot;
+  final List<MedicineReminderItem> reminders;
+  final String? selectedMedicineId;
+  final ReminderFrequency frequency;
+  final Set<int> selectedWeekdays;
+  final List<MedicineReminderTimeInput> times;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final bool isActive;
+  final MedicineReminderSoundPreference soundPreference;
+  final TextEditingController noteController;
+  final bool isSaving;
+  final bool isEdit;
+  final ValueChanged<String?>? onMedicineChanged;
+  final ValueChanged<ReminderFrequency> onFrequencyChanged;
+  final ValueChanged<int> onWeekdayToggled;
+  final VoidCallback onAddTime;
+  final ValueChanged<int> onRemoveTime;
+  final VoidCallback onStartDateTap;
+  final VoidCallback onEndDateTap;
+  final VoidCallback? onClearEndDate;
+  final ValueChanged<bool> onActiveChanged;
+  final ValueChanged<MedicineReminderSoundPreference> onSoundChanged;
+  final VoidCallback onSave;
+  final VoidCallback? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final medicines = snapshot.currentMedicines
+        .where((item) => item.isCurrent)
+        .toList(growable: false);
+    final selectedMedicine = medicines
+        .where((item) => item.id == selectedMedicineId)
+        .firstOrNull;
+
+    if (medicines.isEmpty) {
+      return StateErrorView(
+        title: l10n.medicineNoMedicineTitle,
+        description: l10n.medicineNoMedicineBody,
+        icon: SemanticIcons.medicineNoneSelected,
+        actionLabel: l10n.medicineQuickAddTitle,
+        onAction: () => context.push(Routes.medicineSearch),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _FormCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _SectionTitle(label: l10n.medicineReminderMedicineSectionTitle),
+                const AppDivider(),
+                if (isEdit && selectedMedicine != null)
+                  SelectedMedicineRow(medicine: selectedMedicine)
+                else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Spacing.lg,
+                      vertical: Spacing.md,
+                    ),
+                    child: FSelect<String>.rich(
+                      label: Text(l10n.medicineReminderMedicineLabel),
+                      hint: l10n.medicineReminderMedicineLabel,
+                      format: (value) =>
+                          medicines
+                              .firstWhereOrNull((m) => m.id == value)
+                              ?.displayName ??
+                          '',
+                      control: FSelectControl.lifted(
+                        value: selectedMedicineId,
+                        onChange: (value) => onMedicineChanged?.call(value),
+                      ),
+                      children: medicines
+                          .map(
+                            (item) => FSelectItem.item(
+                              title: Text(item.displayName),
+                              value: item.id,
+                            ),
+                          )
+                          .toList(growable: false),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: Spacing.lg),
+          _FormCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _SectionTitle(label: l10n.medicineReminderSettingsSectionTitle),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.lg,
+                    vertical: Spacing.md,
+                  ),
+                  child: FrequencySegments(
+                    frequency: frequency,
+                    onChanged: onFrequencyChanged,
+                  ),
+                ),
+                if (frequency != ReminderFrequency.daily) ...[
+                  const AppDivider(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Spacing.lg,
+                      vertical: Spacing.md,
+                    ),
+                    child: WeekdayPicker(
+                      selectedWeekdays: selectedWeekdays,
+                      onToggled: onWeekdayToggled,
+                    ),
+                  ),
+                ],
+                const AppDivider(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.lg,
+                    vertical: Spacing.md,
+                  ),
+                  child: TimePickerRow(
+                    times: times,
+                    onAddTime: onAddTime,
+                    onRemoveTime: onRemoveTime,
+                  ),
+                ),
+                const AppDivider(),
+                ValueActionRow(
+                  icon: SemanticIcons.actionCalendar,
+                  title: l10n.medicineReminderStartDateLabel,
+                  value: dateLabel(
+                    l10n,
+                    startDate,
+                    Localizations.localeOf(context),
+                  ),
+                  onTap: onStartDateTap,
+                ),
+                const AppDivider(),
+                ValueActionRow(
+                  icon: SemanticIcons.safetySchedulingConflict,
+                  title: l10n.medicineReminderEndDateLabel,
+                  value: dateLabel(
+                    l10n,
+                    endDate,
+                    Localizations.localeOf(context),
+                  ),
+                  onTap: onEndDateTap,
+                  onClear: onClearEndDate,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: Spacing.lg),
+          _FormCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _SectionTitle(label: l10n.medicineReminderMethodLabel),
+                SwitchRow(
+                  title: l10n.medicineReminderNotificationOn,
+                  subtitle: l10n.medicineReminderDeviceLocalHint,
+                  value: isActive,
+                  onChanged: onActiveChanged,
+                ),
+                const AppDivider(),
+                UnavailableMethodRow(
+                  icon: SemanticIcons.actionMessage,
+                  title: l10n.medicineReminderSmsLabel,
+                  subtitle: l10n.medicineReminderSmsUnavailableHint,
+                  status: l10n.medicineReminderUnavailableStatus,
+                ),
+                const AppDivider(),
+                SoundPreferenceRow(
+                  value: soundPreference,
+                  onChanged: onSoundChanged,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: Spacing.lg),
+          _FormCard(
+            child: Padding(
+              padding: const EdgeInsets.all(Spacing.lg),
+              child: FTextField(
+                control: FTextFieldControl.managed(controller: noteController),
+                style: FTextFieldStyleDelta.delta(
+                  border:
+                      FVariantsValueDelta<
+                        FTextFieldVariantConstraint,
+                        FTextFieldVariant,
+                        InputBorder,
+                        Delta
+                      >.delta([.all(InputBorder.none)]),
+                  color:
+                      FVariantsValueDelta<
+                        FTextFieldVariantConstraint,
+                        FTextFieldVariant,
+                        Color?,
+                        Delta
+                      >.delta([.all(Colors.transparent)]),
+                ),
+                label: Text(l10n.medicineReminderNoteOptionalLabel),
+                hint: l10n.medicineReminderNoteHint,
+                maxLength: 100,
+                maxLines: 3,
+              ),
+            ),
+          ),
+          const SizedBox(height: Spacing.xl),
+          FButton(
+            key: const Key('medicine-reminder-save-button'),
+            onPress: isSaving ? null : onSave,
+            prefix: isSaving
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: FCircularProgress(),
+                  )
+                : null,
+            child: Text(l10n.mineEditSaveAction),
+          ),
+          if (onDelete != null) ...[
+            const SizedBox(height: Spacing.md),
+            FButton(
+              key: const Key('medicine-reminder-form-delete-button'),
+              variant: FButtonVariant.destructive,
+              onPress: isSaving ? null : onDelete,
+              child: Text(l10n.medicineReminderDeleteAction),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _FormCard extends StatelessWidget {
+  const _FormCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return FCard(child: child);
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        Spacing.lg,
+        Spacing.lg,
+        Spacing.lg,
+        context.titleContentGap,
+      ),
+      child: Text(
+        label,
+        style: context.theme.typography.body.md.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}

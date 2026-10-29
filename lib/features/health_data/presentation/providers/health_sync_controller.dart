@@ -1,8 +1,8 @@
-import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/health_data/data/providers/health_sync.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
 import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
 import 'package:luminous/features/health_data/domain/repositories/health_sync.dart';
+import 'package:luminous/features/health_data/presentation/providers/data_access.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_sync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/providers/instrumentation/instrumentation.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/review/presentation/providers/review.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/completed_actions.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/event_header.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/key_changes.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/next_step.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/what_happened.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/event/what_happened.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/overview/completed_actions.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/overview/event_header.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/overview/key_changes.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/overview/next_step.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

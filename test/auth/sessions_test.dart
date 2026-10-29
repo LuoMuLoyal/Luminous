@@ -9,8 +9,8 @@ import 'package:luminous/features/auth/data/providers/sessions.dart';
 import 'package:luminous/features/auth/data/repositories/sessions.dart';
 import 'package:luminous/features/auth/domain/entities/device_session.dart';
 import 'package:luminous/features/auth/domain/repositories/sessions.dart';
-import 'package:luminous/features/auth/presentation/pages/sessions.dart';
-import 'package:luminous/features/auth/presentation/providers/sessions.dart';
+import 'package:luminous/features/auth/presentation/pages/account/sessions.dart';
+import 'package:luminous/features/auth/presentation/providers/account/sessions.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';

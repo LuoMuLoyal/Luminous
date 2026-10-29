@@ -7,7 +7,7 @@ import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
-import 'package:luminous/features/settings/presentation/providers/notification.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SleepReminderNotificationTexts {

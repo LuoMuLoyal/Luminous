@@ -2,12 +2,12 @@ import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/assistant/data/repositories/lucent.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation_sending.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation_streams.dart';
+import 'package:luminous/features/assistant/presentation/providers/data_access.dart';
 import 'package:luminous/features/assistant/presentation/utils/message_id.dart';
 
 mixin ProposalHandling

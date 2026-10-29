@@ -8,7 +8,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/mine_dashboard.dart';
+import 'package:luminous/core/database/daos/mine/mine_dashboard.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/core/design/tokens/icon_size.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
@@ -23,7 +23,7 @@ import 'package:luminous/features/mine/presentation/pages/page.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
-import 'package:luminous/features/settings/presentation/providers/notification.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/feature_mocks.dart';

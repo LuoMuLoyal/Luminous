@@ -25,7 +25,7 @@ import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
-import 'package:luminous/features/settings/presentation/pages/ai.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:material_ui/material_ui.dart';
 

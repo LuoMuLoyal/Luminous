@@ -1,6 +1,6 @@
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/suggestion.dart';

@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/pending_sync.dart';
+import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/features/mine/presentation/pages/sync_failures.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/sync_failed_banner.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/sync/sync_failed_banner.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/kv_test_store.dart';

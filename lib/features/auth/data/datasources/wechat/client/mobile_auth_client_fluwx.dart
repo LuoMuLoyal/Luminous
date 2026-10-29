@@ -1,0 +1,117 @@
+import 'dart:async';
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
+import 'package:fluwx/fluwx.dart';
+import 'package:luminous/core/errors/client_error_code.dart';
+import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client_base.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_config.dart';
+
+class DefaultWechatMobileAuthClient extends WechatMobileAuthClient {
+  DefaultWechatMobileAuthClient({Fluwx? fluwx}) : _providedFluwx = fluwx;
+
+  final Fluwx? _providedFluwx;
+  Fluwx? _fluwx;
+
+  @override
+  bool get isSupported {
+    return !kIsWeb &&
+        WechatMobileAuthConfig.hasAppId &&
+        (defaultTargetPlatform == TargetPlatform.android ||
+            defaultTargetPlatform == TargetPlatform.iOS);
+  }
+
+  @override
+  Future<String> authorize() async {
+    if (!isSupported) {
+      throw LucentFailure.client(
+        clientErrorCode: ClientErrorCode.wechatSdkNotConfigured,
+        message: 'WeChat mobile SDK login is not configured.',
+      );
+    }
+
+    final fluwx = _providedFluwx ?? (_fluwx ??= Fluwx());
+    final registered = await fluwx.registerApi(
+      appId: WechatMobileAuthConfig.appId,
+      universalLink: WechatMobileAuthConfig.iosUniversalLink.trim().isEmpty
+          ? null
+          : WechatMobileAuthConfig.iosUniversalLink.trim(),
+    );
+    if (!registered) {
+      throw LucentFailure.client(
+        clientErrorCode: ClientErrorCode.wechatSdkRegistrationFailed,
+        message: 'WeChat mobile SDK registration failed.',
+      );
+    }
+
+    final installed = await fluwx.isWeChatInstalled;
+    if (!installed) {
+      throw LucentFailure.client(
+        clientErrorCode: ClientErrorCode.wechatNotInstalled,
+        message: 'WeChat is not installed.',
+      );
+    }
+
+    final state = _newState();
+    final completer = Completer<String>();
+    late final WeChatResponseSubscriber subscriber;
+    subscriber = (response) {
+      if (response is! WeChatAuthResponse || response.state != state) {
+        return;
+      }
+
+      final code = response.code?.trim();
+      if (response.isSuccessful && code != null && code.isNotEmpty) {
+        completer.complete(code);
+        return;
+      }
+
+      final errStr = response.errStr?.trim();
+      completer.completeError(
+        LucentFailure.client(
+          clientErrorCode: ClientErrorCode.wechatAuthFailed,
+          message: errStr != null && errStr.isNotEmpty
+              ? errStr
+              : 'WeChat authorization was cancelled or failed.',
+        ),
+      );
+    };
+
+    final cancelable = fluwx.addSubscriber(subscriber);
+    try {
+      final started = await fluwx.authBy(
+        which: NormalAuth(scope: 'snsapi_userinfo', state: state),
+      );
+      if (!started) {
+        throw LucentFailure.client(
+          clientErrorCode: ClientErrorCode.wechatAuthStartFailed,
+          message: 'Could not start WeChat authorization.',
+        );
+      }
+
+      return await completer.future.timeout(const Duration(minutes: 10));
+    } on TimeoutException {
+      throw LucentFailure.client(
+        clientErrorCode: ClientErrorCode.wechatAuthTimeout,
+        kind: LucentFailureKind.network,
+        networkErrorCode: NetworkErrorCode.connectionTimeout,
+        message: 'WeChat authorization timed out.',
+      );
+    } finally {
+      cancelable.cancel();
+    }
+  }
+
+  String _newState() {
+    final random = Random.secure();
+    const alphabet =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    return List.generate(
+      32,
+      (_) => alphabet[random.nextInt(alphabet.length)],
+      growable: false,
+    ).join();
+  }
+}

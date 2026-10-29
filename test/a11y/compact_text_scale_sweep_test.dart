@@ -23,8 +23,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/pending_sync.dart';
-import 'package:luminous/core/database/models/pending_sync_error_details.dart';
+import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
@@ -77,22 +76,22 @@ import 'package:luminous/features/search/presentation/pages/page.dart'
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
-import 'package:luminous/features/settings/presentation/pages/about.dart';
-import 'package:luminous/features/settings/presentation/pages/accessibility.dart';
-import 'package:luminous/features/settings/presentation/pages/advanced.dart';
-import 'package:luminous/features/settings/presentation/pages/ai.dart';
-import 'package:luminous/features/settings/presentation/pages/data_export.dart';
-import 'package:luminous/features/settings/presentation/pages/data_storage.dart';
-import 'package:luminous/features/settings/presentation/pages/dnd.dart';
-import 'package:luminous/features/settings/presentation/pages/feature_flags.dart';
-import 'package:luminous/features/settings/presentation/pages/help.dart';
-import 'package:luminous/features/settings/presentation/pages/language.dart';
-import 'package:luminous/features/settings/presentation/pages/notification.dart';
+import 'package:luminous/features/settings/presentation/pages/about/about.dart';
+import 'package:luminous/features/settings/presentation/pages/about/help.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/advanced.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/feature_flags.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/accessibility.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/language.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/theme.dart';
+import 'package:luminous/features/settings/presentation/pages/data/data_export.dart';
+import 'package:luminous/features/settings/presentation/pages/data/data_storage.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/dnd.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/notification.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/sleep_reminder.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart'
     as settings;
 import 'package:luminous/features/settings/presentation/pages/profile.dart';
-import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
-import 'package:luminous/features/settings/presentation/pages/theme.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/package_info.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
@@ -699,7 +698,7 @@ Future<void> _pumpSyncFailures(WidgetTester tester, double scale) {
         syncWorkerProvider.overrideWithValue(_MockSyncWorker()),
         syncFailedCountProvider.overrideWith((ref) async => 1),
         mineSyncFailedEntriesProvider.overrideWith(
-          (ref) async => <PendingSyncEntry>[_pendingSyncEntry()],
+          (ref) async => <MineSyncEntry>[_pendingSyncEntry()],
         ),
       ],
       child: TestForuiApp(
@@ -1151,7 +1150,7 @@ class _MockPendingSyncDao extends Mock implements PendingSyncDao {}
 
 class _MockSyncWorker extends Mock implements SyncWorker {}
 
-PendingSyncEntry _pendingSyncEntry() => PendingSyncEntry(
+MineSyncEntry _pendingSyncEntry() => MineSyncEntry(
   id: 'pending-1',
   entityType: 'daily_record',
   entityId: 'record-1',
@@ -1161,7 +1160,7 @@ PendingSyncEntry _pendingSyncEntry() => PendingSyncEntry(
   retryCount: 5,
   maxRetry: 5,
   lastError: 'DioException [connectionError]: network unavailable',
-  errorDetails: const PendingSyncErrorDetails(
+  errorDetails: const MineSyncErrorDetails(
     message: 'Connection timed out',
     networkErrorCode: NetworkErrorCode.connectionError,
     kind: LucentFailureKind.network,

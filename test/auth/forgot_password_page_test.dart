@@ -5,7 +5,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
-import 'package:luminous/features/auth/presentation/pages/forgot_password.dart';
+import 'package:luminous/features/auth/presentation/pages/login/forgot_password.dart';
 
 import '../helpers/kv_test_store.dart';
 import 'test_helpers.dart';
