@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/session_snapshot.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/providers/unread_count.dart';

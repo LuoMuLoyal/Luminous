@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
+import 'package:luminous/core/providers/session_snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_local_preferences.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/providers/session_snapshot.dart';
 import 'package:luminous/features/auth/data/providers/sessions.dart';
 import 'package:luminous/features/auth/domain/entities/device_session.dart';
 
