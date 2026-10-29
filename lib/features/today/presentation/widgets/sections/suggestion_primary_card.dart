@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderAbstractViewport, RenderBox;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,9 +8,11 @@ import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/today/application/usecases/skip_dose.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/skip_dose.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_interactive.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
@@ -87,7 +90,11 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
         return;
       }
 
-      await SkipDoseUseCase(ref: ref)(
+      await SkipDoseUseCase(
+        writer: ref.read(doseLogMarkWriterProvider),
+        emitDataChange: (topic) =>
+            ref.read(dataChangeBusProvider.notifier).emit(topic),
+      )(
         currentMedicineId: medicineId,
         date: scheduledFor,
         reminderId: params['reminderId'],

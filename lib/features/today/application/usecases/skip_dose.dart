@@ -1,21 +1,19 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart'
-    show doseLogRepositoryProvider;
-import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
-
-/// Skips a single planned dose by marking it as `skipped`.
+/// Marks one planned dose as `skipped`.
 ///
-/// This use case orchestrates the medicine-domain [DoseLogRepository] and
-/// emits a [DataChangeTopic.doseLogs] event so today/medicine dashboards refresh.
+/// The medicine repository is described locally as [DoseLogMarkWriter] rather
+/// than importing the medicine feature's `domain/repositories/`: the application
+/// layer may only see its own feature's `domain/`, and the only shared value
+/// here is the `doseLogs` data-change topic string.
 ///
-/// Caller is responsible for validating that [currentMedicineId] and [date]
-/// are present before invoking this use case. On failure the original exception
-/// is rethrown and the UI decides how to surface it.
+/// Callers validate that the medicine id and date are present first; a failed
+/// write throws and the UI decides how to surface it.
 class SkipDoseUseCase {
-  const SkipDoseUseCase({required this.ref});
+  const SkipDoseUseCase({required this.writer, required this.emitDataChange});
 
-  final WidgetRef ref;
+  final DoseLogMarkWriter writer;
+
+  /// Broadcasts a data-change topic (the `doseLogs` wire string).
+  final void Function(String topic) emitDataChange;
 
   Future<void> call({
     required String currentMedicineId,
@@ -23,17 +21,29 @@ class SkipDoseUseCase {
     String? reminderId,
     String? scheduledTime,
   }) async {
-    final result = await ref
-        .read(doseLogRepositoryProvider)
-        .mark(
-          currentMedicineId: currentMedicineId,
-          status: 'skipped',
-          date: date,
-          reminderId: reminderId,
-          scheduledTime: scheduledTime,
-        )
-        .run();
-    result.fold((failure) => throw failure, (_) {});
-    ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
+    await writer.mark(
+      currentMedicineId: currentMedicineId,
+      status: 'skipped',
+      date: date,
+      reminderId: reminderId,
+      scheduledTime: scheduledTime,
+    );
+    emitDataChange(_doseLogsTopic);
   }
+
+  /// The `DataChangeTopic.doseLogs` wire value; kept here so the use case names
+  /// it without importing `core`.
+  static const String _doseLogsTopic = 'doseLogs';
+}
+
+/// The dose-log write surface a skip needs.
+abstract interface class DoseLogMarkWriter {
+  /// Marks a dose log for one medicine; throws when the write fails.
+  Future<void> mark({
+    required String currentMedicineId,
+    required String status,
+    required String date,
+    String? reminderId,
+    String? scheduledTime,
+  });
 }
