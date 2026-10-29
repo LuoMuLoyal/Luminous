@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/design/color/semantic_color.dart';
+import 'package:luminous/shared/domain/semantic.dart';
 
 part 'dashboard.freezed.dart';
 
@@ -94,7 +93,7 @@ abstract class ReviewDashboard with _$ReviewDashboard {
 abstract class ReviewMetric with _$ReviewMetric {
   const factory ReviewMetric({
     required ReviewDataKind kind,
-    required IconData icon,
+    required String iconName,
     required SemanticColor color,
     required String value,
     required String unit,
@@ -124,7 +123,7 @@ abstract class ReviewTrendSeries with _$ReviewTrendSeries {
 abstract class ReviewFinding with _$ReviewFinding {
   const factory ReviewFinding({
     required ReviewInsightKind kind,
-    required IconData icon,
+    required String iconName,
     required SemanticColor color,
     required String title,
     required String body,
@@ -135,7 +134,7 @@ abstract class ReviewFinding with _$ReviewFinding {
 abstract class ReviewExportAction with _$ReviewExportAction {
   const factory ReviewExportAction({
     required ReviewExportKind kind,
-    required IconData icon,
+    required String iconName,
     required SemanticColor color,
   }) = _ReviewExportAction;
 }
@@ -144,7 +143,7 @@ abstract class ReviewExportAction with _$ReviewExportAction {
 abstract class ReviewPatternCard with _$ReviewPatternCard {
   const factory ReviewPatternCard({
     required ReviewInsightKind kind,
-    required IconData icon,
+    required String iconName,
     required SemanticColor color,
     required String title,
     required ReviewStatus status,

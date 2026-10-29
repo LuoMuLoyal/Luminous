@@ -7,7 +7,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/database/cache_constants.dart';
@@ -128,7 +127,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     final observedMetric = dto.observedMetric;
     return ReviewMetric(
       kind: kind,
-      icon: _metricIcon(kind),
+      iconName: _metricIconName(kind),
       color: _metricColor(kind),
       value: dto.value,
       unit: dto.unit,
@@ -201,7 +200,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewFinding(
       kind: kind,
-      icon: _insightIcon(kind),
+      iconName: _insightIconName(kind),
       color: _insightColor(kind),
       title: dto.title,
       body: dto.body,
@@ -212,7 +211,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewPatternCard(
       kind: kind,
-      icon: _insightIcon(kind),
+      iconName: _insightIconName(kind),
       color: _insightColor(kind),
       title: dto.title,
       status: _mapStatus(dto.status.value),
@@ -267,12 +266,12 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     };
   }
 
-  IconData _metricIcon(ReviewDataKind kind) {
+  String _metricIconName(ReviewDataKind kind) {
     return switch (kind) {
-      ReviewDataKind.medication => SemanticIcons.recordMedicine,
-      ReviewDataKind.water => SemanticIcons.recordWater,
-      ReviewDataKind.sleep => SemanticIcons.recordSleep,
-      ReviewDataKind.general => SemanticIcons.profileCondition,
+      ReviewDataKind.medication => 'tablets',
+      ReviewDataKind.water => 'droplets',
+      ReviewDataKind.sleep => 'moon-star',
+      ReviewDataKind.general => 'heart-pulse',
     };
   }
 
@@ -285,12 +284,12 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     };
   }
 
-  IconData _insightIcon(ReviewInsightKind kind) {
+  String _insightIconName(ReviewInsightKind kind) {
     return switch (kind) {
-      ReviewInsightKind.medication => SemanticIcons.reportInsightAdherence,
-      ReviewInsightKind.hydration => SemanticIcons.recordWater,
-      ReviewInsightKind.sleep => SemanticIcons.recordSleep,
-      ReviewInsightKind.general => SemanticIcons.reportChart,
+      ReviewInsightKind.medication => 'badge-check',
+      ReviewInsightKind.hydration => 'droplets',
+      ReviewInsightKind.sleep => 'moon-star',
+      ReviewInsightKind.general => 'chart-line',
     };
   }
 
@@ -311,22 +310,22 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
 final _exportActions = <ReviewExportAction>[
   const ReviewExportAction(
     kind: ReviewExportKind.hospital,
-    icon: SemanticIcons.medicineKit,
+    iconName: 'briefcase-medical',
     color: SemanticColor.primary,
   ),
   const ReviewExportAction(
     kind: ReviewExportKind.monthly,
-    icon: SemanticIcons.reportMonthlyExport,
+    iconName: 'calendar-days',
     color: SemanticColor.primary,
   ),
   const ReviewExportAction(
     kind: ReviewExportKind.print,
-    icon: SemanticIcons.actionExport,
+    iconName: 'arrow-down-to-line',
     color: SemanticColor.primary,
   ),
   const ReviewExportAction(
     kind: ReviewExportKind.clinicShare,
-    icon: SemanticIcons.actionShare,
+    iconName: 'share-2',
     color: SemanticColor.primary,
   ),
 ];

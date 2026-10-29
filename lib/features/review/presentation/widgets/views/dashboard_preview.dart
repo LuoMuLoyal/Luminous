@@ -56,22 +56,22 @@ class ReviewDashboardPreview extends StatelessWidget {
   static const _previewExportActions = <ReviewExportAction>[
     ReviewExportAction(
       kind: ReviewExportKind.hospital,
-      icon: SemanticIcons.medicineKit,
+      iconName: 'briefcase-medical',
       color: SemanticColor.primary,
     ),
     ReviewExportAction(
       kind: ReviewExportKind.monthly,
-      icon: SemanticIcons.reportMonthlyExport,
+      iconName: 'calendar-days',
       color: SemanticColor.primary,
     ),
     ReviewExportAction(
       kind: ReviewExportKind.print,
-      icon: SemanticIcons.actionExport,
+      iconName: 'arrow-down-to-line',
       color: SemanticColor.primary,
     ),
     ReviewExportAction(
       kind: ReviewExportKind.clinicShare,
-      icon: SemanticIcons.actionShare,
+      iconName: 'share-2',
       color: SemanticColor.primary,
     ),
   ];

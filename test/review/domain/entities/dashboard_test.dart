@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
@@ -108,7 +107,7 @@ void main() {
   test('ReviewMetric can carry an observed metric without scalar loss', () {
     const metric = ReviewMetric(
       kind: ReviewDataKind.sleep,
-      icon: Icons.nightlight,
+      iconName: 'moon-star',
       color: SemanticColor.warning,
       value: '--',
       unit: 'h',

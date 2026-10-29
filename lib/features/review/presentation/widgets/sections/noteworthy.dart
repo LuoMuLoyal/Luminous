@@ -3,6 +3,7 @@ import 'package:flutter/semantics.dart' show OrdinalSortKey;
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/features/review/presentation/utils/icons.dart';
 import 'package:luminous/features/review/presentation/utils/review_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -120,7 +121,7 @@ class _NoteworthyCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(
-                  finding.icon,
+                  reviewIcon(finding.iconName),
                   size: IconSizeTokens.sm,
                   color: finding.color.solid(context),
                 ),

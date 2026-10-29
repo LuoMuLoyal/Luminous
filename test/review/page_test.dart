@@ -390,7 +390,7 @@ void main() {
                 metrics: const [
                   ReviewMetric(
                     kind: ReviewDataKind.water,
-                    icon: SemanticIcons.recordWater,
+                    iconName: 'droplets',
                     color: SemanticColor.primary,
                     value: '1.2',
                     unit: 'L',
@@ -495,7 +495,7 @@ void main() {
               metrics: const [
                 ReviewMetric(
                   kind: ReviewDataKind.water,
-                  icon: SemanticIcons.recordWater,
+                  iconName: 'droplets',
                   color: SemanticColor.primary,
                   value: '1.2',
                   unit: 'L',
@@ -506,7 +506,7 @@ void main() {
                 ),
                 ReviewMetric(
                   kind: ReviewDataKind.sleep,
-                  icon: SemanticIcons.recordSleep,
+                  iconName: 'moon-star',
                   color: SemanticColor.info,
                   value: '6.5',
                   unit: 'h',

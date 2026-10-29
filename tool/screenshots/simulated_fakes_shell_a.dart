@@ -4,7 +4,6 @@
 // non-empty and every observed metric is `observed`, so the tab pages render
 // their populated state instead of an empty or signed-out placeholder.
 import 'package:clock/clock.dart';
-import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
@@ -701,7 +700,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
     metrics: <ReviewMetric>[
       ReviewMetric(
         kind: ReviewDataKind.medication,
-        icon: SemanticIcons.recordMedicine,
+        iconName: 'tablets',
         color: SemanticColor.primary,
         value: '82',
         unit: '%',
@@ -717,7 +716,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.water,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         color: SemanticColor.info,
         value: '1500',
         unit: 'ml',
@@ -733,7 +732,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.sleep,
-        icon: SemanticIcons.recordSleep,
+        iconName: 'moon-star',
         color: SemanticColor.neutral,
         value: '7.2',
         unit: 'h',
@@ -745,7 +744,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.general,
-        icon: SemanticIcons.profileCondition,
+        iconName: 'heart-pulse',
         color: SemanticColor.success,
         value: '118/76',
         unit: 'mmHg',
@@ -793,21 +792,21 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
     findings: const <ReviewFinding>[
       ReviewFinding(
         kind: ReviewInsightKind.medication,
-        icon: SemanticIcons.reportAdherence,
+        iconName: 'badge-check',
         color: SemanticColor.primary,
         title: '服药依从率 82%',
         body: '本周 28 次计划服药完成 23 次，晚间那一次最容易漏服。',
       ),
       ReviewFinding(
         kind: ReviewInsightKind.hydration,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         color: SemanticColor.info,
         title: '饮水集中在上午',
         body: '1500 ml 中有 1000 ml 在 12:00 前完成，午后偏少。',
       ),
       ReviewFinding(
         kind: ReviewInsightKind.sleep,
-        icon: SemanticIcons.recordSleep,
+        iconName: 'moon-star',
         color: SemanticColor.neutral,
         title: '入睡时间稳定',
         body: '最近 7 天平均入睡 23:10，睡眠时长在 6.8 至 7.6 小时之间。',
@@ -816,29 +815,29 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
     exportActions: const <ReviewExportAction>[
       ReviewExportAction(
         kind: ReviewExportKind.hospital,
-        icon: SemanticIcons.medicineKit,
+        iconName: 'briefcase-medical',
         color: SemanticColor.primary,
       ),
       ReviewExportAction(
         kind: ReviewExportKind.monthly,
-        icon: FLucideIcons.barChart,
+        iconName: 'bar-chart',
         color: SemanticColor.primary,
       ),
       ReviewExportAction(
         kind: ReviewExportKind.print,
-        icon: SemanticIcons.actionExport,
+        iconName: 'arrow-down-to-line',
         color: SemanticColor.primary,
       ),
       ReviewExportAction(
         kind: ReviewExportKind.clinicShare,
-        icon: SemanticIcons.actionShare,
+        iconName: 'share-2',
         color: SemanticColor.primary,
       ),
     ],
     patterns: const <ReviewPatternCard>[
       ReviewPatternCard(
         kind: ReviewInsightKind.medication,
-        icon: SemanticIcons.reportAdherence,
+        iconName: 'badge-check',
         color: SemanticColor.primary,
         title: '晚间漏服偏多',
         status: ReviewStatus.needsAttention,
@@ -847,7 +846,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewPatternCard(
         kind: ReviewInsightKind.hydration,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         color: SemanticColor.info,
         title: '午后饮水偏低',
         status: ReviewStatus.stable,
@@ -856,7 +855,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewPatternCard(
         kind: ReviewInsightKind.sleep,
-        icon: SemanticIcons.recordSleep,
+        iconName: 'moon-star',
         color: SemanticColor.neutral,
         title: '周末睡得更好',
         status: ReviewStatus.good,
@@ -865,7 +864,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewPatternCard(
         kind: ReviewInsightKind.general,
-        icon: SemanticIcons.reportTrend,
+        iconName: 'trending-up',
         color: SemanticColor.success,
         title: '血压保持平稳',
         status: ReviewStatus.good,

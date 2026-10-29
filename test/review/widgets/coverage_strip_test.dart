@@ -46,7 +46,7 @@ void main() {
   }) {
     return ReviewMetric(
       kind: kind,
-      icon: SemanticIcons.recordWater,
+      iconName: 'droplets',
       color: SemanticColor.primary,
       value: function,
       unit: unit,

@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/features/review/presentation/utils/icons.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -73,7 +74,7 @@ class _PatternCard extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  pattern.icon,
+                  reviewIcon(pattern.iconName),
                   color: pattern.color.solid(context),
                   size: ResponsiveSizing.scaleByWidth(
                     context,
