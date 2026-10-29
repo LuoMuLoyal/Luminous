@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
+import 'package:luminous/core/utils/reminder_format.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 MedicineReminderItem _r({String id = '1', int h = 9, int m = 0}) {

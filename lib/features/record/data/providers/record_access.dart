@@ -8,12 +8,10 @@ import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
-import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/data/repositories/lucent_daily.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
-import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'record_access.g.dart';
@@ -82,12 +80,6 @@ DailyRecordRepository dailyRecordRepository(Ref ref) {
     pendingSyncDao: pendingSyncDao,
     syncWorker: syncWorker,
   );
-}
-
-@riverpod
-RecordRepository recordRepository(Ref ref) {
-  final dailyRecordRepo = ref.watch(dailyRecordRepositoryProvider);
-  return LucentRecordRepository(dailyRecordRepo: dailyRecordRepo);
 }
 
 @Riverpod(keepAlive: true)

@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/bootstrap.dart';
+import 'package:luminous/app/composition/record.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';

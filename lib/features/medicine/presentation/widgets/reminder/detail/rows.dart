@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/reminder_format.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
-import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReminderInfoRow extends StatelessWidget {

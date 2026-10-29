@@ -1,12 +1,12 @@
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/meal_analysis_payload.dart';
+import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/features/record/domain/constants/meal_calorie_range.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
-import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
-import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 
-import 'record_static_data.dart';
+import 'dashboard_static_data.dart';
 
 /// Maps backend daily-record summaries into the dashboard summary grid.
 ///

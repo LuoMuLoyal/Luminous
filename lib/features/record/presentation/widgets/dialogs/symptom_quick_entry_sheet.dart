@@ -3,12 +3,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/core/widgets/common/control/pill_chip.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
-import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

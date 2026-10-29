@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/app/composition/record.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';

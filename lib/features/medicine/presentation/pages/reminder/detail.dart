@@ -8,6 +8,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
+import 'package:luminous/core/utils/reminder_format.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -19,7 +20,6 @@ import 'package:luminous/features/medicine/presentation/controllers/reminder_cal
 import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
-import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/detail_info_tiles.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/loading.dart';

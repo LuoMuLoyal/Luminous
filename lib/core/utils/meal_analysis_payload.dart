@@ -1,5 +1,5 @@
+import 'package:luminous/core/utils/meal_analysis_view_data.dart';
 import 'package:luminous/core/utils/type_conversion.dart';
-import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
 
 /// 解析餐食 payload 的 `mealAnalysis`(契约 v2)。
 ///

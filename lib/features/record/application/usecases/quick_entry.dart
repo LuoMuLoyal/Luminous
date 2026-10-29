@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_meal.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_medication.dart';
@@ -18,7 +19,6 @@ import 'package:luminous/features/record/presentation/controllers/quick_entry_co
 import 'package:luminous/features/record/presentation/controllers/quick_entry_executor.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/time.dart';
-import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/quick_type_settings_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

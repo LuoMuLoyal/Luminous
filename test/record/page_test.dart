@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/composition/record.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
@@ -21,6 +22,7 @@ import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
+import 'package:luminous/features/record/application/mappers/dashboard_assembler.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -1780,7 +1782,10 @@ void main() {
         itemValue: 'mild',
         itemUnit: null,
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1801,7 +1806,10 @@ void main() {
         itemNote: null,
         itemPayload: {'durationMinutes': 480},
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1820,7 +1828,10 @@ void main() {
         itemNote: null,
         itemPayload: {'durationMinutes': 450},
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1839,7 +1850,10 @@ void main() {
         itemNote: null,
         itemPayload: {'moodLevel': 4, 'moodLabel': 'good'},
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1895,7 +1909,10 @@ void main() {
         itemMealCalorieMax: 780,
         itemMealCalorieBucket: 'medium',
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1925,7 +1942,10 @@ void main() {
     'Lucent record repository does not fall back to mock timeline for empty filter results',
     () async {
       final dailyRepo = _FakeDailyRecordRepository(fetchThrows: true);
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(
         repo,
@@ -1950,7 +1970,10 @@ void main() {
         itemUnit: null,
         itemNote: 'Slept well tonight',
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1969,7 +1992,10 @@ void main() {
       itemUnit: null,
       itemNote: 'Felt good today',
     );
-    final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+    final repo = LucentRecordRepository(
+      dailyRecordRepo: dailyRepo,
+      viewAssembler: const RecordDashboardAssembler(),
+    );
 
     final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1988,7 +2014,10 @@ void main() {
         itemValue: '500',
         itemUnit: 'ml',
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 

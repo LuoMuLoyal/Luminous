@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
+import 'package:luminous/core/utils/meal_analysis_payload.dart';
 
 /// v2 分析结果的 payload 形状(服务端 `mealAnalysis` 全字段)。
 Map<String, dynamic> mealPayload({

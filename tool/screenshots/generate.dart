@@ -35,6 +35,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/app/bootstrap.dart';
+import 'package:luminous/app/composition/record.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/storage/kv_store.dart';

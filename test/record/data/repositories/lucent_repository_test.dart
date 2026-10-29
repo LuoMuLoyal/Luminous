@@ -3,6 +3,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/features/record/application/mappers/dashboard_assembler.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
@@ -129,7 +130,10 @@ void main() {
 
   setUp(() {
     dailyRepo = _FakeDailyRecordRepository();
-    repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+    repo = LucentRecordRepository(
+      dailyRecordRepo: dailyRepo,
+      viewAssembler: const RecordDashboardAssembler(),
+    );
   });
 
   /// Runs the repository's dashboard task, failing the test on Left.

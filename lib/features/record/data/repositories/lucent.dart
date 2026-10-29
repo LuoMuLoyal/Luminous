@@ -2,18 +2,17 @@ import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:luminous/features/record/data/utils/record_mappers.dart';
-import 'package:luminous/features/record/data/utils/record_static_data.dart';
+import 'package:luminous/features/record/domain/constants/display_format.dart';
+import 'package:luminous/features/record/domain/constants/entry_types.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:luminous/features/record/domain/repositories/dashboard_view_assembler.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
-import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 
 /// Lucent-backed implementation of [RecordRepository] that maps real daily
-/// records into the timeline while keeping other dashboard sections as static
-/// mock until their backend APIs exist.
+/// records into the dashboard.
 ///
 /// Repository boundary: the daily-record inputs (timeline records, daily
 /// summary) are secondary dashboard signals — their failures degrade to
@@ -21,10 +20,17 @@ import 'package:luminous/features/record/presentation/utils/date_time_formatters
 /// today dashboard degrade), never surfaced as a dashboard failure. Only
 /// unexpected errors (including a protocol `FormatException` escaping
 /// `.run()`) become a Left at this boundary.
+///
+/// View-model assembly (design tokens, copy keys) is delegated to the injected
+/// [RecordDashboardViewAssembler]; this layer only owns the wire data.
 class LucentRecordRepository implements RecordRepository {
-  LucentRecordRepository({required this.dailyRecordRepo});
+  LucentRecordRepository({
+    required this.dailyRecordRepo,
+    required this.viewAssembler,
+  });
 
   final DailyRecordRepository dailyRecordRepo;
+  final RecordDashboardViewAssembler viewAssembler;
 
   @override
   TaskEither<LucentFailure, RecordDashboard> fetchDashboard(
@@ -37,7 +43,7 @@ class LucentRecordRepository implements RecordRepository {
         selectedDate.month,
         selectedDate.day,
       );
-      final dateStr = formatRecordDate(date);
+      final dateStr = formatRecordDateKey(date);
       final selectedKind = filterType == null
           ? null
           : dailyRecordKindForEntryType(filterType);
@@ -90,17 +96,17 @@ class LucentRecordRepository implements RecordRepository {
           final tb = b.occurredTime ?? b.occurredAt;
           return tb.compareTo(ta);
         });
-      final timeline = sortedRecords.map(toTimelineEntry).toList();
+      final timeline = sortedRecords.map(viewAssembler.timelineEntry).toList();
 
       return RecordDashboard(
         selectedDate: date,
         selectedDay: date.day,
-        monthDays: staticMonthDays(date),
-        quickActions: filteredQuickActions(),
-        summary: toDaySummary(summaryData, records),
-        filters: filteredFilters(filterType),
+        monthDays: viewAssembler.monthDays(date),
+        quickActions: viewAssembler.quickActions(),
+        summary: viewAssembler.daySummary(summaryData, records),
+        filters: viewAssembler.filters(filterType),
         timeline: timeline,
-        trends: staticTrends,
+        trends: viewAssembler.trends(),
       );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }

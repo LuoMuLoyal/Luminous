@@ -11,6 +11,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/utils/reminder_format.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart'
     show DoseLogItem, DoseLogRemoteDataSource, DoseLogStatus;
@@ -19,7 +20,6 @@ import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
-import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 
 /// Lucent-backed [MedicineWorkspaceRepository] that derives the medicine
 /// workspace from the current user's real health-context data.

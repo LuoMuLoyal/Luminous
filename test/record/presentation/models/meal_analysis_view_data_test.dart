@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
+import 'package:luminous/core/utils/meal_analysis_view_data.dart';
 
 void main() {
   group('MealAnalysisViewData status', () {

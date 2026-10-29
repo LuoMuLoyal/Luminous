@@ -1,21 +1,8 @@
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/record/domain/constants/entry_types.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 
-/// Returns whether the given record entry type is currently active in the UI.
-bool isActiveRecordEntryType(RecordEntryType type) {
-  return switch (type) {
-    RecordEntryType.symptom ||
-    RecordEntryType.water ||
-    RecordEntryType.meal ||
-    RecordEntryType.sleep ||
-    RecordEntryType.medication ||
-    RecordEntryType.mood ||
-    RecordEntryType.note ||
-    RecordEntryType.vitals ||
-    RecordEntryType.activity => true,
-    _ => false,
-  };
-}
+export 'package:luminous/features/record/domain/constants/entry_types.dart';
 
 /// Generates a static list of calendar days for the given month.
 List<RecordCalendarDay> staticMonthDays(DateTime today) {

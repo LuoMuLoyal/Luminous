@@ -6,13 +6,13 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/services/sleep_entry.dart';
-import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/sleep_quick_entry_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

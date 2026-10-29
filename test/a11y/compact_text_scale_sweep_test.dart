@@ -21,6 +21,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/composition/record.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/sync/pending_sync.dart';
