@@ -132,8 +132,8 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     final observedMetric = dto.observedMetric;
     return ReviewMetric(
       kind: kind,
-      icon: style.metricIcon(kind),
-      color: style.metricColor(kind),
+      iconName: _metricIconName(kind),
+      color: _metricColor(kind),
       value: dto.value,
       unit: dto.unit,
       status: _mapStatus(dto.status.value),
@@ -205,8 +205,8 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewFinding(
       kind: kind,
-      icon: style.insightIcon(kind),
-      color: style.insightColor(kind),
+      iconName: _insightIconName(kind),
+      color: _insightColor(kind),
       title: dto.title,
       body: dto.body,
     );
@@ -216,8 +216,8 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewPatternCard(
       kind: kind,
-      icon: style.insightIcon(kind),
-      color: style.insightColor(kind),
+      iconName: _insightIconName(kind),
+      color: _insightColor(kind),
       title: dto.title,
       status: _mapStatus(dto.status.value),
       body: dto.body,
@@ -271,7 +271,66 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     };
   }
 
+  String _metricIconName(ReviewDataKind kind) {
+    return switch (kind) {
+      ReviewDataKind.medication => 'tablets',
+      ReviewDataKind.water => 'droplets',
+      ReviewDataKind.sleep => 'moon-star',
+      ReviewDataKind.general => 'heart-pulse',
+    };
+  }
+
+  SemanticColor _metricColor(ReviewDataKind kind) {
+    return switch (kind) {
+      ReviewDataKind.medication => SemanticColor.primary,
+      ReviewDataKind.water => SemanticColor.info,
+      ReviewDataKind.sleep => SemanticColor.warning,
+      ReviewDataKind.general => SemanticColor.success,
+    };
+  }
+
+  String _insightIconName(ReviewInsightKind kind) {
+    return switch (kind) {
+      ReviewInsightKind.medication => 'badge-check',
+      ReviewInsightKind.hydration => 'droplets',
+      ReviewInsightKind.sleep => 'moon-star',
+      ReviewInsightKind.general => 'chart-line',
+    };
+  }
+
+  SemanticColor _insightColor(ReviewInsightKind kind) {
+    return switch (kind) {
+      ReviewInsightKind.medication => SemanticColor.primary,
+      ReviewInsightKind.hydration => SemanticColor.info,
+      ReviewInsightKind.sleep => SemanticColor.warning,
+      ReviewInsightKind.general => SemanticColor.success,
+    };
+  }
+
   @override
   Future<ReviewDashboard> get signedOutDashboard =>
       Future.value(ReviewDashboard.signedOut());
 }
+
+final _exportActions = <ReviewExportAction>[
+  const ReviewExportAction(
+    kind: ReviewExportKind.hospital,
+    iconName: 'briefcase-medical',
+    color: SemanticColor.primary,
+  ),
+  const ReviewExportAction(
+    kind: ReviewExportKind.monthly,
+    iconName: 'calendar-days',
+    color: SemanticColor.primary,
+  ),
+  const ReviewExportAction(
+    kind: ReviewExportKind.print,
+    iconName: 'arrow-down-to-line',
+    color: SemanticColor.primary,
+  ),
+  const ReviewExportAction(
+    kind: ReviewExportKind.clinicShare,
+    iconName: 'share-2',
+    color: SemanticColor.primary,
+  ),
+];

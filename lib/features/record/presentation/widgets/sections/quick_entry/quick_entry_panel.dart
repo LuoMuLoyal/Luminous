@@ -102,10 +102,7 @@ class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
   ) {
     final ordered = buildMobileQuickActions(actions, preferences: prefs);
     return ordered
-        .map(
-          (action) =>
-              action.copyWith(icon: resolveQuickActionIcon(action, prefs)),
-        )
+        .map((action) => action.copyWith(iconName: action.iconName))
         .toList(growable: false);
   }
 

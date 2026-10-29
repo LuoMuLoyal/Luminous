@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/scroll_fade.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/features/review/presentation/utils/icons.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -109,7 +110,7 @@ class _CoverageCard extends StatelessWidget {
               Row(
                 children: [
                   Icon(
-                    metric.icon,
+                    reviewIcon(metric.iconName),
                     size: IconSizeTokens.sm,
                     color: sparse
                         ? SemanticColor.neutral.solid(context)

@@ -7,6 +7,7 @@ import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -256,7 +257,7 @@ class _TimelineRow extends StatelessWidget {
                       ),
                       child: Center(
                         child: Icon(
-                          entry.icon,
+                          timelineEntryIcon(entry),
                           color: entry.accent.solid(context),
                           size: IconSizeTokens.sm,
                         ),

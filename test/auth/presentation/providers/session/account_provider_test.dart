@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/client_error_code.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';

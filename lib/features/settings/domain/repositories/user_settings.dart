@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Repository interface for reading and updating user settings.
 ///

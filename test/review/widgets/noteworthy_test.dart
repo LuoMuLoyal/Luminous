@@ -58,7 +58,7 @@ void main() {
   }) {
     return ReviewFinding(
       kind: kind,
-      icon: SemanticIcons.reportInsight,
+      iconName: 'telescope',
       color: SemanticColor.warning,
       title: title,
       body: body,

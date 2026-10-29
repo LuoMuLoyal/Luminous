@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/features/review/presentation/utils/icons.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReviewFindingsSection extends StatelessWidget {
@@ -125,7 +126,7 @@ class _FindingCard extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  finding.icon,
+                  reviewIcon(finding.iconName),
                   color: palette.solid,
                   size: ResponsiveSizing.scaleByWidth(
                     context,

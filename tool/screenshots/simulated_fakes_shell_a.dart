@@ -4,7 +4,6 @@
 // non-empty and every observed metric is `observed`, so the tab pages render
 // their populated state instead of an empty or signed-out placeholder.
 import 'package:clock/clock.dart';
-import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
@@ -183,7 +182,7 @@ class SimulatedRecordRepository implements RecordRepository {
   static const _quickActions = <RecordQuickAction>[
     RecordQuickAction(
       type: RecordEntryType.meal,
-      icon: SemanticIcons.recordMeal,
+      iconName: 'utensils',
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryTimesUnit,
       accent: SemanticColor.primary,
@@ -191,7 +190,7 @@ class SimulatedRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.water,
-      icon: SemanticIcons.recordWater,
+      iconName: 'droplets',
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryMlUnit,
       accent: SemanticColor.primary,
@@ -199,7 +198,7 @@ class SimulatedRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.vitals,
-      icon: SemanticIcons.profileCondition,
+      iconName: 'heart-pulse',
       titleKey: RecordCopyKey.typeVitals,
       subtitleKey: RecordCopyKey.summaryLatestVitalTitle,
       accent: SemanticColor.primary,
@@ -207,7 +206,7 @@ class SimulatedRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.medication,
-      icon: SemanticIcons.recordMedicine,
+      iconName: 'tablets',
       titleKey: RecordCopyKey.typeMedication,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -215,7 +214,7 @@ class SimulatedRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.sleep,
-      icon: SemanticIcons.recordSleep,
+      iconName: 'moon-star',
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -223,7 +222,7 @@ class SimulatedRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.note,
-      icon: SemanticIcons.recordNote,
+      iconName: 'file-text',
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -234,7 +233,7 @@ class SimulatedRecordRepository implements RecordRepository {
   static const _summaryItems = <RecordSummaryItem>[
     RecordSummaryItem(
       type: RecordEntryType.water,
-      icon: SemanticIcons.recordWater,
+      iconName: 'droplets',
       titleKey: RecordCopyKey.summaryWaterTitle,
       value: '1500',
       unitKey: RecordCopyKey.summaryMlUnit,
@@ -243,7 +242,7 @@ class SimulatedRecordRepository implements RecordRepository {
     ),
     RecordSummaryItem(
       type: RecordEntryType.sleep,
-      icon: SemanticIcons.recordSleep,
+      iconName: 'moon-star',
       titleKey: RecordCopyKey.typeSleep,
       value: '7.2',
       unitKey: RecordCopyKey.summaryTimesUnit,
@@ -253,7 +252,7 @@ class SimulatedRecordRepository implements RecordRepository {
     ),
     RecordSummaryItem(
       type: RecordEntryType.vitals,
-      icon: SemanticIcons.profileCondition,
+      iconName: 'heart-pulse',
       titleKey: RecordCopyKey.summaryLatestVitalTitle,
       value: '118/76',
       detailKey: RecordCopyKey.summaryNormal,
@@ -266,42 +265,42 @@ class SimulatedRecordRepository implements RecordRepository {
     RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
-      icon: SemanticIcons.recordMeal,
+      iconName: 'utensils',
       accent: SemanticColor.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
-      icon: SemanticIcons.recordWater,
+      iconName: 'droplets',
       accent: SemanticColor.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.vitals,
       titleKey: RecordCopyKey.typeVitals,
-      icon: SemanticIcons.profileCondition,
+      iconName: 'heart-pulse',
       accent: SemanticColor.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
-      icon: SemanticIcons.recordMedicine,
+      iconName: 'tablets',
       accent: SemanticColor.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
-      icon: SemanticIcons.recordSleep,
+      iconName: 'moon-star',
       accent: SemanticColor.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
-      icon: SemanticIcons.recordNote,
+      iconName: 'file-text',
       accent: SemanticColor.primary,
       selected: true,
     ),
@@ -312,7 +311,7 @@ class SimulatedRecordRepository implements RecordRepository {
         (filter) => RecordFilter(
           type: filter.type,
           titleKey: filter.titleKey,
-          icon: filter.icon,
+          iconName: filter.iconName,
           accent: filter.accent,
           selected: filterType == null || filter.type == filterType,
           locked: filter.locked,
@@ -324,7 +323,7 @@ class SimulatedRecordRepository implements RecordRepository {
     RecordTimelineEntry(
       time: '07:40',
       type: RecordEntryType.meal,
-      icon: SemanticIcons.recordMeal,
+      iconName: 'utensils',
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.timelineMealLunch,
@@ -332,60 +331,60 @@ class SimulatedRecordRepository implements RecordRepository {
       unitKey: RecordCopyKey.summaryTimesUnit,
       detailKey: RecordCopyKey.timelineMealNutrition,
       badgeKey: RecordCopyKey.timelineAiBadge,
-      trailingIcon: SemanticIcons.actionNext,
+      trailingIconName: 'chevron-right',
     ),
     RecordTimelineEntry(
       time: '08:05',
       type: RecordEntryType.vitals,
-      icon: SemanticIcons.profileCondition,
+      iconName: 'heart-pulse',
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.timelineBloodPressure,
       value: '晨起血压 118/76',
       detailKey: RecordCopyKey.timelineBloodPressureDetail,
       badgeKey: RecordCopyKey.summaryNormal,
-      trailingIcon: SemanticIcons.actionNext,
+      trailingIconName: 'chevron-right',
     ),
     RecordTimelineEntry(
       time: '08:30',
       type: RecordEntryType.medication,
-      icon: SemanticIcons.recordMedicine,
+      iconName: 'tablets',
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.timelineMedicationName,
       value: '服药：苯磺酸氨氯地平片',
       unitKey: RecordCopyKey.summaryTimesUnit,
       detailKey: RecordCopyKey.timelineMedicationDetail,
-      trailingIcon: SemanticIcons.statusSuccess,
+      trailingIconName: 'circle-check',
     ),
     RecordTimelineEntry(
       time: '10:15',
       type: RecordEntryType.water,
-      icon: SemanticIcons.recordWater,
+      iconName: 'droplets',
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.typeWater,
       value: '250',
       unitKey: RecordCopyKey.summaryMlUnit,
       detailKey: RecordCopyKey.timelineWaterProgress,
-      trailingIcon: SemanticIcons.actionNext,
+      trailingIconName: 'chevron-right',
     ),
     RecordTimelineEntry(
       time: '12:45',
       type: RecordEntryType.meal,
-      icon: SemanticIcons.recordMeal,
+      iconName: 'utensils',
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.timelineMealLunch,
       value: '午餐：杂粮饭配清蒸鲈鱼',
       detailKey: RecordCopyKey.timelineMealNutrition,
       badgeKey: RecordCopyKey.timelineManualBadge,
-      trailingIcon: SemanticIcons.actionMore,
+      trailingIconName: 'ellipsis',
     ),
     RecordTimelineEntry(
       time: '23:10',
       type: RecordEntryType.sleep,
-      icon: SemanticIcons.recordSleep,
+      iconName: 'moon-star',
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.timelineSleepRecord,
@@ -393,17 +392,17 @@ class SimulatedRecordRepository implements RecordRepository {
       unitKey: RecordCopyKey.summaryTimesUnit,
       detailKey: RecordCopyKey.timelineSleepDetail,
       badgeKey: RecordCopyKey.summaryNormal,
-      trailingIcon: SemanticIcons.actionNext,
+      trailingIconName: 'chevron-right',
     ),
     RecordTimelineEntry(
       time: '16:20',
       type: RecordEntryType.note,
-      icon: SemanticIcons.recordNote,
+      iconName: 'file-text',
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.typeNote,
       value: '午后轻微头胀，休息后缓解',
-      trailingIcon: SemanticIcons.actionNext,
+      trailingIconName: 'chevron-right',
     ),
   ];
 
@@ -701,7 +700,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
     metrics: <ReviewMetric>[
       ReviewMetric(
         kind: ReviewDataKind.medication,
-        icon: SemanticIcons.recordMedicine,
+        iconName: 'tablets',
         color: SemanticColor.primary,
         value: '82',
         unit: '%',
@@ -717,7 +716,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.water,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         color: SemanticColor.info,
         value: '1500',
         unit: 'ml',
@@ -733,7 +732,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.sleep,
-        icon: SemanticIcons.recordSleep,
+        iconName: 'moon-star',
         color: SemanticColor.neutral,
         value: '7.2',
         unit: 'h',
@@ -745,7 +744,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.general,
-        icon: SemanticIcons.profileCondition,
+        iconName: 'heart-pulse',
         color: SemanticColor.success,
         value: '118/76',
         unit: 'mmHg',
@@ -793,21 +792,21 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
     findings: const <ReviewFinding>[
       ReviewFinding(
         kind: ReviewInsightKind.medication,
-        icon: SemanticIcons.reportAdherence,
+        iconName: 'badge-check',
         color: SemanticColor.primary,
         title: '服药依从率 82%',
         body: '本周 28 次计划服药完成 23 次，晚间那一次最容易漏服。',
       ),
       ReviewFinding(
         kind: ReviewInsightKind.hydration,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         color: SemanticColor.info,
         title: '饮水集中在上午',
         body: '1500 ml 中有 1000 ml 在 12:00 前完成，午后偏少。',
       ),
       ReviewFinding(
         kind: ReviewInsightKind.sleep,
-        icon: SemanticIcons.recordSleep,
+        iconName: 'moon-star',
         color: SemanticColor.neutral,
         title: '入睡时间稳定',
         body: '最近 7 天平均入睡 23:10，睡眠时长在 6.8 至 7.6 小时之间。',
@@ -816,29 +815,29 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
     exportActions: const <ReviewExportAction>[
       ReviewExportAction(
         kind: ReviewExportKind.hospital,
-        icon: SemanticIcons.medicineKit,
+        iconName: 'briefcase-medical',
         color: SemanticColor.primary,
       ),
       ReviewExportAction(
         kind: ReviewExportKind.monthly,
-        icon: FLucideIcons.barChart,
+        iconName: 'bar-chart',
         color: SemanticColor.primary,
       ),
       ReviewExportAction(
         kind: ReviewExportKind.print,
-        icon: SemanticIcons.actionExport,
+        iconName: 'arrow-down-to-line',
         color: SemanticColor.primary,
       ),
       ReviewExportAction(
         kind: ReviewExportKind.clinicShare,
-        icon: SemanticIcons.actionShare,
+        iconName: 'share-2',
         color: SemanticColor.primary,
       ),
     ],
     patterns: const <ReviewPatternCard>[
       ReviewPatternCard(
         kind: ReviewInsightKind.medication,
-        icon: SemanticIcons.reportAdherence,
+        iconName: 'badge-check',
         color: SemanticColor.primary,
         title: '晚间漏服偏多',
         status: ReviewStatus.needsAttention,
@@ -847,7 +846,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewPatternCard(
         kind: ReviewInsightKind.hydration,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         color: SemanticColor.info,
         title: '午后饮水偏低',
         status: ReviewStatus.stable,
@@ -856,7 +855,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewPatternCard(
         kind: ReviewInsightKind.sleep,
-        icon: SemanticIcons.recordSleep,
+        iconName: 'moon-star',
         color: SemanticColor.neutral,
         title: '周末睡得更好',
         status: ReviewStatus.good,
@@ -865,7 +864,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewPatternCard(
         kind: ReviewInsightKind.general,
-        icon: SemanticIcons.reportTrend,
+        iconName: 'trending-up',
         color: SemanticColor.success,
         title: '血压保持平稳',
         status: ReviewStatus.good,

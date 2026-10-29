@@ -121,7 +121,7 @@ class RecordMobileFilter extends StatelessWidget {
                 return _FilterChip(
                   chipKey: Key('record-filter-${filter.type.name}'),
                   label: mobileFilterLabel(l10n, filter),
-                  icon: filter.icon,
+                  icon: resolveIconName(filter.iconName),
                   selected: filter.selected,
                   onTap: filter.locked || onFilterSelected == null
                       ? null

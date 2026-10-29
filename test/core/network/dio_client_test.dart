@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/client/session_store.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 
 /// A session store that stores tokens in memory.
 class _MemorySessionStore implements LucentSessionStore {

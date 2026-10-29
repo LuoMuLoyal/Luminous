@@ -2602,7 +2602,7 @@ class _FakeRecordRepository implements RecordRepository {
                   const RecordTimelineEntry(
                     time: '09:45',
                     type: RecordEntryType.vitals,
-                    icon: SemanticIcons.profileCondition,
+                    iconName: 'heart-pulse',
                     accent: SemanticColor.primary,
                     softColor: SemanticColor.neutral,
                     titleKey: RecordCopyKey.typeVitals,
@@ -2649,7 +2649,7 @@ class _LongTimelineRecordRepository implements RecordRepository {
             return RecordTimelineEntry(
               time: time,
               type: RecordEntryType.note,
-              icon: SemanticIcons.tabRecord,
+              iconName: 'notebook-pen',
               accent: SemanticColor.primary,
               softColor: SemanticColor.neutral,
               titleKey: RecordCopyKey.typeNote,

@@ -1,6 +1,6 @@
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/repositories/scan.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Searches every OCR candidate against the medicine database and collects the
 /// hits.

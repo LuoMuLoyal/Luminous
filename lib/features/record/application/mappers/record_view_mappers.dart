@@ -47,7 +47,7 @@ RecordDaySummary toDaySummary(
         items.add(
           RecordSummaryItem(
             type: type,
-            icon: SemanticIcons.recordWater,
+            iconName: 'droplets',
             titleKey: RecordCopyKey.summaryWaterTitle,
             value: useMl ? waterTotalMl.toString() : summary.count.toString(),
             unitKey: useMl
@@ -62,7 +62,7 @@ RecordDaySummary toDaySummary(
         items.add(
           RecordSummaryItem(
             type: type,
-            icon: SemanticIcons.recordMeal,
+            iconName: 'utensils',
             titleKey: RecordCopyKey.summaryMealTitle,
             value: summary.count.toString(),
             unitKey: RecordCopyKey.summaryTimesUnit,
@@ -75,7 +75,7 @@ RecordDaySummary toDaySummary(
         items.add(
           RecordSummaryItem(
             type: type,
-            icon: SemanticIcons.recordMood,
+            iconName: 'smile',
             titleKey: RecordCopyKey.summaryMoodTitle,
             value: summary.count.toString(),
             unitKey: RecordCopyKey.summaryTimesUnit,
@@ -96,7 +96,7 @@ RecordDaySummary toDaySummary(
         items.add(
           RecordSummaryItem(
             type: type,
-            icon: SemanticIcons.profileCondition,
+            iconName: 'heart-pulse',
             titleKey: RecordCopyKey.summaryLatestVitalTitle,
             value: hasLatestValue
                 ? '$latestValue${latestUnit != null && latestUnit.trim().isNotEmpty ? ' $latestUnit' : ''}'
@@ -128,15 +128,15 @@ RecordTimelineEntry toTimelineEntry(DailyRecordItem record) {
   const accent = SemanticColor.primary;
   const soft = SemanticColor.neutral;
 
-  final icon = switch (kind) {
-    DailyRecordKind.water => SemanticIcons.recordWater,
-    DailyRecordKind.meal => SemanticIcons.recordMeal,
-    DailyRecordKind.vital => SemanticIcons.profileCondition,
-    DailyRecordKind.mood => SemanticIcons.recordMood,
-    DailyRecordKind.symptom => SemanticIcons.recordSymptom,
-    DailyRecordKind.activity => SemanticIcons.recordActivity,
-    DailyRecordKind.note => SemanticIcons.recordNote,
-    DailyRecordKind.sleep => SemanticIcons.recordSleep,
+  final iconNameOfKind = switch (kind) {
+    DailyRecordKind.water => 'droplets',
+    DailyRecordKind.meal => 'utensils',
+    DailyRecordKind.vital => 'heart-pulse',
+    DailyRecordKind.mood => 'smile',
+    DailyRecordKind.symptom => 'thermometer',
+    DailyRecordKind.activity => 'activity',
+    DailyRecordKind.note => 'file-text',
+    DailyRecordKind.sleep => 'moon-star',
   };
 
   // Mood records created through the fast-entry dialog store the level in
@@ -187,7 +187,7 @@ RecordTimelineEntry toTimelineEntry(DailyRecordItem record) {
   return RecordTimelineEntry(
     time: timeStr,
     type: recordEntryTypeForDailyRecordKind(kind),
-    icon: icon,
+    iconName: iconNameOfKind,
     accent: accent,
     softColor: soft,
     titleKey: titleKey,

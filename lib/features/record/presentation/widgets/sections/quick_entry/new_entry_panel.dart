@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordNewEntryPanel extends StatelessWidget {
@@ -203,7 +204,7 @@ class _DesktopEntryButtonState extends State<_DesktopEntryButton> {
                   ),
                   child: Center(
                     child: Icon(
-                      widget.action.icon,
+                      recordIcon(widget.action),
                       color: widget.action.accent.solid(context),
                       size: IconSizeTokens.md,
                     ),
@@ -262,7 +263,11 @@ class _NewEntryChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(action.icon, color: action.accent.solid(context), size: 16),
+          Icon(
+            recordIcon(action),
+            color: action.accent.solid(context),
+            size: 16,
+          ),
           const SizedBox(width: Spacing.sm),
           // 标签在 Wrap 里宽度有上限:Flexible + 省略,长文案不会把 chip 顶出右缘。
           Flexible(

@@ -7,7 +7,6 @@ import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/features/mine/presentation/pages/sync_failures.dart';
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';

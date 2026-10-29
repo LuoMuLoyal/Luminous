@@ -3,8 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/features/scan/data/datasources/ocr_model_manager.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
-import 'package:luminous/features/scan/domain/services/ocr_model_manager.dart';
 import 'package:paddle_ocr_native/paddle_ocr_native.dart';
 
 /// Thin wrapper over [PaddleOcr] that converts results to domain types.

@@ -52,6 +52,8 @@ const List<String> allowedCoreForData = [
   'lib/core/network/',
   'lib/core/database/',
   'lib/core/storage/',
+  // Shared kernel: pure-Dart value objects / failure vocabulary / tokens.
+  'lib/shared/',
 ];
 
 /// `core/` subtrees that the `presentation/` layer may depend on.
@@ -88,6 +90,14 @@ const List<String> allowedCoreForPresentation = [
   'lib/app/auth_session_adapter.dart',
   // Contract error vocabulary rendered by the UI (code + mapper).
   'lib/core/network/contract/',
+  // Shared kernel (pure-Dart value objects + failure vocabulary + tokens).
+  'lib/shared/',
+  // Composition root and pure config/analytics/network value seams.
+  'lib/app/composition/',
+  'lib/core/network/config/',
+  'lib/core/network/app_log.dart',
+  'lib/core/network/i18n/',
+  'lib/core/analytics/',
 ];
 
 /// The single violation predicate shared by the AST rules and the CLI driver.

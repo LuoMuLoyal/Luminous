@@ -883,7 +883,7 @@ class E2eRecordRepository implements RecordRepository {
               RecordTimelineEntry(
                 time: '09:45',
                 type: RecordEntryType.vitals,
-                icon: FLucideIcons.heart,
+                iconName: 'heart',
                 accent: SemanticColor.destructive,
                 softColor: SemanticColor.neutral,
                 titleKey: RecordCopyKey.typeVitals,

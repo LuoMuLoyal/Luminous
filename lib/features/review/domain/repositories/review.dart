@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// 健康事件回顾的仓储接口。
 ///

@@ -1,6 +1,5 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/client_error_code.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

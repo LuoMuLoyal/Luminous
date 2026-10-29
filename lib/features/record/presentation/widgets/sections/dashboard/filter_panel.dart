@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordFilterPanel extends StatelessWidget {
@@ -138,7 +139,7 @@ class FilterRow extends StatelessWidget {
             ),
             const SizedBox(width: Spacing.md),
             Icon(
-              filter.icon,
+              filterIcon(filter),
               color: filter.accent.solid(context),
               size: IconSizeTokens.sm,
             ),

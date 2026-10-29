@@ -10,6 +10,7 @@ import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/notification/data/repositories/lucent.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 

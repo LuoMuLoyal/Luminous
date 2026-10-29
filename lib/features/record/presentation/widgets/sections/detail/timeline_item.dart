@@ -8,6 +8,7 @@ import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/detail/timeline_drag_handler.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/timeline_drag_data.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -150,7 +151,7 @@ class TimelineCard extends StatelessWidget {
                 ),
                 child: Center(
                   child: Icon(
-                    entry.icon,
+                    timelineEntryIcon(entry),
                     color: entry.accent.solid(context),
                     size: 19,
                   ),
@@ -346,18 +347,18 @@ class TimelineCard extends StatelessWidget {
   }
 
   IconData _trailingIcon() {
-    if (entry.trailingIcon == SemanticIcons.statusSuccess) {
+    if (timelineEntryTrailingIcon(entry) == SemanticIcons.statusSuccess) {
       return SemanticIcons.statusComplete;
     }
-    if (entry.trailingIcon == SemanticIcons.actionNext ||
-        entry.trailingIcon == null) {
+    if (timelineEntryTrailingIcon(entry) == SemanticIcons.actionNext ||
+        entry.trailingIconName == null) {
       return SemanticIcons.actionNext;
     }
-    return entry.trailingIcon!;
+    return timelineEntryTrailingIcon(entry)!;
   }
 
   Color _trailingColor(FColors colors) {
-    if (entry.trailingIcon == SemanticIcons.statusSuccess) {
+    if (timelineEntryTrailingIcon(entry) == SemanticIcons.statusSuccess) {
       return colors.foreground;
     }
     return SemanticColor.neutral.paletteFromColors(colors).solid;

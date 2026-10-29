@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:luminous/core/errors/client_error_code.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/session_store.dart';

@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/contract/lucent_failure_from_wire.dart';
 import 'package:luminous/core/network/contract/problem_details.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
@@ -1531,7 +1531,7 @@ void main() {
     test('Problem Details business failure keeps code/status', () async {
       final repo = LucentAssistantRepository(
         dataSource: _FakeAssistantRemoteDataSource(
-          failureToThrow: LucentFailure.fromProblemDetails(
+          failureToThrow: LucentFailureFromWire.fromProblemDetails(
             const ProblemDetails(
               type: 'https://lucent.example/errors/assistant',
               title: 'Conversation not found',

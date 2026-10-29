@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Compact floating feedback widget shown while dragging a timeline card.
@@ -49,7 +50,7 @@ class TimelineDragFeedback extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  entry.icon,
+                  timelineEntryIcon(entry),
                   color: entry.accent.solid(context),
                   size: IconSizeTokens.sm,
                 ),
