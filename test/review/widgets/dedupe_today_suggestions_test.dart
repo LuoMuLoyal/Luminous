@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/suggestion_history.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/history/suggestion_history.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 
 /// dedupeTodaySuggestions 的数据契约测试(2026-09-01 审查 #5)。

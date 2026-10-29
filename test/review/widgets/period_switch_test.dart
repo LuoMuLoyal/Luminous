@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/period_switch.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/history/period_switch.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../helpers/kv_test_store.dart';

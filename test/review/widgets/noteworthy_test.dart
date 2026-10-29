@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/noteworthy.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/overview/noteworthy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../helpers/kv_test_store.dart';
