@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/medicine/search_result.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/database/daos/search_result.dart';
 import 'package:luminous/core/network/api.dart';
+import 'package:luminous/core/network/app_log.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:luminous/features/search/data/mappers/medicine_search.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
@@ -121,7 +121,7 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
             jsonEncode(results.map((r) => r.toJson()).toList()),
           );
         } catch (e) {
-          appTalker.warning('Search background refresh failed: $e');
+          appLog.warning('Search background refresh failed: $e');
         }
       }),
     );

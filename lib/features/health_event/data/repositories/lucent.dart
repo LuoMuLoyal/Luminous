@@ -1,10 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as api;
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 
@@ -19,7 +18,7 @@ import 'package:luminous/features/health_event/domain/repositories/health_event.
 ///
 /// 404 semantics: `fetchActive` / `fetchById` answer 404 when there is no
 /// active event / no such event — a normal business state ("未配置可选数据"),
-/// kept as `Right(null)` and observed via [appTalker] ("记录+继续"); it is
+/// kept as `Right(null)` and observed via [appLog] ("记录+继续"); it is
 /// not a catch-all — other 4xx/5xx and network errors are rethrown into the
 /// mapper and become a Left.
 ///
@@ -57,9 +56,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
         if (error.response?.statusCode == 404) {
           // 文档化语义：无活动事件是正常业务状态（"未配置可选数据保持
           // Right"），404 → Right(null)，观察记录后继续。
-          appTalker.warning(
-            'LucentHealthEventRepository: fetchActive 404, 无活动事件',
-          );
+          appLog.warning('LucentHealthEventRepository: fetchActive 404, 无活动事件');
           return null;
         }
         rethrow;
@@ -77,9 +74,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
       } on DioException catch (error) {
         if (error.response?.statusCode == 404) {
           // 文档化语义：查询不存在的事件详情是正常业务状态 → Right(null)。
-          appTalker.warning(
-            'LucentHealthEventRepository: fetchById 404, 事件不存在',
-          );
+          appLog.warning('LucentHealthEventRepository: fetchById 404, 事件不存在');
           return null;
         }
         rethrow;
@@ -170,7 +165,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
   /// maps it to `Left(unknown)` with the cause preserved.
   HealthEvent _mapRequired(api.HealthEventResponse? dto) {
     if (dto == null) {
-      appTalker.error('LucentHealthEventRepository: 响应缺少事件数据（协议不变量）');
+      appLog.error('LucentHealthEventRepository: 响应缺少事件数据（协议不变量）');
       throw StateError('Health event response did not include event data.');
     }
     return _map(_canonical(dto));
@@ -238,7 +233,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
   /// 协议不变量：未知状态枚举，记录后保持抛 `StateError` →
   /// `Left(unknown)`（cause 保留）。
   Never _unknownStatus(String value) {
-    appTalker.error('LucentHealthEventRepository: 未知健康事件状态 $value');
+    appLog.error('LucentHealthEventRepository: 未知健康事件状态 $value');
     throw StateError('Unknown health event status: $value');
   }
 
@@ -260,7 +255,7 @@ class LucentHealthEventRepository implements HealthEventRepository {
   /// 协议不变量：未知结果枚举，记录后保持抛 `StateError` →
   /// `Left(unknown)`（cause 保留）。
   Never _unknownOutcome(String value) {
-    appTalker.error('LucentHealthEventRepository: 未知健康事件结果 $value');
+    appLog.error('LucentHealthEventRepository: 未知健康事件结果 $value');
     throw StateError('Unknown health event outcome: $value');
   }
 

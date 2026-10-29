@@ -8,9 +8,9 @@ import 'package:luminous/core/database/daos/records/daily_record.dart';
 import 'package:luminous/core/database/daos/records/daily_record_summary.dart';
 import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
@@ -161,9 +161,9 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
           }
           final message = 'DailyRecord summary refresh failed: $e';
           if (failures >= _kBackgroundRefreshFailuresBeforeError) {
-            appTalker.error(message, st);
+            appLog.error(message, st);
           } else {
-            appTalker.warning(message);
+            appLog.warning(message);
           }
         }
       }),
@@ -296,7 +296,7 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
     required String entityId,
     String? payload,
   }) async {
-    appTalker.warning(
+    appLog.warning(
       'DailyRecord.$operation: network failed, queuing for sync: $e',
     );
 
@@ -315,7 +315,7 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
     } catch (error, stackTrace) {
       // 入队（本地 DB 写）失败不得掩盖原始网络失败：仅记录日志，仍按原
       // 网络失败映射 Left。
-      appTalker.error(
+      appLog.error(
         'DailyRecord.$operation enqueue failed, keeping the original network '
         'failure: $error',
         stackTrace,
@@ -369,9 +369,9 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
           }
           final message = 'DailyRecord background refresh failed: $e';
           if (failures >= _kBackgroundRefreshFailuresBeforeError) {
-            appTalker.error(message, st);
+            appLog.error(message, st);
           } else {
-            appTalker.warning(message);
+            appLog.warning(message);
           }
         }
       }),

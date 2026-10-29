@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/app_log.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,7 +19,7 @@ part 'dose_log_remote.g.dart';
 /// body is a `LucentFailure.network(emptyResponse)` (reminder `_responseData`
 /// / today `ai_remote` precedent — never a transport `FormatException`); a
 /// structurally malformed body is a thrown protocol exception (logged via
-/// [appTalker] for diagnosability) that surfaces as a `Left(unknown)` at the
+/// [appLog] for diagnosability) that surfaces as a `Left(unknown)` at the
 /// repository boundary.
 class DoseLogRemoteDataSource {
   DoseLogRemoteDataSource({required this.api, required this.dio});
@@ -35,7 +34,7 @@ class DoseLogRemoteDataSource {
     final data = _requireData(response);
     final items = data['items'];
     if (items is! List) {
-      appTalker.error(
+      appLog.error(
         'DoseLogRemoteDataSource.fetchForDate: items is not a list: $items',
       );
       throw const FormatException('Dose log list items is not a list');
@@ -139,7 +138,7 @@ class DoseLogRemoteDataSource {
   Map<String, dynamic> _requireItemMap(Object? item) {
     final map = coerceToStringMap(item);
     if (map == null) {
-      appTalker.error(
+      appLog.error(
         'DoseLogRemoteDataSource._requireItemMap: item is not a map: $item',
       );
       throw const FormatException('Dose log item is not a map');

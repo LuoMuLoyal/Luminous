@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:luminous/core/logger/sentry_talker_observer.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
 
@@ -48,13 +49,21 @@ final _globalTalker = talker_pkg.Talker(
   observer: SentryTalkerObserver(),
 );
 
+/// Wire the data layer's log seam (`core/network/app_log.dart`) to the single
+/// Talker above once, at library initialisation. The seam is the only logging
+/// surface `data/` is allowed to import.
+void _installLogSink() => setAppLogSink(_globalTalker);
+
 /// Global [talker_pkg.Talker] accessor for contexts that do not have a Riverpod
 /// [Ref] (e.g. static utility classes, plain repository objects).
 ///
 /// ```dart
 /// appTalker.error('Something failed: $e');
 /// ```
-talker_pkg.Talker get appTalker => _globalTalker;
+talker_pkg.Talker get appTalker {
+  _installLogSink();
+  return _globalTalker;
+}
 
 /// Riverpod provider that returns the same [_globalTalker] singleton.
 ///

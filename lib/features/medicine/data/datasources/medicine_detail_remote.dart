@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/medicine/data/mappers/medicine_detail.dart';
 import 'package:luminous/features/medicine/data/mappers/medicine_sequences.dart';

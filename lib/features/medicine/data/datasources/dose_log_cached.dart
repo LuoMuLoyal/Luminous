@@ -7,10 +7,10 @@ import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/medicine/medicine_dose_log.dart';
 import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -169,7 +169,7 @@ class CachedDoseLogDataSource implements DoseLogRepository {
     DioException e, {
     String? dateOverride,
   }) async {
-    appTalker.warning('DoseLog write failed, queuing for sync: $e');
+    appLog.warning('DoseLog write failed, queuing for sync: $e');
 
     final psq = pendingSyncDao;
     if (psq == null) return;
@@ -187,7 +187,7 @@ class CachedDoseLogDataSource implements DoseLogRepository {
     } catch (error, stackTrace) {
       // 入队（本地 DB 写）失败不得掩盖原始网络失败：仅记录日志，仍按原
       // 网络失败映射 Left。
-      appTalker.error(
+      appLog.error(
         'DoseLog write enqueue failed, keeping the original network '
         'failure: $error',
         stackTrace,
@@ -229,7 +229,7 @@ class CachedDoseLogDataSource implements DoseLogRepository {
         try {
           await _refreshCache(date);
         } catch (e) {
-          appTalker.warning('DoseLog background refresh failed: $e');
+          appLog.warning('DoseLog background refresh failed: $e');
         }
       }),
     );
@@ -241,7 +241,7 @@ class CachedDoseLogDataSource implements DoseLogRepository {
     try {
       await _refreshCache(date);
     } catch (e) {
-      appTalker.warning('DoseLog post-write cache refresh failed: $e');
+      appLog.warning('DoseLog post-write cache refresh failed: $e');
     }
   }
 
@@ -326,7 +326,7 @@ CachedDoseLogDataSource cachedDoseLogDataSource(Ref ref) {
             .toList();
         await dao.replaceByDate(date, jsonItems);
       } catch (e) {
-        appTalker.warning(
+        appLog.warning(
           'DoseLog sync replay: cache refresh failed for date $date: $e',
         );
       }

@@ -1,5 +1,5 @@
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/features/settings/data/providers/data_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -40,12 +40,12 @@ Future<void> cacheCleanup(Ref ref) async {
     final deletedLogs = await doseLogDao.cleanup(cutoff);
 
     if (deletedRecords > 0 || deletedLogs > 0) {
-      appTalker.info(
+      appLog.info(
         'Cache cleanup: removed $deletedRecords daily records, '
         '$deletedLogs dose logs older than ${period.days} days',
       );
     }
   } catch (e) {
-    appTalker.warning('Cache cleanup failed: $e');
+    appLog.warning('Cache cleanup failed: $e');
   }
 }

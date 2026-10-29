@@ -3,14 +3,13 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/cache_constants.dart';
-import 'package:luminous/core/database/daos/mine/mine_dashboard.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/database/daos/mine_dashboard.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
@@ -84,14 +83,14 @@ class LucentMineRepository implements MineRepository {
           final dashboard = await _assemble();
           await _dao.replace(jsonEncode(dashboard.toJson()));
         } catch (e) {
-          appTalker.warning('Mine dashboard background refresh failed: $e');
+          appLog.warning('Mine dashboard background refresh failed: $e');
         }
       }),
     );
   }
 
   MineAccount _buildAccount() {
-    final currentUser = _ref.read(authSessionProvider).user as AuthUser?;
+    final currentUser = _ref.read(authSessionProvider).user;
     final nick = currentUser?.nickname?.trim();
     final displayName = nick != null && nick.isNotEmpty
         ? nick

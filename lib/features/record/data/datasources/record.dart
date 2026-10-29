@@ -3,10 +3,9 @@ import 'dart:typed_data';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/app_log.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
@@ -22,7 +21,7 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 /// success body is a `LucentFailure.network(emptyResponse)` (today `ai_remote`
 /// / medicine `dose_log_remote` precedent — never a transport exception); a
 /// structurally malformed body or a delete status other than 204 is a thrown
-/// protocol exception (logged via [appTalker] for diagnosability) that
+/// protocol exception (logged via [appLog] for diagnosability) that
 /// surfaces as a `Left(unknown)` at the repository boundary.
 ///
 /// Raw [Dio] is kept only where the typed client cannot express the call:
@@ -217,7 +216,7 @@ class DailyRecordRemoteDataSource {
       // Protocol invariant: a delete that did not return 204 is a structural
       // mismatch, logged for diagnosability and kept throwing; the repository
       // boundary maps it to Left(unknown) with the original cause preserved.
-      appTalker.error(
+      appLog.error(
         'DailyRecordRemoteDataSource.delete: expected 204, got '
         '${response.statusCode}.',
       );

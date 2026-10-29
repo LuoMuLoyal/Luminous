@@ -1,5 +1,5 @@
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/features/review/data/datasources/ai_summary_remote.dart';
@@ -118,7 +118,7 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
       case lucent
           .ReportSummaryResponseObservedPatternKindEnum
           .unknownDefaultOpenApi:
-        appTalker.warning('Unknown pattern kind from API: $kind');
+        appLog.warning('Unknown pattern kind from API: $kind');
         return ReviewAiSummaryPatternKind.medication;
     }
   }
@@ -142,7 +142,7 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
       // returns that the generated client does not know about. Log a
       // warning and fall back to `last7Days` rather than throwing.
       case lucent.ReportSummaryResponseRangeEnum.unknownDefaultOpenApi:
-        appTalker.warning('Unknown summary range from API: $range');
+        appLog.warning('Unknown summary range from API: $range');
         return ReviewAiSummaryRange.last7Days;
     }
   }

@@ -4,12 +4,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/sync/worker.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
-import 'package:luminous/core/providers/session/auth_guarded.dart';
+import 'package:luminous/core/network/contract/failure.dart';
+import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
 import 'package:luminous/features/health_context/data/mappers/health_context.dart';
 import 'package:luminous/features/health_context/data/repositories/lucent.dart';
@@ -62,7 +61,7 @@ HealthContextRepository healthContextRepository(Ref ref) {
       final snapshot = mapper.fromDto(dto);
       await dao.replace(HealthContextSnapshotCodec.encode(snapshot));
     } catch (e) {
-      appTalker.warning('HealthContext sync replay: cache refresh failed: $e');
+      appLog.warning('HealthContext sync replay: cache refresh failed: $e');
     }
   });
 

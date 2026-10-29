@@ -1,10 +1,10 @@
 import 'package:clock/clock.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
@@ -331,7 +331,7 @@ class LucentAssistantRepository implements AssistantRepository {
       return const <AssistantToolCitation>[];
     }
     if (value is! List) {
-      appTalker.debug(
+      appLog.debug(
         'AssistantRepository.citations: expected a list, got '
         '${value.runtimeType}',
       );
@@ -341,7 +341,7 @@ class LucentAssistantRepository implements AssistantRepository {
     for (final item in value) {
       final map = _mapStringKeyedMap(item);
       if (map == null) {
-        appTalker.debug(
+        appLog.debug(
           'AssistantRepository.citations: skipping non-map item '
           '(${item.runtimeType}): $item',
         );
@@ -349,7 +349,7 @@ class LucentAssistantRepository implements AssistantRepository {
       }
       final id = map['id']?.toString() ?? '';
       if (id.isEmpty) {
-        appTalker.debug(
+        appLog.debug(
           'AssistantRepository.citations: skipping entry without an id: $map',
         );
         continue;

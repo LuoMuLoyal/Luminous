@@ -13,9 +13,9 @@ import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/daos/review/review_dashboard.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/review/data/datasources/dashboard_remote.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/repositories/dashboard.dart';
@@ -59,7 +59,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
           _refreshInBackground(query, cacheKey);
           return dashboard;
         } on FormatException catch (e, st) {
-          appTalker.warning(
+          appLog.warning(
             'Review dashboard cache parse failed, falling back to network',
             e,
             st,
@@ -69,7 +69,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
           // Schema evolution (missing fields, type mismatches) throws
           // TypeError/RangeError — degrade to network instead of surfacing
           // an "unknown error" to the user.
-          appTalker.warning(
+          appLog.warning(
             'Review dashboard cache parse failed, falling back to network',
             e,
             st,
@@ -117,7 +117,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
           final dto = await dataSource.fetchDashboard(query);
           await dao.replace(cacheKey, jsonEncode(dto.toJson()));
         } catch (e) {
-          appTalker.warning('Review dashboard background refresh failed: $e');
+          appLog.warning('Review dashboard background refresh failed: $e');
         }
       }),
     );

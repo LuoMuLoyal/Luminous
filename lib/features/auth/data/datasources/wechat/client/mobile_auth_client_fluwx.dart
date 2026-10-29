@@ -3,11 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:fluwx/fluwx.dart';
-import 'package:luminous/core/errors/client_error_code.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client_base.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_config.dart';
+import 'package:luminous/core/network/contract/failure.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client_base.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_config.dart';
 
 class DefaultWechatMobileAuthClient extends WechatMobileAuthClient {
   DefaultWechatMobileAuthClient({Fluwx? fluwx}) : _providedFluwx = fluwx;

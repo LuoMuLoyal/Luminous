@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
 
@@ -20,7 +20,7 @@ final symptomCatalogProvider = FutureProvider<List<SymptomCatalogEntry>>((
           SymptomCatalogEntry(code: item.code.trim(), label: item.label),
     ];
   } catch (e, st) {
-    ref.read(talkerProvider).error('symptomCatalog: fetch failed: $e', st);
+    appLog.error('symptomCatalog: fetch failed: $e', st);
     return const <SymptomCatalogEntry>[];
   }
 });

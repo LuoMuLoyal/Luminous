@@ -10,9 +10,9 @@ import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/daos/health/health_context.dart';
 import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
 import 'package:luminous/features/health_context/data/mappers/health_context.dart';
 import 'package:luminous/features/health_context/data/utils/health_context_snapshot_codec.dart';
@@ -172,7 +172,7 @@ class LucentHealthContextRepository implements HealthContextRepository {
   /// Enqueueing is best-effort: if the local DB write fails, the failure is
   /// only logged and the original network failure is still surfaced as a Left.
   Future<void> _enqueueWriteFailure(DioException e) async {
-    appTalker.warning('HealthContext write failed, queuing for sync: $e');
+    appLog.warning('HealthContext write failed, queuing for sync: $e');
 
     final psq = pendingSyncDao;
     if (psq == null) return;
@@ -188,7 +188,7 @@ class LucentHealthContextRepository implements HealthContextRepository {
     } catch (error, stackTrace) {
       // 入队（本地 DB 写）失败不得掩盖原始网络失败：仅记录日志，仍按原
       // 网络失败映射 Left。
-      appTalker.error(
+      appLog.error(
         'HealthContext write enqueue failed, keeping the original network '
         'failure: $error',
         stackTrace,
@@ -226,7 +226,7 @@ class LucentHealthContextRepository implements HealthContextRepository {
           // Best-effort background refresh (path B): the cached snapshot has
           // already been returned, so a refresh failure — network or cache
           // write — is only observed, never surfaced.
-          appTalker.warning('HealthContext background refresh failed: $e');
+          appLog.warning('HealthContext background refresh failed: $e');
         }
       }),
     );

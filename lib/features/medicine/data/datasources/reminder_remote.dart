@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/app_log.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
@@ -24,7 +23,7 @@ export 'package:luminous/features/medicine/domain/entities/reminder.dart'
 /// failures keep their Problem Details code/status, network failures become
 /// network Lefts. An empty success body is a `LucentFailure.network(
 /// emptyResponse)`; a structurally malformed body is a thrown protocol
-/// exception (logged via [appTalker] for diagnosability) that surfaces as a
+/// exception (logged via [appLog] for diagnosability) that surfaces as a
 /// `Left(unknown)`.
 class MedicineReminderRemoteDataSource implements ReminderRepository {
   MedicineReminderRemoteDataSource({required this.api, required this.dio});
@@ -248,7 +247,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
           .map((item) {
             final map = coerceToStringMap(item);
             if (map == null) {
-              appTalker.error(
+              appLog.error(
                 'MedicineReminderRemoteDataSource._responseItems: item is '
                 'not a map: $item',
               );
@@ -258,7 +257,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
           })
           .toList(growable: false);
     }
-    appTalker.error(
+    appLog.error(
       'MedicineReminderRemoteDataSource._responseItems: items is not a '
       'list: $items',
     );

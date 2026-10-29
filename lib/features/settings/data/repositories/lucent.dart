@@ -5,12 +5,11 @@ import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/database/daos/user_settings_cache.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -81,7 +80,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
           final settings = await _fetchRemote();
           await cacheDao.replace(jsonEncode(settings.toJson()));
         } catch (e) {
-          appTalker.warning('User settings background refresh failed: $e');
+          appLog.warning('User settings background refresh failed: $e');
         }
       }),
     );

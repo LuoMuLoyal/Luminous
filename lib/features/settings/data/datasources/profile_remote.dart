@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/app_log.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/core/network/map_utils.dart';
 
 /// Settings is a thin configuration surface: its data layer maps directly to
@@ -17,7 +16,7 @@ const Object settingsProfileNoChange = Object();
 /// Transport-only: keeps a `Future` boundary and propagates [DioException]
 /// (HTTP errors) and [LucentFailure] (empty success body, per the auth
 /// `_requireBody` precedent). A body that does not match the generated-client
-/// structure stays a thrown protocol exception, logged via [appTalker] for
+/// structure stays a thrown protocol exception, logged via [appLog] for
 /// diagnosability, and surfaces at the consuming boundary as
 /// `LucentFailureKind.unknown` (cause preserved).
 class SettingsProfileRemoteDataSource {
@@ -64,7 +63,7 @@ class SettingsProfileRemoteDataSource {
       // client structure. Logged for diagnosability and kept as a thrown
       // protocol exception (mapped to Left(unknown) at the consuming
       // boundary).
-      appTalker.error(
+      appLog.error(
         'SettingsProfileRemoteDataSource.updatePreferences: response body '
         'does not match HealthContextResponse: $error',
       );

@@ -8,9 +8,9 @@ import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/daos/medicine/medicine_workspace.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/core/utils/reminder_format.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart'
@@ -27,7 +27,7 @@ import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
 /// Repository boundary: the health-context snapshot is the primary
 /// dependency — its failure is a `TaskEither` Left. The risk records, dose
 /// logs and reminders are secondary dashboard inputs: their failures degrade
-/// to empty/null and are observed via [appTalker] (product behaviour, same as
+/// to empty/null and are observed via [appLog] (product behaviour, same as
 /// the today dashboard degrade), never surfaced as a workspace failure.
 class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   LucentMedicineWorkspaceRepository({
@@ -81,7 +81,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
           final workspace = await _assembleWorkspace();
           await workspaceDao.replace(jsonEncode(workspace.toJson()));
         } catch (e) {
-          appTalker.warning('Medicine workspace background refresh failed: $e');
+          appLog.warning('Medicine workspace background refresh failed: $e');
         }
       }),
     );
@@ -93,7 +93,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     MedicineRiskCheckRecords? riskRecords;
     final riskResult = await riskCheckRepository.getRecords().run();
     riskResult.fold(
-      (failure) => appTalker.error(
+      (failure) => appLog.error(
         'LucentMedicineWorkspace.fetchWorkspace: risk records failed: '
         '$failure',
       ),
@@ -125,7 +125,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         }
       }
     } catch (e) {
-      appTalker.error(
+      appLog.error(
         'LucentMedicineWorkspace.fetchWorkspace: dose logs failed: $e',
       );
     }
@@ -133,7 +133,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     final remindersByMedicine = <String, List<MedicineReminderItem>>{};
     final remindersResult = await reminderDs.fetchActive().run();
     remindersResult.fold(
-      (failure) => appTalker.error(
+      (failure) => appLog.error(
         'LucentMedicineWorkspace.fetchWorkspace: reminders failed: $failure',
       ),
       (reminders) {

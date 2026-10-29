@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/record/domain/constants/display_format.dart';
 import 'package:luminous/features/record/domain/constants/entry_types.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
@@ -16,7 +16,7 @@ import 'package:luminous/features/record/domain/repositories/record.dart';
 ///
 /// Repository boundary: the daily-record inputs (timeline records, daily
 /// summary) are secondary dashboard signals — their failures degrade to
-/// empty and are observed via [appTalker] (product behaviour, same as the
+/// empty and are observed via [appLog] (product behaviour, same as the
 /// today dashboard degrade), never surfaced as a dashboard failure. Only
 /// unexpected errors (including a protocol `FormatException` escaping
 /// `.run()`) become a Left at this boundary.
@@ -63,7 +63,7 @@ class LucentRecordRepository implements RecordRepository {
             .run();
         return result.fold(
           (failure) {
-            appTalker.error(
+            appLog.error(
               'LucentRecordRepository: fetchRecords failed: $failure',
             );
             return <DailyRecordItem>[];
@@ -80,9 +80,7 @@ class LucentRecordRepository implements RecordRepository {
       final summaryFuture = () async {
         final result = await dailyRecordRepo.fetchSummary(dateStr).run();
         return result.fold((failure) {
-          appTalker.error(
-            'LucentRecordRepository: fetchSummary failed: $failure',
-          );
+          appLog.error('LucentRecordRepository: fetchSummary failed: $failure');
           return const DailyRecordSummaryData(summaries: []);
         }, (summary) => summary);
       }();

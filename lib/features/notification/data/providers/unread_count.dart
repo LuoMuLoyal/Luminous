@@ -1,6 +1,6 @@
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/providers/session/auth_guarded.dart';
+import 'package:luminous/core/network/app_log.dart';
+import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/repositories/lucent.dart';
@@ -26,7 +26,7 @@ Future<int> notificationUnreadCount(Ref ref) async {
         final repo = ref.watch(notificationRepositoryProvider);
         final result = await repo.getUnreadCount().run();
         final count = result.fold((failure) {
-          appTalker.warning('notificationUnreadCount 获取失败,降级为 0: $failure');
+          appLog.warning('notificationUnreadCount 获取失败,降级为 0: $failure');
           return 0;
         }, (count) => count);
         return count;
@@ -34,7 +34,7 @@ Future<int> notificationUnreadCount(Ref ref) async {
         // 协议异常（非 problem+json 错误体）逃逸 .run()：未读徽章属后台
         // 轮询类 best-effort 展示，与 Left 一样降级为 0 并记录，不打断页面
         // （today _unreadNotificationsFlag 同款合同），下次轮询自然恢复。
-        appTalker.warning('notificationUnreadCount 协议异常,降级为 0: $e');
+        appLog.warning('notificationUnreadCount 协议异常,降级为 0: $e');
         return 0;
       }
     },

@@ -5,12 +5,11 @@ import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/notification/notification_page.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/database/daos/notification_page.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/notification.dart';
@@ -105,7 +104,7 @@ class LucentNotificationRepository implements NotificationRepository {
           final remote = await _fetchPage(page: page, pageSize: pageSize);
           await dao.replace(scope, jsonEncode(remote.toJson()));
         } catch (e) {
-          appTalker.warning('Notification background refresh failed: $e');
+          appLog.warning('Notification background refresh failed: $e');
         }
       }),
     );
