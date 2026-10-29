@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/utils/record_time_format.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';

@@ -4,10 +4,10 @@ import 'package:flutter/rendering.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:luminous/app/composition/review/review.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/review/data/providers/review.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';

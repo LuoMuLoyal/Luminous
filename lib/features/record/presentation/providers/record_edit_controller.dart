@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/utils/image_compressor.dart';

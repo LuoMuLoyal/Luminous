@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/bootstrap.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

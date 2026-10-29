@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
@@ -11,7 +12,6 @@ import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
 import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/water_quick_entry_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

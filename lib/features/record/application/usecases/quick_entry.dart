@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/app/composition/record/symptom_catalog.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
@@ -11,8 +13,6 @@ import 'package:luminous/features/record/application/usecases/quick_entry_meal.d
 import 'package:luminous/features/record/application/usecases/quick_entry_medication.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_sleep.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/record/data/providers/symptom_catalog.dart';
 import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/controllers/quick_entry_context.dart';

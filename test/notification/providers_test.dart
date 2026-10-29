@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/notification/notification_page.dart';
@@ -9,7 +10,6 @@ import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/notification/data/repositories/lucent.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 

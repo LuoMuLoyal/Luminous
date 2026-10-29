@@ -74,7 +74,7 @@ final usesStub = LucentSettingsRepository();
   Future<void> test_coreImportingFeature_isReported() async {
     final path = convertPath('/home/test/lib/core/utils/date.dart');
     newFile(path, r'''
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
 
 final usesStub = healthContextSnapshotProvider;
 ''');
@@ -131,7 +131,7 @@ final usesTarget = UserSettingsRepository();
       '/home/test/lib/features/record/presentation/page.dart',
     );
     newFile(path, r'''
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
 
 final usesTarget = healthContextSnapshotProvider;
 ''');

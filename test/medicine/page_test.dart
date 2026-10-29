@@ -9,6 +9,8 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineDoseLogsApi;
+import 'package:luminous/app/composition/medicine/workspace.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/database.dart';
@@ -19,7 +21,6 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
@@ -33,7 +34,6 @@ import 'package:luminous/features/medicine/presentation/widgets/risk/overview/re
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/feature_mocks.dart';

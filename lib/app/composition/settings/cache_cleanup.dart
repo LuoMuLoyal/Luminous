@@ -1,6 +1,6 @@
+import 'package:luminous/app/composition/settings/data_storage.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/network/app_log.dart';
-import 'package:luminous/features/settings/data/providers/data_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'cache_cleanup.g.dart';

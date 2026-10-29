@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
@@ -12,7 +13,6 @@ import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/sync/top_bar.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';

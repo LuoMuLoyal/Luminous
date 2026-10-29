@@ -35,10 +35,22 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/app/bootstrap.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/health_sync/health_sync.dart'
     show healthSyncRepositoryProvider;
 import 'package:luminous/app/composition/legal.dart';
+import 'package:luminous/app/composition/medicine/workspace.dart'
+    show medicineWorkspaceRepositoryProvider, reminderRepositoryProvider;
+import 'package:luminous/app/composition/mine/mine.dart'
+    show mineRepositoryProvider;
+import 'package:luminous/app/composition/notification/unread_count.dart'
+    show notificationUnreadCountProvider;
 import 'package:luminous/app/composition/record.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/app/composition/review/review.dart'
+    show reviewDashboardRepositoryProvider;
+import 'package:luminous/app/composition/today/today_suggestion.dart'
+    show todayRepositoryProvider;
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/storage/kv_store.dart';
@@ -47,9 +59,6 @@ import 'package:luminous/features/assistant/data/repositories/lucent.dart'
     show assistantRepositoryProvider;
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart'
-    show medicineWorkspaceRepositoryProvider, reminderRepositoryProvider;
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart'
     show medicineRiskCheckRepositoryProvider;
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart'
@@ -59,17 +68,10 @@ import 'package:luminous/features/medicine/presentation/providers/reminders.dart
         medicineReminderDeliveryLogProvider,
         medicineReminderListProvider,
         medicineTodayDoseLogsProvider;
-import 'package:luminous/features/mine/data/providers/mine.dart'
-    show mineRepositoryProvider;
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart'
     show mineSyncFailedEntriesProvider;
-import 'package:luminous/features/notification/data/providers/unread_count.dart'
-    show notificationUnreadCountProvider;
 import 'package:luminous/features/notification/data/repositories/lucent.dart'
     show notificationRepositoryProvider;
-import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/review/data/providers/review.dart'
-    show reviewDashboardRepositoryProvider;
 import 'package:luminous/features/review/presentation/providers/review.dart'
     show reviewCurrentProvider, reviewHistoryProvider;
 import 'package:luminous/features/scan/data/repositories/scan.dart'
@@ -87,8 +89,6 @@ import 'package:luminous/features/settings/data/repositories/lucent.dart'
     show userSettingsRepositoryProvider;
 import 'package:luminous/features/support/data/repositories/lucent.dart'
     show supportRepositoryProvider;
-import 'package:luminous/features/today/data/providers/today_suggestion.dart'
-    show todayRepositoryProvider;
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 
 import '../../integration_test/screenshots/page_catalog_screenshot_test.dart'

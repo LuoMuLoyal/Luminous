@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/composition/support/resources.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
@@ -13,7 +14,6 @@ import 'package:luminous/features/settings/domain/services/version_check.dart';
 import 'package:luminous/features/settings/presentation/providers/package_info.dart';
 import 'package:luminous/features/settings/presentation/routes.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
-import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

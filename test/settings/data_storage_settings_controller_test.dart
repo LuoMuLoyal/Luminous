@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/app/composition/settings/data_storage.dart';
 import 'package:luminous/core/storage/kv_store.dart';
-import 'package:luminous/features/settings/data/providers/data_storage.dart';
 
 import '../helpers/kv_test_store.dart';
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/composition/support/resources.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
@@ -20,7 +21,6 @@ import 'package:luminous/features/auth/presentation/pages/account/account_securi
 import 'package:luminous/features/auth/presentation/pages/account/manage/helpers.dart';
 import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
-import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 

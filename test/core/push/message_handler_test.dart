@@ -6,14 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jpush_flutter/jpush_interface.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/core/push/jpush_gateway.dart';
 import 'package:luminous/core/push/message_handler.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
 import 'package:mocktail/mocktail.dart';
+
 import '../../helpers/kv_test_store.dart';
 
 class _FakeJPush extends JPushFlutterInterface {

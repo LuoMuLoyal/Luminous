@@ -6,8 +6,21 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/bootstrap.dart';
+import 'package:luminous/app/composition/auth/auth.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/health_event/health_event.dart';
 import 'package:luminous/app/composition/legal.dart';
+import 'package:luminous/app/composition/medicine/workspace.dart';
+import 'package:luminous/app/composition/mine/mine.dart'
+    show mineRepositoryProvider;
+import 'package:luminous/app/composition/notification/unread_count.dart'
+    show notificationUnreadCountProvider;
 import 'package:luminous/app/composition/record.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/app/composition/review/review.dart'
+    show reviewRepositoryProvider;
+import 'package:luminous/app/composition/settings/notification_permission.dart';
+import 'package:luminous/app/composition/today/today_suggestion.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
@@ -21,51 +34,38 @@ import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
-import 'package:luminous/features/health_event/data/providers/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:luminous/features/legal/domain/entities/document.dart';
 import 'package:luminous/features/legal/domain/repositories/documents.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart'
     show medicineRiskCheckRepositoryProvider;
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
-import 'package:luminous/features/mine/data/providers/mine.dart'
-    show mineRepositoryProvider;
-import 'package:luminous/features/notification/data/providers/unread_count.dart'
-    show notificationUnreadCountProvider;
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
-import 'package:luminous/features/review/data/providers/review.dart'
-    show reviewRepositoryProvider;
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart'
     show medicineSearchRepositoryProvider;
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
-import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
-import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
@@ -76,6 +76,8 @@ import '../../test/helpers/kv_test_store.dart';
 export 'package:flutter/material.dart';
 export 'package:flutter_test/flutter_test.dart';
 export 'package:forui/forui.dart';
+export 'package:luminous/app/composition/review/review.dart'
+    show reviewRepositoryProvider;
 export 'package:luminous/app/router.dart' show appRouterProvider;
 export 'package:luminous/core/auth/session_provider.dart'
     show authSessionProvider;
@@ -89,8 +91,6 @@ export 'package:luminous/features/record/domain/entities/inputs.dart'
     show dailyRecordNoChange;
 export 'package:luminous/features/record/domain/entities/record.dart'
     show DailyRecordKind;
-export 'package:luminous/features/review/data/providers/review.dart'
-    show reviewRepositoryProvider;
 export 'package:luminous/features/settings/domain/services/notification_permission.dart';
 
 export '../../test/helpers/feature_mocks.dart'

@@ -1,5 +1,5 @@
+import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/features/record/application/mappers/dashboard_assembler.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/domain/repositories/dashboard_view_assembler.dart';
