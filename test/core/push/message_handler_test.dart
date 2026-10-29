@@ -54,6 +54,32 @@ class _FakeLocalNotificationGateway extends LocalNotificationGateway {
 
 class _MockGoRouter extends Mock implements GoRouter {}
 
+/// Counts handler callbacks without pulling feature providers into core tests.
+/// Mirrors lib/app/push_handlers.dart's invalidation behaviour.
+class _AppLikePushHandlers implements PushEventHandlers {
+  _AppLikePushHandlers({this.onOpenEvent});
+
+  final void Function()? onOpenEvent;
+
+  @override
+  void onReceive(Map<String, dynamic> event) {}
+
+  @override
+  void onOpen(Map<String, dynamic> event) => onOpenEvent?.call();
+}
+
+class _CountingPushHandlers implements PushEventHandlers {
+  _CountingPushHandlers({this.onEvent});
+
+  final void Function()? onEvent;
+
+  @override
+  void onReceive(Map<String, dynamic> event) => onEvent?.call();
+
+  @override
+  void onOpen(Map<String, dynamic> event) => onEvent?.call();
+}
+
 class _FakeTodayAiAnalysisNotifier extends TodayAiAnalysisNotifier {
   static int disposeCount = 0;
 
@@ -104,9 +130,9 @@ void main() {
     final routes = <String>[];
     final handler = PushMessageHandler(
       gateway: gateway,
-      invalidateUnread: () => invalidationCount++,
+      handlers: _CountingPushHandlers(onEvent: () => invalidationCount++),
+      emitAiSummary: (_) {},
       navigate: routes.add,
-      invalidateTodayAnalysis: () {},
     );
 
     handler.start();
@@ -129,9 +155,9 @@ void main() {
     var invalidationCount = 0;
     final handler = PushMessageHandler(
       gateway: gateway,
-      invalidateUnread: () => invalidationCount++,
+      handlers: _CountingPushHandlers(onEvent: () => invalidationCount++),
+      emitAiSummary: (_) {},
       navigate: (_) {},
-      invalidateTodayAnalysis: () {},
     );
 
     handler.start();
@@ -155,10 +181,19 @@ void main() {
         final router = _MockGoRouter();
         var unreadBuildCount = 0;
 
-        final container = ProviderContainer(
+        late final ProviderContainer container;
+        container = ProviderContainer(
           overrides: [
             localNotificationGatewayProvider.overrideWithValue(gateway),
             appRouterProvider.overrideWithValue(router),
+            pushEventHandlersProvider.overrideWithValue(
+              _AppLikePushHandlers(
+                onOpenEvent: () {
+                  container.invalidate(notificationUnreadCountProvider);
+                  container.invalidate(todayAiAnalysisControllerProvider);
+                },
+              ),
+            ),
             notificationUnreadCountProvider.overrideWith((ref) async {
               unreadBuildCount++;
               return 0;

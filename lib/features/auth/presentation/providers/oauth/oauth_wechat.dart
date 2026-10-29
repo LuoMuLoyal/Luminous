@@ -90,7 +90,9 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
       // 这里只负责把"正在完成登录"标记打开。
       state = state.copyWith(isCompletingWechat: true, error: null);
       final s = await _resolve(_remote.loginWithWechatMobile(code: code));
-      await ref.read(authSessionProvider.notifier).applySession(s);
+      await ref
+          .read(authSessionProvider.notifier)
+          .applySession(s.toSessionSnapshot(), user: s.user);
       state = state.copyWith(
         isStartingWechat: false,
         isCompletingWechat: false,
@@ -122,7 +124,9 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
       final s = await _resolve(
         _remote.loginWithWechatWeb(code: result.code, state: result.state),
       );
-      await ref.read(authSessionProvider.notifier).applySession(s);
+      await ref
+          .read(authSessionProvider.notifier)
+          .applySession(s.toSessionSnapshot(), user: s.user);
       state = state.copyWith(isCompletingWechat: false);
       return s;
     } catch (e) {
@@ -149,7 +153,9 @@ mixin OAuthWechatMixin on OAuthLoginControllerBase {
       final s = await _resolve(
         _remote.loginWithWechatWeb(code: code, state: state),
       );
-      await ref.read(authSessionProvider.notifier).applySession(s);
+      await ref
+          .read(authSessionProvider.notifier)
+          .applySession(s.toSessionSnapshot(), user: s.user);
       this.state = this.state.copyWith(isCompletingWechat: false);
       return s;
     } catch (e) {

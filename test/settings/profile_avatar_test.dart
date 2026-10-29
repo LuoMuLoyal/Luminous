@@ -276,7 +276,7 @@ void main() {
       expect(remote.updateProfileAvatar, _uploadedAvatarUrl);
       // ……并且它就是头像渲染的取值来源(provider 与行的入参都要跟上)。
       expect(
-        container.read(authSessionProvider).user?.avatar,
+        container.read(authSessionProvider).userSnapshot?.avatar,
         _uploadedAvatarUrl,
       );
       expect(_rowAvatarUrl(tester), _uploadedAvatarUrl);
@@ -340,7 +340,7 @@ void main() {
       expect(uploaded, isFalse);
       expect(container.read(authAccountProvider).error, isNotNull);
       expect(remote.updateProfileAvatar, isNull);
-      expect(container.read(authSessionProvider).user?.avatar, isNull);
+      expect(container.read(authSessionProvider).userSnapshot?.avatar, isNull);
       expect(_rowAvatarUrl(tester), isNull);
       verifyNever(
         () => dio.put<dynamic>(

@@ -54,8 +54,8 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       // Re-evaluate the router redirect whenever auth state changes.
       ref.read(appRouterProvider).refresh();
 
-      final previousUserId = previous?.user?.id;
-      final nextUserId = next.user?.id;
+      final previousUserId = previous?.userId;
+      final nextUserId = next.userId;
 
       // Logout: invalidate health context + sync push alias to null, then return.
       if (previous?.isAuthenticated == true && !next.isAuthenticated) {
@@ -67,7 +67,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
 
       // Login / session restore / user switch: sync push alias.
       if (!next.isLoading) {
-        unawaited(_syncPushAuth(next.isAuthenticated ? next.user?.id : null));
+        unawaited(_syncPushAuth(next.isAuthenticated ? next.userId : null));
       }
 
       if (!next.isAuthenticated || next.isLoading) return;
@@ -191,7 +191,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       await coordinator.start();
       final session = ref.read(authSessionProvider);
       await coordinator.onAuthChanged(
-        userId: session.isAuthenticated ? session.user?.id : null,
+        userId: session.isAuthenticated ? session.userId : null,
       );
     } catch (error) {
       ref.read(talkerProvider).error('Push startup failed: $error');

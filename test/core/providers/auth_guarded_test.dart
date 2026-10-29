@@ -6,7 +6,6 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
-import 'package:luminous/features/auth/domain/entities/session.dart';
 
 import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_helpers.dart';
@@ -340,10 +339,10 @@ class _FakeSessionNotifier extends AuthSessionNotifier {
   Future<void> restore() async {}
 
   @override
-  Future<void> applySession(AuthSession session) async {}
+  Future<void> applySession(SessionSnapshot session, {Object? user}) async {}
 
   @override
-  void applyUser(AuthUser user) {}
+  void applyUser(SessionUserSnapshot user, {Object? entity}) {}
 
   @override
   void clearLocalSession() {}

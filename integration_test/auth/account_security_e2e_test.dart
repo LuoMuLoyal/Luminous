@@ -33,9 +33,12 @@ void main() {
 
     expect(remote.updateProfileNickname, 'E2E Nick');
     expect(remote.updateProfileAvatar, 'https://example.com/e2e-avatar.png');
-    expect(container.read(authSessionProvider).user?.nickname, 'E2E Nick');
     expect(
-      container.read(authSessionProvider).user?.avatar,
+      container.read(authSessionProvider).userSnapshot?.nickname,
+      'E2E Nick',
+    );
+    expect(
+      container.read(authSessionProvider).userSnapshot?.avatar,
       'https://example.com/e2e-avatar.png',
     );
 
@@ -84,7 +87,7 @@ void main() {
     expect(remote.changeEmailNewEmail, 'next-e2e@example.com');
     expect(remote.changeEmailCode, '246810');
     expect(
-      container.read(authSessionProvider).user?.email,
+      container.read(authSessionProvider).userSnapshot?.email,
       'next-e2e@example.com',
     );
 
@@ -222,7 +225,10 @@ void main() {
     await settleE2e(tester);
 
     expect(remote.unlinkIdentityId, 'e2e-identity-1');
-    expect(container.read(authSessionProvider).user?.linkedIdentities, isEmpty);
+    expect(
+      container.read(authSessionProvider).userSnapshot?.linkedIdentities,
+      isEmpty,
+    );
     expect(find.text('尚未绑定第三方身份'), findsWidgets);
   });
 }

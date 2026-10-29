@@ -38,7 +38,10 @@ void main() {
     expect(mobileClient.authorizeCalled, isTrue);
     expect(remote.wechatMobileCallbackCode, 'mobile-code');
     expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-    expect(container.read(authSessionProvider).user?.nickname, 'WxMobile');
+    expect(
+      container.read(authSessionProvider).userSnapshot?.nickname,
+      'WxMobile',
+    );
   });
 
   test('startWechatDesktopLogin completes desktop callback login', () async {
@@ -152,7 +155,7 @@ void main() {
       expect(
         container
             .read(authSessionProvider)
-            .user
+            .userSnapshot
             ?.linkedIdentities
             .single
             .provider,
@@ -215,7 +218,7 @@ void main() {
     expect(
       container
           .read(authSessionProvider)
-          .user
+          .userSnapshot
           ?.linkedIdentities
           .single
           .provider,
@@ -270,8 +273,8 @@ void main() {
       expect(remote.wechatIdentityLinkCallbackState, isNull);
       expect(isCallbackServerClosed, isTrue);
       expect(
-        container.read(authSessionProvider).user?.linkedIdentities,
-        isEmpty,
+        container.read(authSessionProvider).userSnapshot?.linkedIdentities,
+        anyOf(isNull, isEmpty),
       );
     },
   );

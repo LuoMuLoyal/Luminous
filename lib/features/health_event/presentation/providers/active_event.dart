@@ -1,6 +1,6 @@
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
-import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/data_access.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,7 +11,7 @@ part 'active_event.g.dart';
 class ActiveHealthEvent extends _$ActiveHealthEvent {
   @override
   Future<HealthEvent?> build() {
-    final expectedUserId = ref.read(authSessionProvider).user?.id;
+    final expectedUserId = ref.read(authSessionProvider).userId;
     return authGuarded(
       ref: ref,
       fetch: () => ref.watch(healthEventRepositoryProvider).fetchActive().run(),
@@ -24,7 +24,7 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
   }
 
   Future<void> refresh() async {
-    final expectedUserId = ref.read(authSessionProvider).user?.id;
+    final expectedUserId = ref.read(authSessionProvider).userId;
     state = const AsyncLoading();
     final result = await AsyncValue.guard(() async {
       final either = await authGuarded(
@@ -47,7 +47,7 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
     String? reasonRecordId,
     List<String> currentMedicineIds = const [],
   }) async {
-    final expectedUserId = ref.read(authSessionProvider).user?.id;
+    final expectedUserId = ref.read(authSessionProvider).userId;
     final either = await authGuarded(
       ref: ref,
       fetch: () => ref
@@ -72,7 +72,7 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
     required String date,
     required HealthEventOutcome outcome,
   }) async {
-    final expectedUserId = ref.read(authSessionProvider).user?.id;
+    final expectedUserId = ref.read(authSessionProvider).userId;
     final either = await authGuarded(
       ref: ref,
       fetch: () => ref
@@ -92,7 +92,7 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
     required String eventId,
     required HealthEventOutcome outcome,
   }) async {
-    final expectedUserId = ref.read(authSessionProvider).user?.id;
+    final expectedUserId = ref.read(authSessionProvider).userId;
     final either = await authGuarded(
       ref: ref,
       fetch: () => ref
@@ -123,6 +123,6 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
   bool _isSameAuthenticatedUser(String? expectedUserId) {
     final session = ref.read(authSessionProvider);
     return session.canAccessProtectedData &&
-        (expectedUserId == null || session.user?.id == expectedUserId);
+        (expectedUserId == null || session.userId == expectedUserId);
   }
 }

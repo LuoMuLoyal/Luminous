@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/providers/session/sensitive_action_resolver.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
@@ -77,7 +79,14 @@ void main() {
   });
 
   Future<void> pumpPage(WidgetTester tester, Widget page) async {
-    await tester.pumpWidget(ProviderScope(child: TestForuiApp(home: page)));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => _StubAuthSessionNotifier()),
+        ],
+        child: TestForuiApp(home: page),
+      ),
+    );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
   }
@@ -93,6 +102,10 @@ void main() {
         overrides: [
           userSettingsControllerProvider.overrideWith(
             () => _StubSettingsController(settings),
+          ),
+
+          sensitiveActionPolicyProvider.overrideWithValue(
+            _testSensitiveActionPolicy(),
           ),
         ],
         child: TestForuiApp(home: page, showToaster: showToaster),
@@ -114,6 +127,10 @@ void main() {
         overrides: [
           userSettingsControllerProvider.overrideWith(
             () => _StubSettingsController(settings, onSetContext: onSetContext),
+          ),
+
+          sensitiveActionPolicyProvider.overrideWithValue(
+            _testSensitiveActionPolicy(),
           ),
         ],
         child: const TestForuiApp(home: AiSettingsPage(), showToaster: true),
@@ -590,4 +607,24 @@ void main() {
       );
     });
   });
+}
+
+/// Core's sensitive-action policy seam, satisfied with a permissive stub.
+SensitiveActionPolicy _testSensitiveActionPolicy() =>
+    const _StubSensitiveActionPolicy();
+
+class _StubSensitiveActionPolicy implements SensitiveActionPolicy {
+  const _StubSensitiveActionPolicy();
+
+  @override
+  Future<bool> requiresPasswordReauthentication() async => true;
+}
+
+/// Signed-out session stand-in: the advanced page only calls logout().
+class _StubAuthSessionNotifier extends AuthSessionNotifier {
+  @override
+  AuthSessionState build() => const AuthSessionState();
+
+  @override
+  Future<void> logout() async {}
 }

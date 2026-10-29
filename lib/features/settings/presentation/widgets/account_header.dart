@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Account header card shown at the top of the settings page.
@@ -23,10 +24,11 @@ class AccountHeader extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     final displayName =
-        session.user?.nickname ??
+        (session.user as AuthUser?)?.nickname ??
         (signedIn ? l10n.mineAccountSignedIn : l10n.mineAccountSignedOut);
     final subtitle =
-        session.user?.email ?? (signedIn ? '' : l10n.mineAccountSignedOutMeta);
+        (session.user as AuthUser?)?.email ??
+        (signedIn ? '' : l10n.mineAccountSignedOutMeta);
 
     return FTileGroup(
       physics: const NeverScrollableScrollPhysics(),
@@ -36,7 +38,7 @@ class AccountHeader extends StatelessWidget {
           title: Text(displayName),
           subtitle: subtitle.isEmpty ? null : Text(subtitle),
           prefix: AvatarView(
-            avatarUrl: session.user?.avatar,
+            avatarUrl: (session.user as AuthUser?)?.avatar,
             size: IconSizeTokens.xl4,
             iconSize: IconSizeTokens.xl2,
             semanticLabel: l10n.profileAvatarLabel,

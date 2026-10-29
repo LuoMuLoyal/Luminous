@@ -53,7 +53,10 @@ void main() {
     expect(remote.loginPassword, 'Password123');
     expect(remote.loginCode, isNull);
     expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-    expect(container.read(authSessionProvider).user?.email, 'user@example.com');
+    expect(
+      container.read(authSessionProvider).userSnapshot?.email,
+      'user@example.com',
+    );
   });
 
   testWidgets('Login page returns to returnTo after password login', (

@@ -4,7 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/core/auth/session_gateway.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
@@ -20,12 +21,10 @@ void main() {
   setUp(() {
     KvTestStore.install();
   });
-
   late _SessionTestRemoteDataSource remote;
   late _MemorySessionStore sessionStore;
   late _CallbackCapturingDioClient dioClient;
   late ProviderContainer container;
-
   setUp(() {
     remote = _SessionTestRemoteDataSource();
     sessionStore = _MemorySessionStore();
@@ -36,6 +35,9 @@ void main() {
     container = ProviderContainer(
       overrides: [
         authRepositoryProvider.overrideWithValue(remote),
+        authSessionGatewayProvider.overrideWithValue(
+          FeatureAuthSessionGateway(remote),
+        ),
         lucentSessionStoreProvider.overrideWithValue(sessionStore),
         lucentDioClientProvider.overrideWithValue(dioClient),
       ],
@@ -43,23 +45,19 @@ void main() {
     addTearDown(container.dispose);
     addTearDown(dioClient.dispose);
   });
-
   group('AuthSessionState extensions', () {
     test('isRestoring is true when loading and not authenticated', () {
       const state = AuthSessionState(isLoading: true, isAuthenticated: false);
       expect(state.isRestoring, isTrue);
     });
-
     test('isRestoring is false when not loading', () {
       const state = AuthSessionState(isLoading: false, isAuthenticated: false);
       expect(state.isRestoring, isFalse);
     });
-
     test('isRestoring is false when authenticated', () {
       const state = AuthSessionState(isLoading: true, isAuthenticated: true);
       expect(state.isRestoring, isFalse);
     });
-
     test(
       'isConfirmedSignedOut is true when not loading and not authenticated',
       () {
@@ -70,17 +68,14 @@ void main() {
         expect(state.isConfirmedSignedOut, isTrue);
       },
     );
-
     test('isConfirmedSignedOut is false when loading', () {
       const state = AuthSessionState(isLoading: true, isAuthenticated: false);
       expect(state.isConfirmedSignedOut, isFalse);
     });
-
     test('isConfirmedSignedOut is false when authenticated', () {
       const state = AuthSessionState(isLoading: false, isAuthenticated: true);
       expect(state.isConfirmedSignedOut, isFalse);
     });
-
     test(
       'canAccessProtectedData is true when not loading and authenticated',
       () {
@@ -88,24 +83,20 @@ void main() {
         expect(state.canAccessProtectedData, isTrue);
       },
     );
-
     test('canAccessProtectedData is false when loading', () {
       const state = AuthSessionState(isLoading: true, isAuthenticated: true);
       expect(state.canAccessProtectedData, isFalse);
     });
-
     test('canAccessProtectedData is false when not authenticated', () {
       const state = AuthSessionState(isLoading: false, isAuthenticated: false);
       expect(state.canAccessProtectedData, isFalse);
     });
   });
-
   group('AuthRequiredException', () {
     test('toString returns class name', () {
       expect(const AuthRequiredException().toString(), 'AuthRequiredException');
     });
   });
-
   group('AuthSessionNotifier — initial build', () {
     test('starts with isLoading=true and isAuthenticated=false', () {
       final state = container.read(authSessionProvider);
@@ -113,18 +104,15 @@ void main() {
       expect(state.isAuthenticated, isFalse);
     });
   });
-
   group('AuthSessionNotifier — restore', () {
     test('sets signed-out state when no token is stored', () async {
       await container.read(authSessionProvider.notifier).restore();
-
       final state = container.read(authSessionProvider);
       expect(state.isLoading, isFalse);
       expect(state.isAuthenticated, isFalse);
       expect(state.user, isNull);
       expect(state.errorMessage, isNull);
     });
-
     test(
       'sets authenticated state when token is valid and fetchAccount succeeds',
       () async {
@@ -132,17 +120,14 @@ void main() {
           accessToken: 'valid-token',
           refreshToken: 'refresh-token',
         );
-
         await container.read(authSessionProvider.notifier).restore();
-
         final state = container.read(authSessionProvider);
         expect(state.isLoading, isFalse);
         expect(state.isAuthenticated, isTrue);
-        expect(state.user, isNotNull);
-        expect(state.user!.email, 'fetchAccount@example.com');
+        expect(state.userSnapshot, isNotNull);
+        expect(state.userSnapshot!.email, 'fetchAccount@example.com');
       },
     );
-
     test(
       'refreshes session when fetchAccount fails with an auth error and refresh succeeds',
       () async {
@@ -151,17 +136,14 @@ void main() {
           refreshToken: 'refresh-token',
         );
         remote.fetchAccountShouldFail = true;
-
         await container.read(authSessionProvider.notifier).restore();
-
         final state = container.read(authSessionProvider);
         expect(state.isLoading, isFalse);
         expect(state.isAuthenticated, isTrue);
-        expect(state.user, isNotNull);
+        expect(state.userSnapshot, isNotNull);
         expect(remote.refreshSessionCalled, isTrue);
       },
     );
-
     test(
       'clears session when fetchAccount fails with an auth error but refresh also fails',
       () async {
@@ -171,9 +153,7 @@ void main() {
         );
         remote.fetchAccountShouldFail = true;
         remote.refreshSessionShouldFail = true;
-
         await container.read(authSessionProvider.notifier).restore();
-
         final state = container.read(authSessionProvider);
         expect(state.isLoading, isFalse);
         expect(state.isAuthenticated, isFalse);
@@ -182,7 +162,6 @@ void main() {
         expect(sessionStore.tokens, isNull);
       },
     );
-
     test(
       'clears session and sets errorMessage when fetchAccount fails with a non-auth error',
       () async {
@@ -192,9 +171,7 @@ void main() {
         );
         remote.fetchAccountShouldFail = true;
         remote.fetchAccountFailureIsAuth = false;
-
         await container.read(authSessionProvider.notifier).restore();
-
         final state = container.read(authSessionProvider);
         expect(state.isLoading, isFalse);
         expect(state.isAuthenticated, isFalse);
@@ -204,7 +181,6 @@ void main() {
         expect(sessionStore.tokens, isNull);
       },
     );
-
     test(
       'preserves session store when fetchAccount fails with a network error',
       () async {
@@ -214,9 +190,7 @@ void main() {
         );
         remote.fetchAccountShouldFail = true;
         remote.fetchAccountFailureIsNetworkError = true;
-
         await container.read(authSessionProvider.notifier).restore();
-
         final state = container.read(authSessionProvider);
         expect(state.isLoading, isFalse);
         expect(state.isAuthenticated, isFalse);
@@ -226,7 +200,6 @@ void main() {
         expect(sessionStore.tokens, isNotNull);
       },
     );
-
     test(
       'refreshes session when access token is empty but refresh token is present',
       () async {
@@ -235,9 +208,7 @@ void main() {
           refreshToken: 'refresh-token',
         );
         remote.fetchAccountShouldFail = true;
-
         await container.read(authSessionProvider.notifier).restore();
-
         final state = container.read(authSessionProvider);
         expect(state.isAuthenticated, isTrue);
         expect(state.isLoading, isFalse);
@@ -245,7 +216,6 @@ void main() {
       },
     );
   });
-
   group('AuthSessionNotifier — restore reconnecting semantics (08-30 S-4)', () {
     test('cold start: isReconnecting stays false while restoring', () async {
       sessionStore.tokens = const LucentSessionTokens(
@@ -254,19 +224,16 @@ void main() {
       );
       final gate = Completer<void>();
       remote.fetchAccountGate = gate;
-
       final restoring = container.read(authSessionProvider.notifier).restore();
       final duringRestore = container.read(authSessionProvider);
       expect(duringRestore.isLoading, isTrue);
       expect(duringRestore.isTimeout, isFalse);
       expect(duringRestore.isReconnecting, isFalse);
-
       gate.complete();
       await restoring;
       expect(container.read(authSessionProvider).isAuthenticated, isTrue);
       expect(container.read(authSessionProvider).isReconnecting, isFalse);
     });
-
     test('retry after timeout: isReconnecting is set during restore', () async {
       // Test-only seeding: isTimeout 只能由 8s 真实恢复超时路径产生，
       // 单测不能等真实超时，故通过 protected state setter 播种
@@ -278,27 +245,23 @@ void main() {
         isTimeout: true,
         errorMessage: 'Session restore timed out',
       );
-
       sessionStore.tokens = const LucentSessionTokens(
         accessToken: 'valid-token',
         refreshToken: 'refresh-token',
       );
       final gate = Completer<void>();
       remote.fetchAccountGate = gate;
-
       final restoring = container.read(authSessionProvider.notifier).restore();
       final duringRestore = container.read(authSessionProvider);
       expect(duringRestore.isReconnecting, isTrue);
       expect(duringRestore.isTimeout, isFalse);
       expect(duringRestore.isLoading, isTrue);
-
       gate.complete();
       await restoring;
       final finalState = container.read(authSessionProvider);
       expect(finalState.isAuthenticated, isTrue);
       expect(finalState.isReconnecting, isFalse);
     });
-
     test(
       'manual restore without prior timeout: isReconnecting stays false',
       () async {
@@ -309,7 +272,6 @@ void main() {
         // 第一次 restore 正常完成，isTimeout 保持 false。
         await container.read(authSessionProvider.notifier).restore();
         expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-
         // 随后手动再次 restore（如用户主动重试），不应被标记为重连。
         final gate = Completer<void>();
         remote.fetchAccountGate = gate;
@@ -319,30 +281,28 @@ void main() {
         final duringRestore = container.read(authSessionProvider);
         expect(duringRestore.isReconnecting, isFalse);
         expect(duringRestore.isLoading, isTrue);
-
         gate.complete();
         await restoring;
         expect(container.read(authSessionProvider).isReconnecting, isFalse);
       },
     );
   });
-
   group('AuthSessionNotifier — applySession', () {
     test('sets authenticated state with user from session', () async {
       final session = testSession(
         email: 'applied@example.com',
         nickname: 'App',
       );
-      await container.read(authSessionProvider.notifier).applySession(session);
-
+      await container
+          .read(authSessionProvider.notifier)
+          .applySession(session.toSessionSnapshot(), user: session.user);
       final state = container.read(authSessionProvider);
       expect(state.isAuthenticated, isTrue);
       expect(state.isLoading, isFalse);
-      expect(state.user!.email, 'applied@example.com');
-      expect(state.user!.nickname, 'App');
+      expect(state.userSnapshot!.email, 'applied@example.com');
+      expect(state.userSnapshot!.nickname, 'App');
     });
   });
-
   group('AuthSessionNotifier — applyUser', () {
     test('updates user and sets authenticated', () {
       final user = AuthUser(
@@ -354,29 +314,28 @@ void main() {
         createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
         updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
       );
-
-      container.read(authSessionProvider.notifier).applyUser(user);
-
+      container
+          .read(authSessionProvider.notifier)
+          .applyUser(user.toSessionSnapshot(), entity: user);
       final state = container.read(authSessionProvider);
       expect(state.isAuthenticated, isTrue);
       expect(state.isLoading, isFalse);
-      expect(state.user!.email, 'updated@example.com');
+      expect(state.userSnapshot!.email, 'updated@example.com');
       expect(state.errorMessage, isNull);
     });
   });
-
   group('AuthSessionNotifier — clearLocalSession', () {
     test('resets to default signed-out state', () {
       // First set authenticated
       final session = testSession(email: 'clear@example.com');
       unawaited(
-        container.read(authSessionProvider.notifier).applySession(session),
+        container
+            .read(authSessionProvider.notifier)
+            .applySession(session.toSessionSnapshot(), user: session.user),
       );
       expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-
       // Then clear
       container.read(authSessionProvider.notifier).clearLocalSession();
-
       final state = container.read(authSessionProvider);
       expect(state.isAuthenticated, isFalse);
       expect(state.isLoading, isFalse);
@@ -384,24 +343,22 @@ void main() {
       expect(state.errorMessage, isNull);
     });
   });
-
   group('AuthSessionNotifier — logout', () {
     test('calls remote logout and resets to default state', () async {
       // First set authenticated
       final session = testSession(email: 'logout@example.com');
-      await container.read(authSessionProvider.notifier).applySession(session);
+      await container
+          .read(authSessionProvider.notifier)
+          .applySession(session.toSessionSnapshot(), user: session.user);
       expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-
       // Logout
       await container.read(authSessionProvider.notifier).logout();
-
       expect(remote.logoutCalled, isTrue);
       final state = container.read(authSessionProvider);
       expect(state.isAuthenticated, isFalse);
       expect(state.isLoading, isFalse);
       expect(state.user, isNull);
     });
-
     test(
       'keeps the session and sets errorMessage when remote logout fails',
       () async {
@@ -410,49 +367,43 @@ void main() {
         final session = testSession(email: 'logout@example.com');
         await container
             .read(authSessionProvider.notifier)
-            .applySession(session);
+            .applySession(session.toSessionSnapshot(), user: session.user);
         expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-
         // Logout failure keeps the local session: UI stays signed in and the
         // failure is projected into errorMessage (no exception escapes).
         await container.read(authSessionProvider.notifier).logout();
-
         final state = container.read(authSessionProvider);
         expect(remote.logoutCalled, isTrue);
         expect(state.isAuthenticated, isTrue);
         expect(state.isLoading, isFalse);
         expect(state.errorMessage, isNotNull);
-        expect(state.user?.email, 'logout@example.com');
+        expect(state.userSnapshot?.email, 'logout@example.com');
       },
     );
   });
-
   group('AuthSessionNotifier — onSessionExpired callback', () {
     test('clears session when not loading', () async {
       // First set authenticated
       final session = testSession(email: 'expire@example.com');
-      await container.read(authSessionProvider.notifier).applySession(session);
+      await container
+          .read(authSessionProvider.notifier)
+          .applySession(session.toSessionSnapshot(), user: session.user);
       expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-
       // Simulate session expired via the captured callback
       expect(dioClient.capturedOnSessionExpired, isNotNull);
       await dioClient.capturedOnSessionExpired!();
-
       final state = container.read(authSessionProvider);
       expect(state.isAuthenticated, isFalse);
       expect(state.isLoading, isFalse);
     });
-
     test(
       'does not clear session while loading (restore in progress)',
       () async {
         // The initial state has isLoading=true
         expect(container.read(authSessionProvider).isLoading, isTrue);
-
         // Simulate session expired during restore
         expect(dioClient.capturedOnSessionExpired, isNotNull);
         await dioClient.capturedOnSessionExpired!();
-
         // State should not be changed (still loading)
         expect(container.read(authSessionProvider).isLoading, isTrue);
       },
@@ -473,7 +424,6 @@ class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
   /// 非空时 fetchAccount 在此 gate 上挂起，供测试在 restore 进行中
   /// 检查中间状态(isReconnecting / isLoading)。
   Completer<void>? fetchAccountGate;
-
   @override
   TaskEither<LucentFailure, AuthUser> fetchAccount() {
     final gate = fetchAccountGate;
@@ -587,9 +537,7 @@ class _CallbackCapturingDioClient extends LucentDioClient {
     required super.baseUrl,
     required super.sessionStore,
   });
-
   Future<void> Function()? capturedOnSessionExpired;
-
   @override
   set onSessionExpired(Future<void> Function()? callback) {
     capturedOnSessionExpired = callback;
@@ -599,7 +547,6 @@ class _CallbackCapturingDioClient extends LucentDioClient {
 
 class _MemorySessionStore implements LucentSessionStore {
   LucentSessionTokens? tokens;
-
   @override
   Future<void> clear() async {
     tokens = null;
@@ -607,13 +554,10 @@ class _MemorySessionStore implements LucentSessionStore {
 
   @override
   Future<LucentSessionTokens?> read() async => tokens;
-
   @override
   Future<String?> readAccessToken() async => tokens?.accessToken;
-
   @override
   Future<String?> readRefreshToken() async => tokens?.refreshToken;
-
   @override
   Future<void> write(LucentSessionTokens tokens) async {
     this.tokens = tokens;

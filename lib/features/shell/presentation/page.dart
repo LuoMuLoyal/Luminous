@@ -14,6 +14,7 @@ import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/control/brand_icon.dart';
 import 'package:luminous/core/widgets/common/feedback/connectivity_banner.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -199,8 +200,8 @@ class _SidebarHeaderContent extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     // User info row if authenticated, otherwise logo + app title.
-    if (session.isAuthenticated && session.user != null) {
-      final user = session.user!;
+    if (session.isAuthenticated && session.user is AuthUser) {
+      final user = session.user as AuthUser;
       final displayName = user.nickname ?? user.email ?? '';
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),

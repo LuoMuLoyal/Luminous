@@ -18,7 +18,9 @@ mixin OAuthAppleMixin on OAuthLoginControllerBase {
           familyName: familyName,
         ),
       );
-      await ref.read(authSessionProvider.notifier).applySession(s);
+      await ref
+          .read(authSessionProvider.notifier)
+          .applySession(s.toSessionSnapshot(), user: s.user);
       state = state.copyWith(isStartingApple: false);
       return s;
     } catch (e) {

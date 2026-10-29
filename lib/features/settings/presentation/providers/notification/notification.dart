@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/providers/storage/preferences_store.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
@@ -137,7 +137,7 @@ abstract class NotificationSettingsControllerCore
     final current = state.asData?.value ?? const NotificationSettingsState();
     final next = update(current);
     final auth = ref.read(authSessionProvider);
-    final userId = auth.canAccessProtectedData ? auth.user?.id : null;
+    final userId = auth.canAccessProtectedData ? auth.userId : null;
     if (userId == null) {
       await _save(
         next,
@@ -245,7 +245,7 @@ class NotificationSettingsController extends NotificationSettingsControllerCore
   Future<NotificationSettingsState> build() async {
     final preferences = KvStore.instance;
     final auth = ref.watch(authSessionProvider);
-    final userId = auth.canAccessProtectedData ? auth.user?.id : null;
+    final userId = auth.canAccessProtectedData ? auth.userId : null;
     final scoped = ScopedPreferences(preferences, userId);
     final legacy = ScopedPreferences(preferences, null);
     final legacyOwner = preferences.getOrNull<String>(_legacyMigrationOwnerKey);

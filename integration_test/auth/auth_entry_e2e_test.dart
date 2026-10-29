@@ -22,7 +22,10 @@ void main() {
     expect(remote.loginPassword, 'Password123');
     expect(remote.loginCode, isNull);
     expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-    expect(container.read(authSessionProvider).user?.email, 'e2e@example.com');
+    expect(
+      container.read(authSessionProvider).userSnapshot?.email,
+      'e2e@example.com',
+    );
   });
 
   testWidgets('auth register flow submits registration from login entry', (
