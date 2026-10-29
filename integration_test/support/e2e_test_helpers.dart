@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/bootstrap.dart';
+import 'package:luminous/app/composition/legal.dart';
 import 'package:luminous/app/composition/record.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -31,8 +32,6 @@ import 'package:luminous/features/health_context/domain/entities/write_inputs.da
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/health_event/data/providers/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
-import 'package:luminous/features/legal/data/repositories/lucent.dart'
-    show legalRepositoryProvider;
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:luminous/features/legal/domain/entities/document.dart';
 import 'package:luminous/features/legal/domain/repositories/documents.dart';
@@ -83,8 +82,6 @@ export 'package:luminous/core/auth/session_provider.dart'
 export 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart'
     show AuthVerificationScene;
 export 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
-export 'package:luminous/features/legal/data/repositories/lucent.dart'
-    show legalRepositoryProvider;
 export 'package:luminous/features/legal/domain/entities/doc_type.dart';
 export 'package:luminous/features/legal/domain/entities/document.dart';
 export 'package:luminous/features/legal/domain/repositories/documents.dart';
