@@ -20,7 +20,7 @@ import 'package:luminous/features/record/application/usecases/quick_entry.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
-import 'package:luminous/features/record/presentation/providers/record_services.dart';
+import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/ui_defaults.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/header_actions.dart';

@@ -5,7 +5,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
-import 'package:luminous/features/record/presentation/providers/record_services.dart';
+import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 
 /// Hero avatar for the record detail header.

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
-import 'package:luminous/features/record/presentation/providers/record_services.dart';
+import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/grid.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/header.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/metrics.dart';
