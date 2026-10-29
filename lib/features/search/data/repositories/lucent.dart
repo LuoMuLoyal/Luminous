@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/search_result.dart';
+import 'package:luminous/core/database/daos/medicine/search_result.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';

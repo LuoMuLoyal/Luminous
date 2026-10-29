@@ -11,20 +11,20 @@ import 'connection.dart'
     if (dart.library.io) 'connection_io.dart'
     if (dart.library.js_interop) 'connection_web.dart'
     as conn;
-import 'daos/current_medicine.dart';
-import 'daos/daily_record.dart';
-import 'daos/daily_record_summary.dart';
-import 'daos/health_context.dart';
-import 'daos/medicine_dose_log.dart';
-import 'daos/medicine_workspace.dart';
-import 'daos/mine_dashboard.dart';
-import 'daos/notification_page.dart';
-import 'daos/pending_sync.dart';
-import 'daos/review.dart';
-import 'daos/review_dashboard.dart';
-import 'daos/search_result.dart';
-import 'daos/today_suggestion.dart';
-import 'daos/user_settings_cache.dart';
+import 'daos/health/health_context.dart';
+import 'daos/medicine/current_medicine.dart';
+import 'daos/medicine/medicine_dose_log.dart';
+import 'daos/medicine/medicine_workspace.dart';
+import 'daos/medicine/search_result.dart';
+import 'daos/mine/mine_dashboard.dart';
+import 'daos/notification/notification_page.dart';
+import 'daos/records/daily_record.dart';
+import 'daos/records/daily_record_summary.dart';
+import 'daos/review/review.dart';
+import 'daos/review/review_dashboard.dart';
+import 'daos/review/today_suggestion.dart';
+import 'daos/settings/user_settings_cache.dart';
+import 'daos/sync/pending_sync.dart';
 import 'tables/current_medicines.dart';
 import 'tables/daily_record_summaries.dart';
 import 'tables/daily_records.dart';

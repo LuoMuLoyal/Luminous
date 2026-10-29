@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
-import '../database.dart';
-import '../tables/reviews.dart';
+import '../../database.dart';
+import '../../tables/reviews.dart';
 
 part 'review.g.dart';
 

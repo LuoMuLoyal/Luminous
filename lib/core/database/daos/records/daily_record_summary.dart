@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
-import '../database.dart';
-import '../tables/daily_record_summaries.dart';
+import '../../database.dart';
+import '../../tables/daily_record_summaries.dart';
 
 part 'daily_record_summary.g.dart';
 

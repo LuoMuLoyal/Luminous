@@ -4,7 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/user_settings_cache.dart';
+import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';

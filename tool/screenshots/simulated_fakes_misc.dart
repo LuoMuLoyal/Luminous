@@ -17,7 +17,7 @@
 // ignore_for_file: avoid_classes_with_only_static_members
 
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/database/daos/pending_sync.dart';
+import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';

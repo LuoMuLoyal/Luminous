@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
-import '../database.dart';
-import '../tables/current_medicines.dart';
+import '../../database.dart';
+import '../../tables/current_medicines.dart';
 
 part 'current_medicine.g.dart';
 

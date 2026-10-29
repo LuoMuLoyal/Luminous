@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 
-import '../database.dart';
-import '../tables/medicine_dose_logs.dart';
+import '../../database.dart';
+import '../../tables/medicine_dose_logs.dart';
 
 part 'medicine_dose_log.g.dart';
 

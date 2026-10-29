@@ -1,5 +1,5 @@
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/pending_sync.dart';
+import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync_failures.g.dart';

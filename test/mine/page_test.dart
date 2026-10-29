@@ -8,7 +8,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/mine_dashboard.dart';
+import 'package:luminous/core/database/daos/mine/mine_dashboard.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/core/design/tokens/icon_size.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';

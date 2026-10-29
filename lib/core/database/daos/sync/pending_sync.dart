@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'package:drift/drift.dart';
 
-import '../cache_constants.dart';
-import '../database.dart';
-import '../models/pending_sync_error_details.dart';
-import '../tables/pending_sync_queue.dart';
+import '../../cache_constants.dart';
+import '../../database.dart';
+import '../../models/pending_sync_error_details.dart';
+import '../../tables/pending_sync_queue.dart';
 
 part 'pending_sync.g.dart';
 

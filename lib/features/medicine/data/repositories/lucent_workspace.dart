@@ -6,7 +6,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/database/cache_constants.dart';
-import 'package:luminous/core/database/daos/medicine_workspace.dart';
+import 'package:luminous/core/database/daos/medicine/medicine_workspace.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';

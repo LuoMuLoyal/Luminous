@@ -10,7 +10,7 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/user_settings_cache.dart';
+import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';

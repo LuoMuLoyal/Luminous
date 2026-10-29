@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
-import '../database.dart';
-import '../tables/search_results.dart';
+import '../../database.dart';
+import '../../tables/search_results.dart';
 
 part 'search_result.g.dart';
 

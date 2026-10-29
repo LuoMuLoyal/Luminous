@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
-import '../database.dart';
-import '../tables/mine_dashboards.dart';
+import '../../database.dart';
+import '../../tables/mine_dashboards.dart';
 
 part 'mine_dashboard.g.dart';
 
