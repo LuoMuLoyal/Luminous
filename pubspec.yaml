@@ -39,6 +39,8 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^3.4.3
   fpdart: ^1.2.0
+  # domain 层只用 @immutable 标注，不引入 Flutter 依赖
+  meta: ^1.19.0
   flutter_hooks: ^0.21.3
   hooks_riverpod: ^3.4.3
   go_router: ^17.2.3
