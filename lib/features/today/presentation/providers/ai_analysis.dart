@@ -10,8 +10,8 @@ import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/providers/session_snapshot.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/presentation/providers/data_access.dart';
 
 /// Manages the Today AI analysis card using the materialization pattern:
 /// cache-first read, backend status mapping, stale/old-card preservation, and
