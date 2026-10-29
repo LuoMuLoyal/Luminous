@@ -1,7 +1,7 @@
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/desktop_oauth_callback_listener.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/callback/desktop_oauth_callback_listener.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client.dart';
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

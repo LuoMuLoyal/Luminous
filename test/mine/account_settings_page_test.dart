@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account/manage/page.dart';

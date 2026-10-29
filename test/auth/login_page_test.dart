@@ -5,7 +5,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/presentation/pages/login/login.dart';
