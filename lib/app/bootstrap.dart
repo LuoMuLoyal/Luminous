@@ -22,8 +22,10 @@ import 'package:luminous/core/widgets/common/control/desktop/window_chrome.dart'
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_delivery_reporter.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
+import 'package:luminous/app/composition/settings/cache_cleanup.dart';
 import 'package:luminous/features/settings/application/sleep_reminder_notification_coordinator.dart';
 import 'package:luminous/app/composition/settings/cache_cleanup.dart';
+import 'package:luminous/features/settings/presentation/sleep_reminder_sync.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 

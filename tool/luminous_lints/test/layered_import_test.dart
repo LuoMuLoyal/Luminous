@@ -102,7 +102,7 @@ final usesStub = SettingsBanner();
       '/home/test/lib/features/record/presentation/page.dart',
     );
     newFile(path, r'''
-import 'package:luminous/features/record/domain/entities/daily.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
 
 final usesTarget = DailyRecord();
 ''');
@@ -155,7 +155,7 @@ final usesTarget = UserSettingsRepository();
   Future<void> test_nonFeatureFileImportingFeature_isNotReported() async {
     final path = convertPath('/home/test/lib/l10n/bridge.dart');
     newFile(path, r'''
-import 'package:luminous/features/record/domain/entities/daily.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
 
 final usesTarget = DailyRecord();
 ''');
@@ -211,7 +211,7 @@ final usesTarget = userSettingsControllerProvider;
     // feature's providers/entities to drive the whole app's login state.
     final path = convertPath('/home/test/lib/core/auth/session_provider.dart');
     newFile(path, r'''
-import 'package:luminous/features/record/domain/entities/daily.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
 
 final usesTarget = DailyRecord;
 ''');
@@ -223,7 +223,7 @@ final usesTarget = DailyRecord;
     // state to route an incoming notification.
     final path = convertPath('/home/test/lib/core/push/message_handler.dart');
     newFile(path, r'''
-import 'package:luminous/features/record/domain/entities/daily.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
 
 final usesTarget = DailyRecord;
 ''');
@@ -235,7 +235,7 @@ final usesTarget = DailyRecord;
     // creep to new core directories.
     final path = convertPath('/home/test/lib/core/database/cleanup.dart');
     newFile(path, r'''
-import 'package:luminous/features/record/domain/entities/daily.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
 
 final usesTarget = DailyRecord;
 ''');

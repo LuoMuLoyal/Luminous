@@ -8,7 +8,10 @@ import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:luminous/features/record/domain/services/quick_entry.dart';
+import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
+import 'package:luminous/features/record/presentation/quick_entry/record_date.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/kv_test_store.dart';
@@ -20,6 +23,36 @@ class _FakeUpdate extends Fake implements DailyRecordUpdateInput {}
 
 class _MockRepo extends Mock implements DailyRecordRepository {}
 
+class _RecordingWriter implements DailyRecordWriter {
+  _RecordingWriter({this.updateError});
+
+  final Object? updateError;
+  final updates = <(String, DailyRecordUpdateInput)>[];
+
+  @override
+  Future<DailyRecordItem> update(
+    String id,
+    DailyRecordUpdateInput input,
+  ) async {
+    final error = updateError;
+    if (error != null) throw error;
+    updates.add((id, input));
+    return _FakeItem();
+  }
+
+  @override
+  Future<DailyRecordItem> create(DailyRecordCreateInput input) =>
+      throw UnimplementedError();
+
+  @override
+  Future<void> delete(String id) => throw UnimplementedError();
+
+  @override
+  Future<DailyRecordAttachmentInput> uploadImage(
+    DailyRecordImageUploadInput input,
+  ) => throw UnimplementedError();
+}
+
 void main() {
   setUp(() {
     KvTestStore.install();
@@ -29,38 +62,85 @@ void main() {
     registerFallbackValue(_FakeUpdate());
   });
 
-  late _MockRepo repo;
-  late ProviderContainer container;
-  late BuildContext ctx;
-  late WidgetRef ref;
+  group('ChangeRecordDateUseCase', () {
+    test(
+      'updates the repository with the zero-padded date and emits',
+      () async {
+        final writer = _RecordingWriter();
+        final emitted = <String>[];
 
-  setUp(() {
-    repo = _MockRepo();
+        final outcome = await ChangeRecordDateUseCase(
+          repository: writer,
+          emitDataChange: emitted.add,
+        )(recordId: 'r1', newDate: DateTime(2026, 7, 15));
+
+        expect(writer.updates.single.$1, 'r1');
+        expect(
+          writer.updates.single.$2.occurredAt,
+          '2026-07-15',
+          reason: 'yyyy-MM-dd with zero padding',
+        );
+        expect(emitted, [QuickEntryDataChange.dailyRecords]);
+        expect(outcome, isA<ChangeRecordDateSucceeded>());
+      },
+    );
+
+    test('zero-pads single-digit months and days', () async {
+      final writer = _RecordingWriter();
+
+      await ChangeRecordDateUseCase(repository: writer, emitDataChange: (_) {})(
+        recordId: 'r1',
+        newDate: DateTime(2026, 1, 5),
+      );
+
+      expect(writer.updates.single.$2.occurredAt, '2026-01-05');
+    });
+
+    test('a failed update reports failure and emits nothing', () async {
+      final emitted = <String>[];
+
+      final outcome = await ChangeRecordDateUseCase(
+        repository: _RecordingWriter(updateError: Exception('boom')),
+        emitDataChange: emitted.add,
+      )(recordId: 'r1', newDate: DateTime(2026, 7, 15));
+
+      expect(outcome, isA<ChangeRecordDateFailed>());
+      expect(emitted, isEmpty);
+    });
   });
 
-  Future<void> pumpPage(WidgetTester tester) async {
-    container = ProviderContainer(
-      overrides: [dailyRecordRepositoryProvider.overrideWithValue(repo)],
-    );
-    addTearDown(container.dispose);
+  group('changeRecordDate (presentation)', () {
+    late _MockRepo repo;
+    late ProviderContainer container;
+    late BuildContext ctx;
+    late WidgetRef ref;
 
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: TestForuiApp(
-          home: Consumer(
-            builder: (context, r, _) {
-              ctx = context;
-              ref = r;
-              return const SizedBox();
-            },
+    setUp(() {
+      repo = _MockRepo();
+    });
+
+    Future<void> pumpPage(WidgetTester tester) async {
+      container = ProviderContainer(
+        overrides: [dailyRecordRepositoryProvider.overrideWithValue(repo)],
+      );
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: TestForuiApp(
+            home: Consumer(
+              builder: (context, r, _) {
+                ctx = context;
+                ref = r;
+                return const SizedBox();
+              },
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  group('changeRecordDate', () {
     testWidgets('updates repo, bus, and selected date', (tester) async {
       when(
         () => repo.update(any(), any()),

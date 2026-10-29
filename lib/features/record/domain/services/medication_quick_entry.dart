@@ -4,11 +4,10 @@ import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder.dart';
-import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
+import 'package:luminous/features/record/domain/services/quick_entry.dart';
+import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 
 typedef MarkDoseLog = Future<DoseLogItem> Function(MedicationQuickMarkInput);
-typedef RegisterMedicationQuickUndo =
-    void Function(QuickEntryUndoAction action);
 
 /// "Nearby reminder" window: a reminder scheduled within this offset before
 /// or after the current time is considered nearby and auto-selected.
@@ -60,16 +59,28 @@ enum MedicationQuickEntryOutcomeType {
 }
 
 class MedicationQuickEntryOutcome {
-  const MedicationQuickEntryOutcome._({required this.type, this.selection});
+  const MedicationQuickEntryOutcome._({
+    required this.type,
+    this.selection,
+    this.undoHint = const NoQuickEntryUndo(),
+  });
 
   const MedicationQuickEntryOutcome.noCurrentMedicines()
     : this._(type: MedicationQuickEntryOutcomeType.noCurrentMedicines);
 
-  const MedicationQuickEntryOutcome.recordedSingle()
-    : this._(type: MedicationQuickEntryOutcomeType.recordedSingle);
+  const MedicationQuickEntryOutcome.recordedSingle({
+    QuickEntryUndoHint undoHint = const NoQuickEntryUndo(),
+  }) : this._(
+         type: MedicationQuickEntryOutcomeType.recordedSingle,
+         undoHint: undoHint,
+       );
 
-  const MedicationQuickEntryOutcome.recordedTemporary()
-    : this._(type: MedicationQuickEntryOutcomeType.recordedTemporary);
+  const MedicationQuickEntryOutcome.recordedTemporary({
+    QuickEntryUndoHint undoHint = const NoQuickEntryUndo(),
+  }) : this._(
+         type: MedicationQuickEntryOutcomeType.recordedTemporary,
+         undoHint: undoHint,
+       );
 
   const MedicationQuickEntryOutcome.needsSelection(
     MedicationQuickSelection selection,
@@ -83,6 +94,9 @@ class MedicationQuickEntryOutcome {
 
   final MedicationQuickEntryOutcomeType type;
   final MedicationQuickSelection? selection;
+
+  /// What the success toast needs in order to offer undo.
+  final QuickEntryUndoHint undoHint;
 }
 
 class MedicationQuickSelection {
@@ -131,12 +145,10 @@ class MedicationQuickEntryFlow {
   const MedicationQuickEntryFlow({
     required this.markDose,
     required this.emitDataChange,
-    required this.registerUndo,
   });
 
   final MarkDoseLog markDose;
-  final EmitDataChange emitDataChange;
-  final RegisterMedicationQuickUndo registerUndo;
+  final EmitDataChangeTopic emitDataChange;
 
   Future<MedicationQuickEntryOutcome> handleTap({
     required MedicationQuickEntryContext context,
@@ -174,8 +186,8 @@ class MedicationQuickEntryFlow {
 
     final choice = plannedChoices.first;
     if (choice.reminderId == null && choice.scheduledTime == null) {
-      await _recordChoice(context, choice, previousLog: null);
-      return const MedicationQuickEntryOutcome.recordedTemporary();
+      final undo = await _recordChoice(context, choice, previousLog: null);
+      return MedicationQuickEntryOutcome.recordedTemporary(undoHint: undo);
     }
 
     final previousLog = _matchingLog(choice, todayLogs);
@@ -183,8 +195,8 @@ class MedicationQuickEntryFlow {
       return const MedicationQuickEntryOutcome.alreadyRecorded();
     }
 
-    await _recordChoice(context, choice, previousLog: previousLog);
-    return const MedicationQuickEntryOutcome.recordedSingle();
+    final undo = await _recordChoice(context, choice, previousLog: previousLog);
+    return MedicationQuickEntryOutcome.recordedSingle(undoHint: undo);
   }
 
   Future<MedicationQuickBatchResult> recordConfirmedSelection({
@@ -212,18 +224,15 @@ class MedicationQuickEntryFlow {
             QuickEntryUndoAction.deleteDoseLog(doseLogId: item.id),
           );
         }
-      } catch (e, st) {
-        appTalker.error(
-          'MedicationQuickEntry: markDose failed for "${choice.name}" '
-          '(medicineId=${choice.currentMedicineId}): $e',
-          st,
-        );
+      } catch (error) {
+        // Per-medicine failure: the rest of the batch still runs and the
+        // caller reports the split; the error is kept for diagnostics.
         failed.add(choice);
       }
     }
 
     if (succeeded.isNotEmpty) {
-      emitDataChange(DataChangeTopic.doseLogs);
+      emitDataChange(QuickEntryDataChange.doseLogs);
     }
 
     return MedicationQuickBatchResult(
@@ -233,7 +242,7 @@ class MedicationQuickEntryFlow {
     );
   }
 
-  Future<DoseLogItem> _recordChoice(
+  Future<QuickEntryUndoHint> _recordChoice(
     MedicationQuickEntryContext context,
     MedicationQuickChoice choice, {
     required DoseLogItem? previousLog,
@@ -247,18 +256,18 @@ class MedicationQuickEntryFlow {
         scheduledTime: choice.scheduledTime,
       ),
     );
-    emitDataChange(DataChangeTopic.doseLogs);
+    emitDataChange(QuickEntryDataChange.doseLogs);
     if (previousLog == null) {
-      registerUndo(QuickEntryUndoAction.deleteDoseLog(doseLogId: item.id));
-    } else {
-      registerUndo(
-        QuickEntryUndoAction.restoreDoseLogStatus(
-          doseLogId: previousLog.id,
-          previousStatus: previousLog.status.name,
-        ),
+      return QuickEntryUndoOffer(
+        QuickEntryUndoAction.deleteDoseLog(doseLogId: item.id),
       );
     }
-    return item;
+    return QuickEntryUndoOffer(
+      QuickEntryUndoAction.restoreDoseLogStatus(
+        doseLogId: previousLog.id,
+        previousStatus: previousLog.status.name,
+      ),
+    );
   }
 
   List<MedicationQuickChoice> _buildChoices({

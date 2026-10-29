@@ -4,17 +4,18 @@ import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
-import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
-import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
+import 'package:luminous/features/record/presentation/utils/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
+import 'package:luminous/features/record/domain/entities/quick_entry_intent.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
+import 'package:luminous/features/record/domain/services/water_quick_entry.dart';
+import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 import 'package:luminous/features/record/presentation/controllers/quick_entry_context.dart';
 import 'package:luminous/features/record/presentation/providers/data_access.dart';
+import 'package:luminous/features/record/presentation/quick_entry/execution_context.dart';
 import 'package:luminous/features/record/presentation/quick_entry/symptom_flow.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_context.dart';
 import 'package:luminous/features/record/presentation/utils/fast_entry_choices.dart';
@@ -24,6 +25,12 @@ import 'package:luminous/features/record/presentation/widgets/dialogs/water_quic
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+/// Drives the quick-action **tap** surfaces (sheets, dialogs, routes).
+///
+/// Flow orchestration lives in the presentation layer (see
+/// plans/2026-10-21-ddd-refactor-frontend.md §3): the application layer owns
+/// the pure decisions and writes, this class owns "which widget opens when".
+/// It is wired up by `presentation/providers/quick_entry.dart`.
 class QuickEntryExecutor {
   const QuickEntryExecutor({
     required this.createRecord,
@@ -31,15 +38,19 @@ class QuickEntryExecutor {
     required this.emitDataChange,
     required this.preferences,
     required this.loadSymptomCatalog,
+    required this.onUndoFailed,
   });
 
   final CreateDailyRecord createRecord;
   final DeleteDailyRecord deleteDailyRecord;
-  final EmitDataChange emitDataChange;
+  final EmitDataChangeTopic emitDataChange;
   final QuickEntryPreferences preferences;
 
   /// 读取当前已缓存的后端症状目录；为空时调用方回落本地兜底清单。
   final List<SymptomCatalogEntry> Function() loadSymptomCatalog;
+
+  /// Undo failures are surfaced by the caller (it owns the context/talker).
+  final void Function(Object error, StackTrace stackTrace) onUndoFailed;
 
   Future<void> execute(QuickEntryExecutionContext context) async {
     final buildContext = context.buildContext;
@@ -53,35 +64,32 @@ class QuickEntryExecutor {
       return;
     }
 
-    final kind = dailyRecordKindForEntryType(context.action.type);
-    final route = _createRoute(context, kind);
-
-    if (kind == DailyRecordKind.water) {
-      await _recordWater(context);
-      return;
+    switch (context.intent) {
+      case WaterQuickEntryIntent():
+        await _recordWater(context);
+      case SymptomQuickEntryIntent():
+        await _recordSymptom(context, _createRoute(context));
+      case FastEntryQuickEntryIntent(:final type):
+        final kind = dailyRecordKindForEntryType(type);
+        if (kind == null || !_usesLegacyFastEntry(kind)) {
+          if (!buildContext.mounted) return;
+          unawaited(buildContext.push(_createRoute(context)));
+          return;
+        }
+        await showFDialog<void>(
+          context: buildContext,
+          builder: (dialogContext, style, animation) => RecordFastEntryDialog(
+            kind: kind,
+            occurredAt: context.occurredAt,
+            currentDateTime: context.now,
+            moreRoute: _createRoute(context),
+            animation: animation,
+          ),
+        );
+      case CreateRouteQuickEntryIntent():
+        if (!buildContext.mounted) return;
+        unawaited(buildContext.push(_createRoute(context)));
     }
-
-    if (kind == DailyRecordKind.symptom) {
-      await _recordSymptom(context, route);
-      return;
-    }
-
-    if (kind == null || !_usesLegacyFastEntry(kind)) {
-      if (!buildContext.mounted) return;
-      unawaited(buildContext.push(route));
-      return;
-    }
-
-    await showFDialog<void>(
-      context: buildContext,
-      builder: (dialogContext, style, animation) => RecordFastEntryDialog(
-        kind: kind,
-        occurredAt: context.occurredAt,
-        currentDateTime: context.now,
-        moreRoute: route,
-        animation: animation,
-      ),
-    );
   }
 
   Future<void> _recordWater(QuickEntryExecutionContext context) async {
@@ -110,7 +118,7 @@ class QuickEntryExecutor {
         ),
       );
     } catch (e, st) {
-      appTalker.error('QuickEntryExecutor: water record failed: $e', st);
+      onUndoFailed(e, st);
       if (!buildContext.mounted) return;
       await Toast.show(buildContext, l10n.recordCreateFailedToast);
       return;
@@ -133,7 +141,7 @@ class QuickEntryExecutor {
     );
   }
 
-  /// 症状：sheet 只收集选择，落库与撤销都在这里（application 层）做。
+  /// 症状：sheet 只收集选择，落库与撤销都在这里做。
   ///
   /// 撤销 toast 的 action 用的是页面 context：若让 sheet 自己落库 + 弹 toast，等用户点
   /// 撤销时 sheet 的 context 已失活，撤销会静默失效。
@@ -235,7 +243,7 @@ class QuickEntryExecutor {
         }
       }
     } catch (e, st) {
-      appTalker.error('QuickEntryExecutor: symptom record failed: $e', st);
+      onUndoFailed(e, st);
       if (!buildContext.mounted) return;
       await Toast.show(buildContext, l10n.recordCreateFailedToast);
       return;
@@ -274,7 +282,7 @@ class QuickEntryExecutor {
         emitDataChange: emitDataChange,
       ).undo(action);
     } catch (e, st) {
-      appTalker.error('QuickEntryExecutor: undo failed: $e', st);
+      onUndoFailed(e, st);
       if (!buildContext.mounted) return;
       await Toast.show(
         buildContext,
@@ -283,10 +291,8 @@ class QuickEntryExecutor {
     }
   }
 
-  String _createRoute(
-    QuickEntryExecutionContext context,
-    DailyRecordKind? kind,
-  ) {
+  String _createRoute(QuickEntryExecutionContext context) {
+    final kind = dailyRecordKindForEntryType(context.action.type);
     if (kind == null) {
       return '/record/create?date=${Uri.encodeComponent(context.occurredAt)}';
     }
@@ -296,7 +302,7 @@ class QuickEntryExecutor {
   }
 
   bool _usesLegacyFastEntry(DailyRecordKind kind) {
-    // water / symptom 各有专用入口（下方分支已拦截）；这里只剩情绪与备注。
+    // water / symptom 各有专用入口（intent 分支已拦截）；这里只剩情绪与备注。
     return switch (kind) {
       DailyRecordKind.mood || DailyRecordKind.note => true,
       _ => false,

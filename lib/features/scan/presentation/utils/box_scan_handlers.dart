@@ -15,7 +15,7 @@ import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/services/candidate_merger.dart';
 import 'package:luminous/features/scan/domain/services/candidate_search.dart';
 import 'package:luminous/features/scan/domain/services/medicine_ocr_extractor.dart';
-import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
+import 'package:luminous/features/scan/data/datasources/paddle_ocr_provider.dart';
 import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

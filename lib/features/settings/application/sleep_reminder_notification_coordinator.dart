@@ -1,14 +1,39 @@
-import 'dart:ui' as ui;
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/i18n/locale.dart';
-import 'package:luminous/core/network/config/pref_keys.dart';
-import 'package:luminous/core/notifications/local_notification_gateway.dart';
-import 'package:luminous/core/storage/kv_store.dart';
+import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
-import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
-import 'package:luminous/l10n/app_localizations.dart';
+
+/// Plays a scheduled local notification. Implements the platform edge
+/// (`core/notifications/local_notification_gateway.dart`); the coordinator only
+/// depends on this narrow interface so it stays framework-free.
+abstract interface class SleepReminderNotificationScheduler {
+  /// Whether the platform can schedule at all.
+  Future<bool> ensureInitialized();
+
+  /// Cancels a previously scheduled notification.
+  Future<void> cancel(int id);
+
+  /// Schedules a notification; false when the platform refused it.
+  Future<bool> schedule({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime scheduledAt,
+    required bool playSound,
+    required bool vibrationEnabled,
+    required String channelName,
+    required String channelDescription,
+    required String payload,
+  });
+}
+
+/// Persists the ids of the sleep-reminder notifications currently scheduled.
+///
+/// Implements the local key-value store (`core/storage/kv_store.dart`); kept as
+/// an interface so the coordinator never imports `core`.
+abstract interface class SleepReminderScheduledIdsStore {
+  Future<List<String>> read();
+
+  Future<void> write(List<String> ids);
+}
 
 class SleepReminderNotificationTexts {
   const SleepReminderNotificationTexts({
@@ -24,9 +49,15 @@ class SleepReminderNotificationTexts {
   final String channelDescription;
 }
 
+/// Reconciles the on-device sleep reminders with the user's preferences.
+///
+/// Everything it needs arrives as arguments (gateway, id store, localised
+/// texts, the resolved settings snapshot), so the class is plain Dart and can be
+/// unit-tested without Riverpod or the notification plugin.
 class SleepReminderNotificationCoordinator {
   SleepReminderNotificationCoordinator({
-    required this.gateway,
+    required this.scheduler,
+    required this.scheduledIds,
     this.horizonDays = 7,
   });
 
@@ -37,7 +68,8 @@ class SleepReminderNotificationCoordinator {
   /// 1000, update the base to avoid collisions.
   static const _notificationIdBase = 2_100_000;
 
-  final LocalNotificationGateway gateway;
+  final SleepReminderNotificationScheduler scheduler;
+  final SleepReminderScheduledIdsStore scheduledIds;
   final int horizonDays;
 
   Future<bool> resync({
@@ -52,28 +84,23 @@ class SleepReminderNotificationCoordinator {
     bool soundEnabled = true,
     bool vibrationEnabled = true,
   }) async {
-    final initialized = await gateway.ensureInitialized();
+    final initialized = await scheduler.ensureInitialized();
 
-    final preferences = KvStore.instance;
-    final previousIds =
-        preferences.getOrNull<List<String>>(
-          PrefKeys.settingsNotificationsSleepScheduledNotificationIds,
-        ) ??
-        const <String>[];
+    final previousIds = await scheduledIds.read();
     for (final value in previousIds) {
       final id = int.tryParse(value);
-      if (id != null) await gateway.cancel(id);
+      if (id != null) await scheduler.cancel(id);
     }
 
     if (!initialized) {
-      await _writeIds(preferences, const <int>[]);
+      await scheduledIds.write(const <String>[]);
       return false;
     }
 
     if (!enabled ||
         permissionState != NotificationPermissionState.granted ||
         bedtimeMinutes == null) {
-      await _writeIds(preferences, const <int>[]);
+      await scheduledIds.write(const <String>[]);
       return true;
     }
 
@@ -104,13 +131,13 @@ class SleepReminderNotificationCoordinator {
 
       final id = _notificationIdBase + dayOffset;
       plannedIds.add(id);
-      final scheduled = await gateway.schedule(
+      final scheduled = await scheduler.schedule(
         id: id,
         title: texts.title,
         body: texts.body,
         scheduledAt: date,
         playSound: soundEnabled,
-        enableVibration: vibrationEnabled,
+        vibrationEnabled: vibrationEnabled,
         channelName: texts.channelName,
         channelDescription: texts.channelDescription,
         payload: 'sleep_reminder:${date.year}-${date.month}-${date.day}',
@@ -118,7 +145,9 @@ class SleepReminderNotificationCoordinator {
       allScheduled = allScheduled && scheduled;
     }
 
-    await _writeIds(preferences, plannedIds);
+    await scheduledIds.write(
+      plannedIds.map((id) => id.toString()).toList(growable: false),
+    );
     return allScheduled;
   }
 
@@ -135,55 +164,40 @@ class SleepReminderNotificationCoordinator {
     if (start < end) return minute >= start && minute < end;
     return minute >= start || minute < end;
   }
-
-  Future<void> _writeIds(KvStore preferences, List<int> ids) {
-    return preferences.set(
-      PrefKeys.settingsNotificationsSleepScheduledNotificationIds,
-      ids.map((id) => id.toString()).toList(growable: false),
-    );
-  }
 }
 
-final sleepReminderNotificationCoordinatorProvider =
-    Provider<SleepReminderNotificationCoordinator>((ref) {
-      return SleepReminderNotificationCoordinator(
-        gateway: ref.watch(localNotificationGatewayProvider),
-      );
-    });
+/// The settings/state the coordinator needs, resolved from the app's providers.
+///
+/// The presentation adapter fills this from
+/// `notificationSettingsControllerProvider`, `authSessionProvider` and the
+/// locale controller; keeping it a plain value keeps the coordinator pure.
+class SleepReminderSettingsSnapshot {
+  const SleepReminderSettingsSnapshot({
+    required this.canAccessProtectedData,
+    required this.preferences,
+    required this.permissionState,
+    required this.dndEnabled,
+    required this.dndStartMinutes,
+    required this.dndEndMinutes,
+    required this.soundEnabled,
+    required this.vibrationEnabled,
+  });
 
-final sleepReminderNotificationSyncProvider = FutureProvider<void>((ref) async {
-  final auth = ref.watch(authSessionProvider);
-  final settings = ref
-      .watch(notificationSettingsControllerProvider)
-      .asData
-      ?.value;
-  if (settings == null) return;
+  /// False when the user is signed out — reminders are suppressed then.
+  final bool canAccessProtectedData;
+  final NotificationPreferences preferences;
+  final NotificationPermissionState permissionState;
+  final bool dndEnabled;
+  final int dndStartMinutes;
+  final int dndEndMinutes;
+  final bool soundEnabled;
+  final bool vibrationEnabled;
 
-  final localeSetting =
-      ref.watch(localeControllerProvider).asData?.value ?? AppLocale.system;
-  final locale =
-      localeSetting.flutterLocale ?? ui.PlatformDispatcher.instance.locale;
-  final l10n = lookupAppLocalizations(locale);
-  final texts = SleepReminderNotificationTexts(
-    title: l10n.settingsNotificationsSleepReminderTitle,
-    body: l10n.sleepReminderNotificationBody,
-    channelName: l10n.sleepReminderNotificationChannelName,
-    channelDescription: l10n.sleepReminderNotificationChannelDescription,
-  );
-  final coordinator = ref.watch(sleepReminderNotificationCoordinatorProvider);
-  await coordinator.resync(
-    enabled: auth.canAccessProtectedData && settings.sleepReminderEnabled,
-    bedtimeMinutes: settings.sleepBedtimeMinutes,
-    permissionState: settings.permissionState,
-    dndEnabled: settings.dndEnabled,
-    dndStartMinutes:
-        (settings.dndStartTime?.hour ?? 22) * 60 +
-        (settings.dndStartTime?.minute ?? 0),
-    dndEndMinutes:
-        (settings.dndEndTime?.hour ?? 7) * 60 +
-        (settings.dndEndTime?.minute ?? 0),
-    soundEnabled: settings.notificationSoundEnabled,
-    vibrationEnabled: settings.notificationVibrationEnabled,
-    texts: texts,
-  );
-});
+  /// Sleep reminders are only meaningful when enabled, permitted and a bedtime
+  /// is configured.
+  bool get enabled =>
+      canAccessProtectedData &&
+      preferences.sleepReminderEnabled &&
+      permissionState == NotificationPermissionState.granted &&
+      preferences.sleepBedtimeMinutes != null;
+}

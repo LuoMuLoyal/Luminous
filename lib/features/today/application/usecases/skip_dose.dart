@@ -1,21 +1,24 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart'
-    show doseLogRepositoryProvider;
 import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 
-/// Skips a single planned dose by marking it as `skipped`.
+/// Marks one planned dose as `skipped`.
 ///
-/// This use case orchestrates the medicine-domain [DoseLogRepository] and
-/// emits a [DataChangeTopic.doseLogs] event so today/medicine dashboards refresh.
+/// Pure: the medicine domain's [DoseLogRepository] is a published cross-feature
+/// domain interface (AGENTS.md §Cross-Feature Import Rules), so it arrives as a
+/// plain argument — no `WidgetRef`, no data layer. The data-change broadcast is
+/// injected the same way.
 ///
-/// Caller is responsible for validating that [currentMedicineId] and [date]
-/// are present before invoking this use case. On failure the original exception
-/// is rethrown and the UI decides how to surface it.
+/// Callers validate that the medicine id and date are present first; a failed
+/// write throws and the UI decides how to surface it.
 class SkipDoseUseCase {
-  const SkipDoseUseCase({required this.ref});
+  const SkipDoseUseCase({
+    required this.repository,
+    required this.emitDataChange,
+  });
 
-  final WidgetRef ref;
+  final DoseLogRepository repository;
+
+  /// Broadcasts a data-change topic (the `doseLogs` wire string).
+  final void Function(String topic) emitDataChange;
 
   Future<void> call({
     required String currentMedicineId,
@@ -23,8 +26,7 @@ class SkipDoseUseCase {
     String? reminderId,
     String? scheduledTime,
   }) async {
-    final result = await ref
-        .read(doseLogRepositoryProvider)
+    final result = await repository
         .mark(
           currentMedicineId: currentMedicineId,
           status: 'skipped',
@@ -34,6 +36,10 @@ class SkipDoseUseCase {
         )
         .run();
     result.fold((failure) => throw failure, (_) {});
-    ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
+    emitDataChange(_doseLogsTopic);
   }
+
+  /// The `DataChangeTopic.doseLogs` wire value; kept here so the use case names
+  /// it without importing `core`.
+  static const String _doseLogsTopic = 'doseLogs';
 }

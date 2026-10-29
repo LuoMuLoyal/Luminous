@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
-import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
+import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 
 void main() {
   group('QuickEntryUndoService', () {

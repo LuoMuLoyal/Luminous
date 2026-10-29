@@ -32,6 +32,7 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
+import 'package:luminous/features/record/domain/services/meal_quick_entry.dart';
 import 'package:luminous/features/record/presentation/pages/create.dart';
 import 'package:luminous/features/record/presentation/pages/detail.dart';
 import 'package:luminous/features/record/presentation/pages/edit.dart';

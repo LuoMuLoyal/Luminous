@@ -3,29 +3,24 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
-import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/features/record/domain/services/water_quick_entry.dart';
+import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
+import 'package:luminous/features/record/presentation/quick_entry/quick_entry_providers.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/water_quick_entry_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Executes a one-tap water quick-entry from the Today quick-actions surface.
 ///
-/// The flow reuses [WaterQuickEntryFlow] from the record feature's application
-/// layer so the create/emit/undo semantics stay identical to the record-page
-/// quick entry. It is gated by authentication: signed-out users see the auth
-/// dialog instead of creating a record.
-///
-/// UI interaction: [showWaterQuickEntrySheet] (from
-/// `record/presentation/widgets/dialogs/water_quick_entry_sheet.dart`).
-/// Cross-feature call site: `record/presentation/controllers/quick_entry_executor.dart`
-/// also delegates to [WaterQuickEntryFlow] for the same flow.
+/// The record-write flow is the record feature's application-layer
+/// [WaterQuickEntryFlow]; this function owns the auth gate, the amount sheet,
+/// the toasts and the undo wiring.
 Future<void> executeTodayWaterQuickEntry(
   BuildContext context,
   WidgetRef ref,
@@ -47,7 +42,6 @@ Future<void> executeTodayWaterQuickEntry(
   final preferences =
       ref.read(quickEntryPreferencesProvider).asData?.value ??
       const QuickEntryPreferences();
-  final repository = ref.read(dailyRecordRepositoryProvider);
 
   // Show the water amount sheet; the user picks a preset or enters a custom
   // ml amount. Dismissing the sheet records nothing.
@@ -57,16 +51,13 @@ Future<void> executeTodayWaterQuickEntry(
   QuickEntryUndoAction? undoAction;
   try {
     await WaterQuickEntryFlow(
-      createRecord: (input) async => (await repository.create(input).run())
-          .fold((failure) => throw failure, (item) => item),
-      emitDataChange: (topic) {
-        ref.read(dataChangeBusProvider.notifier).emit(topic);
-      },
+      createRecord: ref.read(createDailyRecordProvider),
+      emitDataChange: ref.read(emitQuickEntryDataChangeProvider),
       registerUndo: (action) => undoAction = action,
     ).record(
       QuickEntryRecordContext(
-        occurredAt: _formatDate(DateTime.now()),
-        occurredTime: _formatTime(DateTime.now()),
+        occurredAt: formatTodayDateKey(DateTime.now()),
+        occurredTime: formatTodayTimeValue(DateTime.now()),
       ),
       preferences.copyWith(
         waterDefault: QuickEntryWaterDefault.custom,
@@ -74,17 +65,21 @@ Future<void> executeTodayWaterQuickEntry(
       ),
     );
   } catch (e, st) {
-    _logError('executeTodayWaterQuickEntry: failed: $e', st);
+    ref
+        .read(talkerProvider)
+        .error('executeTodayWaterQuickEntry: failed: $e', st);
     if (!context.mounted) return;
-    final l10n = _l10n(context);
-    await Toast.show(context, l10n.recordCreateFailedToast);
+    await Toast.show(
+      context,
+      AppLocalizations.of(context)!.recordCreateFailedToast,
+    );
     return;
   }
 
   final action = undoAction;
   if (!context.mounted || action == null) return;
 
-  final l10n = _l10n(context);
+  final l10n = AppLocalizations.of(context)!;
   await Toast.showWithAction(
     context,
     l10n.recordQuickSavedToast,
@@ -95,6 +90,17 @@ Future<void> executeTodayWaterQuickEntry(
     },
   );
 }
+
+/// The record day (`yyyy-MM-dd`) for a Today tap.
+String formatTodayDateKey(DateTime value) =>
+    '${value.year.toString().padLeft(4, '0')}-'
+    '${value.month.toString().padLeft(2, '0')}-'
+    '${value.day.toString().padLeft(2, '0')}';
+
+/// The record time (`HH:mm`) for a Today tap.
+String formatTodayTimeValue(DateTime value) =>
+    '${value.hour.toString().padLeft(2, '0')}:'
+    '${value.minute.toString().padLeft(2, '0')}';
 
 Future<void> _undo(
   BuildContext context,
@@ -109,29 +115,17 @@ Future<void> _undo(
             (failure) => throw failure,
             (_) {},
           ),
-      emitDataChange: (topic) {
-        ref.read(dataChangeBusProvider.notifier).emit(topic);
-      },
+      emitDataChange: (topic) =>
+          ref.read(dataChangeBusProvider.notifier).emit(topic),
     ).undo(action);
   } catch (e, st) {
-    _logError('executeTodayWaterQuickEntry: undo failed: $e', st);
+    ref
+        .read(talkerProvider)
+        .error('executeTodayWaterQuickEntry: undo failed: $e', st);
     if (!context.mounted) return;
-    final l10n = _l10n(context);
-    await Toast.show(context, l10n.recordQuickUndoFailedToast);
+    await Toast.show(
+      context,
+      AppLocalizations.of(context)!.recordQuickUndoFailedToast,
+    );
   }
 }
-
-String _formatDate(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
-
-String _formatTime(DateTime date) => DateFormat('HH:mm').format(date);
-
-void _logError(String message, StackTrace? stackTrace) {
-  // Keep the import light: log via debugPrint when assertions are enabled.
-  assert(() {
-    debugPrint(message);
-    if (stackTrace != null) debugPrint(stackTrace.toString());
-    return true;
-  }());
-}
-
-AppLocalizations _l10n(BuildContext context) => AppLocalizations.of(context)!;

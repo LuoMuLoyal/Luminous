@@ -3,8 +3,9 @@ import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
-import 'package:luminous/features/record/presentation/quick_entry/medication_flow.dart';
+import 'package:luminous/features/record/domain/services/medication_quick_entry.dart';
+import 'package:luminous/features/record/domain/services/quick_entry.dart';
+import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 
 void main() {
   group('MedicationQuickEntryWindow', () {
@@ -23,7 +24,6 @@ void main() {
       final flow = MedicationQuickEntryFlow(
         markDose: _unexpectedMark,
         emitDataChange: (_) {},
-        registerUndo: (_) {},
       );
 
       final outcome = await flow.handleTap(
@@ -40,7 +40,6 @@ void main() {
       'one medicine with nearby pending slot marks the slot taken',
       () async {
         MedicationQuickMarkInput? marked;
-        QuickEntryUndoAction? undoAction;
         final emitted = <String>[];
         final flow = MedicationQuickEntryFlow(
           markDose: (input) async {
@@ -51,7 +50,6 @@ void main() {
             );
           },
           emitDataChange: emitted.add,
-          registerUndo: (action) => undoAction = action,
         );
 
         final outcome = await flow.handleTap(
@@ -70,8 +68,10 @@ void main() {
         expect(marked?.status, 'taken');
         expect(emitted, [DataChangeTopic.doseLogs]);
         expect(
-          undoAction,
-          const QuickEntryUndoAction.deleteDoseLog(doseLogId: 'dose-new'),
+          outcome.undoHint,
+          const QuickEntryUndoOffer(
+            QuickEntryUndoAction.deleteDoseLog(doseLogId: 'dose-new'),
+          ),
         );
       },
     );
@@ -90,7 +90,6 @@ void main() {
             );
           },
           emitDataChange: (_) {},
-          registerUndo: (_) {},
         );
 
         final outcome = await flow.handleTap(
@@ -113,7 +112,6 @@ void main() {
       final flow = MedicationQuickEntryFlow(
         markDose: _unexpectedMark,
         emitDataChange: (_) {},
-        registerUndo: (_) {},
       );
 
       final outcome = await flow.handleTap(
@@ -142,7 +140,6 @@ void main() {
         final flow = MedicationQuickEntryFlow(
           markDose: _unexpectedMark,
           emitDataChange: (_) {},
-          registerUndo: (_) {},
         );
 
         final outcome = await flow.handleTap(
@@ -178,7 +175,6 @@ void main() {
       () async {
         final marked = <MedicationQuickMarkInput>[];
         final emitted = <String>[];
-        final undoActions = <QuickEntryUndoAction>[];
         final flow = MedicationQuickEntryFlow(
           markDose: (input) async {
             marked.add(input);
@@ -188,7 +184,6 @@ void main() {
             );
           },
           emitDataChange: emitted.add,
-          registerUndo: undoActions.add,
         );
 
         final result = await flow.recordConfirmedSelection(
@@ -215,7 +210,6 @@ void main() {
           'med-2',
         ]);
         expect(emitted, [DataChangeTopic.doseLogs]);
-        expect(undoActions, isEmpty);
         expect(result.succeeded, hasLength(2));
         expect(result.failed, isEmpty);
       },
@@ -235,7 +229,6 @@ void main() {
             );
           },
           emitDataChange: (_) {},
-          registerUndo: (_) {},
         );
 
         final result = await flow.recordConfirmedSelection(
@@ -273,7 +266,6 @@ void main() {
             currentMedicineId: input.currentMedicineId,
           ),
           emitDataChange: (_) {},
-          registerUndo: (_) {},
         );
 
         final result = await flow.recordConfirmedSelection(

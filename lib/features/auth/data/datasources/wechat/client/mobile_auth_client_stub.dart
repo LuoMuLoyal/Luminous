@@ -1,7 +1,7 @@
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client_base.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client_base.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client_base.dart';
 
 class DefaultWechatMobileAuthClient extends WechatMobileAuthClient {
   const DefaultWechatMobileAuthClient();

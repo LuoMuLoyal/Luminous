@@ -8,10 +8,14 @@ import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_meal.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:luminous/features/record/domain/services/meal_quick_entry.dart';
+import 'package:luminous/features/record/domain/services/quick_entry.dart';
+import 'package:luminous/features/record/presentation/quick_entry/meal.dart';
 import 'package:luminous/features/record/presentation/quick_entry/meal_flow.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -79,8 +83,8 @@ void main() {
                           ref,
                           source: source,
                           now: DateTime(2026, 9, 15, 12, 30),
-                          occurredAt: '2026-09-15',
-                          occurredTime: '12:30',
+                          occurredAt: DateTime(2026, 9, 15),
+                          occurredTime: DateTime(2026, 9, 15, 12, 30),
                           canAccessProtectedData: true,
                           isAuthLoading: false,
                         ),

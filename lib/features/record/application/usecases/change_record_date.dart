@@ -5,35 +5,58 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/record/domain/services/hour_minute.dart';
+import 'package:luminous/features/record/domain/services/quick_entry.dart';
+import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Changes a record's date: updates the repository, emits a data change
-/// notification, navigates to the new date, and shows a toast.
-Future<void> changeRecordDate({
-  required WidgetRef ref,
-  required BuildContext context,
-  required String recordId,
-  required DateTime newDate,
-}) async {
-  final l10n = AppLocalizations.of(context)!;
-  final dateStr = formatRecordDate(newDate);
+/// Outcome of [ChangeRecordDateUseCase.call].
+sealed class ChangeRecordDateOutcome {
+  const ChangeRecordDateOutcome();
+}
 
-  try {
-    final result = await ref
-        .read(dailyRecordRepositoryProvider)
-        .update(recordId, DailyRecordUpdateInput(occurredAt: dateStr))
-        .run();
-    result.fold((failure) => throw failure, (_) {});
+/// The record was moved to the new day.
+final class ChangeRecordDateSucceeded extends ChangeRecordDateOutcome {
+  const ChangeRecordDateSucceeded(this.newDate);
 
-    ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.dailyRecords);
+  final DateTime newDate;
+}
 
-    ref.read(selectedRecordDateProvider.notifier).setDate(newDate);
+/// The update failed; the caller surfaces a "date change failed" toast.
+final class ChangeRecordDateFailed extends ChangeRecordDateOutcome {
+  const ChangeRecordDateFailed(this.error);
 
-    if (!context.mounted) return;
-    await Toast.show(context, l10n.recordDragDateChanged);
-  } catch (e) {
-    if (!context.mounted) return;
-    await Toast.show(context, l10n.recordDragDateError);
+  final Object error;
+}
+
+/// Moves a record to another day and broadcasts the change.
+///
+/// Pure: the `occurredAt` wire value is derived here, the repository write is a
+/// plain argument, and the caller (presentation) decides how to toast and
+/// whether to update the selected date.
+class ChangeRecordDateUseCase {
+  const ChangeRecordDateUseCase({
+    required this.repository,
+    required this.emitDataChange,
+  });
+
+  final DailyRecordWriter repository;
+  final EmitDataChangeTopic emitDataChange;
+
+  Future<ChangeRecordDateOutcome> call({
+    required String recordId,
+    required DateTime newDate,
+  }) async {
+    try {
+      await repository.update(
+        recordId,
+        DailyRecordUpdateInput(occurredAt: formatCalendarDateKey(newDate)),
+      );
+    } catch (error) {
+      return ChangeRecordDateFailed(error);
+    }
+    emitDataChange(QuickEntryDataChange.dailyRecords);
+    return ChangeRecordDateSucceeded(newDate);
   }
 }

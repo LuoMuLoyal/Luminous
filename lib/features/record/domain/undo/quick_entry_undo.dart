@@ -1,11 +1,25 @@
 import 'package:collection/collection.dart';
-import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+
+/// Emits a cross-feature invalidation topic (see [QuickEntryDataChange]).
+typedef EmitDataChangeTopic = void Function(String topic);
+
+/// Topics a quick-entry write broadcasts.
+///
+/// Mirrors the wire strings of `core/providers/data_change_bus.dart` so the
+/// application and domain layers name them without importing `core`; the
+/// provider adapters map these back onto the real constants.
+abstract final class QuickEntryDataChange {
+  /// Daily records were created/updated/deleted.
+  static const String dailyRecords = 'dailyRecords';
+
+  /// Medicine dose logs changed.
+  static const String doseLogs = 'doseLogs';
+}
 
 typedef DeleteDailyRecord = Future<void> Function(String recordId);
 typedef DeleteDoseLog = Future<void> Function(String doseLogId);
 typedef UpdateDoseLogStatus =
     Future<void> Function(String doseLogId, String status);
-typedef EmitDataChange = void Function(String topic);
 
 enum QuickEntryUndoActionType {
   deleteDailyRecord,
@@ -81,13 +95,13 @@ class QuickEntryUndoService {
   final DeleteDailyRecord deleteDailyRecord;
   final DeleteDoseLog? deleteDoseLog;
   final UpdateDoseLogStatus? updateDoseLogStatus;
-  final EmitDataChange emitDataChange;
+  final EmitDataChangeTopic emitDataChange;
 
   Future<void> undo(QuickEntryUndoAction action) async {
     switch (action.type) {
       case QuickEntryUndoActionType.deleteDailyRecord:
         await deleteDailyRecord(action.recordId!);
-        emitDataChange(DataChangeTopic.dailyRecords);
+        emitDataChange(QuickEntryDataChange.dailyRecords);
       case QuickEntryUndoActionType.deleteDoseLog:
         final deleteDoseLog = this.deleteDoseLog;
         assert(
@@ -95,7 +109,7 @@ class QuickEntryUndoService {
           'Dose log delete undo is not configured.',
         );
         await deleteDoseLog!(action.doseLogId!);
-        emitDataChange(DataChangeTopic.doseLogs);
+        emitDataChange(QuickEntryDataChange.doseLogs);
       case QuickEntryUndoActionType.restoreDoseLogStatus:
         final updateDoseLogStatus = this.updateDoseLogStatus;
         assert(
@@ -103,7 +117,7 @@ class QuickEntryUndoService {
           'Dose log status restore undo is not configured.',
         );
         await updateDoseLogStatus!(action.doseLogId!, action.previousStatus!);
-        emitDataChange(DataChangeTopic.doseLogs);
+        emitDataChange(QuickEntryDataChange.doseLogs);
       case QuickEntryUndoActionType.batch:
         for (final nestedAction in action.actions.reversed) {
           await undo(nestedAction);

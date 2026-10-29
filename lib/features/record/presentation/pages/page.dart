@@ -18,10 +18,14 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/application/orchestrators/nlp_flow.dart';
 import 'package:luminous/features/record/application/usecases/change_record_date.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry.dart';
+import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/data_access.dart';
+import 'package:luminous/features/record/presentation/quick_entry/dispatcher.dart';
+import 'package:luminous/features/record/presentation/quick_entry/nlp_sheet.dart';
+import 'package:luminous/features/record/presentation/quick_entry/record_date.dart';
 import 'package:luminous/features/record/presentation/ui_defaults.dart';
 import 'package:luminous/features/record/presentation/widgets/header_actions.dart';
 import 'package:luminous/features/record/presentation/widgets/views/dashboard_view.dart';
@@ -105,8 +109,6 @@ class _RecordPageState extends ConsumerState<RecordPage> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(authSessionProvider);
-    final canAccessProtectedData = session.canAccessProtectedData;
-    final isAuthLoading = session.isLoading;
     final dashboardAsync = ref.watch(recordDashboardProvider);
     final selectedDate = ref.watch(selectedRecordDateProvider);
     final l10n = AppLocalizations.of(context)!;
@@ -128,13 +130,8 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       selectedDate: selectedDate,
       onSetDate: _setSelectedDate,
       onPickDate: _pickSelectedDate,
-      onOpenNlpSheet: (ctx) => openNlpSheet(
-        ref: ref,
-        context: ctx,
-        canAccessProtectedData: canAccessProtectedData,
-        isAuthLoading: isAuthLoading,
-        selectedDate: selectedDate,
-      ),
+      onOpenNlpSheet: (ctx) =>
+          openNlpSheet(ref: ref, context: ctx, selectedDate: selectedDate),
     );
 
     final pageStateContent = PageStateSwitch<RecordDashboard>(

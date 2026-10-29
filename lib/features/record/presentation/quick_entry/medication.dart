@@ -15,11 +15,19 @@ import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
-import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
+import 'package:luminous/features/medicine/data/providers/workspace.dart';
+import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/features/record/domain/services/hour_minute.dart';
+import 'package:luminous/features/record/domain/services/medication_quick_entry.dart';
+import 'package:luminous/features/record/domain/services/quick_entry.dart';
+import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 import 'package:luminous/features/record/presentation/quick_entry/medication_flow.dart';
+import 'package:luminous/features/record/presentation/quick_entry/quick_entry_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+/// Runs the "undo" command for a medication quick entry.
 Future<void> undoMedicationQuickAction(
   BuildContext context,
   WidgetRef ref,
@@ -254,11 +262,44 @@ Future<void> showMedicationSelectionDialog(
   );
 }
 
+/// Shows the "recorded" toast, with an undo action when the use case handed one
+/// back ([QuickEntryUndoHint]).
+Future<void> _showRecordedToast(
+  BuildContext context,
+  WidgetRef ref, {
+  required MedicationQuickEntryOutcome outcome,
+  required String date,
+  required String message,
+  required String fallbackMessage,
+}) async {
+  final undoAction = switch (outcome.undoHint) {
+    QuickEntryUndoOffer(:final action) => action,
+    _ => null,
+  };
+  if (undoAction == null) {
+    await Toast.show(context, fallbackMessage);
+    return;
+  }
+  final l10n = AppLocalizations.of(context)!;
+  await Toast.showWithAction(
+    context,
+    message,
+    l10n.recordQuickUndoAction,
+    // The undo action fires on a later user tap; the calling page may have
+    // been popped in between, so guard before using the context (deactivated
+    // context trips the `_dependents.isEmpty` assertion).
+    () {
+      if (!context.mounted) return;
+      unawaited(undoMedicationQuickAction(context, ref, undoAction, date));
+    },
+  );
+}
+
 Future<void> handleMedicationQuickAction(
   BuildContext context,
   WidgetRef ref, {
   required DateTime now,
-  required String occurredAt,
+  required DateTime occurredAt,
   required bool canAccessProtectedData,
   required bool isAuthLoading,
 }) async {
@@ -275,7 +316,7 @@ Future<void> handleMedicationQuickAction(
   final prefs =
       ref.read(quickEntryPreferencesProvider).asData?.value ??
       const QuickEntryPreferences();
-  QuickEntryUndoAction? undoAction;
+  final date = formatCalendarDateKey(occurredAt);
   final flow = MedicationQuickEntryFlow(
     markDose: (input) async {
       final result = await ref
@@ -290,9 +331,7 @@ Future<void> handleMedicationQuickAction(
           .run();
       return result.fold((failure) => throw failure, (item) => item);
     },
-    emitDataChange: (topic) =>
-        ref.read(dataChangeBusProvider.notifier).emit(topic),
-    registerUndo: (action) => undoAction = action,
+    emitDataChange: ref.read(emitQuickEntryDataChangeProvider),
   );
 
   late final MedicationQuickEntryOutcome outcome;
@@ -308,14 +347,14 @@ Future<void> handleMedicationQuickAction(
     );
     final todayLogsResult = await ref
         .read(doseLogRepositoryProvider)
-        .fetchForDate(occurredAt)
+        .fetchForDate(date)
         .run();
     final todayLogs = todayLogsResult.fold(
       (failure) => throw failure,
       (logs) => logs,
     );
     outcome = await flow.handleTap(
-      context: MedicationQuickEntryContext(date: occurredAt, now: now),
+      context: MedicationQuickEntryContext(date: date, now: now),
       currentMedicines: snapshot.currentMedicines,
       reminders: reminders,
       todayLogs: todayLogs,
@@ -342,46 +381,22 @@ Future<void> handleMedicationQuickAction(
         );
       }
     case MedicationQuickEntryOutcomeType.recordedSingle:
-      final action = undoAction;
-      if (action == null) {
-        await Toast.show(context, l10n.recordQuickSavedToast);
-        return;
-      }
-      await Toast.showWithAction(
+      await _showRecordedToast(
         context,
-        l10n.recordQuickSavedToast,
-        l10n.recordQuickUndoAction,
-        // The undo action fires on a later user tap; the calling page
-        // may have been popped in between, so guard before using the
-        // context (deactivated context trips the
-        // `_dependents.isEmpty` assertion).
-        () {
-          if (!context.mounted) return;
-          unawaited(
-            undoMedicationQuickAction(context, ref, action, occurredAt),
-          );
-        },
+        ref,
+        outcome: outcome,
+        date: date,
+        message: l10n.recordQuickSavedToast,
+        fallbackMessage: l10n.recordQuickSavedToast,
       );
     case MedicationQuickEntryOutcomeType.recordedTemporary:
-      final action = undoAction;
-      if (action == null) {
-        await Toast.show(context, l10n.recordQuickMedicationTemporaryToast);
-        return;
-      }
-      await Toast.showWithAction(
+      await _showRecordedToast(
         context,
-        l10n.recordQuickMedicationTemporaryToast,
-        l10n.recordQuickUndoAction,
-        // The undo action fires on a later user tap; the calling page
-        // may have been popped in between, so guard before using the
-        // context (deactivated context trips the
-        // `_dependents.isEmpty` assertion).
-        () {
-          if (!context.mounted) return;
-          unawaited(
-            undoMedicationQuickAction(context, ref, action, occurredAt),
-          );
-        },
+        ref,
+        outcome: outcome,
+        date: date,
+        message: l10n.recordQuickMedicationTemporaryToast,
+        fallbackMessage: l10n.recordQuickMedicationTemporaryToast,
       );
     case MedicationQuickEntryOutcomeType.needsSelection:
       final selection = outcome.selection;
@@ -389,10 +404,10 @@ Future<void> handleMedicationQuickAction(
       await showMedicationSelectionDialog(
         context,
         flow: flow,
-        contextData: MedicationQuickEntryContext(date: occurredAt, now: now),
+        contextData: MedicationQuickEntryContext(date: date, now: now),
         selection: selection,
         onUndo: (action) =>
-            undoMedicationQuickAction(context, ref, action, occurredAt),
+            undoMedicationQuickAction(context, ref, action, date),
       );
   }
 }
