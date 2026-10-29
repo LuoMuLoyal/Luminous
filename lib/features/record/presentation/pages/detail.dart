@@ -7,7 +7,7 @@ import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/record/presentation/providers/record_services.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/body.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/loading.dart';
 import 'package:luminous/l10n/app_localizations.dart';

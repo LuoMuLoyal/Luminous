@@ -6,8 +6,8 @@ import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/presentation/providers/record_services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dashboard.g.dart';
