@@ -25,17 +25,53 @@ $ErrorActionPreference = 'Stop'
 if (-not (Test-Path $Path)) { throw "worktree not found: $Path" }
 Push-Location $Path
 try {
+  Write-Host "==> [$Path] 0/7 离线 sqlite3 钩子（只在本地 worktree 生效，绝不提交）"
+  # `sqlite3` 的 native-asset build hook 默认要从 GitHub 下载预编译 DLL；无网络时
+  # flutter test / flutter analyze / luminous_lints CLI / pre-commit 全部失败。
+  # `source: system` + `name: winsqlite3` 表示直接链接 Windows 自带的
+  # C:\Windows\System32\winsqlite3.dll，不下载任何东西。
+  #
+  # 必须是 pubspec.yaml 的**顶层 key**（缩进 0），绝不能缩进进 dependencies——
+  # 插错位置会吞掉相邻依赖，症状是满屏 uri_does_not_exist（像代码坏了，其实是
+  # pubspec 坏了）。也必须放在文件末尾、flutter: 段之后。
+  #
+  # 风险：`flutter build apk/ios/windows` 的产物会依赖系统 sqlite，不能用于发布，
+  # 所以这段只能在 worktree 里**临时存在**。提交前用 `git checkout pubspec.yaml`
+  # 还原，提交完再跑一次 pub get。下面的 $Verify 分支会自动还原。
+  $pubspec = (Resolve-Path (Join-Path $Path 'pubspec.yaml')).Path
+  $raw = [System.IO.File]::ReadAllText($pubspec)
+  if ($raw -notmatch '(?m)^hooks:') {
+    [System.IO.File]::WriteAllText(
+      $pubspec,
+      $raw.TrimEnd() + "`n`nhooks:`n  user_defines:`n    sqlite3:`n      source: system`n      name: winsqlite3`n"
+    )
+    Write-Host "    appended top-level hooks block"
+  } else {
+    Write-Host "    hooks block already present"
+  }
+
   Write-Host "==> [$Path] 1/7 ARB merge + gen-l10n"
   dart scripts/l10n/arb_tools.dart merge | Out-Null
   flutter gen-l10n | Out-Null
 
   Write-Host "==> [$Path] 2/7 flutter pub get"
+  # 改过 pubspec.yaml 必须重新 pub get，否则 .dart_tool/package_config.json 还是旧的。
   flutter pub get | Select-Object -Last 1
 
   Write-Host "==> [$Path] 3/7 root build_runner (bootstrap --skip-client)"
-  # bootstrap 在 sqlite3 的 native hook 上可能失败，但 build_runner 本身会跑完；
-  # 失败不阻断，后续步骤会以 analyze 为准复验。
-  dart run scripts/contract/bootstrap.dart --skip-client 2>&1 | Select-Object -Last 3
+  # 直接跑 build_runner，不走 bootstrap.dart：后者会在 sqlite3 native hook 上
+  # 偶发失败并中断 build_runner，导致 freezed/drift 产物只生成一半，而 analyze
+  # 照样能启动（报几千个 undefined getter），很难定位。
+  # build 失败时重试一次：AOT 编译缓存首次构建偶发失败，第二次稳定。
+  Write-Host "==> [$Path] 3/7 root build_runner"
+  dart run build_runner build 2>&1 | Select-Object -Last 1
+  if (-not (Test-Path 'lib/features/review/domain/entities/dashboard.freezed.dart')) {
+    Write-Host "    first build incomplete, retrying"
+    dart run build_runner build 2>&1 | Select-Object -Last 1
+  }
+  if (-not (Test-Path 'lib/features/review/domain/entities/dashboard.freezed.dart')) {
+    throw "[$Path] build_runner produced no freezed output"
+  }
 
   Write-Host "==> [$Path] 4/7 generated/lucent_api build_runner"
   Push-Location generated/lucent_api

@@ -121,15 +121,25 @@ String? checkImportPath({required String importer, required String target}) {
       return 'domain_purity';
     }
     if (sameFeature && targetIsDomain) return null;
+    // The shared kernel (`lib/shared/domain/`) holds pure-Dart value objects
+    // and the failure vocabulary shared by every bounded context. It has no
+    // Flutter/Riverpod/IO dependency, so depending on it keeps domain pure.
+    if (target.startsWith('lib/shared/domain/')) return null;
     return 'domain_purity';
   }
 
-  // R3: application may only see its own feature's domain.
+  // R3: application may only see domain/ — its own feature's, or another
+  // feature's published language (AGENTS.md §Cross-Feature Import Rules:
+  // "application -> domain allowed: the application layer may import other
+  // features' domain layer (interfaces + entities) for cross-feature
+  // orchestration").
   if (importingApplication) {
-    if (sameFeature && targetIsDomain) return null;
+    if (targetIsDomain) return null;
+    // The shared kernel (value objects / failure vocabulary) is domain-level
+    // published language too.
+    if (target.startsWith('lib/shared/domain/')) return null;
     if (!target.startsWith('lib/')) {
-      // dart: / third-party — allowed for pure helpers only via the package
-      // allowlist enforced by the package-level check below.
+      // dart: / third-party.
       return null;
     }
     return 'application_layer';
