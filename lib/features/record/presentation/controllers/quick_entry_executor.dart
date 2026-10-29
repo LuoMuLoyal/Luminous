@@ -12,9 +12,9 @@ import 'package:luminous/features/record/domain/constants/fast_entry_choices.dar
 import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
+import 'package:luminous/features/record/presentation/controllers/quick_entry_context.dart';
 import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/quick_entry/symptom_flow.dart';
-import 'package:luminous/features/record/presentation/services/quick_entry_context.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/fast_entry_dialog.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/symptom_quick_entry_sheet.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/water_quick_entry_sheet.dart';

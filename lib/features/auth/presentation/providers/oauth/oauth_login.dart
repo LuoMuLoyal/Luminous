@@ -6,8 +6,8 @@ import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
+import 'package:luminous/features/auth/presentation/controllers/wechat_oauth.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/data_access.dart';
-import 'package:luminous/features/auth/presentation/services/wechat_oauth.dart';
 
 part 'oauth_apple.dart';
 part 'oauth_google.dart';
