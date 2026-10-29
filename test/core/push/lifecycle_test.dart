@@ -3,7 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:luminous/core/push/jpush_gateway.dart';
 import 'package:luminous/core/push/lifecycle.dart';
-import 'package:luminous/features/settings/domain/services/notification_permission.dart';
+import 'package:luminous/features/settings/data/datasources/notification_permission.dart';
+import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
 
 class _FakeJPush extends JPushFlutterInterface {
   final calls = <String>[];

@@ -12,7 +12,6 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
-export 'package:luminous/app/auth_session_adapter.dart';
 export 'package:luminous/core/auth/session_provider.dart';
 
 // The app-side auth API (gateway override, snapshot adapters, and the typed

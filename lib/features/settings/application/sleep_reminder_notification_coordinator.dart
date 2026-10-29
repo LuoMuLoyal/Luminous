@@ -1,5 +1,5 @@
+import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
-import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 
 /// Plays a scheduled local notification. Implements the platform edge
 /// (`core/notifications/local_notification_gateway.dart`); the coordinator only

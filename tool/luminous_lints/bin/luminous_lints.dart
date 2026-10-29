@@ -124,6 +124,44 @@ void main(List<String> args) async {
     );
   }
 
+  // R2 补充：domain_purity 的 AST 谓词只看得到 lib/ 内部路径，看不到第三方包
+  // （resolveImportTarget 对 `package:` 目标返回 null）。这里按源码文本补一刀：
+  // domain 层不得依赖任何 UI/框架/I-O 包。
+  const bannedInDomain = [
+    'package:flutter_riverpod/',
+    'package:flutter_local_notifications/',
+    'package:dio/',
+    'package:drift/',
+    'package:permission_handler/',
+    'package:path_provider/',
+    'package:hive_ce/',
+  ];
+  for (final context in collection.contexts) {
+    for (final path in context.contextRoot.analyzedFiles()) {
+      if (!path.endsWith('.dart')) continue;
+      if (_isGeneratedSource(path)) continue;
+      final normalized = path.replaceAll('\\', '/');
+      if (!normalized.contains('/domain/')) continue;
+      final source = File(path).readAsStringSync();
+      for (final banned in bannedInDomain) {
+        if (!source.contains("'$banned")) continue;
+        final line = source
+                .substring(0, source.indexOf("'$banned"))
+                .split('\n')
+                .length;
+        findings.add(
+          _Finding(
+            rule: 'domain_purity',
+            filePath: path,
+            line: line,
+            column: 1,
+            message: 'domain layer must not import $banned',
+          ),
+        );
+      }
+    }
+  }
+
   findings.sort((a, b) {
     final byPath = a.filePath.compareTo(b.filePath);
     if (byPath != 0) return byPath;

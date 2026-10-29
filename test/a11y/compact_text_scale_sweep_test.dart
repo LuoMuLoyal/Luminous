@@ -75,8 +75,9 @@ import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart'
     as search;
 import 'package:luminous/features/search/presentation/providers/data_access.dart';
+import 'package:luminous/features/settings/data/datasources/notification_permission.dart';
+import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
-import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/settings/presentation/pages/about/about.dart';
 import 'package:luminous/features/settings/presentation/pages/about/help.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/advanced.dart';

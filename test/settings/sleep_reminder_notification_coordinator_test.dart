@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/settings/application/sleep_reminder_notification_coordinator.dart';
+import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
-import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 
 void main() {
   const texts = SleepReminderNotificationTexts(

@@ -63,7 +63,8 @@ import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/search/presentation/providers/data_access.dart'
     show medicineSearchRepositoryProvider;
-import 'package:luminous/features/settings/domain/services/notification_permission.dart';
+import 'package:luminous/features/settings/data/datasources/notification_permission.dart';
+import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
@@ -91,7 +92,7 @@ export 'package:luminous/features/record/domain/entities/inputs.dart'
     show dailyRecordNoChange;
 export 'package:luminous/features/record/domain/entities/record.dart'
     show DailyRecordKind;
-export 'package:luminous/features/settings/domain/services/notification_permission.dart';
+export 'package:luminous/features/settings/data/datasources/notification_permission.dart';
 
 export '../../test/helpers/feature_mocks.dart'
     show MockReviewDashboardRepository;

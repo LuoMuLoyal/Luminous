@@ -1,5 +1,6 @@
 import 'package:integration_test/integration_test.dart';
 import 'package:luminous/core/storage/kv_store.dart';
+import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
 
 import '../support/e2e_test_helpers.dart';
 
