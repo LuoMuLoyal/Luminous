@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/shared/domain/semantic.dart';
 
 part 'workspace.freezed.dart';
 part 'workspace.g.dart';
