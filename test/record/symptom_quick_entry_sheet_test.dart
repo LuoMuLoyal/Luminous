@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
-import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/presentation/utils/fast_entry_choices.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/symptom_quick_entry_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
