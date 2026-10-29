@@ -138,7 +138,7 @@ abstract class NotificationSettingsControllerCore
     final current = state.asData?.value ?? const NotificationSettingsState();
     final next = update(current);
     final auth = ref.read(authSessionProvider);
-    final userId = auth.canAccessProtectedData ? auth.user?.id : null;
+    final userId = auth.canAccessProtectedData ? auth.userId : null;
     if (userId == null) {
       await _save(
         next,
@@ -246,7 +246,7 @@ class NotificationSettingsController extends NotificationSettingsControllerCore
   Future<NotificationSettingsState> build() async {
     final preferences = KvStore.instance;
     final auth = ref.watch(authSessionProvider);
-    final userId = auth.canAccessProtectedData ? auth.user?.id : null;
+    final userId = auth.canAccessProtectedData ? auth.userId : null;
     final scoped = ScopedPreferences(preferences, userId);
     final legacy = ScopedPreferences(preferences, null);
     final legacyOwner = preferences.getOrNull<String>(_legacyMigrationOwnerKey);

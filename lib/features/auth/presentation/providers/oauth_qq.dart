@@ -36,7 +36,9 @@ mixin OAuthQqMixin on OAuthLoginControllerBase {
     this.state = this.state.copyWith(isCompletingQq: true, error: null);
     try {
       final s = await _resolve(_remote.loginWithQq(code: code, state: state));
-      await ref.read(authSessionProvider.notifier).applySession(s);
+      await ref
+          .read(authSessionProvider.notifier)
+          .applySession(s.toSessionSnapshot(), user: s.user);
       this.state = this.state.copyWith(isCompletingQq: false);
       return s;
     } catch (e) {

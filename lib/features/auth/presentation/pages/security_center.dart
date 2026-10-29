@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
@@ -75,7 +75,7 @@ class SecurityCenterPage extends ConsumerWidget {
     final accountState = ref.watch(authAccountProvider);
     final accountNotifier = ref.read(authAccountProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
-    final user = session.user;
+    final user = session.user as AuthUser?;
     final resolvingSession = session.isLoading;
     final signedOut = !session.canAccessProtectedData || user == null;
 

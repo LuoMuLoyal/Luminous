@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/errors/client_error_code.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
@@ -13,6 +13,7 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/data/services/avatar_uploader.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
 import 'package:luminous/features/auth/presentation/services/wechat_oauth.dart';
@@ -104,7 +105,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     required String contentType,
     String? nickname,
   }) async {
-    final user = ref.read(authSessionProvider).user;
+    final user = ref.read(authSessionProvider).user as AuthUser?;
     if (user == null) {
       return _fail(_notSignedInFailure);
     }
@@ -128,7 +129,9 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       ref
           .read(authRepositoryProvider)
           .updateAccountProfile(nickname: nickname, avatar: avatar),
-      (user) => ref.read(authSessionProvider.notifier).applyUser(user),
+      (user) => ref
+          .read(authSessionProvider.notifier)
+          .applyUser(user.toSessionSnapshot(), entity: user),
     );
   }
 
@@ -137,7 +140,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     required String code,
     required String password,
   }) async {
-    final currentUser = ref.read(authSessionProvider).user;
+    final currentUser = ref.read(authSessionProvider).user as AuthUser?;
     if (currentUser == null) {
       state = state.copyWith(
         isSubmitting: false,
@@ -156,7 +159,9 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
             password: password,
             currentUser: currentUser,
           ),
-      (user) => ref.read(authSessionProvider.notifier).applyUser(user),
+      (user) => ref
+          .read(authSessionProvider.notifier)
+          .applyUser(user.toSessionSnapshot(), entity: user),
     );
   }
 
@@ -189,7 +194,9 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       ref
           .read(authRepositoryProvider)
           .unlinkIdentity(identityId: identityId, password: password),
-      (user) => ref.read(authSessionProvider.notifier).applyUser(user),
+      (user) => ref
+          .read(authSessionProvider.notifier)
+          .applyUser(user.toSessionSnapshot(), entity: user),
     );
   }
 
@@ -218,7 +225,9 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
           case Left(:final value):
             throw value;
           case Right(:final value):
-            ref.read(authSessionProvider.notifier).applyUser(value);
+            ref
+                .read(authSessionProvider.notifier)
+                .applyUser(value.toSessionSnapshot(), entity: value);
             state = state.copyWith(isSubmitting: false, successMessage: '');
             return WechatIdentityLinkResult.completed;
         }
@@ -247,7 +256,9 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
             case Left(:final value):
               throw value;
             case Right(:final value):
-              ref.read(authSessionProvider.notifier).applyUser(value);
+              ref
+                  .read(authSessionProvider.notifier)
+                  .applyUser(value.toSessionSnapshot(), entity: value);
               state = state.copyWith(isSubmitting: false, successMessage: '');
               return WechatIdentityLinkResult.completed;
           }
@@ -301,7 +312,9 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
       ref
           .read(authRepositoryProvider)
           .linkWechatWebIdentity(code: code, state: state),
-      (user) => ref.read(authSessionProvider.notifier).applyUser(user),
+      (user) => ref
+          .read(authSessionProvider.notifier)
+          .applyUser(user.toSessionSnapshot(), entity: user),
     );
   }
 

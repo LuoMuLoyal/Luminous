@@ -1,15 +1,28 @@
 import 'dart:async';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/core/auth/session_snapshot.dart';
 import 'package:luminous/core/database/cache_constants.dart';
-import 'package:luminous/features/auth/domain/entities/session.dart';
 
 part 'session_state.freezed.dart';
 
 @freezed
 abstract class AuthSessionState with _$AuthSessionState {
   const factory AuthSessionState({
-    AuthUser? user,
+    /// Feature-owned account entity.
+    ///
+    /// Kept on the state so feature presentations keep reading the rich
+    /// `AuthUser` they have always used; core only *stores* it and never names
+    /// the type, so `core_not_import_features` stays clean. Core logic reads
+    /// [userSnapshot] instead.
+    Object? user,
+
+    /// Feature-free projection of [user] (see [SessionUserSnapshot]).
+    ///
+    /// This is what `lib/core/**` reads: the account id (push alias sync), the
+    /// display name, the avatar and the email-verified flag.
+    SessionUserSnapshot? userSnapshot,
+
     @Default(false) bool isLoading,
     @Default(false) bool isAuthenticated,
     String? errorMessage,
@@ -34,6 +47,15 @@ extension AuthSessionStateStatus on AuthSessionState {
   bool get isConfirmedSignedOut => !isLoading && !isAuthenticated;
 
   bool get canAccessProtectedData => !isLoading && isAuthenticated;
+}
+
+/// The signed-in account id, or `null` when signed out.
+///
+/// Convenience for core callers that only need the identity (push alias sync,
+/// provider invalidation) without touching the heterogeneous
+/// [AuthSessionState.user].
+extension AuthSessionStateIdentity on AuthSessionState {
+  String? get userId => userSnapshot?.id;
 }
 
 /// Timeout duration for session restore. Declared here so that callers

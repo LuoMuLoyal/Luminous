@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_manage_helpers.dart';
 import 'package:luminous/features/auth/presentation/pages/account_manage_sections.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
@@ -27,7 +28,7 @@ class AccountManagePage extends HookConsumerWidget {
     final accountState = ref.watch(authAccountProvider);
     final accountNotifier = ref.read(authAccountProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
-    final user = session.user;
+    final user = session.user as AuthUser?;
     final resolvingSession = session.isLoading;
     final signedOut = !session.canAccessProtectedData || user == null;
 

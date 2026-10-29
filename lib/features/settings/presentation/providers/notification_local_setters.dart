@@ -126,7 +126,7 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
 
   Future<void> reset() async {
     final auth = ref.read(authSessionProvider);
-    if (auth.canAccessProtectedData && auth.user?.id != null) {
+    if (auth.canAccessProtectedData && auth.userId != null) {
       await _saveRemotePreference(
         patch: const NotificationPreferencesPatch(
           healthAlertsEnabled: true,
@@ -163,7 +163,7 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
         for (final key in _resetKeys) {
           await preferences.remove(key);
         }
-        final userId = ref.read(authSessionProvider).user?.id;
+        final userId = ref.read(authSessionProvider).userId;
         if (userId != null) {
           final scoped = ScopedPreferences(preferences, userId);
           for (final key in _legacyRemoteKeys) {

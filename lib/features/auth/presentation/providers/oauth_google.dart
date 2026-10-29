@@ -38,7 +38,9 @@ mixin OAuthGoogleMixin on OAuthLoginControllerBase {
       final s = await _resolve(
         _remote.loginWithGoogle(code: code, state: state),
       );
-      await ref.read(authSessionProvider.notifier).applySession(s);
+      await ref
+          .read(authSessionProvider.notifier)
+          .applySession(s.toSessionSnapshot(), user: s.user);
       this.state = this.state.copyWith(isCompletingGoogle: false);
       return s;
     } catch (e) {

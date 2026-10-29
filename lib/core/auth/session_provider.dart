@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/auth/session_gateway.dart';
+import 'package:luminous/core/auth/session_snapshot.dart';
 import 'package:luminous/core/auth/session_state.dart';
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
-import 'package:luminous/features/auth/domain/entities/session.dart';
 
+export 'package:luminous/core/auth/session_snapshot.dart';
 export 'package:luminous/core/auth/session_state.dart';
 
 class AuthSessionNotifier extends Notifier<AuthSessionState> {
@@ -70,13 +71,13 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
     // with an auth error (expired/invalid access token), fall back to the
     // refresh flow so cold starts don't force the user to log in again.
     final fetchResult = await ref
-        .read(authRepositoryProvider)
+        .read(authSessionGatewayProvider)
         .fetchAccount()
         .run();
     switch (fetchResult) {
       case Right(:final value):
         return AuthSessionState(
-          user: value,
+          userSnapshot: value,
           isLoading: false,
           isAuthenticated: true,
         );
@@ -106,13 +107,13 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
     }
 
     final refreshResult = await ref
-        .read(authRepositoryProvider)
+        .read(authSessionGatewayProvider)
         .refreshSession(refreshToken: refreshToken)
         .run();
     switch (refreshResult) {
       case Right(:final value):
         return AuthSessionState(
-          user: value.user,
+          userSnapshot: value.user,
           isLoading: false,
           isAuthenticated: true,
         );
@@ -133,17 +134,23 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
     }
   }
 
-  Future<void> applySession(AuthSession session) async {
+  /// Applies a session produced by a feature-owned flow (login, OAuth…).
+  ///
+  /// [user] is the feature entity, stored opaquely for feature presentations;
+  /// [snapshot] is its feature-free projection, which is what core reads.
+  Future<void> applySession(SessionSnapshot snapshot, {Object? user}) async {
     state = AuthSessionState(
-      user: session.user,
+      user: user,
+      userSnapshot: snapshot.user,
       isLoading: false,
       isAuthenticated: true,
     );
   }
 
-  void applyUser(AuthUser user) {
+  void applyUser(SessionUserSnapshot user, {Object? entity}) {
     state = state.copyWith(
-      user: user,
+      user: entity,
+      userSnapshot: user,
       isAuthenticated: true,
       isLoading: false,
       errorMessage: null,
@@ -156,10 +163,10 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
 
   Future<void> logout() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final result = await ref.read(authRepositoryProvider).logout().run();
+    final result = await ref.read(authSessionGatewayProvider).logout().run();
     switch (result) {
       case Right():
-        // 远程注销成功才把 UI 置为登出；本地 session 由 repository 在
+        // 远程注销成功才把 UI 置为登出；本地 session 由 adapter 在
         // Right 路径清空。
         state = const AuthSessionState();
       case Left(:final value):
