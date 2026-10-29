@@ -7,11 +7,11 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/review/presentation/providers/review.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/event/what_happened.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/completed_actions.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/event_header.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/key_changes.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/next_step.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/overview/what_happened.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/event/what_happened.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/history/history.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/completed_actions.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/key_changes.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/next_step.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/overview/what_happened.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../helpers/kv_test_store.dart';
