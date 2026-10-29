@@ -1,17 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/daos/mine_dashboard.dart';
 import 'package:luminous/core/network/app_log.dart';
+import 'package:luminous/core/network/config/routes.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/network/contract/failure.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/mine/domain/entities/account.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 
@@ -20,7 +18,8 @@ import 'package:luminous/features/mine/domain/repositories/profile.dart';
 /// This repository intentionally has no dedicated datasource/mappers. It
 /// composes the Mine dashboard from existing data sources:
 /// - user profile / health archive / current medicines / allergies / conditions
-///   come from [healthContextSnapshotProvider].
+///   come from the injected health-context snapshot reader (provider-backed
+///   implementation supplied by `lib/app/composition/mine.dart`).
 ///
 /// Mine is therefore a presentation-facing aggregation layer rather than a
 /// standalone data owner.
@@ -30,10 +29,21 @@ import 'package:luminous/features/mine/domain/repositories/profile.dart';
 /// `LucentErrorMapper.fromObject` — the dashboard is never fabricated from
 /// default values when the snapshot fails.
 class LucentMineRepository implements MineRepository {
-  LucentMineRepository(this._ref, this._dao);
+  LucentMineRepository({
+    required this.healthContextSnapshot,
+    required this.currentUser,
+    required this.dao,
+  });
 
-  final Ref _ref;
-  final MineDashboardDao _dao;
+  /// Lazily reads the health-context snapshot; the composition root supplies
+  /// the provider-backed implementation.
+  final Future<HealthContextSnapshot> Function() healthContextSnapshot;
+
+  /// The signed-in user, resolved by the composition root (the data layer may
+  /// not read the auth session); `null` when signed out.
+  final AccountIdentity? Function() currentUser;
+
+  final MineDashboardDao dao;
 
   /// Background refresh throttle for the cached dashboard.
   DateTime? _lastRefresh;
@@ -43,7 +53,7 @@ class LucentMineRepository implements MineRepository {
     return TaskEither.tryCatch(() async {
       // Cache-first: the tab renders the previous dashboard immediately instead
       // of holding a skeleton while the snapshot round trip completes.
-      final cached = await _dao.fetch();
+      final cached = await dao.fetch();
       if (cached != null) {
         _refreshInBackground();
         return MineDashboard.fromJson(
@@ -52,13 +62,13 @@ class LucentMineRepository implements MineRepository {
       }
 
       final dashboard = await _assemble();
-      await _dao.replace(jsonEncode(dashboard.toJson()));
+      await dao.replace(jsonEncode(dashboard.toJson()));
       return dashboard;
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
   Future<MineDashboard> _assemble() async {
-    final snapshot = await _ref.watch(healthContextSnapshotProvider.future);
+    final snapshot = await healthContextSnapshot();
     return buildDashboard(
       account: _buildAccount(),
       profile: _buildProfile(snapshot),
@@ -81,7 +91,7 @@ class LucentMineRepository implements MineRepository {
       Future(() async {
         try {
           final dashboard = await _assemble();
-          await _dao.replace(jsonEncode(dashboard.toJson()));
+          await dao.replace(jsonEncode(dashboard.toJson()));
         } catch (e) {
           appLog.warning('Mine dashboard background refresh failed: $e');
         }
@@ -90,24 +100,24 @@ class LucentMineRepository implements MineRepository {
   }
 
   MineAccount _buildAccount() {
-    final currentUser = _ref.read(authSessionProvider).user;
-    final nick = currentUser?.nickname?.trim();
+    final account = currentUser();
+    final nick = account?.nickname?.trim();
     final displayName = nick != null && nick.isNotEmpty
         ? nick
-        : currentUser?.email ?? currentUser?.id ?? '';
+        : account?.email ?? account?.id ?? '';
 
     return MineAccount(
       isAuthenticated: true,
       displayNameKey: MineCopyKey.accountDisplayName,
       displayName: displayName,
-      avatar: currentUser?.avatar,
-      email: currentUser?.email ?? '',
+      avatar: account?.avatar,
+      email: account?.email ?? '',
       statusKey: MineCopyKey.accountSignedIn,
       roleKey: MineCopyKey.accountStudentRole,
-      emailVerified: currentUser?.emailVerified ?? false,
-      hasPassword: currentUser?.hasPassword ?? false,
-      linkedIdentityCount: currentUser?.linkedIdentities.length ?? 0,
-      lastLoginAt: currentUser?.lastLoginAt,
+      emailVerified: account?.emailVerified ?? false,
+      hasPassword: account?.hasPassword ?? false,
+      linkedIdentityCount: account?.linkedIdentityCount ?? 0,
+      lastLoginAt: account?.lastLoginAt,
     );
   }
 
