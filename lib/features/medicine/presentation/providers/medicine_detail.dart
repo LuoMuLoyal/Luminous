@@ -1,6 +1,6 @@
 import 'package:luminous/core/providers/network_client.dart';
-import 'package:luminous/features/medicine/data/datasources/medicine_detail_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
+import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'medicine_detail.g.dart';
