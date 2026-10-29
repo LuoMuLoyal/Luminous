@@ -7,9 +7,8 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/providers/session_snapshot.dart';
-import 'package:luminous/features/today/data/providers/suggestion.dart';
-import 'package:luminous/features/today/data/utils/suggestion_json_codec.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/data_access.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion_cache.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
