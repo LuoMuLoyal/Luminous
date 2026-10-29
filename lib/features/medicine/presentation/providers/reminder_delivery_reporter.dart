@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_payload.dart';
+import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'reminder_delivery_reporter.g.dart';

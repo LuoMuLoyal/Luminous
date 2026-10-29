@@ -4,8 +4,8 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
+import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 // ---------------------------------------------------------------------------
