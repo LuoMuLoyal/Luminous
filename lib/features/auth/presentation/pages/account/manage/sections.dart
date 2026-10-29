@@ -8,7 +8,7 @@ import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/providers/sensitive_action_password.dart';
+import 'package:luminous/core/providers/session/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/control/desktop/tile_value.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';

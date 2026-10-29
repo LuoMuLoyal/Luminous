@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/providers/today_suggestion_store.dart';
+import 'package:luminous/core/providers/storage/today_suggestion_store.dart';
 
 /// Today suggestion 缓存的展示层接缝。
 ///

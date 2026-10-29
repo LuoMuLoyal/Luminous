@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart'
     show doseLogRepositoryProvider;
 import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';

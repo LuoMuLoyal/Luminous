@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/providers/session_snapshot.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation_capabilities.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation_management.dart';

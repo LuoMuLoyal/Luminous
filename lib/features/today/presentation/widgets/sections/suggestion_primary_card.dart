@@ -7,7 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/providers/instrumentation.dart';
+import 'package:luminous/core/providers/instrumentation/instrumentation.dart';
 import 'package:luminous/features/today/application/usecases/skip_dose.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';

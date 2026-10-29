@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/core/providers/session_snapshot.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+import 'package:luminous/core/providers/session/auth_guarded.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/data_access.dart';
 

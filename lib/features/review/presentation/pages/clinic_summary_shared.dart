@@ -4,7 +4,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/network/contract/api_paths.dart';
-import 'package:luminous/core/providers/network_client.dart';
+import 'package:luminous/core/providers/network/network_client.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/review/presentation/providers/clinic_summary.dart';

@@ -11,7 +11,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/providers/session_snapshot.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';

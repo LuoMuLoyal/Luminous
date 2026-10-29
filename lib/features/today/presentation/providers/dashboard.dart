@@ -1,5 +1,5 @@
-import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/data_access.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

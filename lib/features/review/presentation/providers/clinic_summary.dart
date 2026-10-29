@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/core/providers/network_client.dart';
-import 'package:luminous/core/providers/session_snapshot.dart';
+import 'package:luminous/core/providers/network/network_client.dart';
+import 'package:luminous/core/providers/session/auth_guarded.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 
 /// All six selectable clinic summary fields, in display order.
 const kClinicSummaryAllFields = <PreviewClinicSummaryRequestSelectedFieldsEnum>[

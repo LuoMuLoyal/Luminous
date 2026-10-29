@@ -3,8 +3,8 @@ import 'dart:ui' as ui;
 
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/providers/instrumentation.dart';
-import 'package:luminous/core/providers/session_snapshot.dart';
+import 'package:luminous/core/providers/instrumentation/instrumentation.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
 import 'package:luminous/features/medicine/presentation/providers/data_access.dart';

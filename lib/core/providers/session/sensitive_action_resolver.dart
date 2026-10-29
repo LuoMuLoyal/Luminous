@@ -5,7 +5,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/providers/sensitive_action_password.dart';
+import 'package:luminous/core/providers/session/sensitive_action_password.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

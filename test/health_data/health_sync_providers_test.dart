@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/config/pref_keys.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/health_data/data/providers/health_sync.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';

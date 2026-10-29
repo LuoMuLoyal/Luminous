@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/providers/pending_sync_access.dart';
+import 'package:luminous/core/providers/network/pending_sync_access.dart';
 
 /// 结转的类型别名：展示层经由这里引用队列项与其结构化错误详情，
 /// 而不是直接 import `core/database`。

@@ -8,7 +8,7 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/review/today_suggestion.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/data/providers/suggestion.dart';
 import 'package:luminous/features/today/data/utils/suggestion_json_codec.dart';

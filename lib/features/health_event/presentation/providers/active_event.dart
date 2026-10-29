@@ -1,6 +1,6 @@
-import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/core/providers/session_snapshot.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+import 'package:luminous/core/providers/session/auth_guarded.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/data_access.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

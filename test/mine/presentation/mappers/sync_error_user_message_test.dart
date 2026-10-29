@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/errors/network_error_l10n.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/core/providers/pending_sync_access.dart';
+import 'package:luminous/core/providers/network/pending_sync_access.dart';
 import 'package:luminous/features/mine/presentation/mappers/sync_error_user_message.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
