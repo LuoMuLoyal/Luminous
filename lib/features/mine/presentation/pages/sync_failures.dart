@@ -10,7 +10,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/sync_failed_entry.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/sync/sync_failed_entry.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Full-page view of permanently failed local sync items.

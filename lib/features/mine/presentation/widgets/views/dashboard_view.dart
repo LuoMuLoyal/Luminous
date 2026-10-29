@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/account_hero.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/account_security.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/ai_privacy.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/archive.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/notifications_reminders.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/status_alerts.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/sync_failed_banner.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/account/account_hero.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/account/account_security.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/account/ai_privacy.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/account/notifications_reminders.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/archive/archive.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/sync/status_alerts.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/sync/sync_failed_banner.dart';
 
 class MineDashboardView extends StatelessWidget {
   const MineDashboardView({

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/archive_row.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/archive_sections.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/archive/archive_row.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/archive/archive_sections.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
