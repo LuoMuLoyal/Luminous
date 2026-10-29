@@ -16,7 +16,7 @@ import 'package:luminous/core/widgets/common/avatar/avatar_action_view.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_actions.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_draft.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_viewer.dart';
-import 'package:luminous/core/widgets/common/control/tile_value.dart';
+import 'package:luminous/core/widgets/common/control/desktop/tile_value.dart';
 import 'package:luminous/core/widgets/common/dialog/edit_sheet.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';

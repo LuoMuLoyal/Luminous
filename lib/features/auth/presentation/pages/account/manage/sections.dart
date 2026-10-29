@@ -10,7 +10,7 @@ import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
-import 'package:luminous/core/widgets/common/control/tile_value.dart';
+import 'package:luminous/core/widgets/common/control/desktop/tile_value.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
