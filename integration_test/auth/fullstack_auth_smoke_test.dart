@@ -17,6 +17,6 @@ void main() {
 
     final state = container.read(authSessionProvider);
     expect(state.isAuthenticated, isTrue);
-    expect(state.user?.email, config.email);
+    expect(state.userSnapshot?.email, config.email);
   });
 }

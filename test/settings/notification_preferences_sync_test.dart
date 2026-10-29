@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/user_settings_cache.dart';
@@ -118,7 +118,9 @@ void main() {
       expect(userA.weeklySummary, isTrue);
 
       currentUserId = 'user-b';
-      container.read(authSessionProvider.notifier).applyUser(_user('user-b'));
+      container
+          .read(authSessionProvider.notifier)
+          .applyUser(_user('user-b').toSessionSnapshot());
       final userB = await container.read(
         notificationSettingsControllerProvider.future,
       );
@@ -126,7 +128,9 @@ void main() {
       expect(userB.weeklySummary, isFalse);
 
       currentUserId = 'user-a';
-      container.read(authSessionProvider.notifier).applyUser(_user('user-a'));
+      container
+          .read(authSessionProvider.notifier)
+          .applyUser(_user('user-a').toSessionSnapshot());
       final userAAgain = await container.read(
         notificationSettingsControllerProvider.future,
       );

@@ -111,10 +111,10 @@ class _FixedAuthSessionNotifier extends AuthSessionNotifier {
   Future<void> restore() async {}
 
   @override
-  Future<void> applySession(AuthSession session) async {}
+  Future<void> applySession(SessionSnapshot session, {Object? user}) async {}
 
   @override
-  void applyUser(AuthUser user) {}
+  void applyUser(SessionUserSnapshot user, {Object? entity}) {}
 
   @override
   void clearLocalSession() {}

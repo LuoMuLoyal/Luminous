@@ -96,7 +96,10 @@ void main() {
     expect(remote.changeEmailNewEmail, 'next@example.com');
     expect(remote.changeEmailCode, '123456');
     expect(remote.changeEmailPassword, 'current-password');
-    expect(container.read(authSessionProvider).user?.email, 'next@example.com');
+    expect(
+      container.read(authSessionProvider).userSnapshot?.email,
+      'next@example.com',
+    );
     await tester.pump(const Duration(seconds: 2));
   });
 }

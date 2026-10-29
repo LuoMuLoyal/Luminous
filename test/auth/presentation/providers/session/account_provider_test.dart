@@ -315,7 +315,7 @@ void main() {
       expect(result, isTrue);
       expect(remote.updateProfileNickname, 'NewName');
       final session = container.read(authSessionProvider);
-      expect(session.user?.nickname, 'NewName');
+      expect(session.userSnapshot?.nickname, 'NewName');
     });
 
     test('returns false on failure', () async {
@@ -386,7 +386,7 @@ void main() {
       expect(remote.changeEmailNewEmail, 'new@example.com');
       expect(remote.changeEmailCode, '123456');
       final session = container.read(authSessionProvider);
-      expect(session.user?.email, 'new@example.com');
+      expect(session.userSnapshot?.email, 'new@example.com');
     });
 
     test('returns false when not signed in', () async {

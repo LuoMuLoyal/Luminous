@@ -317,7 +317,10 @@ void main() {
     // 不需要手动输入密码对话框。pumpAndSettle 确保 unlink 异步流程完成。
 
     expect(remote.unlinkIdentityId, 'identity-1');
-    expect(container.read(authSessionProvider).user?.linkedIdentities, isEmpty);
+    expect(
+      container.read(authSessionProvider).userSnapshot?.linkedIdentities,
+      isEmpty,
+    );
     await tester.pump(const Duration(seconds: 2));
   });
 
