@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
+import 'package:luminous/features/auth/presentation/providers/data_access.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'wechat_oauth.g.dart';

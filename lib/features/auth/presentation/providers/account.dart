@@ -10,10 +10,9 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/providers/session_snapshot.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
-import 'package:luminous/features/auth/data/services/avatar_uploader.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
+import 'package:luminous/features/auth/presentation/providers/data_access.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
 import 'package:luminous/features/auth/presentation/services/wechat_oauth.dart';
 
