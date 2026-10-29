@@ -34,6 +34,8 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+export 'package:luminous/core/network/config/routes.dart' show Routes;
+
 part 'router.g.dart';
 
 /// Named route constants used throughout the codebase.
