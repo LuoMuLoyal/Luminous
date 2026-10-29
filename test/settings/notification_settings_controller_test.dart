@@ -7,7 +7,7 @@ import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
-import 'package:luminous/features/settings/presentation/providers/notification.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 
 import '../helpers/kv_test_store.dart';
 

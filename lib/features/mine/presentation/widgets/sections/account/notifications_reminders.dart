@@ -9,7 +9,7 @@ import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
-import 'package:luminous/features/settings/presentation/providers/notification.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MineNotificationsReminderSection extends ConsumerWidget {

@@ -10,7 +10,7 @@ import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
-import 'package:luminous/features/settings/presentation/providers/notification.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';

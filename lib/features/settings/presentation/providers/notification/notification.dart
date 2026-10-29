@@ -9,8 +9,8 @@ import 'package:luminous/features/settings/data/providers/notification_permissio
 import 'package:luminous/features/settings/data/providers/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
-import 'package:luminous/features/settings/presentation/providers/notification_preferences.dart';
-import 'package:luminous/features/settings/presentation/providers/notification_utils.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification_preferences.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification_utils.dart';
 
 import 'notification_mapping.dart';
 

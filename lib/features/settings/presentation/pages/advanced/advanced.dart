@@ -19,7 +19,7 @@ import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/data/providers/data_storage.dart';
-import 'package:luminous/features/settings/presentation/providers/notification.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 import 'package:luminous/features/settings/presentation/providers/profile_sync.dart';
 import 'package:luminous/features/settings/presentation/routes.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
-import 'package:luminous/features/settings/presentation/providers/notification_utils.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification_utils.dart';
 
 /// Pure mapping between notification setting fields and remote
 /// [NotificationPreferencesPatch].
