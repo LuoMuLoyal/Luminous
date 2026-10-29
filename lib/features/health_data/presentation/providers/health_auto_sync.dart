@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:luminous/core/config/pref_keys.dart';
-import 'package:luminous/core/storage/kv_store.dart';
+import 'package:luminous/core/providers/preferences_store.dart';
 import 'package:luminous/features/health_data/data/providers/health_sync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

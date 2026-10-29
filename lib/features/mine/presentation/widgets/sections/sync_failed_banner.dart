@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
 import 'package:luminous/features/mine/presentation/routes.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -18,7 +18,7 @@ class MineSyncFailedBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final failedCountAsync = ref.watch(syncFailedCountProvider);
+    final failedCountAsync = ref.watch(mineSyncFailedCountProvider);
 
     return failedCountAsync.maybeWhen(
       data: (count) {
