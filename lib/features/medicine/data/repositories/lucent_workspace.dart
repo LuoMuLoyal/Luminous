@@ -7,11 +7,10 @@ import 'package:flutter/foundation.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/daos/medicine/medicine_workspace.dart';
-import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/network/contract/failure.dart';
-import 'package:luminous/core/utils/reminder_format.dart';
+import 'package:luminous/core/utils/reminder_schedule.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart'
     show DoseLogItem, DoseLogRemoteDataSource, DoseLogStatus;
@@ -20,6 +19,7 @@ import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
+import 'package:luminous/features/medicine/domain/repositories/workspace_style.dart';
 
 /// Lucent-backed [MedicineWorkspaceRepository] that derives the medicine
 /// workspace from the current user's real health-context data.
@@ -36,6 +36,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     required this.reminderDs,
     required this.riskCheckRepository,
     required this.workspaceDao,
+    required this.style,
   });
 
   final HealthContextRepository healthRepo;
@@ -46,6 +47,10 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   final DoseLogRemoteDataSource doseLogDs;
   final MedicineReminderRemoteDataSource reminderDs;
   final MedicineRiskCheckRepository riskCheckRepository;
+
+  /// Design tokens for the workspace view models; supplied by the composition
+  /// root so this layer never imports `application/` or `core/design`.
+  final MedicineWorkspaceTokens style;
 
   @override
   TaskEither<LucentFailure, MedicineWorkspace> fetchWorkspace() {
@@ -176,9 +181,9 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
           ? _medicineStatusFromDoseLog(fallbackStatus)
           : _aggregateSlotStatuses(slots);
       final stateKey = _slotStateKey(todayStatus);
-      final stateColor = _stateColor(todayStatus);
+      final stateColor = style.stateColor(todayStatus);
       return MedicinePlanItem(
-        color: SemanticColor.primary,
+        color: style.planAccent,
         nameKey: MedicineCopyKey.genericName,
         dosageKey: MedicineCopyKey.genericDosage,
         scheduleKey: MedicineCopyKey.genericSchedule,
@@ -340,14 +345,6 @@ MedicineCopyKey _slotStateKey(MedicineDoseStatus status) {
     MedicineDoseStatus.taken => MedicineCopyKey.doseStatusTaken,
     MedicineDoseStatus.skipped => MedicineCopyKey.doseStatusSkipped,
     MedicineDoseStatus.pending => MedicineCopyKey.doseStatusPending,
-  };
-}
-
-SemanticColor _stateColor(MedicineDoseStatus status) {
-  return switch (status) {
-    MedicineDoseStatus.taken => SemanticColor.success,
-    MedicineDoseStatus.skipped => SemanticColor.neutral,
-    MedicineDoseStatus.pending => SemanticColor.warning,
   };
 }
 

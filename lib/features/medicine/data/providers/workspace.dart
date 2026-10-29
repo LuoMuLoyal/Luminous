@@ -1,6 +1,7 @@
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/features/medicine/application/mappers/workspace_style.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/data/repositories/lucent_workspace.dart';
@@ -38,5 +39,6 @@ MedicineWorkspaceRepository medicineWorkspaceRepository(Ref ref) {
     reminderDs: reminderDs,
     riskCheckRepository: riskCheckRepository,
     workspaceDao: workspaceDao,
+    style: const MedicineWorkspaceStyle(),
   );
 }

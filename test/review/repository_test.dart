@@ -4,6 +4,7 @@ import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/database/daos/review/review_dashboard.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/features/review/application/mappers/dashboard_style.dart';
 import 'package:luminous/features/review/data/datasources/dashboard_remote.dart';
 import 'package:luminous/features/review/data/repositories/lucent_dashboard.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
@@ -15,6 +16,7 @@ void main() {
     'Lucent report repository maps insufficient sleep data into domain state',
     () async {
       final repository = LucentReviewDashboardRepository(
+        style: const ReviewDashboardStyle(),
         dao: _FakeReviewDashboardDao(),
         dataSource: _FakeReviewDashboardRemoteDataSource(
           _dashboardDto(
@@ -84,6 +86,7 @@ void main() {
     'Lucent report repository uses ai summary mode and truncates summary findings',
     () async {
       final repository = LucentReviewDashboardRepository(
+        style: const ReviewDashboardStyle(),
         dao: _FakeReviewDashboardDao(),
         dataSource: _FakeReviewDashboardRemoteDataSource(
           _dashboardDto(
@@ -154,6 +157,7 @@ void main() {
 
   test('Lucent report repository prefers generated observed metric', () async {
     final repository = LucentReviewDashboardRepository(
+      style: const ReviewDashboardStyle(),
       dao: _FakeReviewDashboardDao(),
       dataSource: _FakeReviewDashboardRemoteDataSource(
         _dashboardDto(
@@ -213,6 +217,7 @@ void main() {
     'Lucent report repository keeps scalar fallback when observed metric is absent',
     () async {
       final repository = LucentReviewDashboardRepository(
+        style: const ReviewDashboardStyle(),
         dao: _FakeReviewDashboardDao(),
         dataSource: _FakeReviewDashboardRemoteDataSource(
           _dashboardDto(
@@ -252,6 +257,7 @@ void main() {
 
     test('network failure maps to Left(network)', () async {
       final repository = LucentReviewDashboardRepository(
+        style: const ReviewDashboardStyle(),
         dao: _FakeReviewDashboardDao(),
         dataSource: _FakeReviewDashboardRemoteDataSource(
           _dashboardDto(
@@ -279,6 +285,7 @@ void main() {
       'server business failure keeps Problem Details code and status',
       () async {
         final repository = LucentReviewDashboardRepository(
+          style: const ReviewDashboardStyle(),
           dao: _FakeReviewDashboardDao(),
           dataSource: _FakeReviewDashboardRemoteDataSource(
             _dashboardDto(
@@ -324,6 +331,7 @@ void main() {
       'empty success response body maps to Left(network/emptyResponse)',
       () async {
         final repository = LucentReviewDashboardRepository(
+          style: const ReviewDashboardStyle(),
           dao: _FakeReviewDashboardDao(),
           dataSource: _FakeReviewDashboardRemoteDataSource(
             _dashboardDto(
@@ -350,6 +358,7 @@ void main() {
       'non problem+json error body keeps FormatException from .run()',
       () async {
         final repository = LucentReviewDashboardRepository(
+          style: const ReviewDashboardStyle(),
           dao: _FakeReviewDashboardDao(),
           dataSource: _FakeReviewDashboardRemoteDataSource(
             _dashboardDto(
@@ -389,6 +398,7 @@ void main() {
       'unexpected exception maps to Left(unknown) with cause preserved',
       () async {
         final repository = LucentReviewDashboardRepository(
+          style: const ReviewDashboardStyle(),
           dao: _FakeReviewDashboardDao(),
           dataSource: _FakeReviewDashboardRemoteDataSource(
             _dashboardDto(

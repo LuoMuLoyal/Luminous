@@ -1,10 +1,9 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:intl/intl.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/network/contract/failure.dart';
-import 'package:luminous/core/utils/date_format.dart';
+import 'package:luminous/core/network/wire_time.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/repositories/ai.dart';
@@ -29,7 +28,6 @@ class LucentTodayAiRepository implements TodayAiRepository {
   LucentTodayAiRepository({required this.dataSource});
 
   final TodayAiRemoteDataSource dataSource;
-  static final _dateFormat = DateFormat('yyyy-MM-dd');
 
   @override
   TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) {
@@ -161,5 +159,6 @@ class LucentTodayAiRepository implements TodayAiRepository {
     };
   }
 
-  String _formatDate(DateTime date) => _dateFormat.format(date.toLocal());
+  /// The AI-analysis endpoints key on a local `yyyy-MM-dd` day.
+  String _formatDate(DateTime date) => formatWireDateKey(date);
 }

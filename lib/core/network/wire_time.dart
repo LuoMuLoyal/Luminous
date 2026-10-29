@@ -27,3 +27,15 @@ DateTime parseDateTimeOrEpoch(Object? value, {DateTime? fallback}) {
       fallback ??
       DateTime.fromMillisecondsSinceEpoch(0);
 }
+
+/// Formats [value] as the `yyyy-MM-dd` day key day-scoped endpoints expect.
+///
+/// Uses the device-local date (`toLocal`) because those endpoints mean "the
+/// user's day", not a UTC day.
+String formatWireDateKey(DateTime date) {
+  final local = date.toLocal();
+  final year = local.year.toString().padLeft(4, '0');
+  final month = local.month.toString().padLeft(2, '0');
+  final day = local.day.toString().padLeft(2, '0');
+  return '$year-$month-$day';
+}

@@ -14,16 +14,19 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 export 'package:luminous/app/composition/health_context.dart'
     show healthContextSnapshotProvider;
 part 'health_context.g.dart';
+
 @riverpod
 HealthContextMapper healthContextMapper(Ref ref) {
   return HealthContextMapper();
 }
+
 @riverpod
 HealthContextRemoteDataSource healthContextRemoteDataSource(Ref ref) {
   final api = ref.watch(lucentClientProvider).userHealthContext;
   final dio = ref.watch(lucentDioClientProvider).dio;
   return HealthContextRemoteDataSource(api: api, dio: dio);
 }
+
 @riverpod
 HealthContextRepository healthContextRepository(Ref ref) {
   final dataSource = ref.watch(healthContextRemoteDataSourceProvider);

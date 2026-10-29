@@ -3,36 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format.dart';
+import 'package:luminous/core/utils/reminder_schedule.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-// ---------------------------------------------------------------------------
-// Enum
-// ---------------------------------------------------------------------------
-
-enum ReminderFrequency { daily, weekly, custom }
-
-// ---------------------------------------------------------------------------
-// Reminder helpers
-// ---------------------------------------------------------------------------
-
-List<MedicineReminderItem> remindersFor(
-  List<MedicineReminderItem> reminders,
-  String currentMedicineId,
-) {
-  return reminders
-      .where((item) => item.currentMedicineId == currentMedicineId)
-      .toList(growable: false)
-    ..sort(compareReminderTime);
-}
-
-int compareReminderTime(MedicineReminderItem left, MedicineReminderItem right) {
-  final hour = left.scheduledHour.compareTo(right.scheduledHour);
-  if (hour != 0) return hour;
-  return left.scheduledMinute.compareTo(right.scheduledMinute);
-}
+export 'package:luminous/core/utils/reminder_schedule.dart';
 
 // ---------------------------------------------------------------------------
 // Display helpers
@@ -141,36 +118,4 @@ String dateTimeShortLabel(AppLocalizations l10n, String value, Locale locale) {
 
 String dateTimeTimeLabel(String value, Locale locale) {
   return formatTimeOfDayLabel(value, locale);
-}
-
-// ---------------------------------------------------------------------------
-// Date helpers
-// ---------------------------------------------------------------------------
-
-DateTime dateOnly(DateTime value) {
-  return DateTime(value.year, value.month, value.day);
-}
-
-DateTime? parseDateOnly(String? value) {
-  if (value == null || value.isEmpty) return null;
-  final parsed = DateTime.tryParse(value);
-  if (parsed == null) return null;
-  return dateOnly(parsed);
-}
-
-String formatDateInput(DateTime? value) {
-  if (value == null) return '';
-  final year = value.year.toString().padLeft(4, '0');
-  final month = value.month.toString().padLeft(2, '0');
-  final day = value.day.toString().padLeft(2, '0');
-  return '$year-$month-$day';
-}
-
-// ---------------------------------------------------------------------------
-// String helpers
-// ---------------------------------------------------------------------------
-
-String? trimmedOrNull(String value) {
-  final trimmed = value.trim();
-  return trimmed.isEmpty ? null : trimmed;
 }
