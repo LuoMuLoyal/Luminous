@@ -221,7 +221,7 @@ provider to call `ref.invalidate()` on it after a data mutation. That creates pr
 coupling and circular dependency risks.
 
 Instead, cross-feature refresh is mediated by a lightweight **invalidation bus** in
-`lib/core/providers/data_change_bus.dart`:
+`lib/core/providers/instrumentation/data_change_bus.dart`:
 
 - `DataChangeBus` — a keepAlive `Notifier` holding a `Map<String, int>` version counter.
 - `DataChangeTopic` — constants for the 7 domain topics: `dailyRecords`, `healthContext`,
@@ -273,7 +273,7 @@ Future<TodayDashboard> todayDashboard(Ref ref) async {
 
 ### Shared Read-Only Snapshot Hub
 
-`healthContextSnapshotProvider` (`lib/features/health_context/data/providers/health_context.dart`) is
+`healthContextSnapshotProvider` (`lib/app/composition/health_context/health_context.dart`) is
 the single shared read-only entry point for the user's health context across features. Multiple
 features read from it instead of each independently fetching their own copy:
 

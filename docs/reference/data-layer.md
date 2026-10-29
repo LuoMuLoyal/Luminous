@@ -182,7 +182,7 @@ This ensures `today/data/` never imports `medicine/data/` — the dependency dir
 Features must not directly import another feature's presentation-layer providers. Two mechanisms
 keep features decoupled while sharing data:
 
-1. **Invalidation Bus** (`lib/core/providers/data_change_bus.dart`) — a version-counter event bus for
+1. **Invalidation Bus** (`lib/core/providers/instrumentation/data_change_bus.dart`) — a version-counter event bus for
    cross-feature write-path refresh. When a feature mutates shared data, it emits a topic
    (`DataChangeTopic.dailyRecords`, `healthContext`, etc.); dashboard providers that `ref.watch` the
    topic's version automatically rebuild. See [State Management](state-management.md#cross-feature-data-refresh-invalidation-bus).
