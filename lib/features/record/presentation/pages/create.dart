@@ -21,7 +21,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/services/sleep_entry.dart';
-import 'package:luminous/features/record/presentation/providers/record_services.dart';
+import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/utils/sleep_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
