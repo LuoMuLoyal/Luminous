@@ -20,10 +20,10 @@ import 'package:luminous/features/medicine/presentation/providers/reminders.dart
 import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/medicine/presentation/services/reminder_calendar.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/delete_dialog.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/detail_info_tiles.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/loading.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/log_panels.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/delete_dialog.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/detail_info_tiles.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/loading.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/log_panels.dart';
 import 'package:luminous/features/today/presentation/providers/user_timezone.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

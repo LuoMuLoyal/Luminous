@@ -23,11 +23,11 @@ import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/delete_dialog.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/form_body.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/loading.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_selector.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/time_selector.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/delete_dialog.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/loading.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/form/form_body.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/form/medicine_selector.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/form/time_selector.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineReminderEditPage extends HookConsumerWidget {
