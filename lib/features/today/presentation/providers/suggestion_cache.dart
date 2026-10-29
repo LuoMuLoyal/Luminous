@@ -1,30 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/providers/today_suggestion_store.dart';
 
-/// Today suggestion 本地缓存的展示层接缝。
+/// Today suggestion 缓存的展示层接缝。
 ///
-/// 展示层不应该直接认识 drift DAO。这个文件是 today feature 的组合根，
-/// 只有它 import `core/database`；`suggestion.dart` 通过
-/// [TodaySuggestionCache] 读写缓存（JSON 文本，编解码在展示层完成）。
-class TodaySuggestionCache {
-  const TodaySuggestionCache(this._ref);
-
-  final Ref _ref;
-
-  Future<String?> fetch() {
-    return _ref.read(todaySuggestionDaoProvider).fetch();
-  }
-
-  Future<void> replace(String jsonData) {
-    return _ref.read(todaySuggestionDaoProvider).replace(jsonData);
-  }
-
-  Future<void> clear() {
-    return _ref.read(todaySuggestionDaoProvider).clear();
-  }
-}
-
-/// 缓存访问器的 provider。
-final todaySuggestionCacheProvider = Provider<TodaySuggestionCache>(
-  TodaySuggestionCache.new,
+/// 展示层不认识 drift DAO：真正的访问器在
+/// `core/providers/today_suggestion_store.dart`，这里只是把它投影成本
+/// feature 的名字。
+final todaySuggestionCacheProvider = Provider<TodaySuggestionStore>(
+  (ref) => ref.watch(todaySuggestionStoreProvider),
 );

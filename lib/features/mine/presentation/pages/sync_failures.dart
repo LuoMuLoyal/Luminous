@@ -36,10 +36,9 @@ class _SyncFailuresPageState extends ConsumerState<SyncFailuresPage> {
     });
 
     try {
-      await ref.read(mineSyncQueueProvider).retryAll(entries);
+      await ref.read(mineSyncQueueActionsProvider).retryAll(entries);
       // Reload the list: retried items either leave the queue or come back
       // with a fresh error, so the page must not keep the stale snapshot.
-      ref.read(mineSyncQueueProvider).invalidate();
     } catch (e, st) {
       // Log the real failure (DB corruption, disk full, ...) so it is not
       // silently swallowed — talker forwards it to Sentry in release builds.
@@ -67,8 +66,7 @@ class _SyncFailuresPageState extends ConsumerState<SyncFailuresPage> {
   /// failed retry so the two paths report in one place.
   Future<void> _discard(MineSyncEntry entry) async {
     try {
-      await ref.read(mineSyncQueueProvider).discard(entry);
-      ref.read(mineSyncQueueProvider).invalidate();
+      await ref.read(mineSyncQueueActionsProvider).discard(entry);
     } catch (e, st) {
       ref.read(talkerProvider).error('SyncFailuresPage._discard: $e', st);
       if (!mounted) return;

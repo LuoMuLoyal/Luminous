@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/network/api.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/providers/session_snapshot.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/repositories/auth.dart';

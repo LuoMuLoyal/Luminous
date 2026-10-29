@@ -6,9 +6,9 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
+import 'package:luminous/features/settings/presentation/providers/oss_licenses.dart';
 import 'package:luminous/features/settings/presentation/routes.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/oss_licenses.dart';
 
 /// Open-source license list for the app's **pub** dependencies.
 ///
