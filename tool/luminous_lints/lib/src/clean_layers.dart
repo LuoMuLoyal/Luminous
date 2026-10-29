@@ -121,6 +121,9 @@ String? checkImportPath({required String importer, required String target}) {
       return 'domain_purity';
     }
     if (sameFeature && targetIsDomain) return null;
+    // Shared domain kernel: pure value objects every feature's domain may
+    // speak (e.g. the failure vocabulary in `shared/domain/failure.dart`).
+    if (target.startsWith('lib/shared/domain/')) return null;
     return 'domain_purity';
   }
 

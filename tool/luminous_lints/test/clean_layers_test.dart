@@ -47,6 +47,26 @@ void main() {
         'domain_purity',
       );
     });
+
+    test('domain importing the shared domain kernel is allowed', () {
+      expect(
+        checkImportPath(
+          importer: 'lib/features/today/domain/repositories/dashboard.dart',
+          target: 'lib/shared/domain/failure.dart',
+        ),
+        isNull,
+      );
+    });
+
+    test('domain importing core/errors is still reported', () {
+      expect(
+        checkImportPath(
+          importer: 'lib/features/today/domain/repositories/dashboard.dart',
+          target: 'lib/core/errors/lucent_failure.dart',
+        ),
+        'domain_purity',
+      );
+    });
   });
 
   group('application_layer (R3)', () {
