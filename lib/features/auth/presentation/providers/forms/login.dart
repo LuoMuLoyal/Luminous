@@ -9,7 +9,7 @@ import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
-import 'package:luminous/features/auth/presentation/providers/data_access.dart';
+import 'package:luminous/features/auth/presentation/providers/shared/data_access.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
 
 part 'login.freezed.dart';

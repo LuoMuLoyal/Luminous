@@ -3,7 +3,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/auth/domain/entities/device_session.dart';
-import 'package:luminous/features/auth/presentation/providers/data_access.dart';
+import 'package:luminous/features/auth/presentation/providers/shared/data_access.dart';
 
 class AuthSessionsController extends AsyncNotifier<List<AuthDeviceSession>> {
   @override

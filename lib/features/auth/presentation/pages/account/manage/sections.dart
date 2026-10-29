@@ -18,7 +18,7 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account/account_identity.dart';
 import 'package:luminous/features/auth/presentation/pages/account/account_security.dart';
 import 'package:luminous/features/auth/presentation/pages/account/manage/helpers.dart';
-import 'package:luminous/features/auth/presentation/providers/account.dart';
+import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/l10n/app_localizations.dart';

@@ -8,8 +8,8 @@ import 'package:luminous/features/auth/data/datasources/wechat/callback/desktop_
 import 'package:luminous/features/auth/data/datasources/wechat/callback/desktop_oauth_callback_server.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
-import 'package:luminous/features/auth/presentation/providers/account.dart';
-import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
+import 'package:luminous/features/auth/presentation/providers/account/account.dart';
+import 'package:luminous/features/auth/presentation/providers/oauth/oauth_login.dart';
 
 import '../helpers/kv_test_store.dart';
 import 'test_helpers.dart';

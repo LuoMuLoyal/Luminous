@@ -11,7 +11,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/domain/entities/device_session.dart';
 import 'package:luminous/features/auth/presentation/pages/account/account_identity.dart';
-import 'package:luminous/features/auth/presentation/providers/sessions.dart';
+import 'package:luminous/features/auth/presentation/providers/account/sessions.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AccountSessionsPage extends ConsumerWidget {

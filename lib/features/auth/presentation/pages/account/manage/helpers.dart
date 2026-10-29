@@ -9,7 +9,7 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account/account_identity.dart';
-import 'package:luminous/features/auth/presentation/providers/account.dart';
+import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Starts the WeChat identity link flow — delegates to the account notifier

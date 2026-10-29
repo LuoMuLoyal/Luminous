@@ -14,7 +14,7 @@ import 'package:luminous/features/auth/presentation/pages/oauth/oauth_callback_h
 import 'package:luminous/features/auth/presentation/pages/oauth/oauth_handlers.dart';
 import 'package:luminous/features/auth/presentation/pages/oauth/oauth_navigation.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login.dart';
-import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
+import 'package:luminous/features/auth/presentation/providers/oauth/oauth_login.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/auth_scroll_body.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/branding.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/oauth_panels.dart';

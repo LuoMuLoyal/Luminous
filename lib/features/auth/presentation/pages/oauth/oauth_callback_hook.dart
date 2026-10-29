@@ -7,7 +7,7 @@ import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/router/deep_link.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/oauth/oauth_navigation.dart';
-import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
+import 'package:luminous/features/auth/presentation/providers/oauth/oauth_login.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/oauth_deep_link.dart';
 
 /// Handles OAuth deep-link callbacks on first build (when the browser

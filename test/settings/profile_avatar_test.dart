@@ -17,7 +17,7 @@ import 'package:luminous/core/widgets/common/avatar/avatar_action_view.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/data/services/avatar_uploader.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/providers/account.dart';
+import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';

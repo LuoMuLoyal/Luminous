@@ -12,7 +12,7 @@ import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/auth/presentation/pages/account/manage/helpers.dart';
 import 'package:luminous/features/auth/presentation/pages/account/manage/sections.dart';
-import 'package:luminous/features/auth/presentation/providers/account.dart';
+import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/auth_scroll_body.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
