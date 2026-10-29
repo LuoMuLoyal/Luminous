@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/settings/data/repositories/lucent.dart';
+import 'package:luminous/core/providers/session_snapshot.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
+import 'package:luminous/features/settings/presentation/providers/data_access.dart';
 
 /// Remote-backed controller for the authenticated user's privacy/AI settings.
 ///

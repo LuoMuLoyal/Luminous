@@ -24,7 +24,6 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/sync/pending_sync.dart';
-import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
@@ -699,7 +698,7 @@ Future<void> _pumpSyncFailures(WidgetTester tester, double scale) {
         syncWorkerProvider.overrideWithValue(_MockSyncWorker()),
         syncFailedCountProvider.overrideWith((ref) async => 1),
         mineSyncFailedEntriesProvider.overrideWith(
-          (ref) async => <PendingSyncEntry>[_pendingSyncEntry()],
+          (ref) async => <MineSyncEntry>[_pendingSyncEntry()],
         ),
       ],
       child: TestForuiApp(
@@ -1151,7 +1150,7 @@ class _MockPendingSyncDao extends Mock implements PendingSyncDao {}
 
 class _MockSyncWorker extends Mock implements SyncWorker {}
 
-PendingSyncEntry _pendingSyncEntry() => PendingSyncEntry(
+MineSyncEntry _pendingSyncEntry() => MineSyncEntry(
   id: 'pending-1',
   entityType: 'daily_record',
   entityId: 'record-1',
@@ -1161,7 +1160,7 @@ PendingSyncEntry _pendingSyncEntry() => PendingSyncEntry(
   retryCount: 5,
   maxRetry: 5,
   lastError: 'DioException [connectionError]: network unavailable',
-  errorDetails: const PendingSyncErrorDetails(
+  errorDetails: const MineSyncErrorDetails(
     message: 'Connection timed out',
     networkErrorCode: NetworkErrorCode.connectionError,
     kind: LucentFailureKind.network,

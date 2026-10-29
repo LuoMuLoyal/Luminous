@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/sync/pending_sync.dart';
-import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -30,7 +27,7 @@ class _SyncFailuresPageState extends ConsumerState<SyncFailuresPage> {
   bool _isRetrying = false;
   String? _retryError;
 
-  Future<void> _retryAll(List<PendingSyncEntry> entries) async {
+  Future<void> _retryAll(List<MineSyncEntry> entries) async {
     if (_isRetrying) return;
 
     setState(() {
@@ -39,13 +36,9 @@ class _SyncFailuresPageState extends ConsumerState<SyncFailuresPage> {
     });
 
     try {
-      final dao = ref.read(pendingSyncDaoProvider);
-      await Future.wait(entries.map((entry) => dao.resetForRetry(entry.id)));
-      await ref.read(syncWorkerProvider).flush();
-      ref.invalidate(syncFailedCountProvider);
+      await ref.read(mineSyncQueueActionsProvider).retryAll(entries);
       // Reload the list: retried items either leave the queue or come back
       // with a fresh error, so the page must not keep the stale snapshot.
-      ref.invalidate(mineSyncFailedEntriesProvider);
     } catch (e, st) {
       // Log the real failure (DB corruption, disk full, ...) so it is not
       // silently swallowed — talker forwards it to Sentry in release builds.
@@ -71,11 +64,9 @@ class _SyncFailuresPageState extends ConsumerState<SyncFailuresPage> {
   /// needs a terminal action; the confirmation lives in the card, which owns
   /// the button. Failures surface through the same footer error slot as a
   /// failed retry so the two paths report in one place.
-  Future<void> _discard(PendingSyncEntry entry) async {
+  Future<void> _discard(MineSyncEntry entry) async {
     try {
-      await ref.read(pendingSyncDaoProvider).remove(entry.id);
-      ref.invalidate(syncFailedCountProvider);
-      ref.invalidate(mineSyncFailedEntriesProvider);
+      await ref.read(mineSyncQueueActionsProvider).discard(entry);
     } catch (e, st) {
       ref.read(talkerProvider).error('SyncFailuresPage._discard: $e', st);
       if (!mounted) return;
@@ -125,7 +116,7 @@ class _SyncFailuresPageState extends ConsumerState<SyncFailuresPage> {
     );
   }
 
-  Widget _buildContent(AppLocalizations l10n, List<PendingSyncEntry> entries) {
+  Widget _buildContent(AppLocalizations l10n, List<MineSyncEntry> entries) {
     final typography = context.theme.typography;
 
     return Column(

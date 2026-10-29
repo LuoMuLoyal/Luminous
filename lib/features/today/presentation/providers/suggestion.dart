@@ -2,15 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/today/data/providers/suggestion.dart';
-import 'package:luminous/features/today/data/utils/suggestion_json_codec.dart';
+import 'package:luminous/core/providers/session_snapshot.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/data_access.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion_cache.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'suggestion.g.dart';
@@ -147,7 +146,7 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
 
   Future<TodaySuggestionBundle?> _performFetch() async {
     final ds = ref.read(todaySuggestionRemoteDataSourceProvider);
-    final dao = ref.read(todaySuggestionDaoProvider);
+    final dao = ref.read(todaySuggestionCacheProvider);
     TodaySuggestionBundle? cachedBundle;
     var cacheWasRead = false;
     var cacheWasInvalid = false;

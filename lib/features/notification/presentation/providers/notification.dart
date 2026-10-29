@@ -1,10 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/session_snapshot.dart';
+import 'package:luminous/features/notification/presentation/providers/data_access.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../data/providers/unread_count.dart';
-import '../../data/repositories/lucent.dart';
 import '../../domain/entities/notification.dart';
 
 part 'notification.g.dart';

@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/sync/pending_sync.dart';
-import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
@@ -21,7 +20,7 @@ class _MockPendingSyncDao extends Mock implements PendingSyncDao {}
 
 class _MockSyncWorker extends Mock implements SyncWorker {}
 
-PendingSyncEntry _entry({String id = 'pending-1'}) => PendingSyncEntry(
+MineSyncEntry _entry({String id = 'pending-1'}) => MineSyncEntry(
   id: id,
   entityType: 'daily_record',
   entityId: 'record-1',
@@ -31,7 +30,7 @@ PendingSyncEntry _entry({String id = 'pending-1'}) => PendingSyncEntry(
   retryCount: 5,
   maxRetry: 5,
   lastError: 'DioException [connectionError]: network unavailable',
-  errorDetails: const PendingSyncErrorDetails(
+  errorDetails: const MineSyncErrorDetails(
     message: 'Connection timed out',
     networkErrorCode: NetworkErrorCode.connectionError,
     kind: LucentFailureKind.network,
@@ -42,7 +41,7 @@ PendingSyncEntry _entry({String id = 'pending-1'}) => PendingSyncEntry(
 Widget _app({
   required PendingSyncDao dao,
   required SyncWorker worker,
-  FutureOr<List<PendingSyncEntry>> Function(Ref ref)? entries,
+  FutureOr<List<MineSyncEntry>> Function(Ref ref)? entries,
 }) {
   return ProviderScope(
     overrides: [
@@ -86,7 +85,7 @@ void main() {
   testWidgets('shows a skeleton while the queue is loading', (tester) async {
     final dao = _MockPendingSyncDao();
     final worker = _MockSyncWorker();
-    final pending = Completer<List<PendingSyncEntry>>();
+    final pending = Completer<List<MineSyncEntry>>();
 
     await tester.pumpWidget(
       _app(dao: dao, worker: worker, entries: (ref) => pending.future),

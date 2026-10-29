@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
-import 'package:luminous/core/database/daos/sync/pending_sync.dart';
-import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/mine/presentation/mappers/sync_error_user_message.dart';
+import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// One permanently failed sync item, rendered as a self-contained panel.
@@ -22,7 +21,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 class SyncFailedEntryCard extends StatefulWidget {
   const SyncFailedEntryCard({super.key, required this.entry, this.onDiscard});
 
-  final PendingSyncEntry entry;
+  final MineSyncEntry entry;
 
   /// Called after the user confirms discarding this entry. When null, no
   /// discard action is rendered.
@@ -217,7 +216,7 @@ class _DiagnosticsPanel extends StatelessWidget {
   final bool copied;
   final VoidCallback onToggle;
   final VoidCallback onCopy;
-  final PendingSyncErrorDetails? details;
+  final MineSyncErrorDetails? details;
   final String? raw;
 
   @override

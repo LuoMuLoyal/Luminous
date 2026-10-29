@@ -17,7 +17,6 @@
 // ignore_for_file: avoid_classes_with_only_static_members
 
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
@@ -34,6 +33,7 @@ import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
+import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
 import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/features/notification/domain/repositories/notification.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
@@ -887,8 +887,8 @@ class SimulatedHealthSyncRepository implements HealthSyncRepository {
 ///
 /// That page reads the drift `pendingSyncDaoProvider`, not a repository, so
 /// these rows are the content to seed into a fake DAO.
-final List<PendingSyncEntry> simulatedPendingSyncFailures = <PendingSyncEntry>[
-  PendingSyncEntry(
+final List<MineSyncEntry> simulatedPendingSyncFailures = <MineSyncEntry>[
+  MineSyncEntry(
     id: 'psq-20260618-0001',
     entityType: 'daily_record',
     entityId: 'daily-bp-20260618-0740',
@@ -901,7 +901,7 @@ final List<PendingSyncEntry> simulatedPendingSyncFailures = <PendingSyncEntry>[
     maxRetry: 5,
     lastError: 'DioException [badResponse]: status code 409，该时间点已存在血压记录。',
   ),
-  PendingSyncEntry(
+  MineSyncEntry(
     id: 'psq-20260617-0002',
     entityType: 'daily_record',
     entityId: 'daily-sleep-20260617',
@@ -914,7 +914,7 @@ final List<PendingSyncEntry> simulatedPendingSyncFailures = <PendingSyncEntry>[
     maxRetry: 5,
     lastError: 'DioException [connectionError]: 连接超时，服务端未确认写入结果。',
   ),
-  PendingSyncEntry(
+  MineSyncEntry(
     id: 'psq-20260616-0003',
     entityType: 'medicine_dose_log',
     entityId: 'dose-aspirin-20260616-0800',

@@ -2,11 +2,11 @@ import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation_sending.dart';
+import 'package:luminous/features/assistant/presentation/providers/data_access.dart';
 
 mixin MessageRegeneration on Notifier<AssistantState>, MessageSending {
   /// Regenerates the last assistant message of the current conversation

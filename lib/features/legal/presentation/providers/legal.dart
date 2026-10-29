@@ -1,6 +1,6 @@
+import 'package:luminous/features/legal/presentation/providers/data_access.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../data/repositories/lucent.dart';
 import '../../domain/entities/doc_type.dart';
 import '../../domain/entities/document.dart';
 
