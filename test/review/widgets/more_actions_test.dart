@@ -9,6 +9,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/auth/sensitive_action_password_resolver.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/sensitive_action_password.dart';
@@ -438,6 +439,10 @@ void main() {
             userSettingsControllerProvider.overrideWith(
               () => _FakeUserSettingsController(),
             ),
+
+            sensitiveActionPolicyProvider.overrideWithValue(
+              _testSensitiveActionPolicy(),
+            ),
           ],
           child: TestForuiRouterApp(routerConfig: router),
         ),
@@ -496,6 +501,10 @@ Future<void> pumpPage(
         ),
         userSettingsControllerProvider.overrideWith(
           () => _FakeUserSettingsController(),
+        ),
+
+        sensitiveActionPolicyProvider.overrideWithValue(
+          _testSensitiveActionPolicy(),
         ),
         ...overrides,
       ],
@@ -677,3 +686,14 @@ const _healthContextSnapshot = HealthContextSnapshot(
   conditions: [],
   currentMedicines: [],
 );
+
+/// Core's sensitive-action policy seam, satisfied with a permissive stub.
+SensitiveActionPolicy _testSensitiveActionPolicy() =>
+    const _StubSensitiveActionPolicy();
+
+class _StubSensitiveActionPolicy implements SensitiveActionPolicy {
+  const _StubSensitiveActionPolicy();
+
+  @override
+  Future<bool> requiresPasswordReauthentication() async => true;
+}

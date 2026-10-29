@@ -312,6 +312,7 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   @override
   AuthSessionState build() => AuthSessionState(
     user: _user('user-a'),
+    userSnapshot: _user('user-a').toSessionSnapshot(),
     isAuthenticated: true,
     isLoading: false,
   );
