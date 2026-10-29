@@ -47,6 +47,16 @@ void main() {
         'domain_purity',
       );
     });
+
+    test('domain importing the shared kernel is allowed', () {
+      expect(
+        checkImportPath(
+          importer: 'lib/features/record/domain/repositories/daily.dart',
+          target: 'lib/shared/domain/failure.dart',
+        ),
+        isNull,
+      );
+    });
   });
 
   group('application_layer (R3)', () {
@@ -55,6 +65,29 @@ void main() {
         checkImportPath(
           importer: 'lib/features/record/application/use_cases/log_water.dart',
           target: 'lib/features/record/domain/repositories/daily.dart',
+        ),
+        isNull,
+      );
+    });
+
+    test('another feature domain is allowed (published language)', () {
+      // AGENTS.md §Cross-Feature Import Rules: "application -> domain allowed:
+      // the application layer may import other features' domain layer for
+      // cross-feature orchestration".
+      expect(
+        checkImportPath(
+          importer: 'lib/features/today/application/use_cases/skip_dose.dart',
+          target: 'lib/features/medicine/domain/repositories/dose_log.dart',
+        ),
+        isNull,
+      );
+    });
+
+    test('shared kernel is allowed', () {
+      expect(
+        checkImportPath(
+          importer: 'lib/features/record/application/use_cases/log_water.dart',
+          target: 'lib/shared/domain/failure.dart',
         ),
         isNull,
       );

@@ -9,10 +9,11 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart'
+    show doseLogRepositoryProvider;
 import 'package:luminous/features/today/application/usecases/skip_dose.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
-import 'package:luminous/features/today/presentation/providers/skip_dose.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_interactive.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
@@ -91,7 +92,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
       }
 
       await SkipDoseUseCase(
-        writer: ref.read(doseLogMarkWriterProvider),
+        repository: ref.read(doseLogRepositoryProvider),
         emitDataChange: (topic) =>
             ref.read(dataChangeBusProvider.notifier).emit(topic),
       )(
