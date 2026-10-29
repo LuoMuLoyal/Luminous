@@ -1,10 +1,11 @@
-import 'package:luminous/app/composition/today.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
-import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/suggestion.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+export 'package:luminous/app/composition/today.dart'
+    show suggestionHistoryProvider;
 
 part 'suggestion.g.dart';
 
@@ -22,23 +23,7 @@ SuggestionRepository suggestionRepository(Ref ref) {
   return ref.watch(todaySuggestionRemoteDataSourceProvider);
 }
 
-/// Suggestion history for the Report page.
-///
-/// Returns `null` when the user is not authenticated.
-/// Fetches the most recent 20 suggestion history items.
-@riverpod
-Future<TodaySuggestionHistory?> suggestionHistory(Ref ref) async {
-  // The wire language tag is resolved at the composition root
-  // (`lib/app/composition/today.dart`) — `data/` may not read locale state.
-  final language = ref.watch(suggestionHistoryLanguageProvider);
-  return authGuarded(
-    ref: ref,
-    fetch: () async {
-      final ds = ref.watch(todaySuggestionRemoteDataSourceProvider);
-      final result = await ds.fetchHistory(language: language, limit: 20).run();
-      // Left 投影到 AsyncValue.error。
-      return result.fold((failure) => throw failure, (history) => history);
-    },
-    signedOutFallback: () async => null,
-  );
-}
+/// `suggestionHistoryProvider` is composed in `lib/app/composition/today.dart`
+/// and re-exported here so existing call sites keep working. It lives there
+/// because it needs `authGuarded` (session state) — `data/` may not read the
+/// session or the locale.

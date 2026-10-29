@@ -8,26 +8,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
-/// Parses [value] (an ISO-8601 date-time string) safely.
-///
-/// Returns `null` when [value] is null, empty, or not a valid ISO-8601
-/// string — never throws.
-DateTime? parseDateTimeOrNull(Object? value) {
-  final raw = value?.toString();
-  if (raw == null || raw.isEmpty) return null;
-  return DateTime.tryParse(raw);
-}
-
-/// Parses [value] as an ISO-8601 date-time string, falling back to
-/// [fallback] (epoch by default) instead of throwing on malformed input.
-///
-/// Use for fields the entity requires to be non-null where a broken server
-/// value must not crash the app.
-DateTime parseDateTimeOrEpoch(Object? value, {DateTime? fallback}) {
-  return parseDateTimeOrNull(value) ??
-      fallback ??
-      DateTime.fromMillisecondsSinceEpoch(0);
-}
+export 'package:luminous/core/network/wire_time.dart'
+    show parseDateTimeOrEpoch, parseDateTimeOrNull;
 
 /// Formats a time-only string (ISO-8601 or `HH:mm`) as a locale-aware time.
 ///
