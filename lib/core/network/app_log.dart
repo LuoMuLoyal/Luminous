@@ -38,10 +38,9 @@ void setAppLogSink(talker_pkg.Talker sink) {
 
 /// The app-wide log sink.
 ///
-/// Reading it before [setAppLogSink] ran throws — logging is never silently
-/// dropped.
-talker_pkg.Talker get appLog =>
-    _sink ??
-    (throw StateError(
-      'app log sink is not installed; core/logger/log_level.dart installs it',
-    ));
+/// Falls back to a standalone Talker until `core/logger/log_level.dart` installs
+/// the real one, so diagnostics from the data layer are never dropped (and unit
+/// tests that never boot the logger keep working).
+talker_pkg.Talker get appLog => _sink ?? (_fallback ??= talker_pkg.Talker());
+
+talker_pkg.Talker? _fallback;
