@@ -1,8 +1,8 @@
 import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/record/application/usecases/quick_entry_undo.dart';
-import 'package:luminous/features/record/application/usecases/water_quick_entry.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/services/water_quick_entry.dart';
+import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 
 class MoodQuickChoice {
   const MoodQuickChoice({required this.title});
@@ -18,7 +18,7 @@ class MoodQuickEntryFlow {
   });
 
   final CreateDailyRecord createRecord;
-  final EmitDataChange emitDataChange;
+  final EmitDataChangeTopic emitDataChange;
   final RegisterQuickEntryUndo registerUndo;
 
   Future<DailyRecordItem> recordSingle(
