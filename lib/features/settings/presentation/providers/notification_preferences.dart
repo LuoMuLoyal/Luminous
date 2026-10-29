@@ -1,5 +1,5 @@
 import 'package:luminous/core/config/pref_keys.dart';
-import 'package:luminous/core/storage/kv_store.dart';
+import 'package:luminous/core/providers/preferences_store.dart';
 
 /// A user-scoped wrapper around [KvStore].
 ///

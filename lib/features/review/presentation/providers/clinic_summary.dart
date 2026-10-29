@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/network_client.dart';
 import 'package:luminous/core/providers/session_snapshot.dart';
 
 /// All six selectable clinic summary fields, in display order.
