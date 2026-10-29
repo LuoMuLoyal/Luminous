@@ -50,7 +50,7 @@ List<RecordCalendarDay> staticMonthDays(DateTime today) {
 const List<RecordQuickAction> staticQuickActions = [
   RecordQuickAction(
     type: RecordEntryType.symptom,
-    icon: SemanticIcons.recordSymptom,
+    iconName: 'thermometer',
     titleKey: RecordCopyKey.typeSymptom,
     subtitleKey: RecordCopyKey.summaryRecorded,
     accent: SemanticColor.primary,
@@ -58,7 +58,7 @@ const List<RecordQuickAction> staticQuickActions = [
   ),
   RecordQuickAction(
     type: RecordEntryType.medication,
-    icon: SemanticIcons.recordMedicine,
+    iconName: 'tablets',
     titleKey: RecordCopyKey.typeMedication,
     subtitleKey: RecordCopyKey.summaryRecorded,
     accent: SemanticColor.primary,
@@ -67,7 +67,7 @@ const List<RecordQuickAction> staticQuickActions = [
   // Lightweight mood self-check-in quick action.
   RecordQuickAction(
     type: RecordEntryType.mood,
-    icon: SemanticIcons.recordMood,
+    iconName: 'smile',
     titleKey: RecordCopyKey.typeMood,
     subtitleKey: RecordCopyKey.summaryRecorded,
     accent: SemanticColor.primary,
@@ -75,7 +75,7 @@ const List<RecordQuickAction> staticQuickActions = [
   ),
   RecordQuickAction(
     type: RecordEntryType.meal,
-    icon: SemanticIcons.recordMeal,
+    iconName: 'utensils',
     titleKey: RecordCopyKey.typeMeal,
     subtitleKey: RecordCopyKey.summaryRecorded,
     accent: SemanticColor.primary,
@@ -83,7 +83,7 @@ const List<RecordQuickAction> staticQuickActions = [
   ),
   RecordQuickAction(
     type: RecordEntryType.water,
-    icon: SemanticIcons.recordWater,
+    iconName: 'droplets',
     titleKey: RecordCopyKey.typeWater,
     subtitleKey: RecordCopyKey.summaryCupsUnit,
     accent: SemanticColor.primary,
@@ -91,7 +91,7 @@ const List<RecordQuickAction> staticQuickActions = [
   ),
   RecordQuickAction(
     type: RecordEntryType.vitals,
-    icon: SemanticIcons.profileCondition,
+    iconName: 'heart-pulse',
     titleKey: RecordCopyKey.typeVitals,
     subtitleKey: RecordCopyKey.summaryNormal,
     accent: SemanticColor.primary,
@@ -99,7 +99,7 @@ const List<RecordQuickAction> staticQuickActions = [
   ),
   RecordQuickAction(
     type: RecordEntryType.sleep,
-    icon: SemanticIcons.recordSleep,
+    iconName: 'moon-star',
     titleKey: RecordCopyKey.typeSleep,
     subtitleKey: RecordCopyKey.summaryRecorded,
     accent: SemanticColor.primary,
@@ -107,7 +107,7 @@ const List<RecordQuickAction> staticQuickActions = [
   ),
   RecordQuickAction(
     type: RecordEntryType.note,
-    icon: SemanticIcons.recordNote,
+    iconName: 'file-text',
     titleKey: RecordCopyKey.typeNote,
     subtitleKey: RecordCopyKey.summaryRecorded,
     accent: SemanticColor.primary,
@@ -127,56 +127,56 @@ const List<RecordFilter> staticFilters = [
   RecordFilter(
     type: RecordEntryType.medication,
     titleKey: RecordCopyKey.typeMedication,
-    icon: SemanticIcons.recordMedicine,
+    iconName: 'tablets',
     accent: SemanticColor.primary,
     selected: true,
   ),
   RecordFilter(
     type: RecordEntryType.symptom,
     titleKey: RecordCopyKey.typeSymptom,
-    icon: SemanticIcons.recordSymptom,
+    iconName: 'thermometer',
     accent: SemanticColor.primary,
     selected: true,
   ),
   RecordFilter(
     type: RecordEntryType.mood,
     titleKey: RecordCopyKey.typeMood,
-    icon: SemanticIcons.recordMood,
+    iconName: 'smile',
     accent: SemanticColor.primary,
     selected: true,
   ),
   RecordFilter(
     type: RecordEntryType.water,
     titleKey: RecordCopyKey.typeWater,
-    icon: SemanticIcons.recordWater,
+    iconName: 'droplets',
     accent: SemanticColor.primary,
     selected: true,
   ),
   RecordFilter(
     type: RecordEntryType.meal,
     titleKey: RecordCopyKey.typeMeal,
-    icon: SemanticIcons.recordMeal,
+    iconName: 'utensils',
     accent: SemanticColor.primary,
     selected: true,
   ),
   RecordFilter(
     type: RecordEntryType.vitals,
     titleKey: RecordCopyKey.typeVitals,
-    icon: SemanticIcons.profileCondition,
+    iconName: 'heart-pulse',
     accent: SemanticColor.primary,
     selected: true,
   ),
   RecordFilter(
     type: RecordEntryType.sleep,
     titleKey: RecordCopyKey.typeSleep,
-    icon: SemanticIcons.recordSleep,
+    iconName: 'moon-star',
     accent: SemanticColor.primary,
     selected: true,
   ),
   RecordFilter(
     type: RecordEntryType.note,
     titleKey: RecordCopyKey.typeNote,
-    icon: SemanticIcons.recordNote,
+    iconName: 'file-text',
     accent: SemanticColor.primary,
     selected: true,
   ),
@@ -194,7 +194,7 @@ List<RecordFilter> filteredFilters(RecordEntryType? filterType) {
         (filter) => RecordFilter(
           type: filter.type,
           titleKey: filter.titleKey,
-          icon: filter.icon,
+          iconName: filter.iconName,
           accent: filter.accent,
           selected: filterType == null || filter.type == filterType,
           locked: filter.locked,

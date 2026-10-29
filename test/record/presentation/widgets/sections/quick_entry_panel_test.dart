@@ -162,7 +162,7 @@ void main() {
                   items: [
                     RecordSummaryItem(
                       type: RecordEntryType.water,
-                      icon: waterAction.icon,
+                      iconName: waterAction.iconName,
                       titleKey: waterAction.titleKey,
                       value: '500 ml',
                       accent: waterAction.accent,

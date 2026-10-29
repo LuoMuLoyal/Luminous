@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/design/design.dart';
+import 'package:luminous/shared/domain/semantic.dart';
 
 part 'dashboard.freezed.dart';
 
@@ -36,7 +35,7 @@ abstract class RecordDashboard with _$RecordDashboard {
       <RecordQuickAction>[
         const RecordQuickAction(
           type: RecordEntryType.symptom,
-          icon: SemanticIcons.recordSymptom,
+          iconName: 'thermometer',
           titleKey: RecordCopyKey.typeSymptom,
           subtitleKey: RecordCopyKey.summaryRecorded,
           accent: SemanticColor.primary,
@@ -44,7 +43,7 @@ abstract class RecordDashboard with _$RecordDashboard {
         ),
         const RecordQuickAction(
           type: RecordEntryType.medication,
-          icon: SemanticIcons.recordMedicine,
+          iconName: 'tablets',
           titleKey: RecordCopyKey.typeMedication,
           subtitleKey: RecordCopyKey.summaryRecorded,
           accent: SemanticColor.primary,
@@ -52,7 +51,7 @@ abstract class RecordDashboard with _$RecordDashboard {
         ),
         const RecordQuickAction(
           type: RecordEntryType.water,
-          icon: SemanticIcons.recordWater,
+          iconName: 'droplets',
           titleKey: RecordCopyKey.typeWater,
           subtitleKey: RecordCopyKey.summaryCupsUnit,
           accent: SemanticColor.primary,
@@ -60,7 +59,7 @@ abstract class RecordDashboard with _$RecordDashboard {
         ),
         const RecordQuickAction(
           type: RecordEntryType.meal,
-          icon: SemanticIcons.recordMeal,
+          iconName: 'utensils',
           titleKey: RecordCopyKey.typeMeal,
           subtitleKey: RecordCopyKey.summaryTimesUnit,
           accent: SemanticColor.primary,
@@ -68,7 +67,7 @@ abstract class RecordDashboard with _$RecordDashboard {
         ),
         const RecordQuickAction(
           type: RecordEntryType.sleep,
-          icon: SemanticIcons.recordSleep,
+          iconName: 'moon-star',
           titleKey: RecordCopyKey.typeSleep,
           subtitleKey: RecordCopyKey.summaryRecorded,
           accent: SemanticColor.primary,
@@ -76,7 +75,7 @@ abstract class RecordDashboard with _$RecordDashboard {
         ),
         const RecordQuickAction(
           type: RecordEntryType.mood,
-          icon: SemanticIcons.recordMood,
+          iconName: 'smile',
           titleKey: RecordCopyKey.typeMood,
           subtitleKey: RecordCopyKey.summaryRecorded,
           accent: SemanticColor.primary,
@@ -84,7 +83,7 @@ abstract class RecordDashboard with _$RecordDashboard {
         ),
         const RecordQuickAction(
           type: RecordEntryType.note,
-          icon: SemanticIcons.recordNote,
+          iconName: 'file-text',
           titleKey: RecordCopyKey.typeNote,
           subtitleKey: RecordCopyKey.summaryRecorded,
           accent: SemanticColor.primary,
@@ -105,49 +104,49 @@ abstract class RecordDashboard with _$RecordDashboard {
     const RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
-      icon: SemanticIcons.medicineKit,
+      iconName: 'briefcase-medical',
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
-      icon: SemanticIcons.recordMedicine,
+      iconName: 'tablets',
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
-      icon: SemanticIcons.recordWater,
+      iconName: 'droplets',
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
-      icon: SemanticIcons.recordMeal,
+      iconName: 'utensils',
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
-      icon: SemanticIcons.recordSleep,
+      iconName: 'moon-star',
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
-      icon: SemanticIcons.recordMood,
+      iconName: 'smile',
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
-      icon: SemanticIcons.recordNote,
+      iconName: 'file-text',
       accent: SemanticColor.primary,
       selected: false,
     ),
@@ -169,7 +168,7 @@ abstract class RecordCalendarDay with _$RecordCalendarDay {
 abstract class RecordQuickAction with _$RecordQuickAction {
   const factory RecordQuickAction({
     required RecordEntryType type,
-    required IconData icon,
+    required String iconName,
     required RecordCopyKey titleKey,
     required RecordCopyKey subtitleKey,
     required SemanticColor accent,
@@ -188,7 +187,7 @@ abstract class RecordDaySummary with _$RecordDaySummary {
 abstract class RecordSummaryItem with _$RecordSummaryItem {
   const factory RecordSummaryItem({
     required RecordEntryType type,
-    required IconData icon,
+    required String iconName,
     required RecordCopyKey titleKey,
     required String value,
     RecordCopyKey? unitKey,
@@ -203,7 +202,7 @@ abstract class RecordFilter with _$RecordFilter {
   const factory RecordFilter({
     required RecordEntryType type,
     required RecordCopyKey titleKey,
-    required IconData icon,
+    required String iconName,
     required SemanticColor accent,
     required bool selected,
     @Default(false) bool locked,
@@ -215,7 +214,7 @@ abstract class RecordTimelineEntry with _$RecordTimelineEntry {
   const factory RecordTimelineEntry({
     required String time,
     required RecordEntryType type,
-    required IconData icon,
+    required String iconName,
     required SemanticColor accent,
     required SemanticColor softColor,
     required RecordCopyKey titleKey,
@@ -227,7 +226,7 @@ abstract class RecordTimelineEntry with _$RecordTimelineEntry {
     RecordCopyKey? badgeKey,
     RecordCopyKey? imagePlaceholderKey,
     String? imageUrl,
-    IconData? trailingIcon,
+    String? trailingIconName,
 
     /// 餐食条目的粗化热量区间(只有数字与连接符,例如 `500–800`),由视图层
     /// 套上本地化文案后显示在右侧角标位;没有可用的区间时为 null。

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/design/tokens/lucide_icon_bridge.dart';
 import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
@@ -17,10 +18,47 @@ IconData resolveQuickActionIcon(
 ) {
   final customName = preferences.customIcons[action.type.name];
   if (customName != null) {
-    return LucideIconBridge.resolve(customName, fallback: action.icon);
+    return LucideIconBridge.resolve(customName, fallback: recordIcon(action));
   }
-  return action.icon;
+  return recordIcon(action);
 }
+
+/// Resolves a domain icon name (a kebab-case Lucide name) to a glyph.
+///
+/// Domain entities store icon *identity* as a `String` so they stay free of
+/// `flutter/material` (clean-layers R1/R2); the concrete `IconData` is resolved
+/// here, in the presentation layer.
+IconData resolveIconName(
+  String? name, {
+  IconData fallback = defaultRecordIcon,
+}) {
+  if (name == null) return fallback;
+  return LucideIconBridge.resolve(name, fallback: fallback);
+}
+
+/// The glyph used when a domain entity carries no icon name.
+const defaultRecordIcon = SemanticIcons.recordClipboard;
+
+/// The display icon of a quick action.
+IconData recordIcon(RecordQuickAction action) =>
+    resolveIconName(action.iconName);
+
+/// The display icon of a summary item.
+IconData summaryItemIcon(RecordSummaryItem item) =>
+    resolveIconName(item.iconName);
+
+/// The display icon of a filter.
+IconData filterIcon(RecordFilter filter) => resolveIconName(filter.iconName);
+
+/// The display icon of a timeline entry.
+IconData timelineEntryIcon(RecordTimelineEntry entry) =>
+    resolveIconName(entry.iconName);
+
+/// The trailing icon of a timeline entry, if any.
+IconData? timelineEntryTrailingIcon(RecordTimelineEntry entry) =>
+    entry.trailingIconName == null
+    ? null
+    : resolveIconName(entry.trailingIconName);
 
 /// Default preferred order of quick-action types on mobile.
 const defaultQuickActionOrder = <RecordEntryType>[

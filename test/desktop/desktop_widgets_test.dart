@@ -19,7 +19,7 @@ void main() {
       const entry = RecordTimelineEntry(
         time: '08:00',
         type: RecordEntryType.water,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         accent: SemanticColor.primary,
         softColor: SemanticColor.neutral,
         titleKey: RecordCopyKey.typeWater,
@@ -36,7 +36,7 @@ void main() {
       const entry = RecordTimelineEntry(
         time: '08:00',
         type: RecordEntryType.water,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         accent: SemanticColor.primary,
         softColor: SemanticColor.neutral,
         titleKey: RecordCopyKey.typeWater,
