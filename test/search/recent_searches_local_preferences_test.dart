@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/network/config/pref_keys.dart';
 import 'package:luminous/features/search/data/datasources/recent_searches.dart';
 import '../helpers/kv_test_store.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/ai/runtime_config.dart';
-import 'package:luminous/core/config/env_keys.dart';
-import 'package:luminous/core/config/env_reader.dart';
+import 'package:luminous/core/network/config/env_keys.dart';
+import 'package:luminous/core/network/config/env_reader.dart';
 
 void main() {
   setUp(() {

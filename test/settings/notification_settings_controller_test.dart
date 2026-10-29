@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
 import 'package:luminous/core/storage/kv_store.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/features/settings/domain/services/notification_permissi
 import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 
 import '../helpers/kv_test_store.dart';
+import 'package:luminous/core/network/config/pref_keys.dart';
 
 void main() {
   late ProviderContainer container;

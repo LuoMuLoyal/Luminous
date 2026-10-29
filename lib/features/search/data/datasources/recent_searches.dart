@@ -1,4 +1,4 @@
-import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/network/config/pref_keys.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 
 /// Data-layer service for recent search keyword persistence.

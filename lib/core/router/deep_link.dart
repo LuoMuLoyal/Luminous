@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:luminous/core/config/env_keys.dart';
-import 'package:luminous/core/config/env_reader.dart';
+import 'package:luminous/core/network/config/env_keys.dart';
+import 'package:luminous/core/network/config/env_reader.dart';
 import 'package:luminous/core/router/deep_link_source.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

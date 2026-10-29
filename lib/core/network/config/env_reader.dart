@@ -1,4 +1,4 @@
-import 'package:luminous/core/config/env_keys.dart';
+import 'package:luminous/core/network/config/env_keys.dart';
 
 /// Unified reader for compile-time environment variables supplied via
 /// `--dart-define` or `--dart-define-from-file`.

@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/ai/runtime_config.dart';
-import 'package:luminous/core/config/env_keys.dart';
-import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/config/feature_flags.dart';
+import 'package:luminous/core/network/config/env_keys.dart';
+import 'package:luminous/core/network/config/env_reader.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 
 import '../../helpers/kv_test_store.dart';

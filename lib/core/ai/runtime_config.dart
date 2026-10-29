@@ -1,6 +1,6 @@
 // Experimental dev seam — not part of the shipping assistant path.
-import 'package:luminous/core/config/env_keys.dart';
-import 'package:luminous/core/config/env_reader.dart';
+import 'package:luminous/core/network/config/env_keys.dart';
+import 'package:luminous/core/network/config/env_reader.dart';
 
 enum AiRuntimeProviderKind { none, aiToolkit, genUi, custom }
 

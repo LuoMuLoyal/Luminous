@@ -1,5 +1,5 @@
-import 'package:luminous/core/config/env_keys.dart';
-import 'package:luminous/core/config/env_reader.dart';
+import 'package:luminous/core/network/config/env_keys.dart';
+import 'package:luminous/core/network/config/env_reader.dart';
 
 abstract final class WechatMobileAuthConfig {
   static String get appIdDefineKey => EnvKey.wechatMobileAppId.wireName;

@@ -20,8 +20,8 @@ void main() {
     final outputPath = p.join(tempDir.path, 'probe.js');
     final script = File(scriptPath);
     await script.writeAsString('''
-import 'package:luminous/core/config/env_keys.dart';
-import 'package:luminous/core/config/env_reader.dart';
+import 'package:luminous/core/network/config/env_keys.dart';
+import 'package:luminous/core/network/config/env_reader.dart';
 
 void main() {
   print(EnvReader.string(EnvKey.lucentBaseUrl));

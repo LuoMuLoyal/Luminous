@@ -2,7 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/network/config/pref_keys.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 
 enum AppLocale {

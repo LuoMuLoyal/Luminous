@@ -2,8 +2,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/network/config/pref_keys.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';

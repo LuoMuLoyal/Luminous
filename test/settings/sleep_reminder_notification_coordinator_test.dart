@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/config/pref_keys.dart';
+import 'package:luminous/core/network/config/pref_keys.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/settings/application/sleep_reminder_notification_coordinator.dart';
