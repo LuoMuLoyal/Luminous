@@ -9,12 +9,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
-import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/services/candidate_merger.dart';
 import 'package:luminous/features/scan/domain/services/candidate_search.dart';
 import 'package:luminous/features/scan/domain/services/medicine_ocr_extractor.dart';
 import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
+import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Processes a captured photo through OCR or AI recognition and returns
