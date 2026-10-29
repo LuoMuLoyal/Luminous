@@ -88,6 +88,18 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
+      # 严格 Clean 分层门禁（R1–R9，无白名单）。
+      # 架构清理期间（plans/2026-10-21-ddd-refactor-frontend.md）本条预期为红：
+      # 用 continue-on-error 让 CI 可见违规数但不阻断合并；pre-push 与
+      # scripts/workflows/daily.dart 跑同一条命令且不带 continue-on-error，
+      # 本地推送与日常检查是真门禁。
+      - name: Clean Architecture violations
+        continue-on-error: true
+        run: |
+          cd tool/luminous_lints
+          dart pub get
+          dart run bin/luminous_lints.dart --clean-layers --quiet
+
       - name: Run tests
         run: flutter test --coverage --reporter=github
 

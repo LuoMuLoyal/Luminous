@@ -71,7 +71,8 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
   );
   stdout.writeln('');
 
-  // Custom lint rules (observation) — per-rule summary only.
+  // Custom lint rules — observation mode (always exit 0); --quiet keeps
+  // the output to the per-rule summary.
   await runLoggedCommand(
     'dart',
     ['run', 'bin/luminous_lints.dart', '--quiet'],
@@ -80,6 +81,19 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
       'tool${Platform.pathSeparator}luminous_lints',
     ),
     stepName: 'luminous_lints (observation)',
+  );
+  stdout.writeln('');
+
+  // Strict Clean Architecture gate (R1–R9, no whitelist). Blocks on any
+  // violation; see plans/2026-10-21-ddd-refactor-frontend.md (C0).
+  await runLoggedCommand(
+    'dart',
+    ['run', 'bin/luminous_lints.dart', '--clean-layers', '--quiet'],
+    workingDirectory: Directory(
+      '${context.repoRoot.path}${Platform.pathSeparator}'
+      'tool${Platform.pathSeparator}luminous_lints',
+    ),
+    stepName: 'luminous_lints --clean-layers (gate)',
   );
   stdout.writeln('');
 

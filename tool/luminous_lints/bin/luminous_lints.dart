@@ -21,6 +21,8 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:luminous_lints/luminous_lints.dart';
+import 'package:luminous_lints/src/clean_layers.dart';
+import 'package:luminous_lints/src/directory_scan.dart';
 
 /// Default fallback copy for rules whose message carries no interpolated
 /// argument (the layered_import rule reports its own description).
@@ -40,7 +42,11 @@ const Map<String, String> _ruleCopy = {
 };
 
 void main(List<String> args) async {
-  final fatal = args.contains('--fatal');
+  // --clean-layers makes the run the strict Clean Architecture gate: every
+  // finding blocks (exit 1) regardless of --fatal. This is the pre-push /
+  // daily mode; the default stays observation (exit 0).
+  final cleanLayers = args.contains('--clean-layers');
+  final fatal = args.contains('--fatal') || cleanLayers;
   final quiet = args.contains('--quiet');
   final targetArg = args.where((a) => !a.startsWith('-')).firstOrNull;
   final scriptDir = File(Platform.script.toFilePath()).parent.path;
@@ -104,6 +110,20 @@ void main(List<String> args) async {
     }
   }
 
+  // Directory-shape rules (R8 file cap, R9 forbidden directory). Evaluated once
+  // per directory; the CLI owns the file-system walk.
+  for (final dirFinding in scanDirectories(targetPath)) {
+    findings.add(
+      _Finding(
+        rule: dirFinding.rule,
+        filePath: '${dirFinding.directory}/',
+        line: 0,
+        column: 0,
+        message: dirFinding.message,
+      ),
+    );
+  }
+
   findings.sort((a, b) {
     final byPath = a.filePath.compareTo(b.filePath);
     if (byPath != 0) return byPath;
@@ -119,6 +139,23 @@ void main(List<String> args) async {
     }
   }
 
+  // In the strict gate, only the Clean Architecture rules count: the legacy
+  // eight observation rules are unrelated to layering and must not block a
+  // push while their own cleanup is still pending.
+  const cleanLayerRules = {
+    'domain_purity',
+    'application_layer',
+    'data_layer',
+    'presentation_layer',
+    'cross_feature_import',
+    'core_not_import_features',
+    'directory_file_cap',
+    'forbidden_directory',
+  };
+  if (cleanLayers) {
+    findings.removeWhere((f) => !cleanLayerRules.contains(f.rule));
+  }
+
   final byRule = <String, int>{};
   for (final finding in findings) {
     byRule[finding.rule] = (byRule[finding.rule] ?? 0) + 1;
@@ -131,9 +168,14 @@ void main(List<String> args) async {
     stdout.writeln('  $rule: ${byRule[rule]}');
   }
   stdout.writeln(
-    findings.isEmpty
-        ? 'observation mode: clean.'
-        : 'observation mode: findings are warnings (run with --fatal to gate).',
+    cleanLayers
+        ? (findings.isEmpty
+              ? 'clean-layers gate: clean.'
+              : 'clean-layers gate:'
+                    '${findings.length} blocking violation(s).')
+        : (findings.isEmpty
+              ? 'observation mode: clean.'
+              : 'observation mode: findings are warnings (run with --fatal to gate).'),
   );
   exit(fatal && findings.isNotEmpty ? 1 : 0);
 }
@@ -186,10 +228,40 @@ final class _RuleDriverVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitImportDirective(ImportDirective node) {
-    LayeredImportRule.checkImport(
+    // Strict Clean Architecture layer rules (no whitelist). The legacy
+    // layered_import rule is intentionally not run: it carries carve-outs
+    // (presentation providers, shell, core/auth, core/push) that the
+    // architecture plan removed.
+    DomainPurityRule.checkImport(
       directive: node,
       filePath: filePath,
-      report: (node, arguments) => report('layered_import', node, arguments),
+      report: (n, arguments) => report('domain_purity', n, arguments),
+    );
+    ApplicationLayerRule.checkImport(
+      directive: node,
+      filePath: filePath,
+      report: (n, arguments) => report('application_layer', n, arguments),
+    );
+    DataLayerRule.checkImport(
+      directive: node,
+      filePath: filePath,
+      report: (n, arguments) => report('data_layer', n, arguments),
+    );
+    PresentationLayerRule.checkImport(
+      directive: node,
+      filePath: filePath,
+      report: (n, arguments) => report('presentation_layer', n, arguments),
+    );
+    CrossFeatureImportRule.checkImport(
+      directive: node,
+      filePath: filePath,
+      report: (n, arguments) => report('cross_feature_import', n, arguments),
+    );
+    CoreNotImportFeaturesRule.checkImport(
+      directive: node,
+      filePath: filePath,
+      report: (n, arguments) =>
+          report('core_not_import_features', n, arguments),
     );
     super.visitImportDirective(node);
   }

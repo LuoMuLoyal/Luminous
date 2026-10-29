@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 # 全 Tab 组件化：组件库、变体、用户自定义布局、生成式 UI
@@ -15,6 +15,15 @@ Created: 2026-10-28
 > 组件、什么顺序、哪个变体、每个组件的选项**；底部 tab 自身的**图标、名称、顺序全部可配**
 > （名称接受自由文本）；每个 tab 的组件库额外提供一个**生成式 UI 组件**，
 > 由 AI **真正生成布局**（A2UI 组件树），不走「受限 spec」的降级路线。
+>
+> **组件化本身的立场是「原生组件化」（§0.5）**：组件是开发者写的原生 Flutter Widget，
+> 装配层只做「按声明取 builder + 统一间距 + 未知 id 容错」，不引入第二套 DSL，
+> 也不让 codegen 介入组件定义。AI-native 只是类比——说明「组件是页面构成的稳定单位」
+> 这件事值得先做，不是要把 AI 塞进渲染路径。
+
+**架构立场：原生组件化（§0.5）。** 组件定义与渲染方式不变；新增组件与变体（P1/P3/P4/P5）、
+装配层（P0）、用户组合（P2/P6）、生成式渲染（P7）、AI 会话画布（P8）都属于组件化，
+只是各作用在组件生命周期的不同层。
 
 - 范围：`Luminous`（Flutter 客户端）为主 + `Lucent`（3 个新端点的契约）
 - 分 9 个阶段，**每个阶段都能单独发布**，不允许跨阶段混提交
@@ -38,6 +47,66 @@ Created: 2026-10-28
   `ReorderableListView` 完成拖拽重排并写回偏好。
 
 **结论：不发明新机制，把这套既有形态提升成跨 tab 的通用层。**
+
+## 0.5 组件化的立场：原生组件化
+
+**组件就是开发者写的原生 Flutter Widget。**「组件化」在这个仓里指三件事：
+页面构成的单位被抽出来、单位之间可以独立增减、单位能被其它页面复用。
+它**不**指引入一套新的 UI 描述语言，也不指把组件定义交给 codegen 或 AI。
+
+AI-native 是这类架构的**类比**，不是本计划的目标：AI-native 把「agent 能调用的动作」
+抽成稳定单位，让上层（可以是人、可以是 agent）按同一套规则组合，而不用改页面自身的代码。
+本仓抽出来的是 Widget，组合者是用户（P2）与生成式 UI（P7）——两者都只产出
+`ComponentSpec` / A2UI 消息，**不参与组件的定义与渲染**。
+
+据此立四条判据，每一条都能在代码里验证，且作为每个阶段的验收项：
+
+1. **组件是原生 Widget，配置强类型。** 组件描述符的 builder 签名是
+   `Widget Function(BuildContext, ComponentDescriptor 声明的配置)`，配置在编译期检查。
+   禁止 `Map<String, Object?> options` 这类弱类型入口（§2 的 `ComponentSpec.options`
+   只承载**持久化**的 JSON，进入 builder 前必须先经 descriptor 的强类型解码；
+   解码失败按未知 id 处理，不做类型擦除后的 downcast）。
+2. **组件不自带页面装配。** 组件的构造函数不得接收页面级回调（`onRetry` / `onGoXxx` /
+   数据切片）。数据由组件自己的 `ConsumerWidget` 从 provider 取；需要跨页跳转时取
+   `GoRouter`，不接受由页面注入的 `onTap`。
+3. **`pages/` 里不再出现 `final sections = <Widget>[...]`。** 页面的职责收敛为
+   「决定本页 surface 是什么」+ `ComponentHost(placements: ...)` 一行。
+4. **新增组件不需要改任何 `pages/` 文件。** 这是本计划整体的验收标准，
+   在 P0 之后每个阶段结束都要重新跑一遍。
+
+### 0.5.1 现状：仓里已经有三个「不完整的组件目录」
+
+这三处都能在代码里核实，说明组件化不是从零发明，而是把已有雏形收拢：
+
+| 位置 | 已有的雏形 | 为什么不够 |
+| --- | --- | --- |
+| `lib/features/medicine/presentation/pages/detail_sections.dart:18` + `:389` | `MedicineDetailSections` 元数据表 + `MedicineDetailSection{tier, title, body, count}` | 只服务药品详情一个页面；`body` 是 `DetailSectionBody` 子类族，换页面就得重写一套子类 |
+| `lib/features/review/domain/entities/review.dart:66-115` | `ReviewSections` / `ReviewSection` / `ReviewSectionReasonCodes` 的 available/unknown 语义 | 只服务 review；语义正确但绑死在域模型上，不能跨 tab 复用 |
+| `lib/features/record/presentation/pages/quick_entry_reorder.dart` + `recordQuickEntryCustomOrder` 键 | 已经跑通的「有序 id 列表 + `ReorderableListView` 重排 + KV 持久化」链路 | 只服务快速记录面板，没有提到 tab 页级别 |
+
+**§2 的 `lib/core/composition/` 就是这三处的通用化。** 这三份既有形态在本计划中的归宿：
+
+- `detail_sections.dart` 的元数据表 → P0 之后由 medicine 的组件目录吸收，
+  `DetailSectionBody` 子类族保留为组件内部实现细节（不进 `core/`）；
+- `ReviewSection` 的 available/unknown → §2 `ComponentDescriptor` 的**降级态契约**
+  （见 0.5.2），从 review 域模型提升为组件层公共语义；
+- quick entry 的重排 + 持久化 → P2 `customizer/` 与 `TabLayoutStore` 的直接先例。
+
+### 0.5.2 组件层的公共契约（跨阶段不变量）
+
+以下四条对所有阶段的组件都成立，写在这里避免每个阶段各自发明：
+
+- **降级态由宿主统一处理，不由组件各写各的。** review 的 `ReviewSectionState.unknown` +
+  `reasonCode` 语义提升为组件层公共形态：组件可以报告「本组件此刻不可用 + 原因码」，
+  `ComponentHost` 决定是留白还是渲染降级卡。**不得渲染成「无风险 / 无异常」**——
+  这条与 P1 的图查询 `200 + status` 降级是同一件事，只是作用面从 medicine 扩到了全局。
+- **用户可见文案一律走 ARB，组件标题也是。** 组件描述符的标题取 `AppLocalizations`，
+  不从 spec 里读字符串（用户自由文本仅在 P6 的 tab 名称一处例外，见 P6-1）。
+- **组件 id 是在 `ComponentHost` 里的唯一身份**：测试键、持久化键、未知 id 容错、
+  下架（`visible: false`）全都绑 id，不绑位置。
+- **`core/composition/` 不 import 任何 feature 的 presentation 层。** 组件注册在每个
+  feature 自己的目录里（如 `lib/features/today/presentation/components/`），
+  `catalog.dart` 只做装配清单，不持有 builder 实现。
 
 ## 1. 依赖决策（已落地）
 
@@ -123,9 +192,21 @@ lib/core/composition/
 - `mobile_dashboard.dart` 的 `final sections = <Widget>[...]` 换成
   `ComponentHost(specs: defaultTodayLayout)`；`SizedBox.shrink()` 占位**全部删除**
 - 默认布局 = 现有顺序，**像素级不变**
-- 验收：`test/features/today/` 现有 20 个测试全绿；新增 `host_test.dart`
-  覆盖「未知 id 跳过」「空组件不留间距」「顺序即渲染顺序」
-- 估：3–5 天
+- **P0 是「原生组件化」的基准阶段，§0.5 四条判据逐条在此落地并测试**：
+  1. descriptor 的 builder 收强类型配置（today 的 greeting / summary 各带自己的
+     config 类型，先落最小形态，P2 再加变体字段）
+  2. 被接入的 7 个 section 逐个去掉页面注入的回调：`onSignIn` / `onRefresh` /
+     `dashboard` 这类参数改为组件自己 `ref.watch` 对应 provider、自己取 `GoRouter`。
+     **这一步会改 today 的现有 widget 测试**（不再注入回调），是本阶段真正的成本所在，
+     不是套一层 host
+  3. `mobile_dashboard.dart` 只剩「顶栏 + 刷新指示器 + `ComponentHost`」
+  4. 新增一个探索性空 id 到 registry，断言不碰 `pages/` 即可渲染出来（验证性用例，
+     落地后删除）
+- 验收：`test/features/today/` 现有测试全绿（含因去掉回调参数而做的装配调整）；
+  新增 `host_test.dart` 覆盖「未知 id 跳过」「空组件不留间距」「顺序即渲染顺序」；
+  新增 `composition_contract_test.dart` 断言判据 1/2/3（配置类型、无回调参数、
+  页面无 `<Widget>[` 列表字面量）
+- 估：3–5 天（若 today 的回调解耦超预期，允许 P0 拆成 P0a 骨架 + P0b 回调解耦两次提交）
 
 ### P1 用药页组件化 + 接通 10 个未调用端点
 
@@ -163,11 +244,19 @@ listTransportRoutes getMedicationOverview
 
 - `customizer/`：每个 tab 一个编辑页，`ReorderableListView` 拖拽 + 显隐开关 +
   变体选择；**入口长在 tab 页自身的「编辑」按钮上，不做「设置 → 首页编辑」深层菜单**
-- `TabLayoutStore` 落盘：键 `tabLayout.<tab>`，值即 `TabLayout` JSON
+- `TabLayoutStore` 落盘：键 `tabLayout.<tab>`，值即 `TabLayout` JSON。
+  **键名进 `lib/core/config/pref_keys.dart`**（仓库约定 `domain.subfield.field`），
+  不散落在组件层里手写字符串
 - 变体机制：`ComponentDescriptor.variants`，每个变体声明自己的 options schema；
   today.summary 先落地用户明确要的那个：
   - 变体 `compact`：从 {饮水, 睡眠, 步数, 症状变化} 中**选 3 个**展示
   - 变体 `trend_single`：单维度趋势图（依赖 P3 的趋势组件抽象，可先置灰）
+- **变体的落地形态受 §0.5 判据 1 约束**：变体选择结果写进 `ComponentSpec.variant`，
+  进入 builder 之前必须由 descriptor 解码成**强类型选项**（如
+  `sealed class SummaryVariant { Compact(left/mid/right: MetricKind) | TrendSingle(kind, range) }`），
+  builder 签名收 `SummaryVariant`，不收 `Map`。
+  「选 3 个指标」因此是 `Compact` 的三个字段，而不是一个自由形态的 map——
+  这样填错在编译期报错，P7 的 AI 也无法构造出 schema 之外的选项组合
 - 一条硬约束：**默认布局必须是好用的**。用户从不进编辑页也必须拿到完整体验；
   编辑器不给空状态（不允许把组件删到一个不剩）
 - 验收：布局持久化往返测试（含 schemaVersion 不匹配回退默认）；widget 测试覆盖
@@ -313,6 +402,19 @@ GET /daily-records/month-overview?month=YYYY-MM&kind=<可选>
 理由：`genui` 仍是 0.10.4（0.x），API 会破坏性变更；封闭单目录让升级改动面可控。
 这是工程隔离，不是功能限制。
 
+#### 7.0 与「原生组件化」的边界（§0.5 的推论）
+
+genui 是**渲染引擎**，不是组件的定义者。两条不能混：
+
+- A2UI 树里的节点只能落在 `LuminousCatalog` 已注册的 `CatalogItem` 上；
+  **不允许**通过 A2UI 定义一个「新组件」再保存下来复用——生成结果是一次性的布局产物，
+  不是组件类型的来源。
+- 领域 `CatalogItem` 的 `widgetBuilder` 内部直接复用 §2 `ComponentRegistry` 里的组件
+  Widget，不重新实现一遍。**同一个组件在「用户排的布局」和「AI 排的布局」里是同一份代码**，
+  差别只在谁决定放哪儿。这条是 P7 与 P0–P5 之间唯一需要的桥，也是防止两套组件库分叉的保证。
+- 生成式组件（`{tab}.generative`）本身也是一个普通组件：它只负责「把 surface 渲染出来」，
+  不接管整个页面的布局。
+
 #### 7.1 genui 的实际形态（已读源码，不是猜的）
 
 | 概念 | 事实 | 对我们的意义 |
@@ -359,14 +461,19 @@ GET /daily-records/month-overview?month=YYYY-MM&kind=<可选>
 - `lib/core/composition/genui/catalog.dart` —— `LuminousCatalog`（上面那套 item 集合）
 - `lib/core/composition/genui/controller.dart` —— `SurfaceController` 的 Riverpod 封装，
   `surfaceUpdates` → `StreamProvider`；**单例存活**，避免每次重建丢失 surface
-- `lib/core/composition/genui/catalog_item/` —— 各 `CatalogItem` 的 schema + builder
+- `lib/core/composition/genui/catalog_item/` —— 各 `CatalogItem` 的 schema + builder。
+  **builder 只做「schema 键 → 强类型 config」的解码，然后转调 §2 registry 里的组件**；
+  `catalog_item/` 下不出现任何布局代码、样式代码或数据请求代码
+  （这是 §0.5 判据 1 在 P7 的落地形态，也是保证 genui 升级时改动面可控的实质手段）
 - `{tab}.generative` 组件 —— 每 tab 一个，作为 `ComponentHost` 的普通组件；
   内部渲染 `Surface(surfaceContext: ...)`，无定义时用 `FallbackWidget`
 - **事件驱动 + 手动刷新两条路都要**：AI 生成的新 surface 经 `surfaceUpdates` 流
   自动替换；用户也可在组件上手动「重新生成」
 - 生成结果**持久化**：把最后一次的 A2UI 消息序列存 `KvStore`
-  （键 `genui.<tab>.surface`），重启后重放到 `SurfaceController`，
-  不必重新请求——否则每次冷启动都要烧一次 LLM 调用
+  （键 `genui.<tab>.surface`，同样登记进 `pref_keys.dart`），重启后重放到
+  `SurfaceController`，不必重新请求——否则每次冷启动都要烧一次 LLM 调用
+- **降级口径与 §0.5.2 一致**：surface 渲染失败 → `FallbackWidget` + 保留上一份；
+  **绝不留白屏，也绝不把「数据缺失」渲染成「无风险」**
 
 `Lucent` 新增：
 
@@ -430,6 +537,10 @@ P6 与 P3/P4/P5 无耦合，理论上可并行——但它动 `shell/` + `router
 不可跨越：P7 必须等 P2（`ComponentHost` 要能承载一个 surface 组件）
 与 P4（`LuminousCalendarHeatmap` 依赖月概览数据）。
 
+**原生组件化视角**（§0.5）：P0 是唯一集中落判据 1–3 的阶段；此后每个阶段
+（含 P1 新增的 10 个 medicine 组件、P3/P4/P5 的每批组件、P7 的每个 `CatalogItem`）
+都必须重新跑一遍 §0.5 的四条判据，**新增组件不改任何 `pages/` 文件是硬验收项**。
+
 ## 5. 风险与红线
 
 | 风险 | 应对 |
@@ -448,15 +559,23 @@ P6 与 P3/P4/P5 无耦合，理论上可并行——但它动 `shell/` + `router
 | tab 改名后文档/引导图对不上 | 接受（这是自由文本的必然代价）；`docs/reference/localization.md` 记录该例外 |
 | tab 换序导致测试与深链错乱 | 测试键绑 tab 身份不绑位置；深链绑路由 path；参数化测试覆盖五种排列 |
 | 大日历 30 个请求 | 必须先用 P4 的月概览端点，不接受逐日请求 |
+| **组件层退化成第二套 UI DSL / 弱类型 options** | §0.5 判据 1/2 作为每阶段验收项；`options` 只在持久化边界存在，进 builder 前必须解码成强类型 config，解码失败按未知 id 处理 |
+| **组件库里出现两个同构实现（用户布局一套、AI 布局一套）** | P7.0：`CatalogItem` builder 必须转调 §2 registry 的组件，禁止在 `genui/catalog_item/` 里重写渲染 |
+| **组件带页面回调，导致无法跨 tab 复用** | §0.5 判据 2：组件不进 `onXxx` 参数，数据取 provider、导航取 `GoRouter` |
+| **页面级 `<Widget>[` 列表悄悄长回来** | §0.5 判据 3 由 `composition_contract_test.dart` 守（P0 建立，此后每阶段保留） |
 
 ## 6. 执行注意
 
 - l10n 铁律：改 `lib/l10n/src/` 片段 → `dart scripts/l10n/arb_tools.dart merge`
   → `flutter gen-l10n`，**不碰 `app_*.arb`**
-- 每个组件新增用户可见文案，走对应 feature 的 ARB 片段
+- 每个组件新增用户可见文案，走对应 feature 的 ARB 片段；**组件标题也走 ARB**，
+  不从 spec / options 里读字符串（唯一例外是 P6-1 的 tab 自由文本）
 - 每个阶段结束追加 `docs/logs/migration-log/YYYY-MM-DD.md`（只追加不覆盖）
 - 契约变更后：`Lucent` 跑 `pnpm export:openapi`，`Luminous` 跑
   `dart run scripts/contract/bootstrap.dart`
 - 窄命令迭代（`flutter analyze` + 单个测试文件），收尾跑
   `dart run scripts/workflows/daily.dart`
-- 已完成项从本文件**直接删除**，不留 `✅` / `DONE` 标记
+- **§0.5 四条判据是每个阶段的验收项**，不是 P0 的一次性任务。特别是
+  「新增组件不需要改任何 `pages/` 文件」——做不到说明组件化没成立，
+  要停下来修装配层，而不是在页面里再补一个 `if`
+- 完成项从本文件**直接删除**，不留 `✅` / `DONE` 标记

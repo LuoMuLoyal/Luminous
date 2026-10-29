@@ -103,16 +103,17 @@ Future<void> runPrePushChecks(ToolContext context) async {
   );
   stdout.writeln('');
 
-  // Custom lint rules — observation mode (always exit 0); --quiet keeps
-  // the output to the per-rule summary.
+  // Strict Clean Architecture rules (R1–R9, no whitelist): a violation blocks
+  // the push. The rules replace the old observation-mode `layered_import`; see
+  // plans/2026-10-21-ddd-refactor-frontend.md (C0).
   await runLoggedCommand(
     'dart',
-    ['run', 'bin/luminous_lints.dart', '--quiet'],
+    ['run', 'bin/luminous_lints.dart', '--clean-layers', '--quiet'],
     workingDirectory: Directory(
       '${context.repoRoot.path}${Platform.pathSeparator}'
       'tool${Platform.pathSeparator}luminous_lints',
     ),
-    stepName: 'luminous_lints (observation)',
+    stepName: 'luminous_lints --clean-layers (gate)',
   );
 }
 
