@@ -2,22 +2,46 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/push/jpush_gateway.dart';
 import 'package:luminous/core/push/message_handler.dart';
-import 'package:luminous/features/settings/data/providers/notification_permission.dart';
-import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 
 typedef PushEventSink = void Function(Map<String, dynamic> event);
+
+/// Whether the OS allows this app to post notifications.
+///
+/// Mirrored from the feature-owned enum so `core/push` can gate push authority
+/// without importing `features/settings` (`core_not_import_features`). The
+/// adapter in `lib/app/push_handlers.dart` maps the feature value onto it.
+enum PushPermissionStatus { granted, denied, permanentlyDenied, unsupported }
+
+/// Minimal notification-permission probe used by [PushCoordinator].
+abstract interface class PushPermissionProbe {
+  Future<PushPermissionStatus> readStatus();
+}
+
+/// Reports "denied" until the composition root registers a real probe.
+class NoopPushPermissionProbe implements PushPermissionProbe {
+  const NoopPushPermissionProbe();
+
+  @override
+  Future<PushPermissionStatus> readStatus() async =>
+      PushPermissionStatus.denied;
+}
+
+/// Composition-root seam: overridden by `lib/app/push_handlers.dart`.
+final pushPermissionProbeProvider = Provider<PushPermissionProbe>(
+  (ref) => const NoopPushPermissionProbe(),
+);
 
 /// Coordinates the JPush process lifecycle with the authenticated user.
 class PushCoordinator {
   PushCoordinator({
     required this.gateway,
     required this.sink,
-    required this.permissionService,
+    required this.permissionProbe,
   });
 
   final JpushGateway gateway;
   final PushEventSink sink;
-  final NotificationPermissionService permissionService;
+  final PushPermissionProbe permissionProbe;
 
   Future<void>? _startFuture;
   Future<void> _authChanges = Future<void>.value();
@@ -61,8 +85,8 @@ class PushCoordinator {
       _boundUserId = null;
     }
 
-    final permissionState = await permissionService.getPermissionState();
-    if (permissionState == NotificationPermissionState.granted) {
+    final permissionState = await permissionProbe.readStatus();
+    if (permissionState == PushPermissionStatus.granted) {
       gateway.applyPushAuthority();
     }
     await gateway.setAlias(normalizedUserId);
@@ -75,6 +99,6 @@ final pushCoordinatorProvider = Provider<PushCoordinator>((ref) {
   return PushCoordinator(
     gateway: ref.watch(jpushGatewayProvider),
     sink: messageHandler.handleOpenEvent,
-    permissionService: ref.watch(notificationPermissionServiceProvider),
+    permissionProbe: ref.watch(pushPermissionProbeProvider),
   );
 });
