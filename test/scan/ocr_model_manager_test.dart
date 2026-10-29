@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/scan/domain/services/ocr_model_hashes.dart';
-import 'package:luminous/features/scan/domain/services/ocr_model_manager.dart';
+import 'package:luminous/features/scan/data/datasources/ocr_model_hashes.dart';
+import 'package:luminous/features/scan/data/datasources/ocr_model_manager.dart';
 
 /// Downloader stub that writes a fixed byte payload to the target path and
 /// records the URLs it was asked to download.
