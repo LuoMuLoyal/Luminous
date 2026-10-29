@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/features/settings/presentation/pages/oss_licenses.dart';
+import 'package:luminous/features/settings/presentation/pages/about/oss_licenses.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/oss_licenses.dart';
 

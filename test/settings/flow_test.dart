@@ -24,16 +24,16 @@ import 'package:luminous/features/settings/data/providers/profile.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/repositories/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
-import 'package:luminous/features/settings/presentation/pages/about.dart';
-import 'package:luminous/features/settings/presentation/pages/advanced.dart';
-import 'package:luminous/features/settings/presentation/pages/ai.dart';
-import 'package:luminous/features/settings/presentation/pages/data_export.dart';
-import 'package:luminous/features/settings/presentation/pages/help.dart';
-import 'package:luminous/features/settings/presentation/pages/language.dart';
-import 'package:luminous/features/settings/presentation/pages/notification.dart';
+import 'package:luminous/features/settings/presentation/pages/about/about.dart';
+import 'package:luminous/features/settings/presentation/pages/about/help.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/advanced.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/language.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/theme.dart';
+import 'package:luminous/features/settings/presentation/pages/data/data_export.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/notification.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/sleep_reminder.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart';
-import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
-import 'package:luminous/features/settings/presentation/pages/theme.dart';
 import 'package:material_ui/material_ui.dart'
     as mui
     show MaterialApp, ThemeMode;

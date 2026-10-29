@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/features/settings/presentation/pages/accessibility.dart';
-import 'package:luminous/features/settings/presentation/pages/data_storage.dart';
-import 'package:luminous/features/settings/presentation/pages/dnd.dart';
-import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/accessibility.dart';
+import 'package:luminous/features/settings/presentation/pages/data/data_storage.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/dnd.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/sleep_reminder.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/kv_test_store.dart';

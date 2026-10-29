@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/settings/presentation/pages/about.dart';
+import 'package:luminous/features/settings/presentation/pages/about/about.dart';
 import 'package:luminous/features/settings/presentation/providers/package_info.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/features/support/domain/entities/app_info.dart';
