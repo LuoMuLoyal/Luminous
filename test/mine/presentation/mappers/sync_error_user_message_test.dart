@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/database/daos/pending_sync.dart';
-import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/errors/network_error_l10n.dart';
 import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/providers/pending_sync_access.dart';
 import 'package:luminous/features/mine/presentation/mappers/sync_error_user_message.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-PendingSyncEntry _entry({PendingSyncErrorDetails? details}) => PendingSyncEntry(
-  id: 'pending-1',
-  entityType: 'daily_record',
-  entityId: 'record-1',
-  operation: 'update',
-  payload: '{}',
-  createdAt: DateTime(2026, 8, 2, 12, 0),
-  retryCount: 5,
-  maxRetry: 5,
-  lastError: 'raw exception',
-  errorDetails: details,
-);
+PendingSyncFailure _entry({PendingSyncErrorView? details}) =>
+    PendingSyncFailure(
+      id: 'pending-1',
+      entityType: 'daily_record',
+      entityId: 'record-1',
+      operation: 'update',
+      payload: '{}',
+      createdAt: DateTime(2026, 8, 2, 12, 0),
+      retryCount: 5,
+      maxRetry: 5,
+      lastError: 'raw exception',
+      errorDetails: details,
+    );
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +33,7 @@ void main() {
   test('network-layer error code maps via NetworkErrorL10n', () {
     final message = mapSyncErrorToUserMessage(
       _entry(
-        details: const PendingSyncErrorDetails(
+        details: const PendingSyncErrorView(
           networkErrorCode: NetworkErrorCode.connectionError,
           kind: LucentFailureKind.network,
         ),
@@ -50,7 +50,7 @@ void main() {
       'Problem Details code', () {
     final message = mapSyncErrorToUserMessage(
       _entry(
-        details: const PendingSyncErrorDetails(
+        details: const PendingSyncErrorView(
           code: 'VALIDATION_FAILED',
           statusCode: 400,
           kind: LucentFailureKind.business,
@@ -64,7 +64,7 @@ void main() {
   test('auth kind maps to the auth message', () {
     final message = mapSyncErrorToUserMessage(
       _entry(
-        details: const PendingSyncErrorDetails(
+        details: const PendingSyncErrorView(
           kind: LucentFailureKind.authentication,
           statusCode: 401,
         ),
@@ -77,7 +77,7 @@ void main() {
   test('server kind maps to the server message', () {
     final message = mapSyncErrorToUserMessage(
       _entry(
-        details: const PendingSyncErrorDetails(
+        details: const PendingSyncErrorView(
           kind: LucentFailureKind.server,
           statusCode: 500,
         ),
@@ -90,7 +90,7 @@ void main() {
   test('network kind without a specific code maps to the network message', () {
     final message = mapSyncErrorToUserMessage(
       _entry(
-        details: const PendingSyncErrorDetails(
+        details: const PendingSyncErrorView(
           kind: LucentFailureKind.network,
           networkErrorCode: null,
         ),
@@ -103,7 +103,7 @@ void main() {
   test('unknown kind and null details fall back to the unknown message', () {
     final unknownKind = mapSyncErrorToUserMessage(
       _entry(
-        details: const PendingSyncErrorDetails(kind: LucentFailureKind.unknown),
+        details: const PendingSyncErrorView(kind: LucentFailureKind.unknown),
       ),
       l10n,
     );
