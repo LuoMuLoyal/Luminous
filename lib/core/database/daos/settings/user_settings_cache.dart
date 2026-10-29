@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../../database.dart';
-import '../../tables/user_settings_cache.dart';
+import '../../tables/settings/user_settings_cache.dart';
 
 part 'user_settings_cache.g.dart';
 

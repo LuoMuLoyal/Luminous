@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../../database.dart';
-import '../../tables/health_context.dart';
+import '../../tables/health/health_context.dart';
 
 part 'health_context.g.dart';
 

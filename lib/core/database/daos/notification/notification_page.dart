@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../../database.dart';
-import '../../tables/notification_pages.dart';
+import '../../tables/notification/notification_pages.dart';
 
 part 'notification_page.g.dart';
 

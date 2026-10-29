@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../../database.dart';
-import '../../tables/medicine_workspaces.dart';
+import '../../tables/medicine/medicine_workspaces.dart';
 
 part 'medicine_workspace.g.dart';
 

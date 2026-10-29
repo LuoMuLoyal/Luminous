@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 
 import '../../database.dart';
-import '../../tables/today_suggestions.dart';
+import '../../tables/review/today_suggestions.dart';
 
 part 'today_suggestion.g.dart';
 

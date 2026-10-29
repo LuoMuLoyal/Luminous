@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 
 import '../../database.dart';
-import '../../tables/daily_records.dart';
+import '../../tables/records/daily_records.dart';
 
 part 'daily_record.g.dart';
 
