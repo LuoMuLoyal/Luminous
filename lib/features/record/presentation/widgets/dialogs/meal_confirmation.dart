@@ -6,7 +6,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
-import 'package:luminous/features/record/domain/services/meal_quick_entry.dart';
+import 'package:luminous/features/record/presentation/quick_entry/flows/meal_quick_entry.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MealQuickConfirmationDialog extends StatefulWidget {

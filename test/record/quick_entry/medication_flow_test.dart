@@ -3,9 +3,9 @@ import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/record/domain/services/medication_quick_entry.dart';
 import 'package:luminous/features/record/domain/services/quick_entry.dart';
 import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
+import 'package:luminous/features/record/presentation/quick_entry/flows/medication_quick_entry.dart';
 
 void main() {
   group('MedicationQuickEntryWindow', () {

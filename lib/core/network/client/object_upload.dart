@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// A presigned direct-to-object-storage upload: the credentials the backend
 /// signed, plus where the object will live once it is PUT.

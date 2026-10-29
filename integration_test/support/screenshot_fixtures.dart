@@ -8,10 +8,10 @@
 // Keep this file in step with the domain entities it builds. If an entity gains
 // a required field, add it here and the compiler will point at the rest.
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 

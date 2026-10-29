@@ -1,13 +1,14 @@
 // ignore_for_file: prefer_initializing_formals, avoid_renaming_method_parameters
 
 import 'dart:async';
+
 import 'package:dio/dio.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/core/network/contract/api_paths.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/network/map_utils.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Outcome of a token-refresh attempt.
 ///

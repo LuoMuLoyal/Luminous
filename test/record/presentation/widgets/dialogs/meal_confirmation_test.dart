@@ -4,7 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
-import 'package:luminous/features/record/domain/services/meal_quick_entry.dart';
+import 'package:luminous/features/record/presentation/quick_entry/flows/meal_quick_entry.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/meal_confirmation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

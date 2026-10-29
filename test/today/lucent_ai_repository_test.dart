@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/repositories/ai.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/task_either.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/widgets/common/feedback/connectivity_banner.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

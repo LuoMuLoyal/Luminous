@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/data_access.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 part 'login.freezed.dart';
 

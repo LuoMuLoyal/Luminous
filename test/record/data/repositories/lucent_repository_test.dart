@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:luminous/features/record/application/mappers/dashboard_assembler.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:luminous/features/record/presentation/mappers/dashboard_assembler.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 // ── Fake DailyRecordRepository ──────────────────────────────────
 

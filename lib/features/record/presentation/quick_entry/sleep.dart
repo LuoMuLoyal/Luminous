@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_sleep.dart';
-import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
-import 'package:luminous/features/record/presentation/quick_entry/quick_entry_providers.dart';
+import 'package:luminous/features/record/presentation/quick_entry/core/quick_entry_providers.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/sleep_quick_entry_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

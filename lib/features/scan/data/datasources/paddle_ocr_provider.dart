@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/features/scan/data/datasources/ocr_model_manager.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:paddle_ocr_native/paddle_ocr_native.dart';
@@ -107,7 +107,7 @@ final paddleOcrProvider = FutureProvider<PaddleOcrEngine>((ref) async {
     try {
       await engine.dispose();
     } catch (e, st) {
-      appTalker.warning('PaddleOcrEngine dispose error: $e', e, st);
+      appLog.warning('PaddleOcrEngine dispose error: $e', e, st);
     }
   });
   return engine;

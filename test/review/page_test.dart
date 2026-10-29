@@ -5,13 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/app/composition/review/review.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -27,6 +26,7 @@ import 'package:luminous/features/review/presentation/widgets/sections/preview/e
 import 'package:luminous/features/review/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/kv_test_store.dart';

@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/data/services/avatar_uploader.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockFilesApi extends Mock implements FilesApi {}

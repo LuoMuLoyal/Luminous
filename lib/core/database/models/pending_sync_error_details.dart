@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 part 'pending_sync_error_details.freezed.dart';
 part 'pending_sync_error_details.g.dart';

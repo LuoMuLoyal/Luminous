@@ -10,8 +10,7 @@ import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/database/sync/worker.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// 一条永久失败的同步项（展示层视角的只读视图）。
 class PendingSyncFailure {

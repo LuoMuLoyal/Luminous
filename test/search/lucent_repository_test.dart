@@ -2,11 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/database/daos/medicine/search_result.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:luminous/features/search/data/mappers/medicine_search.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/task_either.dart';
 

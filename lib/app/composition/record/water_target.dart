@@ -6,5 +6,5 @@
 /// may not import.
 library;
 
-export 'package:luminous/app/composition/record_water_target.dart';
+export 'package:luminous/app/composition/tokens/record_water_target.dart';
 export 'package:luminous/features/record/domain/constants/water.dart';

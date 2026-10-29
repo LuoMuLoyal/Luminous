@@ -5,26 +5,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/health_event/health_event.dart';
-import 'package:luminous/app/composition/legal.dart';
 import 'package:luminous/app/composition/medicine/workspace.dart';
 import 'package:luminous/app/composition/mine/mine.dart'
     show mineRepositoryProvider;
 import 'package:luminous/app/composition/notification/unread_count.dart'
     show notificationUnreadCountProvider;
-import 'package:luminous/app/composition/record.dart';
 import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/app/composition/review/review.dart'
     show reviewRepositoryProvider;
 import 'package:luminous/app/composition/settings/notification_permission.dart';
+import 'package:luminous/app/composition/snapshot/legal.dart';
+import 'package:luminous/app/composition/snapshot/record.dart';
 import 'package:luminous/app/composition/today/today_suggestion.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/client_providers.dart'
     show
         lucentBaseUrlProvider,
@@ -60,15 +59,16 @@ import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
-import 'package:luminous/features/search/data/repositories/lucent.dart'
-    show medicineSearchRepositoryProvider;
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
+import 'package:luminous/features/search/presentation/providers/data_access.dart'
+    show medicineSearchRepositoryProvider;
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../../test/helpers/feature_mocks.dart';
 import '../../test/helpers/kv_test_store.dart';
@@ -76,11 +76,11 @@ import '../../test/helpers/kv_test_store.dart';
 export 'package:flutter/material.dart';
 export 'package:flutter_test/flutter_test.dart';
 export 'package:forui/forui.dart';
+export 'package:luminous/app/auth_session_adapter.dart'
+    show authSessionProvider;
 export 'package:luminous/app/composition/review/review.dart'
     show reviewRepositoryProvider;
 export 'package:luminous/app/router.dart' show appRouterProvider;
-export 'package:luminous/core/auth/session_provider.dart'
-    show authSessionProvider;
 export 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart'
     show AuthVerificationScene;
 export 'package:luminous/features/health_context/domain/entities/write_inputs.dart';

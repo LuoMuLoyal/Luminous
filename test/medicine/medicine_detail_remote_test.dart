@@ -4,8 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_detail_remote.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockDio extends Mock implements Dio {}

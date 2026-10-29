@@ -1,17 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/app/composition/review_style.dart';
+import 'package:luminous/app/composition/tokens/review_style.dart';
 import 'package:luminous/core/database/daos/review/review_dashboard.dart';
-import 'package:luminous/app/composition/review_style.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/app/composition/review_style.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/review/data/datasources/dashboard_remote.dart';
-import 'package:luminous/app/composition/review_style.dart';
 import 'package:luminous/features/review/data/repositories/lucent_dashboard.dart';
-import 'package:luminous/app/composition/review_style.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/task_either.dart';
 

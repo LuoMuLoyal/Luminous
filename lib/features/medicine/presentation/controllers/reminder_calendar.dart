@@ -1,7 +1,7 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:timezone/data/latest.dart' as timezone_data;
 import 'package:timezone/timezone.dart' as timezone;

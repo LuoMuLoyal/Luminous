@@ -1,2 +1,2 @@
-export 'package:luminous/app/composition/notification.dart'
+export 'package:luminous/app/composition/snapshot/notification.dart'
     show notificationUnreadCountProvider;

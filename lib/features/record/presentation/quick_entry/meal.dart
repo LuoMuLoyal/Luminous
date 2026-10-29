@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
-import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/domain/services/hour_minute.dart';
-import 'package:luminous/features/record/domain/services/meal_quick_entry.dart';
 import 'package:luminous/features/record/domain/services/quick_entry.dart';
+import 'package:luminous/features/record/presentation/quick_entry/core/quick_entry_providers.dart';
+import 'package:luminous/features/record/presentation/quick_entry/flows/meal_quick_entry.dart';
 import 'package:luminous/features/record/presentation/quick_entry/meal_flow.dart';
-import 'package:luminous/features/record/presentation/quick_entry/quick_entry_providers.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/meal_confirmation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

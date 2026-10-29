@@ -2,9 +2,9 @@
 import 'package:clock/clock.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/repositories/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Test-only mock implementation of [ReviewDashboardRepository].
 class MockReviewDashboardRepository implements ReviewDashboardRepository {

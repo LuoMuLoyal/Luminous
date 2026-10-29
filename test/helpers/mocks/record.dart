@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Test-only mock implementation of [RecordRepository].
 

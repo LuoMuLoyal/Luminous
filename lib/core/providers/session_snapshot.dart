@@ -6,9 +6,9 @@
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 
-export 'package:luminous/core/auth/session_provider.dart'
+export 'package:luminous/app/auth_session_adapter.dart'
     show authSessionProvider;
 export 'package:luminous/core/auth/session_state.dart'
     show

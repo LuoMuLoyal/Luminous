@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/mine/data/repositories/lucent.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Test-only mock implementation of [MineRepository].
 class MockMineRepository implements MineRepository {

@@ -4,31 +4,14 @@ import 'package:luminous/core/network/app_log.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
 
+export 'package:luminous/core/network/app_log.dart' show LogLevel;
+
 part 'log_level.g.dart';
 
 /// Application log severity levels.
 ///
 /// Maps to [talker_pkg.Talker]'s internal log level filtering at runtime.
 /// Setting a [LogLevel] suppresses all messages below that level.
-enum LogLevel {
-  verbose,
-  info,
-  warning,
-  error,
-  none;
-
-  /// Parses a string into a [LogLevel], defaulting to [info].
-  static LogLevel fromString(String? value) {
-    return switch (value?.toLowerCase()) {
-      'verbose' => LogLevel.verbose,
-      'info' => LogLevel.info,
-      'warning' => LogLevel.warning,
-      'error' => LogLevel.error,
-      'none' => LogLevel.none,
-      _ => LogLevel.info,
-    };
-  }
-}
 
 /// Singleton [talker_pkg.Talker] instance shared by [talkerProvider] and
 /// [appTalker].

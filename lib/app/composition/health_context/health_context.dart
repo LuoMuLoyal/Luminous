@@ -5,16 +5,16 @@ import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/core/providers/session/auth_guarded.dart';
-import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
 import 'package:luminous/features/health_context/data/mappers/health_context.dart';
 import 'package:luminous/features/health_context/data/repositories/lucent.dart';
 import 'package:luminous/features/health_context/data/utils/health_context_snapshot_codec.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-export 'package:luminous/app/composition/health_context.dart'
+
+export 'package:luminous/app/composition/snapshot/health_context.dart'
     show healthContextSnapshotProvider;
+
 part 'health_context.g.dart';
 
 @riverpod

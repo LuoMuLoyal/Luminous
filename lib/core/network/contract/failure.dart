@@ -8,9 +8,8 @@
 /// `core/network/contract/error_code.dart`.
 library;
 
-export 'package:luminous/core/errors/client_error_code.dart'
-    show ClientErrorCode;
-export 'package:luminous/core/errors/lucent_failure.dart'
-    show LucentFailure, LucentFailureKind;
 export 'package:luminous/core/network/contract/error_code.dart'
     show NetworkErrorCode;
+export 'package:luminous/shared/domain/failure.dart'
+    show LucentFailure, LucentFailureKind;
+export 'package:luminous/shared/domain/failure.dart' show ClientErrorCode;

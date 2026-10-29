@@ -1,22 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:fpdart/fpdart.dart';
+import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/app/push_handlers.dart';
 import 'package:luminous/app/settings_adapters.dart';
 import 'package:luminous/app/sync_handlers.dart';
 import 'package:luminous/core/auth/session_gateway.dart';
 import 'package:luminous/core/auth/session_snapshot.dart';
 import 'package:luminous/core/database/sync/handlers.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
+import 'package:luminous/shared/domain/failure.dart';
+
+export 'package:luminous/app/auth_session_adapter.dart';
+export 'package:luminous/core/auth/session_provider.dart';
 
 // The app-side auth API (gateway override, snapshot adapters, and the typed
 // `AuthSessionState.user` accessor) is re-exported so feature code has a single
 // import and never needs to know which side of the core/feature seam a piece
 // lives on.
-export 'package:luminous/core/auth/session_provider.dart';
 
 /// Composition-root adapter between feature-owned auth entities and the
 /// feature-free `SessionSnapshot` value types that `lib/core/auth` consumes.

@@ -34,25 +34,25 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/health_sync/health_sync.dart'
     show healthSyncRepositoryProvider;
-import 'package:luminous/app/composition/legal.dart';
 import 'package:luminous/app/composition/medicine/workspace.dart'
     show medicineWorkspaceRepositoryProvider, reminderRepositoryProvider;
 import 'package:luminous/app/composition/mine/mine.dart'
     show mineRepositoryProvider;
 import 'package:luminous/app/composition/notification/unread_count.dart'
     show notificationUnreadCountProvider;
-import 'package:luminous/app/composition/record.dart';
 import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/app/composition/review/review.dart'
     show reviewDashboardRepositoryProvider;
+import 'package:luminous/app/composition/snapshot/legal.dart';
+import 'package:luminous/app/composition/snapshot/record.dart';
 import 'package:luminous/app/composition/today/today_suggestion.dart'
     show todayRepositoryProvider;
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart'
@@ -74,14 +74,14 @@ import 'package:luminous/features/notification/data/repositories/lucent.dart'
     show notificationRepositoryProvider;
 import 'package:luminous/features/review/presentation/providers/review.dart'
     show reviewCurrentProvider, reviewHistoryProvider;
-import 'package:luminous/features/scan/data/repositories/scan.dart'
-    show scanRepositoryProvider;
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/presentation/pages/box_scan.dart'
     show showMedicineBoxScanSheet;
+import 'package:luminous/features/scan/presentation/providers/data_access.dart'
+    show scanRepositoryProvider;
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart'
     show MedicineRecognizeDialog;
-import 'package:luminous/features/search/data/repositories/lucent.dart'
+import 'package:luminous/features/search/presentation/providers/data_access.dart'
     show medicineSearchRepositoryProvider;
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart'
     show medicineSearchNotifierProvider;

@@ -2,12 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/mine/mine.dart';
+import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/mine/mine_dashboard.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/task_either.dart';

@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Adapter that returns a JSON response with configurable status/body.
 ///

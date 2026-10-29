@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

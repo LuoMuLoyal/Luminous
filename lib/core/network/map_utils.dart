@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
-
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/lucent_failure_from_wire.dart';
 import 'package:luminous/core/network/contract/problem_details.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Coerces a JSON-decoded value into a `Map<String, dynamic>`.
 ///

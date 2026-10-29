@@ -4,14 +4,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/repositories/ai.dart';
 import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';

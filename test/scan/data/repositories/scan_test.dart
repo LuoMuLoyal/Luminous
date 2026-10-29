@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/repositories/scan.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../helpers/task_either.dart';

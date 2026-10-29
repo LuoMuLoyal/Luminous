@@ -4,11 +4,11 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/database/daos/health/health_context.dart';
 import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
 import 'package:luminous/features/health_context/data/mappers/health_context.dart';
 import 'package:luminous/features/health_context/data/repositories/lucent.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

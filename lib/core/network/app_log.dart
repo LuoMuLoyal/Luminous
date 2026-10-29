@@ -1,17 +1,33 @@
-/// Logging seam for the `data/` layer.
+/// Logging seam shared by every layer.
 ///
-/// `data/**` may depend on `core/network` / `core/database` / `core/storage`,
-/// not on `core/logger`. Repositories need to *emit* diagnostics (a degraded
-/// fetch, an ignored protocol invariant) but must not own logging
-/// configuration. This file is the only logging surface they consume.
-///
-/// `core/logger/log_level.dart` owns the Talker singleton (settings, level
-/// filtering, Sentry observer) and installs it through [setAppLogSink], so
-/// there is exactly one sink and a level change at runtime reaches every call
-/// site.
+/// `data/**` may depend on `core/network`, not on `core/logger`; this file is
+/// the only logging surface the data layer consumes. The Talker singleton and
+/// its Riverpod providers stay in `core/logger/log_level.dart`, which installs
+/// the sink here through [setAppLogSink] so runtime level changes reach every
+/// call site.
 library;
 
 import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
+
+enum LogLevel {
+  verbose,
+  info,
+  warning,
+  error,
+  none;
+
+  /// Parses a string into a [LogLevel], defaulting to [info].
+  static LogLevel fromString(String? value) {
+    return switch (value?.toLowerCase()) {
+      'verbose' => LogLevel.verbose,
+      'info' => LogLevel.info,
+      'warning' => LogLevel.warning,
+      'error' => LogLevel.error,
+      'none' => LogLevel.none,
+      _ => LogLevel.info,
+    };
+  }
+}
 
 talker_pkg.Talker? _sink;
 

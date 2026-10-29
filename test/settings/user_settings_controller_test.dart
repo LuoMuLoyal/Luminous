@@ -2,14 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';

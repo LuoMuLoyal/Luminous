@@ -2,13 +2,13 @@ import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/lucent_failure_from_wire.dart';
 import 'package:luminous/core/network/contract/problem_details.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../../../helpers/task_either.dart';
 

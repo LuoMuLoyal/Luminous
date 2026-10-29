@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/router_helpers.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/widgets/common/feedback/route_not_found.dart';
 import 'package:luminous/features/assistant/presentation/routes.dart'
     as assistant_routes;

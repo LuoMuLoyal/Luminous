@@ -1,8 +1,7 @@
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/errors/network_error_l10n.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Problem Details code for a Lucent 400 validation failure.
 ///

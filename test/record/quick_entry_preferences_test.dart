@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/storage/kv_store.dart';
-import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/presentation/providers/data_access.dart';
 
 import '../helpers/kv_test_store.dart';
 

@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Test-only mock implementation of [TodayRepository].
 ///

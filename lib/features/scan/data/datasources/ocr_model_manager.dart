@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'ocr_model_hashes.dart';
@@ -168,7 +168,7 @@ class OcrModelManager {
       }
 
       final url = '$_modelBaseUrl/$fileName';
-      appTalker.info('Downloading OCR model: $url → $targetPath');
+      appLog.info('Downloading OCR model: $url → $targetPath');
 
       try {
         await _downloader.download(
@@ -221,11 +221,11 @@ class OcrModelManager {
       if (e is OcrModelIntegrityException) rethrow;
       // Progress stays at 2/3 on failure; the caller's catch block handles
       // the error UI. Re-throw so the caller can show the failure dialog.
-      appTalker.error('OCR config copy failed', e, st);
+      appLog.error('OCR config copy failed', e, st);
       rethrow;
     }
 
-    appTalker.info('OCR model download complete');
+    appLog.info('OCR model download complete');
   }
 
   /// Verifies [file] against the expected digest for [fileName]; on mismatch
@@ -238,7 +238,7 @@ class OcrModelManager {
     final expectedDigest = expected ?? _expectedSha256(fileName);
     final actual = await _verifier(file);
     if (actual != expectedDigest) {
-      appTalker.error(
+      appLog.error(
         'OCR model integrity check failed for $fileName: '
         'expected $expectedDigest, got $actual — deleting file',
       );
@@ -256,9 +256,9 @@ class OcrModelManager {
     if (!file.existsSync()) return;
     try {
       await file.delete();
-      appTalker.warning('OCR model: deleted $file ($reason)');
+      appLog.warning('OCR model: deleted $file ($reason)');
     } catch (e) {
-      appTalker.error('OCR model: failed to delete $file ($reason)', e);
+      appLog.error('OCR model: failed to delete $file ($reason)', e);
     }
   }
 

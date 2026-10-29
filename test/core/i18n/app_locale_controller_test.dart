@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/network/i18n/app_locale.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 
 import '../../helpers/kv_test_store.dart';

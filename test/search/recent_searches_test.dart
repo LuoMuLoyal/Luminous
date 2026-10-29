@@ -5,14 +5,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/config/pref_keys.dart';
 import 'package:luminous/core/storage/kv_store.dart';
-import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
+import 'package:luminous/features/search/presentation/providers/data_access.dart';
 import 'package:luminous/features/search/presentation/widgets/sections/recent_searches.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../auth/test_helpers.dart';
 import '../helpers/kv_test_store.dart';

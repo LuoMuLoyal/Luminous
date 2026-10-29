@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/providers/data_access.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 part 'nlp.freezed.dart';
 

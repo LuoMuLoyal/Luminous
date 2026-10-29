@@ -1,1 +1,2 @@
-export 'package:luminous/app/composition/mine.dart' show mineRepositoryProvider;
+export 'package:luminous/app/composition/snapshot/mine.dart'
+    show mineRepositoryProvider;

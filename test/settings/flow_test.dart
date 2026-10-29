@@ -7,14 +7,13 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/composition/settings/notification_permission.dart';
 import 'package:luminous/app/composition/settings/notification_preferences.dart';
 import 'package:luminous/app/composition/settings/profile.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -30,10 +29,11 @@ import 'package:luminous/features/settings/presentation/pages/advanced/advanced.
 import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/language.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/theme.dart';
-import 'package:luminous/features/settings/presentation/pages/data/data_export.dart';
 import 'package:luminous/features/settings/presentation/pages/notification/notification.dart';
 import 'package:luminous/features/settings/presentation/pages/notification/sleep_reminder.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart';
+import 'package:luminous/features/settings/presentation/pages/storage/data_export.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:material_ui/material_ui.dart'
     as mui
     show MaterialApp, ThemeMode;

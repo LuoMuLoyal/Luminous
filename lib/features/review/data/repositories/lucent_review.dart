@@ -4,15 +4,13 @@ import 'dart:convert';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/database/cache_constants.dart';
-import 'package:luminous/core/database/daos/review.dart';
 import 'package:luminous/core/database/daos/review/review.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 // 文件级 typedef:生成的 EventReview 读模型枚举名过长(2026-09-03 审查 #4
 // 纯可读性收口,不改行为)。仅本文件内使用,不新增导出符号。

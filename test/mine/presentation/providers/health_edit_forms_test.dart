@@ -2,11 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../../../helpers/kv_test_store.dart';
 

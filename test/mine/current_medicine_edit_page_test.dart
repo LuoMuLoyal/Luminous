@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
 

@@ -18,7 +18,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
@@ -28,6 +27,7 @@ import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import 'simulated_fakes_misc.dart';
 

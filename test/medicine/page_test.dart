@@ -9,14 +9,13 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineDoseLogsApi;
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/medicine/workspace.dart';
 import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/core/design/tokens/spacing.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
@@ -35,6 +34,7 @@ import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/feature_mocks.dart';
 import '../helpers/kv_test_store.dart';

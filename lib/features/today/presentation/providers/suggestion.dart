@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/i18n/app_locale.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';

@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../auth/test_helpers.dart';
 

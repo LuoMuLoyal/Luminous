@@ -2,15 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/review/review.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/review/presentation/providers/review.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';

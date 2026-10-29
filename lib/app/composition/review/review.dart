@@ -5,7 +5,7 @@ import 'package:luminous/features/review/data/repositories/lucent_review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-export 'package:luminous/app/composition/review_dashboard.dart'
+export 'package:luminous/app/composition/tokens/review_dashboard.dart'
     show reviewDashboardRepositoryProvider;
 
 part 'review.g.dart';

@@ -4,8 +4,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineDoseLogsApi;
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 void main() {
   group('DoseLogRemoteDataSource', () {

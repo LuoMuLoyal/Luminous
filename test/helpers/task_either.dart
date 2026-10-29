@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Runs [task] and returns the Right value, failing the test on Left.
 Future<T> expectTaskRight<T>(TaskEither<LucentFailure, T> task) async {

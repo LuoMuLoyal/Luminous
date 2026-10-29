@@ -1,14 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/app/composition/legal.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/features/legal/data/repositories/lucent.dart';
+import 'package:luminous/app/composition/snapshot/legal.dart';
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:luminous/features/legal/domain/entities/document.dart';
 import 'package:luminous/features/legal/domain/repositories/documents.dart';
 import 'package:luminous/features/legal/presentation/providers/legal.dart';
+import 'package:luminous/shared/domain/failure.dart';
+
 import '../../../../helpers/kv_test_store.dart';
 
 void main() {

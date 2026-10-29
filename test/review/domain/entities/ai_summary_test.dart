@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 void main() {
   group('ReviewAiSummaryRange', () {

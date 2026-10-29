@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/database/models/pending_sync_error_details.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Locks the JSON backward-compatibility contract for
 /// [PendingSyncErrorDetails]: rows persisted by the pre-migration shape

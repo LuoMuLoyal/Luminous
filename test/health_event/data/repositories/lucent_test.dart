@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lucent_api/lucent_api.dart' as api;
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_event/data/repositories/lucent.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../helpers/task_either.dart';

@@ -1,10 +1,9 @@
 import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/domain/repositories/suggestion.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-export 'package:luminous/app/composition/today.dart'
+export 'package:luminous/app/composition/snapshot/today.dart'
     show suggestionHistoryProvider;
 
 part 'suggestion.g.dart';

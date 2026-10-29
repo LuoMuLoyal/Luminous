@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_snapshot.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// The account identity and session operations core needs, expressed without
 /// any feature type.

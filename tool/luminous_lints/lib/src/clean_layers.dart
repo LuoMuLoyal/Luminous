@@ -98,6 +98,7 @@ const List<String> allowedCoreForPresentation = [
   'lib/core/network/app_log.dart',
   'lib/core/network/i18n/',
   'lib/core/analytics/',
+  // Composition root and pure config/analytics/logging seams.
 ];
 
 /// The single violation predicate shared by the AST rules and the CLI driver.
@@ -175,6 +176,9 @@ String? checkImportPath({required String importer, required String target}) {
     if (sameFeature && (targetIsDomain || importingData && targetIsData)) {
       return null;
     }
+    // Shared kernel + design tokens (pure value objects).
+    if (target.startsWith('lib/shared/')) return null;
+    if (target.startsWith('lib/core/design/')) return null;
     // Another feature's domain is the published language: reading it from data
     // is the sanctioned cross-feature seam (cross_feature_import already
     // rejected their data/ and presentation/ above).

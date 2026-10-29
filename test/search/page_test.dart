@@ -6,11 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -21,11 +18,12 @@ import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
-import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
+import 'package:luminous/features/search/presentation/providers/data_access.dart';
 import 'package:luminous/features/search/presentation/widgets/views/content.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../auth/test_helpers.dart';
 // `show` keeps this import from clashing with the `SignedInAuthSessionNotifier`

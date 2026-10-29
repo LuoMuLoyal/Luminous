@@ -8,12 +8,10 @@ import 'package:lucent_api/lucent_api.dart'
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/medicine/workspace.dart';
 import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/app/composition/today/today_suggestion.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/database.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
@@ -29,6 +27,7 @@ import 'package:luminous/features/settings/data/repositories/lucent.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/task_either.dart';

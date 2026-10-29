@@ -17,7 +17,6 @@
 // ignore_for_file: avoid_classes_with_only_static_members
 
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
@@ -44,6 +43,7 @@ import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/features/support/domain/repositories/support.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 // ── Shared identity / time anchors ──────────────────────────────────────────
 

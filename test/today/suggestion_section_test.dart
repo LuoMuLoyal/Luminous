@@ -7,9 +7,8 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart'
     show doseLogRepositoryProvider;
@@ -20,6 +19,7 @@ import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/kv_test_store.dart';

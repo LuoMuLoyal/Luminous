@@ -6,7 +6,6 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/medicine/workspace.dart';
-import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -15,16 +14,12 @@ import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
-import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
-import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
-import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/features/record/domain/services/hour_minute.dart';
-import 'package:luminous/features/record/domain/services/medication_quick_entry.dart';
 import 'package:luminous/features/record/domain/services/quick_entry.dart';
 import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
-import 'package:luminous/features/record/presentation/quick_entry/medication_flow.dart';
-import 'package:luminous/features/record/presentation/quick_entry/quick_entry_providers.dart';
+import 'package:luminous/features/record/presentation/providers/data_access.dart';
+import 'package:luminous/features/record/presentation/quick_entry/core/quick_entry_providers.dart';
+import 'package:luminous/features/record/presentation/quick_entry/flows/medication_quick_entry.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Runs the "undo" command for a medication quick entry.

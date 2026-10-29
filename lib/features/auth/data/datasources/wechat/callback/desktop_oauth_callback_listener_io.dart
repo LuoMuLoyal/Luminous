@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/callback/desktop_oauth_callback_server.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/callback/desktop_oauth_callback_server.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 class WechatDesktopOAuthCallbackListener {
   const WechatDesktopOAuthCallbackListener();

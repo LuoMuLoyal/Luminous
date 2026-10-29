@@ -4,9 +4,8 @@ import 'package:flutter/rendering.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/review/review.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
@@ -15,6 +14,7 @@ import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';

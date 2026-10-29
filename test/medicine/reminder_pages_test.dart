@@ -7,12 +7,11 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/medicine/workspace.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/database.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
@@ -26,6 +25,7 @@ import 'package:luminous/features/medicine/presentation/providers/medicine_detai
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/feature_mocks.dart';
 import '../helpers/kv_test_store.dart';

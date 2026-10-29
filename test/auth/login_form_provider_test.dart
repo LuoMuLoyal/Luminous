@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/callback/desktop_oauth_callback_listener.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/callback/desktop_oauth_callback_server.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client.dart';
-import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/features/auth/presentation/providers/oauth/oauth_login.dart';
 

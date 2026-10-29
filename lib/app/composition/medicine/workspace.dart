@@ -3,7 +3,7 @@ import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-export 'package:luminous/app/composition/medicine_workspace.dart'
+export 'package:luminous/app/composition/tokens/medicine_workspace.dart'
     show medicineWorkspaceRepositoryProvider;
 
 part 'workspace.g.dart';

@@ -1,4 +1,4 @@
-import 'package:luminous/app/composition/legal.dart';
+import 'package:luminous/app/composition/snapshot/legal.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/doc_type.dart';

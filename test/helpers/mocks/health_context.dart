@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Builds an empty health context snapshot (optionally with
 /// [currentMedicines]) for provider overrides in widget tests.

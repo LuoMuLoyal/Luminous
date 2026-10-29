@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/network/config/pref_keys.dart';
 import 'package:luminous/core/providers/session/sensitive_action_resolver.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
@@ -12,14 +13,13 @@ import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/advanced.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/feature_flags.dart';
-import 'package:luminous/features/settings/presentation/pages/data/data_export.dart';
+import 'package:luminous/features/settings/presentation/pages/storage/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
-import 'package:luminous/core/network/config/pref_keys.dart';
 
 // -- Stub controllers --------------------------------------------------
 

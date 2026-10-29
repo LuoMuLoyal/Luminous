@@ -1,9 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
-import 'package:luminous/features/record/domain/services/meal_quick_entry.dart';
 import 'package:luminous/features/record/presentation/pages/create.dart';
+import 'package:luminous/features/record/presentation/quick_entry/flows/meal_quick_entry.dart';
 
 /// Presentation adapter for the meal camera picker.
 ///

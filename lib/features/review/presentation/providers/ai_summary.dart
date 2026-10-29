@@ -1,6 +1,5 @@
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/features/review/domain/repositories/ai_summary.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/providers/data_access.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 class ReviewAiSummaryController extends Notifier<ReviewAiSummaryCardState> {
   ReviewAiSummaryController(this.range);

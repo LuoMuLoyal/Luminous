@@ -1,13 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/medicine/workspace.dart';
 import 'package:luminous/app/composition/mine/mine.dart';
-import 'package:luminous/app/composition/record.dart';
+import 'package:luminous/app/composition/snapshot/record.dart';
 import 'package:luminous/app/composition/today/today_suggestion.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -26,6 +25,7 @@ import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/feature_mocks.dart';
 import '../helpers/kv_test_store.dart';

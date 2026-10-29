@@ -5,18 +5,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/network/config/env_keys.dart';
-import 'package:luminous/core/network/config/env_reader.dart';
+import 'package:luminous/app/composition/support/resources.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/network/config/env_keys.dart';
+import 'package:luminous/core/network/config/env_reader.dart';
+import 'package:luminous/core/network/i18n/app_locale.dart';
 import 'package:luminous/core/providers/network/network_client.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
-import 'package:luminous/app/composition/support/resources.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class HelpSettingsPage extends ConsumerWidget {

@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/scan/data/datasources/ocr_model_manager.dart';
 import 'package:luminous/features/scan/data/datasources/paddle_ocr_provider.dart';
+import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:paddle_ocr_native/paddle_ocr_native.dart';
 import 'package:paddle_ocr_native/src/paddle_ocr_platform.dart'
     show PaddleOcrNativePlatform;

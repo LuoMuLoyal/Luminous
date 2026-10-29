@@ -1,4 +1,4 @@
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Extracts a non-null payload from a generated-client response.
 ///

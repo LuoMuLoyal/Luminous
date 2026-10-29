@@ -5,9 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/client_error_code.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
@@ -17,6 +14,7 @@ import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/presentation/controllers/wechat_oauth.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/data_access.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 part 'account.freezed.dart';
 

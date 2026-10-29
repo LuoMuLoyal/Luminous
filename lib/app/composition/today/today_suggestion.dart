@@ -3,4 +3,4 @@
 /// features' domain repositories, which `today/data/` may not import.
 library;
 
-export 'package:luminous/app/composition/today_suggestion.dart';
+export 'package:luminous/app/composition/snapshot/today_suggestion.dart';

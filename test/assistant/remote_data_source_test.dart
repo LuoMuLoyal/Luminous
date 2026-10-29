@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Adapter that returns a JSON response with configurable body.
 class _JsonAdapter implements HttpClientAdapter {

@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/composition/today/suggestion.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
@@ -32,7 +33,6 @@ import 'package:luminous/features/review/presentation/widgets/views/legacy/dashb
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:luminous/app/composition/today/suggestion.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

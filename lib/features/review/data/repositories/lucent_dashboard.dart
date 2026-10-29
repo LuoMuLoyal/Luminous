@@ -17,7 +17,7 @@ import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/review/data/datasources/dashboard_remote.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/repositories/dashboard.dart';
-import 'package:luminous/features/review/domain/repositories/dashboard_style.dart';
+import 'package:luminous/shared/design/review_dashboard.dart';
 
 // 文件级 typedef:生成的 dashboard metrics 来源枚举名过长
 // (2026-09-03 审查 #4 纯可读性收口,不改行为)。
@@ -311,26 +311,3 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   Future<ReviewDashboard> get signedOutDashboard =>
       Future.value(ReviewDashboard.signedOut());
 }
-
-final _exportActions = <ReviewExportAction>[
-  const ReviewExportAction(
-    kind: ReviewExportKind.hospital,
-    iconName: 'briefcase-medical',
-    color: SemanticColor.primary,
-  ),
-  const ReviewExportAction(
-    kind: ReviewExportKind.monthly,
-    iconName: 'calendar-days',
-    color: SemanticColor.primary,
-  ),
-  const ReviewExportAction(
-    kind: ReviewExportKind.print,
-    iconName: 'arrow-down-to-line',
-    color: SemanticColor.primary,
-  ),
-  const ReviewExportAction(
-    kind: ReviewExportKind.clinicShare,
-    iconName: 'share-2',
-    color: SemanticColor.primary,
-  ),
-];

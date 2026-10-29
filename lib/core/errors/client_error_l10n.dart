@@ -1,5 +1,5 @@
-import 'package:luminous/core/errors/client_error_code.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Maps a [ClientErrorCode] to a localized user-facing string.
 ///

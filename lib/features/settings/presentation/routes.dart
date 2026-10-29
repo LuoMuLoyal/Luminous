@@ -10,13 +10,13 @@ import 'package:luminous/features/settings/presentation/pages/advanced/feature_f
 import 'package:luminous/features/settings/presentation/pages/appearance/accessibility.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/language.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/theme.dart';
-import 'package:luminous/features/settings/presentation/pages/data/data_export.dart';
-import 'package:luminous/features/settings/presentation/pages/data/data_storage.dart';
 import 'package:luminous/features/settings/presentation/pages/notification/dnd.dart';
 import 'package:luminous/features/settings/presentation/pages/notification/notification.dart';
 import 'package:luminous/features/settings/presentation/pages/notification/sleep_reminder.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart';
 import 'package:luminous/features/settings/presentation/pages/profile.dart';
+import 'package:luminous/features/settings/presentation/pages/storage/data_export.dart';
+import 'package:luminous/features/settings/presentation/pages/storage/data_storage.dart';
 
 part 'routes.g.dart';
 

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
@@ -17,6 +16,7 @@ import 'package:luminous/features/medicine/presentation/providers/risk_check.dar
 import 'package:luminous/features/medicine/presentation/widgets/risk/shared/check_loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/shared/check_tab_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 class MedicineRiskCheckPage extends ConsumerStatefulWidget {
   const MedicineRiskCheckPage({super.key});

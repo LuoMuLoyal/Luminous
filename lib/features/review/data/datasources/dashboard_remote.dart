@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 class ReviewDashboardRemoteDataSource {
   ReviewDashboardRemoteDataSource({required this.api, required this.dio});

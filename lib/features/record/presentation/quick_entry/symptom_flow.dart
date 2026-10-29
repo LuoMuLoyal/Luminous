@@ -1,12 +1,9 @@
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
-import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
-import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
-import 'package:luminous/features/record/domain/services/water_quick_entry.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
-import 'package:luminous/features/record/domain/services/water_quick_entry.dart';
 import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
+import 'package:luminous/features/record/presentation/quick_entry/flows/water_quick_entry.dart';
 
 class SymptomQuickChoice {
   const SymptomQuickChoice({

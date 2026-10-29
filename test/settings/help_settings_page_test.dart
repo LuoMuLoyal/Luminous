@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/features/settings/presentation/pages/about/help.dart';
@@ -13,6 +12,7 @@ import 'package:luminous/features/support/data/repositories/lucent.dart';
 import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/features/support/domain/repositories/support.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
