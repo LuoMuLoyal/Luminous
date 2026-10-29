@@ -6,10 +6,10 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/providers/session_snapshot.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/presentation/providers/record_services.dart';
 
 part 'nlp.freezed.dart';
 
