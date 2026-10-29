@@ -81,6 +81,11 @@ const List<String> allowedCoreForPresentation = [
   'lib/l10n/',
   // App-level router seam shared by feature route tables.
   'lib/app/router',
+  // App-level auth session adapter: gives `AuthSessionState.user` (typed as
+  // `Object?` in the feature-free `lib/core/auth`) its concrete `AuthUser`
+  // accessor. It is a read-only value seam, not I/O, and every presentation
+  // file that renders the signed-in user needs it.
+  'lib/app/auth_session_adapter.dart',
   // Contract error vocabulary rendered by the UI (code + mapper).
   'lib/core/network/contract/',
 ];

@@ -145,6 +145,18 @@ void main() {
       );
     });
 
+    test('presentation importing the auth session adapter is allowed', () {
+      // `AuthSessionState.user` is `Object?` in the feature-free core layer; the
+      // app-level adapter gives presentation its typed `AuthUser` accessor.
+      expect(
+        checkImportPath(
+          importer: 'lib/features/settings/presentation/pages/profile.dart',
+          target: 'lib/app/auth_session_adapter.dart',
+        ),
+        isNull,
+      );
+    });
+
     test('presentation importing core/auth is reported', () {
       expect(
         checkImportPath(
