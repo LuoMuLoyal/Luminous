@@ -24,7 +24,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 ///
 /// UI interaction: [showWaterQuickEntrySheet] (from
 /// `record/presentation/widgets/dialogs/water_quick_entry_sheet.dart`).
-/// Cross-feature call site: `record/presentation/services/quick_entry_executor.dart`
+/// Cross-feature call site: `record/presentation/controllers/quick_entry_executor.dart`
 /// also delegates to [WaterQuickEntryFlow] for the same flow.
 Future<void> executeTodayWaterQuickEntry(
   BuildContext context,
