@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/features/health_data/data/providers/health_sync.dart';
+import 'package:luminous/app/composition/health_sync/health_sync.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
 import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
 import 'package:luminous/features/health_data/domain/entities/health_sync_result.dart';

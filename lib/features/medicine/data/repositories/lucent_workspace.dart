@@ -10,7 +10,7 @@ import 'package:luminous/core/database/daos/medicine/medicine_workspace.dart';
 import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/network/contract/failure.dart';
-import 'package:luminous/core/utils/reminder_schedule.dart';
+import 'package:luminous/core/storage/reminder_schedule.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart'
     show DoseLogItem, DoseLogRemoteDataSource, DoseLogStatus;

@@ -1,14 +1,17 @@
-import 'package:luminous/core/native/bridge.dart';
 import 'package:luminous/features/health_data/data/datasources/health_platform.dart';
-import 'package:luminous/features/health_data/data/datasources/steps.dart';
 import 'package:luminous/features/health_data/data/mappers/health_record_mapper.dart';
-import 'package:luminous/features/health_data/data/repositories/health_sync.dart';
-import 'package:luminous/features/health_data/domain/repositories/health_sync.dart'
-    as domain;
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+/// `healthSyncRepositoryProvider` is composed in
+/// `lib/app/composition/health_sync/` (it needs `core/native` and the record
+/// feature's data layer) and re-exported here so consumers keep importing
+/// this file.
+export 'package:luminous/app/composition/health_sync/health_sync.dart'
+    show healthSyncRepositoryProvider;
+
 part 'health_sync.g.dart';
+
+/// Data-layer providers for health sync.
 
 @riverpod
 HealthPlatformDataSource healthPlatformDataSource(Ref ref) {
@@ -18,20 +21,4 @@ HealthPlatformDataSource healthPlatformDataSource(Ref ref) {
 @riverpod
 HealthRecordMapper healthRecordMapper(Ref ref) {
   return const HealthRecordMapper();
-}
-
-@riverpod
-NativeStepSource? nativeStepSource(Ref ref) {
-  if (!ref.watch(nativeStepsEnabledProvider)) return null;
-  return NativeStepSource(bridge: ref.watch(nativeBridgeProvider).steps);
-}
-
-@riverpod
-domain.HealthSyncRepository healthSyncRepository(Ref ref) {
-  return HealthSyncRepositoryImpl(
-    dataSource: ref.watch(healthPlatformDataSourceProvider),
-    mapper: ref.watch(healthRecordMapperProvider),
-    dailyRecordRepo: ref.watch(dailyRecordRepositoryProvider),
-    nativeStepSource: ref.watch(nativeStepSourceProvider),
-  );
 }

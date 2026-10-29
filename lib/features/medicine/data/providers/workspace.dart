@@ -1,14 +1,10 @@
-import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
-import 'package:luminous/features/medicine/application/mappers/workspace_style.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/data/repositories/lucent_workspace.dart';
-import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
-import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+export 'package:luminous/app/composition/medicine_workspace.dart'
+    show medicineWorkspaceRepositoryProvider;
 
 part 'workspace.g.dart';
 
@@ -24,21 +20,4 @@ MedicineReminderRemoteDataSource medicineReminderRemoteDataSource(Ref ref) {
 @riverpod
 ReminderRepository reminderRepository(Ref ref) {
   return ref.watch(medicineReminderRemoteDataSourceProvider);
-}
-
-@riverpod
-MedicineWorkspaceRepository medicineWorkspaceRepository(Ref ref) {
-  final healthRepo = ref.watch(healthContextRepositoryProvider);
-  final doseLogDs = ref.watch(doseLogRemoteDataSourceProvider);
-  final reminderDs = ref.watch(medicineReminderRemoteDataSourceProvider);
-  final riskCheckRepository = ref.watch(medicineRiskCheckRepositoryProvider);
-  final workspaceDao = ref.watch(medicineWorkspaceDaoProvider);
-  return LucentMedicineWorkspaceRepository(
-    healthRepo: healthRepo,
-    doseLogDs: doseLogDs,
-    reminderDs: reminderDs,
-    riskCheckRepository: riskCheckRepository,
-    workspaceDao: workspaceDao,
-    style: const MedicineWorkspaceStyle(),
-  );
 }

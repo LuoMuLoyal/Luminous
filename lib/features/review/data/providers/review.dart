@@ -1,12 +1,12 @@
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/features/review/application/mappers/dashboard_style.dart';
 import 'package:luminous/features/review/data/datasources/dashboard_remote.dart';
-import 'package:luminous/features/review/data/repositories/lucent_dashboard.dart';
 import 'package:luminous/features/review/data/repositories/lucent_review.dart';
-import 'package:luminous/features/review/domain/repositories/dashboard.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+export 'package:luminous/app/composition/review_dashboard.dart'
+    show reviewDashboardRepositoryProvider;
 
 part 'review.g.dart';
 
@@ -28,15 +28,4 @@ ReviewDashboardRemoteDataSource reviewDashboardRemoteDataSource(Ref ref) {
   final api = ref.watch(lucentClientProvider).reports;
   final dio = ref.watch(lucentDioClientProvider).dio;
   return ReviewDashboardRemoteDataSource(api: api, dio: dio);
-}
-
-@riverpod
-ReviewDashboardRepository reviewDashboardRepository(Ref ref) {
-  final dataSource = ref.watch(reviewDashboardRemoteDataSourceProvider);
-  final dao = ref.watch(reviewDashboardDaoProvider);
-  return LucentReviewDashboardRepository(
-    dataSource: dataSource,
-    dao: dao,
-    style: const ReviewDashboardStyle(),
-  );
 }
