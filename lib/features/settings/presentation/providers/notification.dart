@@ -5,10 +5,9 @@ import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/preferences_store.dart';
 import 'package:luminous/core/providers/session_snapshot.dart';
-import 'package:luminous/features/settings/data/providers/notification_permission.dart';
-import 'package:luminous/features/settings/data/providers/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
+import 'package:luminous/features/settings/presentation/providers/data_access.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_preferences.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_utils.dart';
 
