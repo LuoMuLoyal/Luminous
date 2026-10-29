@@ -2,31 +2,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/network/app_log.dart';
-import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/network/contract/failure.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/doc_type.dart';
 import '../../domain/entities/document.dart';
 import '../../domain/repositories/documents.dart';
-
-part 'lucent.g.dart';
-
-@riverpod
-LegalRepository legalRepository(Ref ref) {
-  return LucentLegalRepository(
-    api: ref.watch(lucentClientProvider).legalDocuments,
-    localeResolver: () =>
-        (ref.read(localeControllerProvider).asData?.value ?? AppLocale.system)
-            .acceptLanguage
-            .startsWith('en')
-        ? 'en'
-        : 'zh',
-  );
-}
 
 /// Lucent-backed implementation of [LegalRepository].
 ///
