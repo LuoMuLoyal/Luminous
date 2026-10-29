@@ -7,7 +7,7 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/core/utils/reminder_format.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/providers/data_access.dart';

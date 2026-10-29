@@ -10,5 +10,5 @@ export 'package:luminous/features/medicine/data/datasources/medicine_detail_remo
 export 'package:luminous/features/medicine/data/datasources/reminder_local_preferences.dart';
 export 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 export 'package:luminous/features/medicine/data/datasources/safety_tips_remote.dart';
-export 'package:luminous/features/medicine/data/providers/workspace.dart';
+export 'package:luminous/app/composition/medicine/workspace.dart';
 export 'package:luminous/features/medicine/data/repositories/risk_check.dart';

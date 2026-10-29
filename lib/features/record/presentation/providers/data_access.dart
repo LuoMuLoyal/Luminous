@@ -8,5 +8,5 @@
 library;
 
 export 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
-export 'package:luminous/features/record/data/providers/record_access.dart';
-export 'package:luminous/features/record/data/providers/water_target.dart';
+export 'package:luminous/app/composition/record/record_access.dart';
+export 'package:luminous/app/composition/record/water_target.dart';

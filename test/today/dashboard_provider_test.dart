@@ -4,7 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
-import 'package:luminous/features/today/data/providers/today_suggestion.dart';
+import 'package:luminous/app/composition/today/today_suggestion.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';

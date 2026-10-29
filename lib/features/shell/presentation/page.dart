@@ -15,7 +15,7 @@ import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/control/brand_icon.dart';
 import 'package:luminous/core/widgets/common/feedback/connectivity_banner.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:window_manager/window_manager.dart';

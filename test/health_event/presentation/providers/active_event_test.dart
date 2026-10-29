@@ -7,7 +7,7 @@ import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/health_event/data/providers/health_event.dart';
+import 'package:luminous/app/composition/health_event/health_event.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';

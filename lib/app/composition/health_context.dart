@@ -1,7 +1,7 @@
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/core/network/contract/failure.dart';
-import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/providers/session/auth_guarded.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

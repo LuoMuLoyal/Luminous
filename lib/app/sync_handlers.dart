@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/database/sync/handlers.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
 
 /// Default registrar list baked into the app's root `ProviderContainer`.
 ///

@@ -5,7 +5,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/desktop/hover.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
-import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
+import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/detail/timeline_drag_handler.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/timeline_drag_data.dart';

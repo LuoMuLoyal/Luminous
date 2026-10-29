@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/database/cache_constants.dart';
-import 'package:luminous/core/database/daos/mine_dashboard.dart';
+import 'package:luminous/core/database/daos/mine/mine_dashboard.dart';
 import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/config/routes.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';

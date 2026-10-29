@@ -1,6 +1,6 @@
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/app_log.dart';
-import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/notification/data/repositories/lucent.dart';
 import 'package:luminous/features/notification/domain/repositories/notification.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

@@ -1,5 +1,6 @@
 import 'package:luminous/app/composition/health_context/health_context.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/features/mine/data/repositories/lucent.dart';
 import 'package:luminous/features/mine/domain/entities/account.dart';
@@ -20,7 +21,7 @@ MineRepository mineRepository(Ref ref) {
   return LucentMineRepository(
     healthContextSnapshot: () => ref.read(healthContextSnapshotProvider.future),
     currentUser: () {
-      final user = ref.read(authSessionProvider).user;
+      final user = ref.read(authSessionProvider).user as AuthUser?;
       if (user == null) return null;
       return AccountIdentity(
         id: user.id,

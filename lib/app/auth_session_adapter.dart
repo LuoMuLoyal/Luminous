@@ -8,7 +8,7 @@ import 'package:luminous/core/auth/session_gateway.dart';
 import 'package:luminous/core/auth/session_snapshot.dart';
 import 'package:luminous/core/database/sync/handlers.dart';
 import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
 

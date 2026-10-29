@@ -2,8 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:luminous/core/push/event_handlers.dart';
 import 'package:luminous/core/push/lifecycle.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
-import 'package:luminous/features/settings/data/providers/notification_permission.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
+import 'package:luminous/app/composition/settings/notification_permission.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
 

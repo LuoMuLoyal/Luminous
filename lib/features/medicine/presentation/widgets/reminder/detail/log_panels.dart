@@ -3,7 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
-import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
+import 'package:luminous/core/utils/reminder_format.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

@@ -11,7 +11,7 @@ import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
 import '../../../helpers/kv_test_store.dart';
