@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/settings_adapters.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
+import 'package:luminous/core/auth/sensitive_action_password_resolver.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
@@ -102,6 +104,23 @@ Future<void> _pumpHarness(
         productEventServiceProvider.overrideWithValue(service),
         userSettingsControllerProvider.overrideWith(
           () => _FakeUserSettingsController(),
+        ),
+        sensitiveActionPolicyProvider.overrideWithValue(
+          FeatureSensitiveActionPolicy(
+            () async => const UserSettings(
+              aiSummariesEnabled: false,
+              dataSharingConsent: false,
+              assistantEnabled: false,
+              assistantMemoryEnabled: false,
+              waterTargetCount: 8,
+              assistantContext: AssistantContextSettings(
+                healthProfile: true,
+                dailyRecords: true,
+                sleepRecords: true,
+                currentMedicines: true,
+              ),
+            ),
+          ),
         ),
       ],
       child: TestForuiApp(
