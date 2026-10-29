@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/window_manager_setup.dart';
 import 'package:luminous/core/config/env_keys.dart';
@@ -49,7 +50,13 @@ Future<void> main() async {
     return true;
   };
 
-  runApp(const ProviderScope(child: LuminousApp()));
+  // Composition root: bind feature implementations to the feature-free core
+  // seams (core cannot import features; app/ can import both).
+  final root = ProviderContainer();
+  root.updateOverrides(appProviderOverrides(root));
+  runApp(
+    UncontrolledProviderScope(container: root, child: const LuminousApp()),
+  );
 }
 
 /// Initializes Sentry if a DSN is configured.
