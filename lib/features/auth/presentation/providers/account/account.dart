@@ -7,6 +7,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -221,7 +222,9 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
         final result = await remote.linkWechatMobileIdentity(code: code).run();
         switch (result) {
           case Left(:final value):
-            throw value;
+            // 失败统一交给下面这个 catch 的 [_failWithResult]：状态落到 error
+            // 对象，调用方拿到 null（= 未完成）。走 failure 通道而不是裸抛。
+            throw LucentFailureException(value);
           case Right(:final value):
             ref
                 .read(authSessionProvider.notifier)
@@ -252,7 +255,8 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
               .run();
           switch (linkResult) {
             case Left(:final value):
-              throw value;
+              // 同 mobile 分支：失败落到 catch 的 [_failWithResult]。
+              throw LucentFailureException(value);
             case Right(:final value):
               ref
                   .read(authSessionProvider.notifier)

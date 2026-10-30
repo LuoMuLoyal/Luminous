@@ -266,18 +266,6 @@
     },
     {
       "files": [
-        "lib/app/composition/health_data/health_sync.dart",
-        "lib/app/composition/health_sync/health_sync.dart"
-      ]
-    },
-    {
-      "files": [
-        "lib/app/composition/review/review.dart",
-        "lib/app/composition/tokens/review_dashboard.dart"
-      ]
-    },
-    {
-      "files": [
         "lib/core/database/daos/health/health_context.dart",
         "lib/core/database/daos/medicine/current_medicine.dart",
         "lib/core/database/daos/medicine/medicine_dose_log.dart",
@@ -297,21 +285,8 @@
     },
     {
       "files": [
-        "lib/core/design/color/semantic_color.dart",
-        "lib/core/design/color/theme_extension.dart"
-      ]
-    },
-    {
-      "files": [
         "lib/core/i18n/locale.dart",
         "lib/core/network/i18n/app_locale.dart"
-      ]
-    },
-    {
-      "files": [
-        "lib/l10n/app_localizations.dart",
-        "lib/l10n/app_localizations_en.dart",
-        "lib/l10n/app_localizations_zh.dart"
       ]
     }
   ],

@@ -16,6 +16,10 @@ ignore:
   - "**/*.gr.dart"
   # 由 dart_pubspec_licenses 生成的许可清单（已 gitignore，不手改）。
   - "lib/oss_licenses.dart"
+  # flutter gen-l10n 生成物。`app_localizations.dart` 与各语言实现互相 import
+  # 是生成器的固有产物（`_lookupAppLocalizations` 回指父类），AOT 编译时整组
+  # 合进同一个库，运行时无害；不能手改，所以排除而不是当债修。
+  - "lib/l10n/**"
 
 # 层违规是否阻断，只在直接跑 `dart run arch_guard` 时生效；
 # scripts/arch/guard.dart 只把"新增循环依赖"当阻断项。
