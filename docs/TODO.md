@@ -332,7 +332,7 @@ Product Loop Program 的延后项如下。
 
 ## 2026-10-30 arch_guard 剩余循环依赖
 
-`arch_guard`（`dart run scripts/arch/guard.dart`，本地运行，不接 pre-push/CI）已从 7 组循环依赖降到 3 组，剩余两组暂按已知债务冻结在 `arch_guard_baseline.json`（只拦新增/扩大，不拦存量）：
+`arch_guard`（`dart run scripts/arch/guard.dart`，本地运行，不接 pre-push/CI）已从 7 组循环依赖降到 2 组，剩余两组暂按已知债务冻结在 `arch_guard_baseline.json`（只拦新增/扩大，不拦存量）：
 
 - 259 文件主环（hub 是 `lib/app/router.dart`）：根因是 `core/widgets/**`（`back_button`、`required_dialog`、`connectivity_banner`、`page_state`）反向 import `lib/app` 的 router 与 session adapter，叠加 `app/composition` 内部 token↔装配互指。拆解要反转这两类接缝，工作量大于已修部分总和；`Routes` 常量表已下沉到 `lib/core/router/app_routes.dart`，那一步已消除 `core → app/router` 的一部分边
 - `lib/core/database/database.dart` ↔ `daos/**`（15 文件）：DAO 反向 import 拿 `AppDatabase` 类型。
