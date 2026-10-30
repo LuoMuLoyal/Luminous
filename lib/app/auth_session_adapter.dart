@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/composition/auth/auth.dart';
+import 'package:luminous/app/composition/components/registry.dart';
 import 'package:luminous/app/push_handlers.dart';
 import 'package:luminous/app/settings_adapters.dart';
 import 'package:luminous/app/sync_handlers.dart';
@@ -87,4 +88,5 @@ List<Override> appProviderOverrides(ProviderContainer container) => [
   syncHandlerRegistrarsProvider.overrideWithValue(appSyncHandlerRegistrars),
   ...pushProviderOverrides(container),
   ...settingsProviderOverrides(container),
+  ...compositionProviderOverrides(),
 ];

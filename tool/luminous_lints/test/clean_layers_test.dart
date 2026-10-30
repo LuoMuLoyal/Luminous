@@ -200,12 +200,48 @@ void main() {
       );
     });
 
-    test('another feature presentation is reported', () {
+    test('another feature presentation page/widget is reported', () {
       expect(
         checkImportPath(
           importer: 'lib/features/scan/presentation/pages/barcode_scanner.dart',
+          target: 'lib/features/search/presentation/widgets/result_card.dart',
+        ),
+        'cross_feature_import',
+      );
+    });
+
+    // The two sanctioned seams (AGENTS.md §Cross-Feature Import Rules and the
+    // observation-mode layered_import rule): cross-feature reads go through the
+    // owner's `presentation/providers/`, and the tab shell is shared by every
+    // tab root. Without the provider seam a component could not be mounted on a
+    // second surface, because it would have no legal way to read that feature's
+    // read model.
+    test('another feature read-model providers are allowed', () {
+      expect(
+        checkImportPath(
+          importer: 'lib/features/today/presentation/components/catalog.dart',
           target:
-              'lib/features/search/presentation/providers/medicine_search.dart',
+              'lib/features/medicine/presentation/providers/data_access.dart',
+        ),
+        isNull,
+      );
+    });
+
+    test('cross-feature shell infrastructure is allowed', () {
+      expect(
+        checkImportPath(
+          importer: 'lib/features/today/presentation/pages/page.dart',
+          target: 'lib/features/shell/presentation/deferred_content.dart',
+        ),
+        isNull,
+      );
+    });
+
+    test('another feature data is still reported', () {
+      expect(
+        checkImportPath(
+          importer: 'lib/features/today/presentation/components/catalog.dart',
+          target: 'lib/features/medicine/data/repositories/lucent.dart',
         ),
         'cross_feature_import',
       );

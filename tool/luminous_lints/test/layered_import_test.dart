@@ -40,6 +40,14 @@ class LayeredImportRuleTest extends AnalysisRuleTest {
         'final healthContextSnapshotProvider = 0;',
       )
       ..addFile(
+        'lib/app/composition/health_context/health_context.dart',
+        'final healthContextSnapshotProvider = 0;',
+      )
+      ..addFile(
+        'lib/features/record/domain/repositories/daily.dart',
+        'class DailyRecord {}',
+      )
+      ..addFile(
         'lib/features/record/domain/entities/daily.dart',
         'class DailyRecord {}',
       );
@@ -72,13 +80,15 @@ final usesStub = LucentSettingsRepository();
   }
 
   Future<void> test_coreImportingFeature_isReported() async {
+    // `lib/app/` is the composition root and may see features; `lib/core/` may
+    // not, so a feature import from any core path is a violation.
     final path = convertPath('/home/test/lib/core/utils/date.dart');
     newFile(path, r'''
-import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
 
-final usesStub = healthContextSnapshotProvider;
+final usesStub = DailyRecord;
 ''');
-    await assertDiagnosticsInFile(path, [lint(7, 77)]);
+    await assertDiagnosticsInFile(path, [lint(7, 65)]);
   }
 
   Future<void> test_relativeCrossFeatureImport_isReported() async {
@@ -239,6 +249,6 @@ import 'package:luminous/features/record/domain/repositories/daily.dart';
 
 final usesTarget = DailyRecord;
 ''');
-    await assertDiagnosticsInFile(path, [lint(7, 61)]);
+    await assertDiagnosticsInFile(path, [lint(7, 65)]);
   }
 }

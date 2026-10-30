@@ -79,6 +79,9 @@ const List<String> allowedCoreForPresentation = [
   'lib/core/forms/',
   'lib/core/router/',
   'lib/core/ai/',
+  // 组件化组装层：ComponentHost / ComponentId / SurfaceLayout 是纯 UI 数据与渲染，
+  // 页面只声明自己是哪个 surface，不直接把 section 列表写在 pages/ 里。
+  'lib/core/composition/',
   // Generated localizations: every page reads its copy from here.
   'lib/l10n/',
   // App-level router seam shared by feature route tables.
@@ -161,12 +164,24 @@ String? checkImportPath({required String importer, required String target}) {
     return 'application_layer';
   }
 
-  // R6: cross-feature access to data/ or presentation/ is always forbidden,
-  // even when the importer is itself in data/ or presentation/.
+  // R6: cross-feature access to data/ or presentation/ is forbidden, even when
+  // the importer is itself in data/ or presentation/.
+  //
+  // Two seams stay open, matching `AGENTS.md` §Cross-Feature Import Rules and the
+  // observation-mode `layered_import` rule:
+  //   - `presentation/providers/`: the read-model seam a feature publishes for
+  //     other features (composable components mounted on another surface read
+  //     through it, which is what makes component reuse possible at all);
+  //   - `features/shell/presentation/`: the tab shell shared by every tab root.
+  // Cross-feature `data/` and plain `presentation` pages/widgets stay forbidden.
+  final isProviderSeam = target.contains('/presentation/providers/');
+  final isShellInfrastructure =
+      target.startsWith('lib/features/shell/presentation/');
   if (importerFeature != null &&
       targetFeature != null &&
       importerFeature != targetFeature &&
-      (targetIsData || targetIsPresentation)) {
+      (targetIsData || targetIsPresentation) &&
+      !(targetIsPresentation && (isProviderSeam || isShellInfrastructure))) {
     return 'cross_feature_import';
   }
 
