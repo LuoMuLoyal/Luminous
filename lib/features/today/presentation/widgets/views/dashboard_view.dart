@@ -29,12 +29,7 @@ class TodayDashboardView extends ConsumerWidget {
     final isDesktop = width >= Breakpoints.desktop;
 
     final content = isDesktop
-        ? DesktopTodayDashboard(
-            dashboard: dashboard,
-            isPreview: isPreview,
-            onSignIn: onSignIn,
-            onRefresh: onRefresh,
-          )
+        ? DesktopTodayDashboard(onRefresh: onRefresh)
         : MobileTodayDashboard(onRefresh: onRefresh);
 
     return SkeletonScope(isLoading: isLoading, child: content);

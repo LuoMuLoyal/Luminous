@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/today/today_suggestion.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
@@ -343,7 +344,7 @@ void main() {
     );
   });
 
-  testWidgets('desktop pull-to-refresh does not refresh active health event', (
+  testWidgets('desktop pull-to-refresh refreshes active health event', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -375,12 +376,23 @@ void main() {
     );
     await _settleDashboard(tester);
 
-    await tester.drag(find.byType(CustomScrollView).last, const Offset(0, 400));
+    // 桌面端同样挂载并刷新 `health_event.active`：组件化后两个形态渲染的是同一份
+    // 表面布局，桌面不再有「手写双栏里没有这张卡」的差异。
+    expect(_TrackingActiveHealthEventNotifier.buildCalls, 1);
+
+    // 直接触发下拉刷新回调，而不是用 drag 手势：桌面端的表面布局高度随用户编排
+    // 变化，`CustomScrollView` 的中心点可能落在视口之外，按坐标拖动会 miss
+    // （"would not hit test on the specified widget"），那样测的是手势命中而
+    // 不是刷新语义。
+    final refreshIndicator = tester.widget<ForuiRefreshIndicator>(
+      find.byType(ForuiRefreshIndicator).first,
+    );
+    await refreshIndicator.onRefresh();
     await tester.pump();
     await tester.pump(const Duration(seconds: 2));
 
     expect(_TrackingActiveHealthEventNotifier.refreshCalls, 0);
-    expect(_TrackingActiveHealthEventNotifier.buildCalls, 0);
+    expect(_TrackingActiveHealthEventNotifier.buildCalls, greaterThan(1));
   });
 
   testWidgets('Today top bar assistant entry routes to assistant page', (

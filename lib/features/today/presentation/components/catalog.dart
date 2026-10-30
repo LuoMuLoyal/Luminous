@@ -52,14 +52,14 @@ const todaySurfaceDefinition = SurfaceDefinition(
   ],
   defaultLayout: SurfaceLayout(
     placements: [
-      ComponentPlacement(id: todayPreviewBannerId),
+      ComponentPlacement(id: todayPreviewBannerId, size: ComponentSize.wide),
       ComponentPlacement(id: todayGreetingId),
       ComponentPlacement(id: todayPrimarySuggestionId),
       ComponentPlacement(id: todaySecondarySuggestionsId),
       ComponentPlacement(id: todaySummaryId),
       ComponentPlacement(id: todayHealthEventId),
       ComponentPlacement(id: todayObservationId),
-      ComponentPlacement(id: todayQuickActionsId),
+      ComponentPlacement(id: todayQuickActionsId, size: ComponentSize.wide),
     ],
   ),
 );
@@ -83,6 +83,9 @@ class _PreviewBannerComponent extends ComponentDescriptor<NoComponentConfig> {
   ComponentId get id => todayPreviewBannerId;
 
   @override
+  Set<ComponentSize> get supportedSizes => {ComponentSize.wide};
+
+  @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
@@ -101,6 +104,13 @@ class _GreetingComponent extends ComponentDescriptor<NoComponentConfig> {
 
   @override
   ComponentId get id => todayGreetingId;
+
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
@@ -129,6 +139,12 @@ class _PrimarySuggestionComponent
   ComponentId get id => todayPrimarySuggestionId;
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+
+  @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
@@ -145,6 +161,13 @@ class _SecondarySuggestionsComponent
   ComponentId get id => todaySecondarySuggestionsId;
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+
+  @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
@@ -154,11 +177,13 @@ class _SecondarySuggestionsComponent
     //   loading / error → 保留占位，因为卡片内部已经自带骨架与错误态
     //   （SecondarySuggestionErrorState）。若在这里因 error 返回 null，
     //   用户会看不到失败提示，失败就被伪装成「本次没有次要建议」。
-    final hasCards = ref.watch(todaySuggestionProvider).when(
-      data: TodaySecondarySuggestionsSection.hasCards,
-      loading: () => true,
-      error: (_, _) => true,
-    );
+    final hasCards = ref
+        .watch(todaySuggestionProvider)
+        .when(
+          data: TodaySecondarySuggestionsSection.hasCards,
+          loading: () => true,
+          error: (_, _) => true,
+        );
     if (!hasCards) return null;
     return const TodaySecondarySuggestionsSection(
       key: Key('today-secondary-suggestions-card'),
@@ -171,6 +196,12 @@ class _SummaryComponent extends ComponentDescriptor<NoComponentConfig> {
 
   @override
   ComponentId get id => todaySummaryId;
+
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
@@ -186,6 +217,12 @@ class _HealthEventComponent extends ComponentDescriptor<NoComponentConfig> {
 
   @override
   ComponentId get id => todayHealthEventId;
+
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
@@ -206,6 +243,13 @@ class _ObservationComponent extends ComponentDescriptor<NoComponentConfig> {
   ComponentId get id => todayObservationId;
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+
+  @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
@@ -219,6 +263,9 @@ class _QuickActionsComponent extends ComponentDescriptor<NoComponentConfig> {
 
   @override
   ComponentId get id => todayQuickActionsId;
+
+  @override
+  Set<ComponentSize> get supportedSizes => {ComponentSize.wide};
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
