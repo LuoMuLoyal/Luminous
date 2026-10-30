@@ -76,15 +76,31 @@ void main() {
   });
 
   group('sqlCipherKeyExpression', () {
-    test('renders raw bytes as a hex blob literal', () {
+    test('renders a complete PRAGMA hexkey statement', () {
       final key = Uint8List.fromList([0x00, 0x1f, 0xff, 0x80]);
-      expect(sqlCipherKeyExpression(key), "x'001fff80'");
+      expect(sqlCipherKeyExpression(key), "PRAGMA hexkey = '001fff80'");
     });
 
     test('produces 64 hex chars for a 32-byte key', () {
       final key = Uint8List(DatabaseKeyProvider.keyLength);
       final expr = sqlCipherKeyExpression(key);
-      expect(expr.length, 2 + DatabaseKeyProvider.keyLength * 2 + 1);
+      const prefix = 'PRAGMA hexkey = ';
+      expect(expr, startsWith(prefix));
+      final quoted = expr.substring(prefix.length);
+      expect(quoted, startsWith("'"));
+      expect(quoted, endsWith("'"));
+      expect(quoted.length - 2, DatabaseKeyProvider.keyLength * 2);
+    });
+
+    test('uses hexkey, never a blob literal', () {
+      // 回归用例：SQLite3MultipleCiphers 的 `PRAGMA key` 只接受字符串，
+      // `PRAGMA key = x'...'` 是语法错误（设备上表现为库打不开、PRAGMA key
+      // 报 "near x'...': syntax error"）。原始字节必须走 `hexkey`。
+      final expr = sqlCipherKeyExpression(
+        Uint8List(DatabaseKeyProvider.keyLength),
+      );
+      expect(expr, startsWith('PRAGMA hexkey = '));
+      expect(expr, isNot(contains("x'")));
     });
   });
 }

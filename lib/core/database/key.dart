@@ -116,17 +116,20 @@ class DatabaseKeyException implements Exception {
   String toString() => 'DatabaseKeyException($reason): $cause';
 }
 
-/// Renders the raw [key] bytes as a `PRAGMA key` argument.
+/// Renders the raw [key] bytes as a `PRAGMA hexkey` statement.
 ///
-/// The `x'...'` form passes the bytes through verbatim, so the encryption engine
-/// uses them directly as the 256-bit key. A quoted string would instead be run
-/// through the engine's KDF, producing different key material.
+/// **`PRAGMA key = x'...'` does not work on SQLite3MultipleCiphers**: `key`
+/// takes a string (a passphrase, run through the KDF), so a blob literal is a
+/// syntax error. The raw-bytes form is `hexkey`, which SQLite3MultipleCiphers
+/// parses itself — the 64 hex characters become the 256-bit key verbatim, with
+/// no KDF.
 ///
-/// Syntax-compatible with both supported engines (see `pubspec.yaml`'s
-/// `hooks.user_defines.sqlite3.source`); on plain SQLite the statement does not
-/// exist at all and fails with a syntax error — that means the encryption engine
-/// is not built in, not that the key is wrong.
+/// Verified against the bundled build: `hexkey` produces an encrypted file,
+/// `key = x'...'` fails with `near "x'...'": syntax error`.
+///
+/// On plain SQLite neither pragma exists — the failure then means the
+/// encryption engine was not bundled, not that the key is wrong.
 String sqlCipherKeyExpression(Uint8List key) {
   final hex = key.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
-  return "x'$hex'";
+  return "PRAGMA hexkey = '$hex'";
 }

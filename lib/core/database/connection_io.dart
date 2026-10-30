@@ -54,8 +54,10 @@ LazyDatabase _open() {
           (failure) => throw _DatabaseOpenFailure(failure),
           (_) {},
         );
-        // Must run before any other statement touches the database.
-        raw.execute('PRAGMA key = ${sqlCipherKeyExpression(key)}');
+        // Must run before any other statement touches the database. This is a
+        // complete statement (`PRAGMA hexkey = '...'`), not just the argument:
+        // `PRAGMA key = x'...'` is a syntax error on SQLite3MultipleCiphers.
+        raw.execute(sqlCipherKeyExpression(key));
       },
     );
   });
