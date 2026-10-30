@@ -335,6 +335,16 @@ Product Loop Program 的延后项如下。
 `arch_guard`（`dart run scripts/arch/guard.dart`，本地运行，不接 pre-push/CI）已从 7 组循环依赖降到 3 组，剩余两组暂按已知债务冻结在 `arch_guard_baseline.json`（只拦新增/扩大，不拦存量）：
 
 - 259 文件主环（hub 是 `lib/app/router.dart`）：根因是 `core/widgets/**`（`back_button`、`required_dialog`、`connectivity_banner`、`page_state`）反向 import `lib/app` 的 router 与 session adapter，叠加 `app/composition` 内部 token↔装配互指。拆解要反转这两类接缝，工作量大于已修部分总和；`Routes` 常量表已下沉到 `lib/core/router/app_routes.dart`，那一步已消除 `core → app/router` 的一部分边
-- `lib/core/database/database.dart` ↔ `daos/**`（15 文件）：DAO 反向 import 拿 `AppDatabase` 类型，需要在 `dao_owner.dart` 一类不依赖 `database.dart` 的类型文件里收敛
+- `lib/core/database/database.dart` ↔ `daos/**`（15 文件）：DAO 反向 import 拿 `AppDatabase` 类型。
+  **注意：把类型下沉到 `dao_owner.dart` 一类文件的思路已验证不可行**，别重复尝试。硬约束是
+  drift 把 `AppDatabase`、生成的 `_$AppDatabase` 基类、全部 `$XxxTable` 表类型和 DAO mixin
+  绑在 `database.dart` 这**一个库**里（`database.g.dart` 是 `part of 'database.dart'`），而
+  `*.g.dart` 不得手改。于是「DAO 要 `AppDatabase`」与「`database.dart` 要 `@DriftDatabase(daos:)`
+  列全 DAO」互为充要条件，不参与生成物就切不断。已实测失败的方案：① `part` 引入
+  `AppDatabase`（表类型不在作用域）；② DAO 泛型改抽象基类 `implements GeneratedDatabase`
+  （class，需重实现全部成员）；③ `typedef` 别名文件（别名仍须 import `database.dart`，
+  环原样）；④ 把 `@DriftDatabase` 搬去新库（生成基类绑定注解所在库，搬走后生成物失效）；
+  ⑤ drift_dev 的 `databases:` 选项（仅 CLI 迁移工具用，无独立库输出能力）。真要解开只能
+  放宽「不得改生成物」并调整 drift 生成布局。
 - 新引入循环由 `scripts/arch/guard.dart` 直接拦截；修完一组后 `dart run arch_guard --update-baseline` 收窄冻结清单
 
