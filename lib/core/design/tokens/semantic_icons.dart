@@ -261,6 +261,9 @@ abstract final class SemanticIcons {
   static const actionAddCard = FLucideIcons.squarePlus;
   static const actionEdit = FLucideIcons.pencil;
 
+  /// 编排页「完成」：结束本次编辑并提交。
+  static const actionDone = FLucideIcons.check;
+
   /// 拖动把手：编排页里组件的重排入口。
   ///
   /// 用 grip 而不是箭头类图标：grip 表达「可以抓住拖动」，箭头表达「移动方向」；

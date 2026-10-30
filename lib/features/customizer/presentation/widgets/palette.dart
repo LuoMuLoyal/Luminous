@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/customizer/domain/entities/draft.dart';
 import 'package:luminous/features/customizer/domain/entities/edit.dart';
 import 'package:luminous/features/customizer/presentation/providers/draft.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// 跨 tab 组件面板。
 ///
-/// 列出**所有** surface 的组件（按来源分组），每个组件是一个 `Draggable`：
-/// 拖到左侧网格即加入当前 surface；也可以点一下追加到末尾。
-///
-/// 为什么要按来源分组而不是一个大列表：用户的心智是"这是今日页的组件"，
-/// 分组让他在跨 tab 时知道自己在拿谁的东西，而不是面对一堆陌生名字。
+/// 按来源 surface 分组列出**当前这张表能挂、但还没挂**的组件：这就是该
+/// surface 的「未挂载池」（从这张表移走的组件回到这里，选中即放回去）。
+/// 每个组件可拖到左侧网格，也可点一下追加到末尾。
 class CustomizerPalette extends ConsumerWidget {
   const CustomizerPalette({
     super.key,
@@ -28,30 +28,26 @@ class CustomizerPalette extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final notifier = ref.read(editSessionProvider.notifier);
 
-    // 当前 surface 已经挂着的（含隐藏的）不再列出——它们已经在网格里了。
+    // 已挂在表上的（含隐藏的）不再列出——它们已经在左侧网格里了。
     final mounted = draft
         .layoutOf(current)
         .placements
         .map((placement) => placement.id)
         .toSet();
 
-    // 每个 surface 能挂、且当前没挂的组件。这就是跨 tab 的候选集。
-    final candidates = <SurfaceId, List<ComponentId>>{};
-    for (final definition in catalog.definitions) {
-      final ids = [
-        for (final id in definition.available)
-          if (!mounted.contains(id)) id,
-      ];
-      if (ids.isNotEmpty) candidates[definition.surface] = ids;
-    }
+    final candidates = [
+      for (final id in catalog.availableOf(current))
+        if (!mounted.contains(id)) id,
+    ];
 
     if (candidates.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(Spacing.lg),
         child: Text(
-          '所有组件都已添加',
+          l10n.customizerAllAdded,
           style: context.theme.typography.body.sm.copyWith(
             color: SemanticColor.neutral.solid(context),
           ),
@@ -62,36 +58,19 @@ class CustomizerPalette extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(Spacing.lg),
       children: [
-        for (final entry in candidates.entries) ...[
+        for (final id in candidates)
           Padding(
             padding: const EdgeInsets.only(bottom: Spacing.sm),
-            child: Text(
-              entry.key.wireValue,
-              style: context.theme.typography.body.xs.copyWith(
-                color: SemanticColor.neutral.solid(context),
+            child: Draggable<ComponentId>(
+              data: id,
+              feedback: _PaletteDragFeedback(label: id.value),
+              childWhenDragging: Opacity(
+                opacity: 0.4,
+                child: _PaletteTile(id: id, onTap: () => _add(notifier, id)),
               ),
+              child: _PaletteTile(id: id, onTap: () => _add(notifier, id)),
             ),
           ),
-          for (final id in entry.value)
-            Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.sm),
-              child: Draggable<ComponentId>(
-                data: id,
-                feedback: _PaletteDragFeedback(label: id.value),
-                childWhenDragging: Opacity(
-                  opacity: 0.4,
-                  child: _PaletteTile(
-                    id: id,
-                    onTap: () => _add(notifier, id),
-                  ),
-                ),
-                child: _PaletteTile(
-                  id: id,
-                  onTap: () => _add(notifier, id),
-                ),
-              ),
-            ),
-        ],
       ],
     );
   }

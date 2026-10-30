@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_reorderable_grid_view/widgets/reorderable_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
@@ -12,27 +13,18 @@ import 'package:luminous/features/customizer/presentation/providers/draft.dart';
 import 'package:luminous/features/customizer/presentation/widgets/palette.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// 编排页：编辑**一个** surface 的组件列表，并可把别的 surface 的组件拖进来。
+/// 编排页：编辑**一个** surface 的组件列表，并可把别的 surface 的组件加入。
 ///
-/// 用户从某个 tab 点「编辑」进来，心智是"我在改这一页"；跨 tab 能力由右侧
-/// 面板提供——把组件拖到左侧即加入。
+/// 用户从某个 tab 点标题进来，心智是"我在改这一页"；跨 tab 能力由右侧
+/// 面板提供——拖到左侧、或点一下即加入。
 ///
 /// 用 `flutter_reorderable_grid_view` 而不是内置 `ReorderableListView`：内置版
 /// 只能在一维列表内排序，既不能跨列表拖入，也展示不了组件的真实尺寸
 /// （compact/regular/wide 三档正是编排页要让用户看到的东西）。
 class CustomizerPage extends ConsumerStatefulWidget {
-  const CustomizerPage({
-    super.key,
-    required this.surface,
-    required this.catalog,
-    this.onDone,
-  });
+  const CustomizerPage({super.key, required this.surface});
 
   final SurfaceId surface;
-  final SurfaceCatalog catalog;
-
-  /// 点「完成」后的回调（由调用方负责关闭编排页并提交草稿）。
-  final VoidCallback? onDone;
 
   @override
   ConsumerState<CustomizerPage> createState() => _CustomizerPageState();
@@ -45,7 +37,11 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
     // 进入编排即读现有布局生成草稿。用 postFrame 是因为 begin() 会写 provider
     // 状态，不能在 build/initState 期间同步改。
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(ref.read(editSessionProvider.notifier).begin(widget.catalog));
+      unawaited(
+        ref
+            .read(editSessionProvider.notifier)
+            .begin(ref.read(surfaceCatalogProvider)),
+      );
     });
   }
 
@@ -53,6 +49,7 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final draft = ref.watch(editSessionProvider);
+    final catalog = ref.watch(surfaceCatalogProvider);
 
     if (draft == null) {
       return const FScaffold(child: Center(child: FProgress()));
@@ -68,6 +65,7 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
           key: ValueKey(placement.id.value),
           surface: widget.surface,
           placement: placement,
+          isLast: placement.id == placements.last.id,
         ),
     ];
 
@@ -76,8 +74,8 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _Header(
-            title: l10n.customizerTitle,
-            onDone: widget.onDone,
+            title: _surfaceTitle(l10n, widget.surface),
+            onDone: () => _finish(context),
             onReset: () =>
                 ref.read(editSessionProvider.notifier).resetToDefaults(),
           ),
@@ -128,7 +126,7 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
                   flex: 2,
                   child: CustomizerPalette(
                     current: widget.surface,
-                    catalog: widget.catalog,
+                    catalog: catalog,
                     draft: draft,
                   ),
                 ),
@@ -138,6 +136,17 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
         ],
       ),
     );
+  }
+
+  /// 「完成」：写回布局并离开。取消（返回手势/返回键）直接丢弃草稿。
+  Future<void> _finish(BuildContext context) async {
+    await ref.read(editSessionProvider.notifier).commit();
+    if (!context.mounted) return;
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go('/');
+    }
   }
 
   /// 把重排结果翻译成一次 `move` 编辑。
@@ -176,33 +185,71 @@ ComponentId? _idOfKey(Object? key) {
   return null;
 }
 
+/// Surface 的标题复用 tab 的 ARB 名称，不另起一套文案。
+String _surfaceTitle(AppLocalizations l10n, SurfaceId surface) {
+  return switch (surface) {
+    SurfaceId.today => l10n.tabToday,
+    SurfaceId.record => l10n.tabRecord,
+    SurfaceId.medicine => l10n.tabMedicine,
+    SurfaceId.review => l10n.tabReview,
+    SurfaceId.mine => l10n.tabMine,
+    SurfaceId.tabChrome => l10n.customizerTitle,
+  };
+}
+
 class _Header extends StatelessWidget {
   const _Header({
     required this.title,
     required this.onReset,
-    this.onDone,
+    required this.onDone,
   });
 
   final String title;
   final VoidCallback onReset;
-  final VoidCallback? onDone;
+  final VoidCallback onDone;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final titleText = Text(
+      title,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: context.theme.typography.body.lg,
+    );
+    final resetButton = FTooltip(
+      tipBuilder: (context, controller) => Text(l10n.customizerResetAction),
+      child: FButton.icon(
+        variant: FButtonVariant.outline,
+        size: FButtonSizeVariant.sm,
+        onPress: onReset,
+        semanticsLabel: l10n.customizerResetAction,
+        child: const Icon(SemanticIcons.actionReset),
+      ),
+    );
+    final doneButton = FTooltip(
+      tipBuilder: (context, controller) => Text(l10n.customizerDoneAction),
+      child: FButton.icon(
+        size: FButtonSizeVariant.sm,
+        onPress: onDone,
+        semanticsLabel: l10n.customizerDoneAction,
+        child: const Icon(SemanticIcons.actionDone),
+      ),
+    );
+
     return Padding(
       padding: const EdgeInsets.all(Spacing.lg),
+      // 结构化装配：标题吃剩余宽度，两个操作按钮以 `Flexible` 参与分配，
+      // 窄屏 + 大字号时也不会把标题挤成多行（见 luminous_lints 规则
+      // `non_shrinking_row_child`）。
       child: Row(
         children: [
-          Expanded(
-            child: Text(title, style: context.theme.typography.body.lg),
-          ),
-          FButton(
-            variant: FButtonVariant.outline,
-            onPress: onReset,
-            child: const Text('恢复默认'),
-          ),
+          Expanded(child: titleText),
           const SizedBox(width: Spacing.sm),
-          FButton(onPress: onDone, child: const Text('完成')),
+          Flexible(child: resetButton),
+          const SizedBox(width: Spacing.sm),
+          Flexible(child: doneButton),
         ],
       ),
     );
@@ -215,14 +262,52 @@ class _PlacementTile extends ConsumerWidget {
     super.key,
     required this.surface,
     required this.placement,
+    required this.isLast,
   });
 
   final SurfaceId surface;
   final ComponentPlacement placement;
 
+  /// 最后一项不允许移除：编辑器不提供「全空」状态（空 surface 没有可恢复的
+  /// 入口，用户只能靠「恢复默认」脱困）。
+  final bool isLast;
+
+  @override
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final notifier = ref.read(editSessionProvider.notifier);
+    final registry = ref.watch(componentRegistryProvider);
+    final id = placement.id;
+    final known = registry.contains(id);
+
+    // 结构化装配：名称吃剩余宽度；显隐与移除交给 `Flexible`，窄屏 + 大字号
+    // 时不会把名称挤成多行（luminous_lints 规则 non_shrinking_row_child）。
+    final nameText = Text(
+      id.value,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: context.theme.typography.body.sm.copyWith(
+        color: known ? null : SemanticColor.neutral.solid(context),
+      ),
+    );
+    final visibilitySwitch = FSwitch(
+      value: placement.visible,
+      onChange: (value) => notifier.applyEdit(
+        LayoutEdit.toggle(surface: surface, id: id, visible: value),
+      ),
+    );
+    final removeButton = FTooltip(
+      tipBuilder: (context, controller) => Text(l10n.customizerRemoveAction),
+      child: FButton.icon(
+        variant: FButtonVariant.ghost,
+        size: FButtonSizeVariant.xs,
+        onPress: () =>
+            notifier.applyEdit(LayoutEdit.remove(surface: surface, id: id)),
+        semanticsLabel: l10n.customizerRemoveAction,
+        child: const Icon(SemanticIcons.actionDelete),
+      ),
+    );
 
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.sm),
@@ -237,30 +322,9 @@ class _PlacementTile extends ConsumerWidget {
                 color: SemanticColor.neutral.solid(context),
               ),
             ),
-            Expanded(
-              child: Text(
-                placement.id.value,
-                style: context.theme.typography.body.sm,
-              ),
-            ),
-            FSwitch(
-              value: placement.visible,
-              onChange: (value) => notifier.applyEdit(
-                LayoutEdit.toggle(
-                  surface: surface,
-                  id: placement.id,
-                  visible: value,
-                ),
-              ),
-            ),
-            FButton(
-              variant: FButtonVariant.ghost,
-              size: FButtonSizeVariant.xs,
-              onPress: () => notifier.applyEdit(
-                LayoutEdit.remove(surface: surface, id: placement.id),
-              ),
-              child: const Text('移除'),
-            ),
+            Expanded(child: nameText),
+            Flexible(child: visibilitySwitch),
+            if (!isLast) Flexible(child: removeButton),
           ],
         ),
       ),

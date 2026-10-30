@@ -66,5 +66,9 @@
   "commonStatusStale": "更新失败",
   "commonStaleHint": "更新失败，当前显示上次获取的数据",
   "commonRetryingHint": "更新失败，正在自动重试",
-  "customizerTitle": "编排组件"
+  "customizerTitle": "编排组件",
+  "customizerResetAction": "恢复默认",
+  "customizerDoneAction": "完成",
+  "customizerRemoveAction": "移除",
+  "customizerAllAdded": "所有组件都已添加"
 }

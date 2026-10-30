@@ -66,5 +66,9 @@
   "commonStatusStale": "Update failed",
   "commonStaleHint": "Update failed, showing the last data we had",
   "commonRetryingHint": "Update failed, retrying automatically",
-  "customizerTitle": "Customize"
+  "customizerTitle": "Customize",
+  "customizerResetAction": "Reset",
+  "customizerDoneAction": "Done",
+  "customizerRemoveAction": "Remove",
+  "customizerAllAdded": "All components added"
 }
