@@ -4,7 +4,6 @@ import 'package:forui/forui.dart';
 
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/customizer/domain/entities/draft.dart';
 import 'package:luminous/features/customizer/domain/entities/edit.dart';
 import 'package:luminous/features/customizer/presentation/providers/draft.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -54,6 +53,11 @@ String componentDisplayName(AppLocalizations l10n, ComponentId id) {
     'privacy.notice' => l10n.componentNamePrivacyNotice,
     'reminder.settings' => l10n.componentNameReminderSettings,
     'account.security' => l10n.componentNameAccountSecurity,
+    'readiness.legacy' => l10n.componentNameReadinessLegacy,
+    'findings.legacy' => l10n.componentNameFindingsLegacy,
+    'ai_summary.legacy' => l10n.componentNameAiSummaryLegacy,
+    'patterns.legacy' => l10n.componentNamePatternsLegacy,
+    'history.suggestion_legacy' => l10n.componentNameSuggestionHistoryLegacy,
     _ => id.value,
   };
 }
@@ -67,31 +71,35 @@ class CustomizerPalette extends ConsumerWidget {
     super.key,
     required this.current,
     required this.catalog,
-    required this.draft,
   });
 
   final SurfaceId current;
   final SurfaceCatalog catalog;
-  final LayoutDraft draft;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final notifier = ref.read(editSessionProvider.notifier);
 
+    // **必须 watch 草稿本身**，不能接收调用方传来的快照。
+    //
+    // 窄屏面板长在 `showModalBottomSheet` 里，那个 builder 不在页面的重建范围
+    // 内：把打开时的 `draft` 传进来，加的组件进了草稿、面板却还按旧快照渲染，
+    // 表现为"点了没反应"（其实已经加上了，只是列表没变）。
+    final draft = ref.watch(editSessionProvider);
+    if (draft == null) return const SizedBox.shrink();
+
     // 已挂在当前 surface 上的（含隐藏的）不再列出：它们已经在左侧列表里。
-    final mounted = draft
-        .layoutOf(current)
-        .placements
-        .map((placement) => placement.id)
-        .toSet();
+    final placements = draft.layoutOf(current).placements;
+    final mountedCount = placements.length;
+    final mounted = placements.map((placement) => placement.id).toSet();
 
     // 每个 surface 可挂、当前还没挂上的组件——这就是跨 tab 的候选集。
     final groups = <SurfaceId, List<ComponentId>>{};
     for (final definition in catalog.definitions) {
       if (definition.surface == SurfaceId.tabChrome) continue;
       final ids = [
-        for (final id in definition.available)
+        for (final id in definition.owned)
           if (!mounted.contains(id)) id,
       ];
       if (ids.isNotEmpty) groups[definition.surface] = ids;
@@ -126,21 +134,23 @@ class CustomizerPalette extends ConsumerWidget {
           for (final id in entry.value)
             Padding(
               padding: const EdgeInsets.only(bottom: Spacing.xs),
-              child: Draggable<ComponentId>(
-                data: id,
-                feedback: _PaletteDragFeedback(
-                  label: componentDisplayName(l10n, id),
-                ),
-                childWhenDragging: Opacity(
-                  opacity: 0.4,
-                  child: _PaletteTile(
+              // 点击必须包在**外层**：`LongPressDraggable` 会把长按识别器注册
+              // 到自己的手势竞技场，内层 `GestureDetector` 的 tap 会被它抢走
+              // （表现为"点加号没反应"）。把 `onTap` 放在拖拽外面，单击与长按
+              // 各走各的识别器；面板是滚动列表，长按才拖也避免和滚动冲突。
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => _add(notifier, id, mountedCount),
+                child: LongPressDraggable<ComponentId>(
+                  data: id,
+                  feedback: _PaletteDragFeedback(
                     label: componentDisplayName(l10n, id),
-                    onTap: () => _add(notifier, id),
                   ),
-                ),
-                child: _PaletteTile(
-                  label: componentDisplayName(l10n, id),
-                  onTap: () => _add(notifier, id),
+                  childWhenDragging: Opacity(
+                    opacity: 0.4,
+                    child: _PaletteTile(label: componentDisplayName(l10n, id)),
+                  ),
+                  child: _PaletteTile(label: componentDisplayName(l10n, id)),
                 ),
               ),
             ),
@@ -149,12 +159,12 @@ class CustomizerPalette extends ConsumerWidget {
     );
   }
 
-  void _add(EditSessionNotifier notifier, ComponentId id) {
+  void _add(EditSessionNotifier notifier, ComponentId id, int currentCount) {
     notifier.applyEdit(
       LayoutEdit.add(
         surface: current,
         id: id,
-        toIndex: draft.layoutOf(current).placements.length,
+        toIndex: currentCount,
       ),
     );
   }
@@ -172,36 +182,40 @@ String surfaceTitle(AppLocalizations l10n, SurfaceId surface) {
   };
 }
 
+/// 面板里的一行：组件名。
+///
+/// 纯展示：点击由外层 `GestureDetector` 处理，这样手势归属只有一处，
+/// 不会和内部识别器抢。
 class _PaletteTile extends StatelessWidget {
-  const _PaletteTile({required this.label, required this.onTap});
+  const _PaletteTile({required this.label});
 
   final String label;
-  final VoidCallback onTap;
+
+  /// 行高。默认内边距在手机上只有 ~40dp，抬到接近 Material 的 48dp 触控目标。
+  static const double _rowHeight = 52;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: FCard(
+    return FCard(
+      child: SizedBox(
+        height: _rowHeight,
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.md,
-            vertical: Spacing.sm,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.md),
           child: Row(
             children: [
+              // 只保留一个「＋」：它既是操作提示也是点击目标，右侧那个是多余的。
               Icon(
-                SemanticIcons.actionAddCard,
-                size: IconSizeTokens.sm,
+                SemanticIcons.actionAdd,
+                size: IconSizeTokens.md,
                 color: SemanticColor.neutral.solid(context),
               ),
-              const SizedBox(width: Spacing.sm),
+              const SizedBox(width: Spacing.md),
               Expanded(
                 child: Text(
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: context.theme.typography.body.sm,
+                  style: context.theme.typography.body.md,
                 ),
               ),
             ],
