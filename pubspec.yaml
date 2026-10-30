@@ -116,6 +116,7 @@ dependencies:
   hive_ce: ^2.22.0
   sqlcipher_flutter_libs: ^0.7.0+eol
   genui: ^0.10.4
+  flutter_reorderable_grid_view: ^5.7.0
 
 dev_dependencies:
   flutter_test:

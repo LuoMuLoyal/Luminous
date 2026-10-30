@@ -260,6 +260,12 @@ abstract final class SemanticIcons {
   static const actionAdd = FLucideIcons.plus;
   static const actionAddCard = FLucideIcons.squarePlus;
   static const actionEdit = FLucideIcons.pencil;
+
+  /// 拖动把手：编排页里组件的重排入口。
+  ///
+  /// 用 grip 而不是箭头类图标：grip 表达「可以抓住拖动」，箭头表达「移动方向」；
+  /// 在可重排列表里前者是通用语汇（Forui 自己的 `FIcons.gripVertical` 同样选择）。
+  static const actionDragHandle = FLucideIcons.gripVertical;
   static const actionEditCard = FLucideIcons.squarePen;
   static const actionDelete = FLucideIcons.trash2;
   static const actionSearch = FLucideIcons.search;
