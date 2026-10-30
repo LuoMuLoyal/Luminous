@@ -53,8 +53,7 @@ Future<void> main() async {
 
   // Composition root: bind feature implementations to the feature-free core
   // seams (core cannot import features; app/ can import both).
-  final root = ProviderContainer();
-  root.updateOverrides(appProviderOverrides(root));
+  final root = buildRootContainer();
   runApp(
     UncontrolledProviderScope(container: root, child: const LuminousApp()),
   );

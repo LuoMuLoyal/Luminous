@@ -81,6 +81,12 @@ class FeatureAuthSessionGateway implements AuthSessionGateway {
 ///
 /// `lib/app/` is the composition root, so it is the only layer allowed to see
 /// both `lib/core` interfaces and their `lib/features` implementations.
+///
+/// **Must be passed to `ProviderContainer(overrides: ...)`**, not applied to an
+/// already-created container: Riverpod 3's `updateOverrides` may only *replace*
+/// the overrides a container was built with (adding one trips
+/// `_debugOverridesLength == overrides.length`), so a container created bare
+/// can never receive them afterwards.
 List<Override> appProviderOverrides(ProviderContainer container) => [
   authSessionGatewayProvider.overrideWithValue(
     FeatureAuthSessionGateway(container.read(authRepositoryProvider)),
@@ -90,3 +96,17 @@ List<Override> appProviderOverrides(ProviderContainer container) => [
   ...settingsProviderOverrides(container),
   ...compositionProviderOverrides(),
 ];
+
+/// Builds the root container with [appProviderOverrides] already installed.
+///
+/// The container is needed to assemble the overrides (`container.read(A)` feeds
+/// an override of `B`) while the overrides must exist at construction time.
+/// The resolution: a bare throw-away container supplies the read side, and the
+/// real one is created with the resulting list. Both see the same code, so the
+/// only state that matters — the provider instances — is identical.
+ProviderContainer buildRootContainer() {
+  final probe = ProviderContainer();
+  final overrides = appProviderOverrides(probe);
+  probe.dispose();
+  return ProviderContainer(overrides: overrides);
+}
