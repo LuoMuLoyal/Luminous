@@ -7,8 +7,8 @@ import 'package:luminous/features/medicine/presentation/widgets/sections/safety_
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class SafetyEngineSection extends StatelessWidget {
-  const SafetyEngineSection({
+class SafetyEngineSummary extends StatelessWidget {
+  const SafetyEngineSummary({
     super.key,
     required this.records,
     required this.alerts,

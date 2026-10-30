@@ -1,7 +1,16 @@
-part of '../views/mobile_dashboard_view.dart';
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/medicine/domain/entities/workspace.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
-class _MedicationAvatar extends StatelessWidget {
-  const _MedicationAvatar({required this.item, required this.size});
+/// 药箱与今日计划两个区块共用的展示单元。
+///
+/// 原先是 `mobile_dashboard_view.dart` 的 `part` 私有成员；两个区块拆成独立
+/// 组件文件后，这些共享件需要一个公共落点，否则任一区块都要重新实现一遍。
+class MedicationAvatar extends StatelessWidget {
+  const MedicationAvatar({super.key, required this.item, required this.size});
 
   final MedicinePlanItem item;
   final double size;
@@ -13,8 +22,9 @@ class _MedicationAvatar extends StatelessWidget {
   }
 }
 
-class _DoseActionButton extends StatelessWidget {
-  const _DoseActionButton({
+/// Take / Skip 打卡按钮。
+class DoseActionButton extends StatelessWidget {
+  const DoseActionButton({
     super.key,
     required this.label,
     required this.icon,
@@ -52,34 +62,47 @@ class _DoseActionButton extends StatelessWidget {
   }
 }
 
-class _NextDose {
-  const _NextDose({required this.item, this.slot});
+/// 「还有 N 项」折叠页脚。
+class TruncatedFooter extends StatelessWidget {
+  const TruncatedFooter({super.key, required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return FTappable(
+      onPress: onTap,
+      builder: (context, data, _) => Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
+          child: Text(
+            label,
+            style: context.theme.typography.body.xs.copyWith(
+              color: SemanticColor.neutral.solid(context),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 下一次待服用剂次：药 + 可选槽位。
+class NextDose {
+  const NextDose({required this.item, this.slot});
 
   final MedicinePlanItem item;
   final MedicineDoseSlot? slot;
 }
 
-class _QuickOperation {
-  const _QuickOperation({
-    required this.icon,
-    required this.color,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final SemanticColor color;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-}
-
-_NextDose? _nextDoseFor(MedicineWorkspace workspace) {
+/// 从工作区推导"下一剂"。
+NextDose? nextDoseFor(MedicineWorkspace workspace) {
   for (final item in workspace.plan.items) {
     for (final slot in item.slots) {
       if (slot.status == MedicineDoseStatus.pending && !slot.isOverdue) {
-        return _NextDose(item: item, slot: slot);
+        return NextDose(item: item, slot: slot);
       }
     }
   }
@@ -88,13 +111,13 @@ _NextDose? _nextDoseFor(MedicineWorkspace workspace) {
     // 槽位全 overdue 的药（status 仍 pending、isOverdue true）不再误判为「下一剂」，
     // 避免药箱条显示「未设置时间」而非「无待服用剂次」空态。
     if (item.slots.isEmpty && item.todayStatus == MedicineDoseStatus.pending) {
-      return _NextDose(item: item);
+      return NextDose(item: item);
     }
   }
   return null;
 }
 
-String _slotTimeLabel(AppLocalizations l10n, MedicineDoseSlot slot) {
+String slotTimeLabel(AppLocalizations l10n, MedicineDoseSlot slot) {
   final raw = slot.rawTime?.trim();
   if (raw != null && raw.isNotEmpty) return raw;
   final key = slot.timeKey;
@@ -102,13 +125,13 @@ String _slotTimeLabel(AppLocalizations l10n, MedicineDoseSlot slot) {
   return l10n.medicineScheduleNotSet;
 }
 
-String _itemName(AppLocalizations l10n, MedicinePlanItem item) {
+String itemName(AppLocalizations l10n, MedicinePlanItem item) {
   final raw = item.rawName?.trim();
   if (raw != null && raw.isNotEmpty) return raw;
   return medicineCopy(l10n, item.nameKey);
 }
 
-String _itemDosage(AppLocalizations l10n, MedicinePlanItem item) {
+String itemDosage(AppLocalizations l10n, MedicinePlanItem item) {
   final raw = item.rawDosage;
   if (raw != null) {
     final trimmed = raw.trim();
@@ -117,7 +140,7 @@ String _itemDosage(AppLocalizations l10n, MedicinePlanItem item) {
   return medicineCopy(l10n, item.dosageKey);
 }
 
-String _itemSchedule(AppLocalizations l10n, MedicinePlanItem item) {
+String itemSchedule(AppLocalizations l10n, MedicinePlanItem item) {
   final raw = item.rawSchedule;
   if (raw != null) {
     final trimmed = raw.trim();
@@ -126,21 +149,21 @@ String _itemSchedule(AppLocalizations l10n, MedicinePlanItem item) {
   return medicineCopy(l10n, item.scheduleKey);
 }
 
-String _itemState(AppLocalizations l10n, MedicinePlanItem item) {
+String itemState(AppLocalizations l10n, MedicinePlanItem item) {
   final raw = item.rawState?.trim();
   if (raw != null && raw.isNotEmpty) return raw;
   return medicineCopy(l10n, item.stateKey);
 }
 
-String _doseSummary(AppLocalizations l10n, MedicinePlanItem item) {
+String doseSummary(AppLocalizations l10n, MedicinePlanItem item) {
   return [
-    _itemName(l10n, item),
-    _itemDosage(l10n, item),
-    _compactRouteOrSchedule(_itemSchedule(l10n, item)),
+    itemName(l10n, item),
+    itemDosage(l10n, item),
+    compactRouteOrSchedule(itemSchedule(l10n, item)),
   ].where((value) => value.trim().isNotEmpty).join('  ');
 }
 
-String _compactRouteOrSchedule(String value) {
+String compactRouteOrSchedule(String value) {
   final trimmed = value.trim();
   if (trimmed.isEmpty) return '—';
   return trimmed;

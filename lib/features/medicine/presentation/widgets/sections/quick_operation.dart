@@ -1,16 +1,25 @@
-part of '../views/mobile_dashboard_view.dart';
+import 'dart:async';
 
-class _QuickOperationSection extends StatelessWidget {
-  const _QuickOperationSection({
-    required this.l10n,
-    required this.onCreateReminder,
-  });
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/features/scan/presentation/pages/box_scan.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
-  final AppLocalizations l10n;
-  final VoidCallback? onCreateReminder;
+/// 快捷操作区块：加药 / 搜索 / 扫码 / 拍照识药 / 新建提醒 / 安全自查。
+///
+/// 每个入口自己 `context.push`；原先页面注入的 `onCreateReminder` 已取消——
+/// 组件不再依赖页面装配。
+class QuickOperationSection extends StatelessWidget {
+  const QuickOperationSection({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final operations = [
       _QuickOperation(
         icon: SemanticIcons.actionAdd,
@@ -45,8 +54,7 @@ class _QuickOperationSection extends StatelessWidget {
         color: SemanticColor.primary,
         title: l10n.medicineReminderQuickTitle,
         subtitle: l10n.medicineReminderQuickSubtitle,
-        onTap:
-            onCreateReminder ?? () => context.push(Routes.medicineRemindersNew),
+        onTap: () => context.push(Routes.medicineRemindersNew),
       ),
       _QuickOperation(
         icon: SemanticIcons.safetyCaution,
@@ -90,6 +98,22 @@ class _QuickOperationSection extends StatelessWidget {
       ],
     );
   }
+}
+
+class _QuickOperation {
+  const _QuickOperation({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final SemanticColor color;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
 }
 
 class _QuickOperationRow extends StatelessWidget {

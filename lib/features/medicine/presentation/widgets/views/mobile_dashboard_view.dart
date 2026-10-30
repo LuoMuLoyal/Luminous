@@ -1,110 +1,63 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/core/widgets/common/control/divider.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
-import 'package:luminous/features/medicine/presentation/routes.dart';
-import 'package:luminous/features/medicine/presentation/widgets/sections/mobile_safety.dart';
-import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
-import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
-import 'package:luminous/features/scan/presentation/pages/box_scan.dart';
-import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/features/medicine/presentation/widgets/sections/drug_box.dart';
+import 'package:luminous/features/medicine/presentation/widgets/sections/quick_operation.dart';
+import 'package:luminous/features/medicine/presentation/widgets/sections/records.dart';
+import 'package:luminous/features/medicine/presentation/widgets/sections/safety_engine.dart';
 
-part '../sections/mobile_drugbox.dart';
-part '../sections/mobile_quick_operations.dart';
-part '../sections/mobile_records.dart';
-part '../shared/mobile_shared.dart';
-
+/// 用药页内容区。
+///
+/// 移动端交给 [ComponentHost]：页面不再知道该页有哪些区块，加组件 /
+/// 换顺序都不用改这个文件。桌面端保留手写双栏——多栏布局需要每个区块的静态
+/// 类型参与 `Expanded` 分栏，组件化的单列布局模型表达不了。
 class MedicineMobileDashboardView extends StatelessWidget {
-  const MedicineMobileDashboardView({
-    super.key,
-    required this.workspace,
-    this.onMarkDose,
-    this.onOpenReminder,
-    this.onCreateReminder,
-    this.isLoading = false,
-  });
+  const MedicineMobileDashboardView({super.key, required this.workspace});
 
   final MedicineWorkspace workspace;
-  final void Function(MedicineDoseMarkRequest request)? onMarkDose;
-  final void Function(String currentMedicineId)? onOpenReminder;
-  final VoidCallback? onCreateReminder;
-  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final nextDose = _nextDoseFor(workspace);
-    // 告警由风险检查记录实时派生；bestRecord 为 null 时传可空结果，
-    // medicineAlertsFromRiskCheck 对 null 已返回 const []，避免用空结果伪造
-    // 「全部通过」告警（未知不得映射为 0）。
-    final alerts = medicineAlertsFromRiskCheck(
-      l10n,
-      workspace.riskCheckRecords?.bestRecord?.result,
-    );
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
 
-    final content = isDesktop
-        ? _buildDesktopLayout(
-            l10n: l10n,
-            nextDose: nextDose,
-            alerts: alerts,
-            isWide: width >= Breakpoints.wide,
-          )
-        : _buildMobileLayout(l10n: l10n, nextDose: nextDose, alerts: alerts);
-
-    return SkeletonScope(isLoading: isLoading, child: content);
-  }
-
-  Widget _buildMobileLayout({
-    required AppLocalizations l10n,
-    required _NextDose? nextDose,
-    required List<MedicineAlert> alerts,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _DrugBoxSection(
-          workspace: workspace,
-          l10n: l10n,
-          onOpenReminder: onOpenReminder,
-        ),
-        const SizedBox(height: Spacing.lg),
-        _MedicineRecordsSection(
-          workspace: workspace,
-          nextDose: nextDose,
-          l10n: l10n,
-          onMarkDose: onMarkDose,
-        ),
-        const SizedBox(height: Spacing.lg),
-        SafetyEngineSection(
-          records: workspace.riskCheckRecords,
-          alerts: alerts.take(4).toList(growable: false),
-          l10n: l10n,
-        ),
-        const SizedBox(height: Spacing.lg),
-        _QuickOperationSection(l10n: l10n, onCreateReminder: onCreateReminder),
-      ],
+    if (!isDesktop) return const _MobileLayout();
+    return _DesktopLayout(
+      workspace: workspace,
+      isWide: width >= Breakpoints.wide,
     );
   }
+}
 
-  Widget _buildDesktopLayout({
-    required AppLocalizations l10n,
-    required _NextDose? nextDose,
-    required List<MedicineAlert> alerts,
-    required bool isWide,
-  }) {
+/// 移动端：按 `medicine` 表面的布局渲染组件。
+class _MobileLayout extends ConsumerWidget {
+  const _MobileLayout();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final layout = ref.watch(surfaceLayoutProvider(SurfaceId.medicine));
+    return ComponentHost(
+      surface: SurfaceId.medicine,
+      layout: layout,
+      spacing: Spacing.lg,
+    );
+  }
+}
+
+/// 桌面端：手写双栏 / 三栏。
+class _DesktopLayout extends StatelessWidget {
+  const _DesktopLayout({required this.workspace, required this.isWide});
+
+  final MedicineWorkspace workspace;
+  final bool isWide;
+
+  @override
+  Widget build(BuildContext context) {
     // Wide screens (≥1400): three columns — drugbox | records+safety | quick ops
     if (isWide) {
-      return Row(
+      return const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Left: drug box.
@@ -112,49 +65,29 @@ class MedicineMobileDashboardView extends StatelessWidget {
             flex: 4,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _DrugBoxSection(
-                  workspace: workspace,
-                  l10n: l10n,
-                  onOpenReminder: onOpenReminder,
-                ),
-              ],
+              children: [DrugBoxSection()],
             ),
           ),
-          const SizedBox(width: Spacing.xl),
+          SizedBox(width: Spacing.xl),
           // Center: records + safety.
           Expanded(
             flex: 6,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _MedicineRecordsSection(
-                  workspace: workspace,
-                  nextDose: nextDose,
-                  l10n: l10n,
-                  onMarkDose: onMarkDose,
-                ),
-                const SizedBox(height: Spacing.xl),
-                SafetyEngineSection(
-                  records: workspace.riskCheckRecords,
-                  alerts: alerts.take(4).toList(growable: false),
-                  l10n: l10n,
-                ),
+                MedicineRecordsSection(),
+                SizedBox(height: Spacing.xl),
+                SafetyEngineSection(),
               ],
             ),
           ),
-          const SizedBox(width: Spacing.xl),
+          SizedBox(width: Spacing.xl),
           // Right: quick operations.
           Expanded(
             flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _QuickOperationSection(
-                  l10n: l10n,
-                  onCreateReminder: onCreateReminder,
-                ),
-              ],
+              children: [QuickOperationSection()],
             ),
           ),
         ],
@@ -162,7 +95,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
     }
 
     // Standard desktop (1200–1400): two columns — drugbox+records | safety+ops
-    return Row(
+    return const Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
@@ -170,37 +103,21 @@ class MedicineMobileDashboardView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _DrugBoxSection(
-                workspace: workspace,
-                l10n: l10n,
-                onOpenReminder: onOpenReminder,
-              ),
-              const SizedBox(height: Spacing.xl),
-              _MedicineRecordsSection(
-                workspace: workspace,
-                nextDose: nextDose,
-                l10n: l10n,
-                onMarkDose: onMarkDose,
-              ),
+              DrugBoxSection(),
+              SizedBox(height: Spacing.xl),
+              MedicineRecordsSection(),
             ],
           ),
         ),
-        const SizedBox(width: Spacing.xl),
+        SizedBox(width: Spacing.xl),
         Expanded(
           flex: 5,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SafetyEngineSection(
-                records: workspace.riskCheckRecords,
-                alerts: alerts.take(4).toList(growable: false),
-                l10n: l10n,
-              ),
-              const SizedBox(height: Spacing.xl),
-              _QuickOperationSection(
-                l10n: l10n,
-                onCreateReminder: onCreateReminder,
-              ),
+              SafetyEngineSection(),
+              SizedBox(height: Spacing.xl),
+              QuickOperationSection(),
             ],
           ),
         ),

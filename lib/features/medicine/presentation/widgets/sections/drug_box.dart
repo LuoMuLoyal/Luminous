@@ -1,22 +1,38 @@
-part of '../views/mobile_dashboard_view.dart';
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/app/router.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
+import 'package:luminous/features/medicine/domain/entities/workspace.dart';
+import 'package:luminous/features/medicine/presentation/providers/surface.dart';
+import 'package:luminous/features/medicine/presentation/routes.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/medication_parts.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// Maximum drugbox rows rendered before collapsing the rest into the
 /// "more" footer.
 const _maxVisibleDrugboxItems = 3;
 
-class _DrugBoxSection extends StatelessWidget {
-  const _DrugBoxSection({
-    required this.workspace,
-    required this.l10n,
-    required this.onOpenReminder,
-  });
-
-  final MedicineWorkspace workspace;
-  final AppLocalizations l10n;
-  final void Function(String currentMedicineId)? onOpenReminder;
+/// 药箱区块：当前在用药品列表 + 管理入口。
+///
+/// 数据自取（`medicineSurfaceStateProvider`），导航在组件内部完成——组件不带
+/// 页面数据切片，也不收 `onXxx` 回调。
+class DrugBoxSection extends ConsumerWidget {
+  const DrugBoxSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final workspace = ref.watch(medicineSurfaceStateProvider).dataOrNull;
+    if (workspace == null) return const SizedBox.shrink();
+
+    final l10n = AppLocalizations.of(context)!;
     final items = workspace.plan.items
         .where((item) => item.currentMedicineId != null)
         .toList(growable: false);
@@ -61,11 +77,10 @@ class _DrugBoxSection extends StatelessWidget {
                         .take(_maxVisibleDrugboxItems)
                         .toList(growable: false),
                     l10n: l10n,
-                    onOpenReminder: onOpenReminder,
                   ),
                   if (items.length > _maxVisibleDrugboxItems) ...[
                     const SizedBox(height: Spacing.sm),
-                    _TruncatedFooter(
+                    TruncatedFooter(
                       label: l10n.medicineDrugboxMoreCount(
                         items.length - _maxVisibleDrugboxItems,
                       ),
@@ -191,169 +206,20 @@ class _DrugBoxHeader extends StatelessWidget {
 }
 
 class _DrugBoxContent extends StatelessWidget {
-  const _DrugBoxContent({
-    required this.items,
-    required this.l10n,
-    required this.onOpenReminder,
-  });
+  const _DrugBoxContent({required this.items, required this.l10n});
 
   final List<MedicinePlanItem> items;
   final AppLocalizations l10n;
-  final void Function(String currentMedicineId)? onOpenReminder;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         for (var index = 0; index < items.length; index += 1) ...[
-          _DrugBoxMedicationRow(
-            item: items[index],
-            l10n: l10n,
-            onOpenReminder: onOpenReminder,
-          ),
+          _DrugBoxMedicationRow(item: items[index], l10n: l10n),
           if (index < items.length - 1) const AppDivider(),
         ],
       ],
-    );
-  }
-}
-
-class _DrugBoxReminderStrip extends StatelessWidget {
-  const _DrugBoxReminderStrip({
-    super.key,
-    required this.workspace,
-    required this.nextDose,
-    required this.l10n,
-  });
-
-  final MedicineWorkspace workspace;
-  final _NextDose? nextDose;
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    final dose = nextDose;
-    final item = dose?.item;
-    final hasAnyMedicine = workspace.plan.items.isNotEmpty;
-    final slot = dose?.slot;
-    final value = item == null
-        ? (hasAnyMedicine
-              ? l10n.medicineNoPendingDose
-              : l10n.medicineScheduleNotSet)
-        : slot == null
-        ? l10n.medicineScheduleNotSet
-        : l10n.medicineNextDoseTodayTime(_slotTimeLabel(l10n, slot));
-    final detail = item == null
-        ? (hasAnyMedicine
-              ? l10n.medicineNoPendingDoseDetail
-              : l10n.medicineNoMedicineBody)
-        : _doseSummary(l10n, item);
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: _DrugBoxMetricItem(
-            icon: SemanticIcons.doseNext,
-            color: SemanticColor.primary,
-            label: l10n.medicineNextDoseReminderTitle,
-            value: value,
-            detail: detail,
-          ),
-        ),
-        const _MetricDivider(),
-        Expanded(
-          child: _DrugBoxMetricItem(
-            icon: SemanticIcons.reportAdherence,
-            color: SemanticColor.primary,
-            label: l10n.medicineHeroMetricAdherenceLabel,
-            value: workspace.hero.metricAdherence,
-            detail: l10n.medicineAdherenceDetail,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _DrugBoxMetricItem extends StatelessWidget {
-  const _DrugBoxMetricItem({
-    required this.icon,
-    required this.color,
-    required this.label,
-    required this.value,
-    required this.detail,
-  });
-
-  final IconData icon;
-  final SemanticColor color;
-  final String label;
-  final String value;
-  final String detail;
-
-  @override
-  Widget build(BuildContext context) {
-    final typography = context.theme.typography;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.xs),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                icon,
-                color: color.solid(context).withValues(alpha: 0.78),
-                size: IconSizeTokens.lg,
-              ),
-              const SizedBox(width: Spacing.xs),
-              Expanded(
-                child: Text(
-                  label,
-                  style: typography.body.xs.copyWith(
-                    color: SemanticColor.neutral.solid(context),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: Spacing.xs),
-          SkeletonText(
-            text: value,
-            style: typography.body.md.copyWith(
-              color: color.fillStrong(context),
-              fontWeight: FontWeight.w700,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            widthFactor: 0.76,
-          ),
-          const SizedBox(height: Spacing.xs),
-          SkeletonText(
-            text: detail,
-            style: typography.body.xs.copyWith(
-              color: SemanticColor.neutral.solid(context),
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            widthFactor: 0.88,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MetricDivider extends StatelessWidget {
-  const _MetricDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox(
-      height: Spacing.xl5,
-      child: AppDivider(axis: Axis.vertical),
     );
   }
 }
@@ -403,22 +269,17 @@ class _DrugBoxEmpty extends StatelessWidget {
 }
 
 class _DrugBoxMedicationRow extends StatelessWidget {
-  const _DrugBoxMedicationRow({
-    required this.item,
-    required this.l10n,
-    required this.onOpenReminder,
-  });
+  const _DrugBoxMedicationRow({required this.item, required this.l10n});
 
   final MedicinePlanItem item;
   final AppLocalizations l10n;
-  final void Function(String currentMedicineId)? onOpenReminder;
 
   @override
   Widget build(BuildContext context) {
-    final name = _itemName(l10n, item);
-    final dosage = _itemDosage(l10n, item);
-    final schedule = _itemSchedule(l10n, item);
-    final state = _itemState(l10n, item);
+    final name = itemName(l10n, item);
+    final dosage = itemDosage(l10n, item);
+    final schedule = itemSchedule(l10n, item);
+    final state = itemState(l10n, item);
     final currentMedicineId = item.currentMedicineId;
     final source = item.source;
     final sourceRefId = item.sourceRefId;
@@ -440,10 +301,6 @@ class _DrugBoxMedicationRow extends StatelessWidget {
           );
           return;
         }
-        if (onOpenReminder != null) {
-          onOpenReminder!(currentMedicineId);
-          return;
-        }
         unawaited(
           MedicineReminderDetailRoute(
             medicineId: currentMedicineId,
@@ -457,7 +314,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            _MedicationAvatar(item: item, size: Spacing.xl3),
+            MedicationAvatar(item: item, size: Spacing.xl3),
             const SizedBox(width: Spacing.md),
             Expanded(
               child: Column(
@@ -479,7 +336,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       SkeletonText(
-                        text: '$dosage · ${_compactRouteOrSchedule(schedule)}',
+                        text: '$dosage · ${compactRouteOrSchedule(schedule)}',
                         style: typography.body.xs.copyWith(
                           color: SemanticColor.neutral.solid(context),
                         ),
@@ -511,32 +368,6 @@ class _DrugBoxMedicationRow extends StatelessWidget {
               size: IconSizeTokens.lg,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _TruncatedFooter extends StatelessWidget {
-  const _TruncatedFooter({required this.label, required this.onTap});
-
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return FTappable(
-      onPress: onTap,
-      builder: (context, data, _) => Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
-          child: Text(
-            label,
-            style: context.theme.typography.body.xs.copyWith(
-              color: SemanticColor.neutral.solid(context),
-              fontWeight: FontWeight.w700,
-            ),
-          ),
         ),
       ),
     );
