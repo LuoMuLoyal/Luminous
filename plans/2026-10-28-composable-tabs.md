@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-10-29
+updated: 2026-10-30
 ---
 
 # 全 Tab 组件化：可组合组件库、变体、用户编排、跨 Tab 挂载、生成式 UI
@@ -378,8 +378,41 @@ LayoutDoc = { version: int, schemaVersion: int, payload: <客户端自定义 JSO
 顺序原则（本条为 2026-10-29 修订，与旧版不同）：
 **先把现有组件全部变成可组合 → 再做变体/尺寸 → 再做用户编排 → 再补新组件与 AI。**
 
-骨架与门禁口径已落地（`lib/core/composition/` + today 打样面），下面的阶段从「把其余表面
-登记进目录」开始。
+### 进度（2026-10-30）
+
+| 表面 | 组件数 | 默认布局 | 测试 | 备注 |
+| --- | --- | --- | --- | --- |
+| today | 8 | 与原顺序一致 | `test/today` 全绿 | P0 打样面 |
+| record | 4 | 与原顺序一致 | `test/record` 513 全绿 | 区块原为内联 widget，已提为独立组件 |
+| medicine | 4 | 与原顺序一致 | `test/medicine` 407 / 1 失败 | 余 1 条打卡撤销用例（见下） |
+| mine | 7 | 与原顺序一致 | `test/mine` 104 全绿 | 桌面双栏保留手写，section 已自取 |
+| review | 20（含 legacy 5） | 主路径 14 项与原顺序一致 | `test/review` 296 / 9 失败 | legacy 5 进 available、不进默认布局 |
+
+门禁：`--clean-layers` 25 条（全部为跨 feature 的 `presentation` 深引用，非本轮引入）。
+`flutter analyze lib` 无问题。
+
+**已知未完成项**（不计入验收通过）：
+
+- medicine：`home dose check-in undo reverts to planned`。打卡会 emit `doseLogs` →
+  页面重建 → `Toast.showWithAction` 的 context 失效，点撤销时 `context.mounted` 为 false。
+  这是组件化引入的真实回归（改造前的 Column 版本同样失败），不是布局问题。
+- review：`review_golden_test` / `review_semantics_test` 仍在用已删除的构造参数（编译失败）；
+  `page_test` 的 history 筛选用例、`review_view_test` 的冷启动用例未通。
+- A1 的两条验收（五个 tab 的 golden 兜底、「未挂载 id 即渲染」用例）尚未补齐。
+
+### 兼容性约定（本轮确立即长期有效）
+
+1. **`ComponentHost` 不 watch 数据 provider**，页面必须自己 watch surface 状态。
+   原因：组件的 `build` 在 host 的 build 内被调用，组件为 `null` 时没有 element 挂载，
+   provider 变化无人监听。页面级 `ref.watch(surfaceStateProvider)` 是必需的，不是冗余。
+2. **`ComponentHost` 与 `ComponentHostSliver` 不能互换**：外壳是 `CustomScrollView` 的
+   用 sliver 版；外壳是 `ListView` / `SingleChildScrollView` 的用 box 版。用错会触发
+   `RenderSliverList` 被当作 box 子节点，或 `RenderViewport` 收到非 sliver 而断言。
+3. **页面级 `PageStateSwitch` 的刷新/降级提示是 `Stack` 覆盖层**，不参与内容高度。
+   组件化的页面外壳常是 `Column + Expanded`，提示条若作为兄弟节点会让外壳拿到无界高度。
+4. **跨 tab 后组件仍 `ref.watch` 原属 feature 的 provider**：provider 全局、不绑 surface，
+   两个 surface 挂同一组件只发一次请求；挂到非所属 feature 的表面时组件自己触发首次请求，
+   无需新增机制。组件不自持状态、不直接发请求。
 
 ### A1 现有组件全量登记（零视觉变化）
 
@@ -393,20 +426,39 @@ LayoutDoc = { version: int, schemaVersion: int, payload: <客户端自定义 JSO
 
 ### A2 编排 UI：显隐 + 顺序
 
-- `customizer/`：每个 tab 一个编辑页（`ReorderableListView` 拖拽 + 显隐开关）；
-  入口长在 tab 页自身的「编辑」按钮，不做「设置 → 首页编辑」深层菜单
-- **持久化按 §2.7 落地**：`Lucent` 侧新增 `GET /ui/layouts` + `PUT /ui/layouts/:surface`；
-  客户端新增 drift `ui_layouts` 缓存表 + `layout/remote.dart` + `layout/sync.dart`；
-  `SyncWorker` 新增 `ui_layout` 处理器（`lib/app/sync_handlers.dart` 注册）
-- 本阶段**仍用内置 `ReorderableListView`**（列表形态）；编辑器只用 Forui 原语：
-  `FButton` 保存/恢复默认、`FSwitch` 显隐、`FDialog` 二次确认、`FSidebar`/`FCard` 承载列表
-- 硬约束：**默认布局必须好用**；编辑器不允许把组件删到一个不剩；有「恢复默认」
-- 验收：布局往返测试（缓存 → 远端 → 再读，含 `schemaVersion` 不匹配回退默认）；
-  「编辑后重建保持顺序」widget 测试；离线编辑后联网重放成功的集成用例；
-  409 冲突以服务端为准的用例
-- 估：10–12 天（含后端契约与缓存/队列）
+**已完成**（`lib/features/customizer/`）：
+
+- 形态：**每 tab 一个编排页 + 跨 tab 面板**。用户从某个 tab 点标题进入，心智是
+  「我在改这一页」；跨 tab 由右侧面板提供。
+- **入口 = 标题**：`core/widgets/common/control/surface_title_button.dart`
+  （`SurfaceTitleButton` / `SurfaceTitleEntry`）把标题做成带编辑图标的按钮，点一下进入
+  当前 surface 的编排页。五个 tab 的移动端顶栏和 `DesktopTabShell.titleSurface` 都用它。
+  路由能力经 `core/composition` 的 `surfaceCustomizerOpenerProvider` 注入，五个 tab 与
+  `core/` 都不 import customizer。
+- 路由 `/customize/:surface`：一个路由服务五个 surface，桌面侧面板、窄屏滑入页。
+- **布局真正生效**：`application/layout_store.dart` 的 `surfaceLayoutsProvider` /
+  `commit()` / `storedSurfaceLayoutProvider`；组合根覆盖
+  `core/composition/surface.dart` 的 `surfaceLayoutProvider`，用户布局优先、缺省用
+  `defaultLayout`，坏数据整体回退默认。`commitDraft` 由「完成」调用，「取消」丢弃草稿。
+- `domain/`：`LayoutDraft`（各 surface 草稿 + 未挂载池）、`LayoutEdit`（move/toggle/
+  remove/add/resize 的 sealed 动作）、`draft_rules`（纯规则，非法编辑返回原草稿）。
+- `application/`：`StartDraft`（读布局生成草稿，读取失败回退默认）、`commitDraft`、
+  `EditSession`（会话生命周期）。
+- `data/`：KV 缓存（`layout.<surface>`）+ cache-first + 乐观写的 `CachedLayoutRepository`。
+- 跨 tab 面板 = 「本 surface 可挂但未挂」的组件，点按或拖入即加回。
+- 允许**全隐**：`visible` 与「从列表移除」是两件事；移除进未挂载池，可再加回。
+
+**依赖**：`flutter_reorderable_grid_view: ^5.7.0`；`flutter_layout_grid` 推迟到 A3。
+
+**未完成**：
+
+- Lucent `GET/PUT /ui/layouts` 不存在，`LayoutRemote` 是占位实现（fetchAll 返回空）。
+  布局只存本地，不同步跨设备、不入 `pending_sync_queue`。
+- 跨 surface 搬组件还没有 UI 入口（`LayoutEdit.move` 的跨 surface 分支未接线）。
+- 显隐/顺序只有列表形态，网格 + 尺寸档是 A3。
 
 ### A3 尺寸档 + 组件内选项/变体
+
 
 - `ComponentSize` 三档落地：`compact`（半宽/双列）、`regular`、`wide`（通栏）
 - 组件选项按 sealed 类型落地，先做需求里点名的两个：
