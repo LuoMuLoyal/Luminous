@@ -59,3 +59,24 @@ extension SemanticColorListResolution on List<SemanticColor> {
   List<Color> resolveAll(FColors colors) =>
       map((c) => c.paletteFromColors(colors).solid).toList();
 }
+
+/// Convenient access to [SemanticColors] on [FColors].
+///
+/// Uses [extensions] iteration rather than [extension] to avoid forui's
+/// internal `!` non-null assertion, which would throw an obscure `TypeError`
+/// when the extension is missing. Instead, a descriptive [StateError] is
+/// thrown to aid debugging in misconfigured themes or test environments.
+///
+/// Lives here rather than in `theme_extension.dart` (which only declares the
+/// [SemanticColors] value type) so the two files no longer import each other.
+extension SemanticColorsAccess on FColors {
+  SemanticColors get semantic {
+    for (final ext in extensions) {
+      if (ext is SemanticColors) return ext;
+    }
+    throw StateError(
+      'SemanticColors is not injected into FColors. '
+      'Ensure appThemeData() includes SemanticColors in extensions.',
+    );
+  }
+}

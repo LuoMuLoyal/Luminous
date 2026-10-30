@@ -1,8 +1,8 @@
 import 'package:forui/forui.dart';
+import 'package:luminous/shared/domain/semantic.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'palette.dart';
-import 'semantic_color.dart';
 
 /// Full semantic color scheme injected into [FColors] via `extensions`.
 ///
@@ -117,20 +117,6 @@ class SemanticColors extends ThemeExtension<SemanticColors> {
       Object.hash(primary, success, warning, info, destructive, neutral);
 }
 
-/// Convenient access to [SemanticColors] on [FColors].
-///
-/// Uses [extensions] iteration rather than [extension] to avoid forui's
-/// internal `!` non-null assertion, which would throw an obscure `TypeError`
-/// when the extension is missing. Instead, a descriptive [StateError] is
-/// thrown to aid debugging in misconfigured themes or test environments.
-extension SemanticColorsAccess on FColors {
-  SemanticColors get semantic {
-    for (final ext in extensions) {
-      if (ext is SemanticColors) return ext;
-    }
-    throw StateError(
-      'SemanticColors is not injected into FColors. '
-      'Ensure appThemeData() includes SemanticColors in extensions.',
-    );
-  }
-}
+// `SemanticColorsAccess`（FColors.semantic）住在 `semantic_color.dart`：它是
+// 调色板解析的入口，而本文件只负责声明 [SemanticColors] 这个 ThemeExtension。
+// 两者曾互相 import 造成循环依赖（arch_guard cycle 2）。
