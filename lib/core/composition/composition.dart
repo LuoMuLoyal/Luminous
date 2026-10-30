@@ -17,5 +17,7 @@ export 'host.dart';
 export 'id.dart';
 export 'layout.dart';
 export 'registry.dart';
+export 'responsive/grid.dart';
+export 'responsive/viewport.dart';
 export 'size.dart';
 export 'surface.dart';
