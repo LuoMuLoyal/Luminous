@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
+import 'package:luminous/features/mine/presentation/providers/surface.dart';
 import 'package:luminous/features/mine/presentation/utils/mine_visuals.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -18,17 +20,31 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// entries (bare icon + w700 title + muted subtitle).
 ///
 /// 本地化与截断是展示层职责:data 层只携带结构化 items/count/kind。
-class MineStatusAlertsSection extends StatelessWidget {
-  const MineStatusAlertsSection({super.key, required this.alerts});
+///
+/// Reads its own data from [mineSurfaceStateProvider]; the page passes no
+/// data slice.
+class MineStatusAlertsSection extends ConsumerWidget {
+  const MineStatusAlertsSection({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final alerts =
+        ref.watch(mineSurfaceStateProvider).dataOrNull?.alerts ??
+        const <MineStatusCard>[];
+    if (alerts.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return _StatusAlertsCard(alerts: alerts);
+  }
+}
+
+class _StatusAlertsCard extends StatelessWidget {
+  const _StatusAlertsCard({required this.alerts});
 
   final List<MineStatusCard> alerts;
 
   @override
   Widget build(BuildContext context) {
-    if (alerts.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
     return Column(
       key: const Key('mine-status-alerts-section'),
       crossAxisAlignment: CrossAxisAlignment.start,

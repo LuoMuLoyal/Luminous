@@ -50,7 +50,7 @@ class MinePage extends ConsumerWidget {
       fatalErrorBuilder: (error) =>
           MineErrorView(onRetry: () => ref.invalidate(mineDashboardProvider)),
       readyBuilder: (dashboard, isPreview) {
-        return MineDashboardView(dashboard: dashboard);
+        return const MineDashboardView();
       },
     );
 

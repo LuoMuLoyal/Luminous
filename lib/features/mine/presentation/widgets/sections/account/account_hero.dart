@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
@@ -9,11 +10,28 @@ import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_action_view.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
+import 'package:luminous/features/mine/presentation/providers/surface.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class MineAccountHero extends StatelessWidget {
-  const MineAccountHero({super.key, required this.dashboard});
+/// The account summary card. Reads its own data from [mineSurfaceStateProvider];
+/// the page passes no data slice.
+class MineAccountHero extends ConsumerWidget {
+  const MineAccountHero({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dashboard = ref.watch(mineSurfaceStateProvider).dataOrNull;
+    // No data yet (first frame, or the read failed): the page-level
+    // PageStateSwitch owns the skeleton and the error view, so this section
+    // stays out of the way instead of rendering a fabricated empty profile.
+    if (dashboard == null) return const SizedBox.shrink();
+    return _AccountHeroCard(dashboard: dashboard);
+  }
+}
+
+class _AccountHeroCard extends StatelessWidget {
+  const _AccountHeroCard({required this.dashboard});
 
   final MineDashboard dashboard;
 

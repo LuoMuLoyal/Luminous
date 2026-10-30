@@ -11,12 +11,26 @@ import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
+import 'package:luminous/features/mine/presentation/providers/surface.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MineAccountSecuritySection extends ConsumerWidget {
-  const MineAccountSecuritySection({super.key, required this.account});
+  const MineAccountSecuritySection({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final account = ref.watch(mineSurfaceStateProvider).dataOrNull?.account;
+    // No data yet (first frame or failed read): the page-level PageStateSwitch
+    // renders the skeleton / error view.
+    if (account == null) return const SizedBox.shrink();
+    return _AccountSecurityCard(account: account);
+  }
+}
+
+class _AccountSecurityCard extends ConsumerWidget {
+  const _AccountSecurityCard({required this.account});
 
   final MineAccount account;
 

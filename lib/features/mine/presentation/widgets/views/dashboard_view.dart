@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
-import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/account/account_hero.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/account/account_security.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/account/ai_privacy.dart';
@@ -10,22 +11,26 @@ import 'package:luminous/features/mine/presentation/widgets/sections/archive/arc
 import 'package:luminous/features/mine/presentation/widgets/sections/sync/status_alerts.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/sync/sync_failed_banner.dart';
 
-class MineDashboardView extends StatelessWidget {
-  const MineDashboardView({
-    super.key,
-    required this.dashboard,
-    this.isLoading = false,
-  });
+/// The `mine` surface.
+///
+/// Mobile renders the surface's layout through [ComponentHostSliver]: the page
+/// no longer knows which sections exist, so adding or reordering one never
+/// touches this file. Desktop keeps its hand-written two-column split (the
+/// component layout is a single ordered list and cannot express a sidebar), but
+/// every section reads its own data, so the columns pass no data slices either.
+class MineDashboardView extends ConsumerWidget {
+  const MineDashboardView({super.key, this.isLoading = false});
 
-  final MineDashboard dashboard;
   final bool isLoading;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
 
-    final content = isDesktop ? _buildDesktopLayout() : _buildMobileLayout();
+    final Widget content = isDesktop
+        ? _buildDesktopLayout()
+        : _buildMobileLayout(ref);
 
     // No entrance animation here: the surrounding transition already brings this
     // view in (page state switch fade-through / tab branch cross-fade), and
@@ -34,34 +39,20 @@ class MineDashboardView extends StatelessWidget {
     return SkeletonScope(isLoading: isLoading, child: content);
   }
 
-  Widget _buildMobileLayout() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const MineSyncFailedBanner(),
-        const SizedBox(height: Spacing.lg),
-        MineAccountHero(
-          key: const Key('mine-account-header'),
-          dashboard: dashboard,
-        ),
-        if (dashboard.alerts.isNotEmpty) ...[
-          const SizedBox(height: Spacing.xl),
-          MineStatusAlertsSection(alerts: dashboard.alerts),
-        ],
-        const SizedBox(height: Spacing.xl),
-        MineArchiveSection(dashboard: dashboard),
-        const SizedBox(height: Spacing.xl),
-        const MineAiPrivacySection(),
-        const SizedBox(height: Spacing.xl),
-        const MineNotificationsReminderSection(),
-        const SizedBox(height: Spacing.xl),
-        MineAccountSecuritySection(account: dashboard.account),
-      ],
+  Widget _buildMobileLayout(WidgetRef ref) {
+    final layout = ref.watch(surfaceLayoutProvider(SurfaceId.mine));
+    // `ComponentHost`, not `ComponentHostSliver`: the mine page mounts this view
+    // as a single child of a further box context (the page-state transition and
+    // the ListView above it), so a sliver here would be laid out as a box child.
+    return ComponentHost(
+      surface: SurfaceId.mine,
+      layout: layout,
+      spacing: Spacing.xl,
     );
   }
 
   Widget _buildDesktopLayout() {
-    return Row(
+    return const Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Left: sync banner + account hero + archive + notifications.
@@ -70,33 +61,28 @@ class MineDashboardView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const MineSyncFailedBanner(),
-              const SizedBox(height: Spacing.lg),
-              MineAccountHero(
-                key: const Key('mine-account-header'),
-                dashboard: dashboard,
-              ),
-              if (dashboard.alerts.isNotEmpty) ...[
-                const SizedBox(height: Spacing.xl),
-                MineStatusAlertsSection(alerts: dashboard.alerts),
-              ],
-              const SizedBox(height: Spacing.xl),
-              MineArchiveSection(dashboard: dashboard),
-              const SizedBox(height: Spacing.xl),
-              const MineNotificationsReminderSection(),
+              MineSyncFailedBanner(),
+              SizedBox(height: Spacing.lg),
+              MineAccountHero(key: Key('mine-account-header')),
+              SizedBox(height: Spacing.xl),
+              MineStatusAlertsSection(),
+              SizedBox(height: Spacing.xl),
+              MineArchiveSection(),
+              SizedBox(height: Spacing.xl),
+              MineNotificationsReminderSection(),
             ],
           ),
         ),
-        const SizedBox(width: Spacing.xl),
+        SizedBox(width: Spacing.xl),
         // Right: AI privacy + account security.
         Expanded(
           flex: 4,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const MineAiPrivacySection(),
-              const SizedBox(height: Spacing.xl),
-              MineAccountSecuritySection(account: dashboard.account),
+              MineAiPrivacySection(),
+              SizedBox(height: Spacing.xl),
+              MineAccountSecuritySection(),
             ],
           ),
         ),
