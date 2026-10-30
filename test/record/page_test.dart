@@ -44,6 +44,7 @@ import 'package:luminous/features/record/presentation/widgets/views/skeleton_vie
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
@@ -2093,6 +2094,8 @@ Future<void> _pumpRecordRouter(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        // 移动端看板按 record 表面的组件布局渲染，注册表为空时宿主什么都不会画。
+        ...compositionTestOverrides(),
         dailyRecordRepositoryProvider.overrideWithValue(
           dailyRecordRepository ?? _FakeDailyRecordRepository(),
         ),
@@ -2138,6 +2141,8 @@ Future<void> _pumpRecordPage(
   Locale locale = const Locale('zh'),
 }) async {
   final overrides = [
+    // 移动端看板按 record 表面的组件布局渲染，注册表为空时宿主什么都不会画。
+    ...compositionTestOverrides(),
     recordRepositoryProvider.overrideWithValue(recordRepository),
     dailyRecordRepositoryProvider.overrideWithValue(
       dailyRecordRepository ?? _FakeDailyRecordRepository(),

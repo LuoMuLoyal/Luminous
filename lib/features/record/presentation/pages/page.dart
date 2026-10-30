@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/date_picker.dart';
@@ -19,6 +18,7 @@ import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/data_access.dart';
+import 'package:luminous/features/record/presentation/providers/surface.dart';
 import 'package:luminous/features/record/presentation/quick_entry/core/dispatcher.dart';
 import 'package:luminous/features/record/presentation/quick_entry/sheets/nlp_sheet.dart';
 import 'package:luminous/features/record/presentation/quick_entry/sheets/record_date.dart';
@@ -104,8 +104,8 @@ class _RecordPageState extends ConsumerState<RecordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final session = ref.watch(authSessionProvider);
-    final dashboardAsync = ref.watch(recordDashboardProvider);
+    // 与区块同一个状态机：页面负责骨架/错误这层分流，区块只读 dataOrNull。
+    final pageState = ref.watch(recordSurfaceStateProvider);
     final selectedDate = ref.watch(selectedRecordDateProvider);
     final l10n = AppLocalizations.of(context)!;
     final size = MediaQuery.sizeOf(context);
@@ -131,7 +131,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     );
 
     final pageStateContent = PageStateSwitch<RecordDashboard>(
-      state: resolvePageViewState(session: session, data: dashboardAsync),
+      state: pageState,
       loadingBuilder: () => const RecordSkeletonView(),
       fatalErrorBuilder: (error) => StateErrorView(
         title: l10n.recordErrorTitle,
@@ -179,9 +179,6 @@ class _RecordPageState extends ConsumerState<RecordPage> {
                 ),
               );
               unawaited(handleQuickAction(context, ref, action));
-            },
-            onQuickActionLongPress: (action) {
-              unawaited(handleQuickActionLongPress(context, ref, action));
             },
             onNewEntry: () => _openRecordCreate(context),
           ),

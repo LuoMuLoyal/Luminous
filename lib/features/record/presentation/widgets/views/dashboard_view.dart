@@ -1,17 +1,13 @@
-import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/dashboard/date_bar.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/dashboard/mobile_filter.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/dashboard/sidebar.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/dashboard/summary_grid.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/detail/mobile_timeline.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/detail/timeline.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/new_entry_panel.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/quick_entry_panel.dart';
-import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordDashboardView extends StatelessWidget {
@@ -21,7 +17,6 @@ class RecordDashboardView extends StatelessWidget {
     this.isPreview = false,
     this.isLoading = false,
     this.onQuickAction,
-    this.onQuickActionLongPress,
     this.onNewEntry,
     this.onFilterSelected,
     this.onDateSelected,
@@ -31,8 +26,10 @@ class RecordDashboardView extends StatelessWidget {
   final RecordDashboard dashboard;
   final bool isPreview;
   final bool isLoading;
+
+  /// 桌面端底部「新建记录」面板仍由页面装配，因此保留整块看板级别的回调。
+  /// 移动端已改为区块自取数据/自处理交互，不再经过这里。
   final ValueChanged<RecordQuickAction>? onQuickAction;
-  final ValueChanged<RecordQuickAction>? onQuickActionLongPress;
   final VoidCallback? onNewEntry;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
@@ -57,14 +54,7 @@ class RecordDashboardView extends StatelessWidget {
             onNewEntry: onNewEntry,
             onRecordDateChange: onRecordDateChange,
           )
-        : _MobileRecordDashboard(
-            dashboard: dashboard,
-            l10n: l10n,
-            onQuickAction: onQuickAction,
-            onQuickActionLongPress: onQuickActionLongPress,
-            onFilterSelected: onFilterSelected,
-            onDateSelected: onDateSelected,
-          );
+        : const _MobileRecordDashboard();
 
     // 不再叠加入场动画：外围过渡已经负责把内容带进来（页面状态切换 fade-through /
     // Tab 分支交叉淡化），再叠一层淡入 + 上浮会让显示被推迟，并有"内容往上飘"的观感。
@@ -72,65 +62,28 @@ class RecordDashboardView extends StatelessWidget {
   }
 }
 
-class _MobileRecordDashboard extends StatelessWidget {
-  const _MobileRecordDashboard({
-    required this.dashboard,
-    required this.l10n,
-    this.onQuickAction,
-    this.onQuickActionLongPress,
-    this.onFilterSelected,
-    this.onDateSelected,
-  });
-
-  final RecordDashboard dashboard;
-  final AppLocalizations l10n;
-  final ValueChanged<RecordQuickAction>? onQuickAction;
-  final ValueChanged<RecordQuickAction>? onQuickActionLongPress;
-  final ValueChanged<RecordEntryType?>? onFilterSelected;
-  final ValueChanged<DateTime>? onDateSelected;
+/// 移动端 record 表面：只负责渲染 record 表面的布局。
+///
+/// 页面不再知道有哪些区块——区块的清单、顺序与间距都在
+/// `presentation/components/catalog.dart` 与宿主里；增删改一个区块不会碰到这个文件。
+class _MobileRecordDashboard extends ConsumerWidget {
+  const _MobileRecordDashboard();
 
   @override
-  Widget build(BuildContext context) {
-    final quickActions = buildMobileQuickActions(dashboard.quickActions);
-    final mobileFilters = buildMobileFilters(dashboard.filters);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final layout = ref.watch(surfaceLayoutProvider(SurfaceId.record));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RecordDateBar(
-          dashboard: dashboard,
-          l10n: l10n,
-          onDateSelected: onDateSelected,
+        // 区块由宿主逐个渲染并按「相邻之间」给间距：末项之后不留空，
+        // 条件隐藏的区块也不留洞（不再需要手写 SizedBox.shrink 占位）。
+        ComponentHost(
+          surface: SurfaceId.record,
+          layout: layout,
+          spacing: Spacing.lg,
         ),
-        const SizedBox(height: Spacing.lg),
-        RecordQuickEntryPanel(
-          actions: quickActions,
-          summary: dashboard.summary,
-          timeline: dashboard.timeline,
-          l10n: l10n,
-          onQuickAction: onQuickAction,
-          onQuickActionLongPress: onQuickActionLongPress,
-        ),
-        const SizedBox(height: Spacing.lg),
-        RecordMobileFilter(
-          filters: mobileFilters,
-          l10n: l10n,
-          onFilterSelected: onFilterSelected,
-        ),
-        const SizedBox(height: Spacing.lg),
-        RecordMobileTimeline(
-          entries: dashboard.timeline,
-          totalCount: dashboard.timeline.length,
-          l10n: l10n,
-          selectedDate: dashboard.selectedDate,
-          hasActiveFilter: !dashboard.filters.every((f) => f.selected),
-          onClearFilter: onFilterSelected != null
-              ? () => onFilterSelected!(null)
-              : null,
-          onBackToToday: onDateSelected != null
-              ? () => onDateSelected!(clock.now())
-              : null,
-        ),
+        // 与改动前一致：页面底部统一留一个间距。
         const SizedBox(height: Spacing.lg),
       ],
     );
