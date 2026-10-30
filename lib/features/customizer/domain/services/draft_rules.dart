@@ -105,11 +105,16 @@ LayoutDraft _add(
 }) {
   if (!catalog.availableOf(surface).contains(id)) return draft;
 
-  final pool = draft.poolOf(surface);
-  final placement = pool.where((p) => p.id == id).firstOrNull;
-  if (placement == null) return draft;
-
   final layout = draft.layoutOf(surface);
+  // 已经在表上就是空操作：`add` 的语义是「让这个组件出现在这里」。
+  if (layout.placements.any((p) => p.id == id)) return draft;
+
+  final pool = draft.poolOf(surface);
+  // 池里有就复用它（保留用户之前设过的尺寸/配置）；没有就是首次加入，
+  // 按组件自身的默认配置新建一条。旧实现只认池，所以从面板加从未生效。
+  final placement = pool.where((p) => p.id == id).firstOrNull ??
+      ComponentPlacement(id: id);
+
   final next = [...layout.placements];
   next.insert(toIndex.clamp(0, next.length), placement);
 

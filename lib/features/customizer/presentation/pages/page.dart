@@ -414,11 +414,23 @@ class _PlacementTile extends ConsumerWidget {
               ),
             ),
             Expanded(child: nameText),
-            Flexible(child: visibilitySwitch),
-            if (!isLast) Flexible(child: removeButton),
+            // 开关与删除是**固定宽度的尾部操作**：宽度由控件自身决定，
+            // 不参与 flex 分配，所以每一行的两个按钮横向位置一致。
+            // 行宽不够时由名称 `Expanded` 先让位（它已经带省略号）。
+            SizedBox(width: _switchWidth, child: visibilitySwitch),
+            // 最后一行没有删除按钮，但仍保留同宽占位，否则它会比其它行短一截。
+            SizedBox(width: _removeWidth, child: isLast ? null : removeButton),
           ],
         ),
       ),
     );
   }
 }
+
+/// 尾部操作区的固定宽度。
+///
+/// 用固定值而不用 flex：flex 按行内剩余空间分配，会让每行的开关与删除落在
+/// 不同横向位置。这两个值覆盖 Forui 默认尺寸下的控件宽度，并给大字号留余量。
+const double _switchWidth = 56;
+
+const double _removeWidth = 44;
