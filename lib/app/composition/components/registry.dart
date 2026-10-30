@@ -1,5 +1,9 @@
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/features/customizer/application/layout_store.dart'
+    show storedSurfaceLayoutProvider;
+import 'package:luminous/features/customizer/presentation/widgets/title/entry.dart'
+    show openSurfaceCustomizer;
 import 'package:luminous/features/medicine/presentation/components/catalog.dart';
 import 'package:luminous/features/mine/presentation/components/catalog.dart';
 import 'package:luminous/features/record/presentation/components/catalog.dart';
@@ -39,7 +43,23 @@ SurfaceCatalog buildSurfaceCatalog() {
 }
 
 /// Provider overrides that install the composition root into the app container.
-List<Override> compositionProviderOverrides() => [
-  componentRegistryProvider.overrideWithValue(buildComponentRegistry()),
-  surfaceCatalogProvider.overrideWithValue(buildSurfaceCatalog()),
-];
+///
+/// Two seams are swapped here:
+///
+/// - **layout**: the static default becomes the stateful store, so every
+///   `ComponentHost` renders the user's layout once one is stored and that
+///   surface's `defaultLayout` otherwise. Nothing else in the app reads storage.
+/// - **customizer entry**: the tab title button routes through an injected
+///   action instead of importing the customizer feature, which is what keeps
+///   `core/` and the sibling features free of a dependency on it.
+List<Override> compositionProviderOverrides() {
+  final store = storedSurfaceLayoutProvider;
+  final defaultLayout = surfaceLayoutProvider;
+
+  return [
+    componentRegistryProvider.overrideWithValue(buildComponentRegistry()),
+    surfaceCatalogProvider.overrideWithValue(buildSurfaceCatalog()),
+    defaultLayout.overrideWith((ref, surface) => ref.watch(store(surface))),
+    surfaceCustomizerOpenerProvider.overrideWithValue(openSurfaceCustomizer),
+  ];
+}

@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'id.dart';
@@ -11,15 +12,32 @@ final surfaceCatalogProvider = Provider<SurfaceCatalog>(
   name: 'surfaceCatalog',
 );
 
+/// Opens the customizer page for [surface].
+///
+/// The composition core may not import a feature (layering gate) and the
+/// customizer is a feature, so the navigation is **injected**: the composition
+/// root installs the real implementation and the tab headers stay
+/// surface-agnostic. `null` means this build has no customizer, in which case
+/// the title is plain text.
+typedef SurfaceCustomizerOpener =
+    void Function(BuildContext context, SurfaceId surface);
+
+/// Routing action behind every 「点标题进入编排」 entry.
+final surfaceCustomizerOpenerProvider = Provider<SurfaceCustomizerOpener?>(
+  (ref) => null,
+  name: 'surfaceCustomizerOpener',
+);
+
 /// Layout of one surface.
 ///
-/// For now this is always the surface's default layout. The layout store (local
-/// cache + backend sync) replaces the read path here without touching the page,
-/// which is why `ComponentHost` takes a layout value instead of reading storage
-/// itself.
+/// This is the **default** answer only: the composition root overrides it with
+/// the stateful store (`lib/features/customizer/application/layout_store.dart`),
+/// which falls back to `SurfaceDefinition.defaultLayout` while nothing is stored
+/// and switches to the user's layout once there is one. `ComponentHost` only
+/// knows this provider, so pages never read storage themselves.
 final surfaceLayoutProvider = Provider.family<SurfaceLayout, SurfaceId>(
   (ref, surface) => ref.watch(surfaceCatalogProvider).defaultLayoutOf(surface),
-  name: 'surfaceLayout',
+  name: 'defaultSurfaceLayout',
 );
 
 /// A place that hosts components (a tab page, or the tab chrome itself).
