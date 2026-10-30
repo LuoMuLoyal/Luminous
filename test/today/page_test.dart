@@ -20,6 +20,7 @@ import 'package:luminous/features/today/presentation/widgets/views/dashboard_vie
 import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
@@ -81,6 +82,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _EmptyActiveHealthEventNotifier.new,
@@ -118,6 +120,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
           todaySuggestionProvider.overrideWith(
             EmptyTodaySuggestionNotifier.new,
@@ -204,6 +207,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           todayDashboardProvider.overrideWith((ref) => pending.future),
         ],
         child: const TestForuiApp(home: TodayPage()),
@@ -257,6 +261,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _EmptyActiveHealthEventNotifier.new,
@@ -353,6 +358,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _TrackingActiveHealthEventNotifier.new,
@@ -385,6 +391,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _EmptyActiveHealthEventNotifier.new,
@@ -431,6 +438,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -464,6 +472,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -505,6 +514,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _EmptyActiveHealthEventNotifier.new,
@@ -532,6 +542,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _EmptyActiveHealthEventNotifier.new,
@@ -579,6 +590,7 @@ void main() {
 Widget _signedInTodayApp() {
   return ProviderScope(
     overrides: [
+      ...compositionTestOverrides(),
       authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
       activeHealthEventProvider.overrideWith(
         _EmptyActiveHealthEventNotifier.new,

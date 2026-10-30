@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_primary_card.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_state_views.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
@@ -15,11 +15,10 @@ import 'package:luminous/features/today/presentation/widgets/shared/view_models.
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayPrimarySuggestionSection extends ConsumerWidget {
-  const TodayPrimarySuggestionSection({super.key, this.dashboard});
+  const TodayPrimarySuggestionSection({super.key});
 
   /// Used for the water progress bar when the primary card's
   /// `subtype == 'water'`.
-  final TodayDashboard? dashboard;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,7 +54,10 @@ class TodayPrimarySuggestionSection extends ConsumerWidget {
           }
           return Column(
             children: [
-              SuggestionPrimaryCard(card: card, dashboard: dashboard),
+              SuggestionPrimaryCard(
+                card: card,
+                dashboard: ref.watch(todaySurfaceDashboardProvider).dataOrNull,
+              ),
               if (status != TodaySuggestionMaterializationStatus.ready)
                 SuggestionMaterializationNotice(
                   status: status,

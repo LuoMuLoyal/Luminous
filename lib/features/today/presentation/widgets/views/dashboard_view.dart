@@ -35,12 +35,7 @@ class TodayDashboardView extends ConsumerWidget {
             onSignIn: onSignIn,
             onRefresh: onRefresh,
           )
-        : MobileTodayDashboard(
-            dashboard: dashboard,
-            isPreview: isPreview,
-            onSignIn: onSignIn,
-            onRefresh: onRefresh,
-          );
+        : MobileTodayDashboard(onRefresh: onRefresh);
 
     return SkeletonScope(isLoading: isLoading, child: content);
   }

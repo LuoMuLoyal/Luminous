@@ -4,16 +4,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+import 'package:luminous/core/widgets/common/feedback/page_state.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/quick_actions.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
+import '../../../../helpers/composition.dart';
 import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';
 import '../../../../helpers/test_helpers.dart';
@@ -30,6 +33,10 @@ void main() {
         final repository = _FakeDailyRecordRepository();
         final container = ProviderContainer(
           overrides: [
+            todaySurfaceDashboardProvider.overrideWithValue(
+          PageViewStateReady(_placeholderDashboard()),
+        ),
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
             dailyRecordRepositoryProvider.overrideWithValue(repository),
             quickEntryPreferencesProvider.overrideWith(
@@ -42,11 +49,9 @@ void main() {
         await tester.pumpWidget(
           UncontrolledProviderScope(
             container: container,
-            child: TestForuiApp(
+            child: const TestForuiApp(
               showToaster: true,
-              home: TodayQuickActionsSection(
-                dashboard: _placeholderDashboard(),
-              ),
+              home: TodayQuickActionsSection(),
             ),
           ),
         );
@@ -103,6 +108,10 @@ void main() {
       final repository = _FailingDailyRecordRepository();
       final container = ProviderContainer(
         overrides: [
+          todaySurfaceDashboardProvider.overrideWithValue(
+          PageViewStateReady(_placeholderDashboard()),
+        ),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           dailyRecordRepositoryProvider.overrideWithValue(repository),
           quickEntryPreferencesProvider.overrideWith(
@@ -115,9 +124,9 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: TestForuiApp(
+          child: const TestForuiApp(
             showToaster: true,
-            home: TodayQuickActionsSection(dashboard: _placeholderDashboard()),
+            home: TodayQuickActionsSection(),
           ),
         ),
       );
@@ -143,6 +152,10 @@ void main() {
     ) async {
       final container = ProviderContainer(
         overrides: [
+          todaySurfaceDashboardProvider.overrideWithValue(
+          PageViewStateReady(_placeholderDashboard()),
+        ),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
         ],
       );
@@ -151,9 +164,7 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: TestForuiApp(
-            home: TodayQuickActionsSection(dashboard: _placeholderDashboard()),
-          ),
+          child: const TestForuiApp(home: TodayQuickActionsSection()),
         ),
       );
       await tester.pumpAndSettle();

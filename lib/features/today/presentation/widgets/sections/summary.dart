@@ -12,17 +12,15 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
-import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
+import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodaySummarySection extends ConsumerStatefulWidget {
-  const TodaySummarySection({super.key, required this.dashboard});
-
-  final TodayDashboard dashboard;
+  const TodaySummarySection({super.key});
 
   @override
   ConsumerState<TodaySummarySection> createState() =>
@@ -63,6 +61,8 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final dashboard = ref.watch(todaySurfaceDashboardProvider).dataOrNull;
+    if (dashboard == null) return const SizedBox.shrink();
     final typography = context.theme.typography;
     final canAccessProtectedData = ref.watch(
       authSessionProvider.select((s) => s.canAccessProtectedData),
@@ -79,12 +79,12 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
     final isRefreshing = aiAsync.isLoading;
     final content = buildAiCardContent(
       l10n: l10n,
-      dashboard: widget.dashboard,
+      dashboard: dashboard,
       canAccessProtectedData: canAccessProtectedData,
       aiSummariesEnabled: aiSummariesEnabled,
       aiState: aiState ?? const TodayAiAnalysisCardState.idle(),
     );
-    final metrics = buildOverviewItems(l10n, widget.dashboard);
+    final metrics = buildOverviewItems(l10n, dashboard);
     final isPreview = !canAccessProtectedData;
     final actionLabel = _actionLabel(l10n, aiSummariesEnabled, aiState);
     // 只有正文非空才算「有内容」:materialization 未就绪(pending/stale/failed)时

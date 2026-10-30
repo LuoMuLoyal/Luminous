@@ -51,36 +51,36 @@ class DesktopTodayDashboard extends StatelessWidget {
         )
       else
         const SizedBox.shrink(),
-      Row(
+      const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             flex: 7,
             child: Column(
               children: [
-                TodayPrimarySuggestionSection(dashboard: dashboard),
-                const SizedBox(height: Spacing.xl2),
-                TodaySummarySection(dashboard: dashboard),
+                TodayPrimarySuggestionSection(),
+                SizedBox(height: Spacing.xl2),
+                TodaySummarySection(),
               ],
             ),
           ),
-          const SizedBox(width: Spacing.xl2),
+          SizedBox(width: Spacing.xl2),
           Expanded(
             flex: 5,
             child: Column(
               children: [
-                const TodaySecondarySuggestionsSection(
+                TodaySecondarySuggestionsSection(
                   key: Key('today-secondary-suggestions-card'),
                 ),
-                const SizedBox(height: Spacing.xl2),
-                TodayObservationSection(dashboard: dashboard),
+                SizedBox(height: Spacing.xl2),
+                TodayObservationSection(),
               ],
             ),
           ),
         ],
       ),
       const SizedBox(height: Spacing.xl2),
-      TodayQuickActionsSection(dashboard: dashboard),
+      const TodayQuickActionsSection(),
     ];
 
     return Column(

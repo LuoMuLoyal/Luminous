@@ -21,17 +21,11 @@ import 'package:luminous/l10n/app_localizations.dart';
 class HealthEventSection extends ConsumerWidget {
   const HealthEventSection({
     super.key,
-    required this.isPreview,
-    required this.onRefresh,
   });
 
-  final bool isPreview;
-  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (isPreview) return const SizedBox.shrink();
-
     final l10n = AppLocalizations.of(context)!;
     final event = ref.watch(activeHealthEventProvider);
 

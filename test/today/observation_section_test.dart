@@ -5,12 +5,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/core/widgets/common/feedback/page_state.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/observation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
@@ -140,12 +143,16 @@ void main() {
   }) {
     return ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         todaySuggestionProvider.overrideWith(notifierFactory),
+        todaySurfaceDashboardProvider.overrideWithValue(
+          PageViewStateReady(dashboard),
+        ),
       ],
-      child: TestForuiApp(
+      child: const TestForuiApp(
         home: SingleChildScrollView(
-          child: TodayObservationSection(dashboard: dashboard),
+          child: TodayObservationSection(),
         ),
       ),
     );

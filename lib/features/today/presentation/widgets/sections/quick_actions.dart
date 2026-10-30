@@ -5,20 +5,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/quick_entry/water.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayQuickActionsSection extends ConsumerWidget {
-  const TodayQuickActionsSection({super.key, required this.dashboard});
-
-  final TodayDashboard dashboard;
+  const TodayQuickActionsSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final dashboard = ref.watch(todaySurfaceDashboardProvider).dataOrNull;
+    if (dashboard == null) return const SizedBox.shrink();
     final actions = buildQuickActionItems(
       l10n,
       dashboard,

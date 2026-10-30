@@ -15,6 +15,7 @@ import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
@@ -34,6 +35,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
             todayRepositoryProvider.overrideWithValue(
               const MockTodayRepository(),
@@ -66,6 +68,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
             todayRepositoryProvider.overrideWithValue(
               const MockTodayRepository(),
@@ -101,6 +104,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -151,6 +155,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -201,6 +206,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -247,6 +253,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
             todayRepositoryProvider.overrideWithValue(
               const MockTodayRepository(),
@@ -299,6 +306,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -344,6 +352,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),

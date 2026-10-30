@@ -6,17 +6,20 @@ import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/health_event/health_event.dart';
 import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/core/widgets/common/feedback/page_state.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/shared/domain/failure.dart';
 import 'package:timezone/data/latest.dart' as timezone_data;
 import 'package:timezone/timezone.dart' as timezone;
 
+import '../../../helpers/composition.dart';
 import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/test_forui_app.dart';
 import '../../../today/test_helpers.dart';
@@ -271,6 +274,10 @@ Widget _app(
 }) {
   return ProviderScope(
     overrides: [
+      ...compositionTestOverrides(),
+      todaySurfaceDashboardProvider.overrideWithValue(
+          PageViewStateReady(TodayDashboard.signedOut()),
+        ),
       authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
       healthEventRepositoryProvider.overrideWithValue(repository),
       healthContextSnapshotProvider.overrideWith((ref) async => snapshot),

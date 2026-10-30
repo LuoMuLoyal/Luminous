@@ -11,6 +11,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/suggestion_icon_mapping.dart';
@@ -18,15 +19,15 @@ import 'package:luminous/features/today/presentation/widgets/shared/view_models.
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayObservationSection extends ConsumerWidget {
-  const TodayObservationSection({super.key, required this.dashboard});
-
-  final TodayDashboard dashboard;
+  const TodayObservationSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final dashboard = ref.watch(todaySurfaceDashboardProvider).dataOrNull;
+    if (dashboard == null) return const SizedBox.shrink();
     final suggestionAsync = ref.watch(todaySuggestionProvider);
-    final fallback = _fallbackObservations(context, l10n);
+    final fallback = _fallbackObservations(context, l10n, dashboard);
 
     return TodaySection(
       title: l10n.todayObservationSectionTitle,
@@ -77,6 +78,7 @@ class TodayObservationSection extends ConsumerWidget {
   List<_ObservationItem> _fallbackObservations(
     BuildContext context,
     AppLocalizations l10n,
+    TodayDashboard dashboard,
   ) {
     if (!hasMeaningfulVitalValue(dashboard.vitals, TodayVitalType.sleep)) {
       return [

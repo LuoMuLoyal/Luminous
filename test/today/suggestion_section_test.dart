@@ -10,18 +10,22 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+import 'package:luminous/core/widgets/common/feedback/page_state.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart'
     show doseLogRepositoryProvider;
 import 'package:luminous/features/medicine/domain/entities/dose_log.dart'
     as dose;
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/kv_test_store.dart';
 import '../helpers/mocks.dart';
 import '../helpers/test_forui_app.dart';
@@ -54,6 +58,10 @@ void main() {
   }) {
     return ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
+        todaySurfaceDashboardProvider.overrideWithValue(
+          PageViewStateReady(TodayDashboard.signedOut()),
+        ),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         todaySuggestionProvider.overrideWith(notifierFactory),
         if (productEvents != null)
@@ -644,6 +652,10 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
+            todaySurfaceDashboardProvider.overrideWithValue(
+              PageViewStateReady(TodayDashboard.signedOut()),
+            ),
             authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
             todaySuggestionProvider.overrideWith(
               StaticTodaySuggestionNotifier.new,
@@ -758,6 +770,10 @@ void main() {
     }) {
       return ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          todaySurfaceDashboardProvider.overrideWithValue(
+            PageViewStateReady(TodayDashboard.signedOut()),
+          ),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todaySuggestionProvider.overrideWith(() => _BundleNotifier(bundle)),
           if (repo != null) doseLogRepositoryProvider.overrideWithValue(repo),
@@ -896,6 +912,10 @@ void main() {
         await tester.pumpWidget(
           ProviderScope(
             overrides: [
+              ...compositionTestOverrides(),
+              todaySurfaceDashboardProvider.overrideWithValue(
+          PageViewStateReady(TodayDashboard.signedOut()),
+        ),
               authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
               todaySuggestionProvider.overrideWith(
                 () => _BundleNotifier(fallbackBundle),

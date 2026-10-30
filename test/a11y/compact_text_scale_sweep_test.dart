@@ -105,6 +105,7 @@ import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';
 import '../helpers/kv_test_store.dart';
 import '../helpers/mocks/health_context.dart';
@@ -313,6 +314,7 @@ Future<void> _pumpToday(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         activeHealthEventProvider.overrideWith(_NoActiveHealthEvent.new),
         todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
@@ -330,6 +332,7 @@ Future<void> _pumpRecord(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         recordRepositoryProvider.overrideWithValue(
           const MockRecordRepository(),
         ),
@@ -353,6 +356,7 @@ Future<void> _pumpMedicine(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         notificationUnreadCountProvider.overrideWith((ref) async => 0),
         medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -371,6 +375,7 @@ Future<void> _pumpReview(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         reviewRepositoryProvider.overrideWithValue(_FakeReviewRepository()),
         reviewDashboardProvider.overrideWith(
@@ -446,6 +451,7 @@ Future<void> _pumpMine(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(testHealthSnapshot()),
@@ -464,6 +470,7 @@ Future<void> _pumpAssistant(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         assistantRepositoryProvider.overrideWithValue(
           _FakeAssistantRepository(),
@@ -505,6 +512,7 @@ Future<void> _pumpSettings(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         notificationPermissionServiceProvider.overrideWithValue(
           _FakeNotificationPermissionService(),
@@ -533,6 +541,7 @@ Future<void> _pumpRecordCreate(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         dailyRecordRepositoryProvider.overrideWithValue(
           _FakeDailyRecordRepository(),
@@ -587,6 +596,7 @@ Future<void> _pumpMedicineDetail(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         medicineDetailProvider(
           'cn',
           'cn_1',
@@ -610,6 +620,7 @@ Future<void> _pumpMedicineDetailDrugbank(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         medicineDetailProvider(
           'drugbank',
           'DB01050',
@@ -633,6 +644,7 @@ Future<void> _pumpMedicineRiskCheck(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         medicineRiskCheckRepositoryProvider.overrideWithValue(
           FakeMedicineRiskCheckRepository(clearRiskCheckResult),
@@ -652,6 +664,7 @@ Future<void> _pumpMedicineSearch(WidgetTester tester, double scale) async {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         healthContextSnapshotProvider.overrideWith(
           (ref) async => testHealthSnapshot(),
@@ -695,6 +708,7 @@ Future<void> _pumpSyncFailures(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         pendingSyncDaoProvider.overrideWithValue(_MockPendingSyncDao()),
         syncWorkerProvider.overrideWithValue(_MockSyncWorker()),
         syncFailedCountProvider.overrideWith((ref) async => 1),
@@ -714,6 +728,7 @@ Future<void> _pumpProfile(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(testHealthSnapshot()),
@@ -758,6 +773,7 @@ Future<void> _pumpHealthContextEdit(
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(testHealthSnapshot()),
@@ -785,6 +801,7 @@ Future<void> _pumpAbout(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         appInfoProvider.overrideWith(
           (ref) async => const AppInfo(supportEmail: 'support@example.com'),
         ),
@@ -802,6 +819,7 @@ Future<void> _pumpNotification(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         notificationPermissionServiceProvider.overrideWithValue(
           _FakeNotificationPermissionService(),
         ),
@@ -906,6 +924,7 @@ Future<void> _pumpAiSettings(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         userSettingsControllerProvider.overrideWith(
           _ReadyUserSettingsController.new,
         ),
@@ -922,6 +941,7 @@ Future<void> _pumpDataExport(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         dataExportControllerProvider.overrideWith(_StubExportController.new),
       ],
       child: TestForuiApp(
