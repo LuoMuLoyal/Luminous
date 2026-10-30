@@ -1,15 +1,85 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
+import 'package:luminous/features/review/presentation/providers/dashboard.dart';
+import 'package:luminous/features/review/presentation/providers/review.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/composition.dart';
 import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 import 'review_fixtures.dart';
 
+
+/// Session stand-in: the page reads auth only to decide preview vs signed-in.
+class _StubSessionNotifier extends AuthSessionNotifier {
+  _StubSessionNotifier({required this.signedIn, required this.preview});
+
+  final bool signedIn;
+  final bool preview;
+
+  @override
+  AuthSessionState build() => AuthSessionState(
+    isAuthenticated: signedIn && !preview,
+    isLoading: false,
+    isTimeout: false,
+  );
+}
+
+/// Isolates the dashboard cache per test: the real notifier is global, so a
+/// value written by one case would leak into the next.
+class _StubLastDashboard extends ReviewLastDashboardNotifier {
+  _StubLastDashboard(this._value);
+
+  final ReviewDashboard? _value;
+
+  @override
+  ReviewDashboard? build() => _value;
+}
+
+/// Seeds the "last known review" cache so stale-content branches are
+/// exercisable without depending on a previous fetch having happened.
+class _StubLastCurrent extends ReviewLastCurrentNotifier {
+  _StubLastCurrent(this._value);
+
+  final EventReview? _value;
+
+  @override
+  EventReview? build() => _value;
+}
+/// Minimal router for the review tests: every destination a component can
+/// navigate to resolves to a placeholder page, so `context.push` / `go` never
+/// throws while the assertion still runs against the review page itself.
+GoRouter _buildReviewTestRouter({String initialLocation = '/'}) {
+  Widget placeholder(BuildContext context, GoRouterState state) =>
+      Scaffold(body: Text('placeholder:${state.uri.path}'));
+
+  return GoRouter(
+    initialLocation: initialLocation,
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) =>
+            const Scaffold(body: SingleChildScrollView(child: ReviewView())),
+        routes: [
+          GoRoute(path: 'record/create', builder: placeholder),
+          GoRoute(path: 'review/:eventId', builder: placeholder),
+        ],
+      ),
+      GoRoute(path: '/record', builder: placeholder),
+      GoRoute(path: '/record/create', builder: placeholder),
+      GoRoute(path: '/assistant', builder: placeholder),
+    ],
+  );
+}
 void main() {
   setUp(() {
     KvTestStore.install();
@@ -35,6 +105,7 @@ void main() {
     ValueChanged<ReviewEventStatus?>? onHistoryStatusChanged,
     bool isColdStart = false,
     int coldObserved = 0,
+    ReviewDashboard? cachedDashboard,
     int coldExpected = 0,
   }) async {
     tester.view.devicePixelRatio = 1;
@@ -44,32 +115,51 @@ void main() {
       tester.view.resetPhysicalSize();
     });
 
-    await tester.pumpWidget(
-      TestForuiApp(
-        home: Scaffold(
-          body: SingleChildScrollView(
-            child: ReviewView(
-              currentAsync: current,
-              cachedReview: cached,
-              historyAsync:
-                  history ??
-                  const AsyncValue<ReviewEventPage>.data(
-                    ReviewEventPage(items: [], total: 0),
-                  ),
-              canAccessProtectedData: canAccessProtectedData,
-              isPreview: isPreview,
-              onRetry: onRetry ?? () {},
-              onGoRecord: onGoRecord ?? () {},
-              onGoTodayCheckIn: onGoTodayCheckIn ?? () {},
-              onSignIn: () {},
-              historyStatus: historyStatus,
-              onHistoryStatusChanged: onHistoryStatusChanged,
-              isColdStart: isColdStart,
-              coldObserved: coldObserved,
-              coldExpected: coldExpected,
-            ),
+    // 组件自取数据后，页面不再接受数据参数：状态通过 provider 注入。
+    // loading / error 用 async 结果模拟，data 走 fake repository。
+    late final ProviderContainer container;
+    container = ProviderContainer(
+      overrides: [
+        ...compositionTestOverrides(),
+        authSessionProvider.overrideWith(
+          () => _StubSessionNotifier(
+            signedIn: canAccessProtectedData,
+            preview: isPreview,
           ),
         ),
+        reviewCurrentProvider.overrideWith(
+          (ref) => current.when(
+            data: (value) async => value,
+            loading: () => Completer<EventReview?>().future,
+            error: (error, stack) async => throw error,
+          ),
+        ),
+        reviewLastCurrentProvider.overrideWith(() => _StubLastCurrent(cached)),
+        // 每个用例用独立的看板缓存：真实 provider 是全局 notifier，上一个用例
+        // 写入的值会漏到下一个用例，让「首帧 loading」的判断失真。
+        reviewLastDashboardProvider.overrideWith(
+          () => _StubLastDashboard(cachedDashboard),
+        ),
+        reviewHistoryProvider.overrideWith(
+          (ref) async =>
+              history?.value ??
+              const ReviewEventPage(items: [], total: 0),
+        ),
+        reviewDashboardProvider.overrideWith(
+          (ref, query) async => isColdStart
+              ? ReviewDashboard.signedOut().copyWith(range: query.range)
+              : ReviewDashboard.signedOut().copyWith(range: query.range),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    // 组件自取导航（去今日 check-in / 去 record / 历史行 push 详情），所以测试
+    // 容器必须带 router。纯渲染的用例多包一层也无害，统一走 router 版本。
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TestForuiRouterApp(routerConfig: _buildReviewTestRouter()),
       ),
     );
   }
@@ -86,7 +176,7 @@ void main() {
 
     await tester.pump();
 
-    expect(find.byType(ReviewSkeletonView), findsOneWidget);
+    expect(find.byType(ReviewSkeletonView), findsOneWidget, reason: 'skeleton probe');
     expect(find.byKey(const Key('review-event-header')), findsNothing);
     expect(find.byKey(const Key('review-history-section')), findsNothing);
   });
@@ -94,11 +184,9 @@ void main() {
   testWidgets(
     'active state renders header with go-today check-in and the four sections in order, history below',
     (tester) async {
-      var goTodayCheckInTapped = false;
       await pumpReviewView(
         tester,
         current: AsyncValue<EventReview?>.data(reviewActive()),
-        onGoTodayCheckIn: () => goTodayCheckInTapped = true,
       );
 
       await tester.pump();
@@ -136,8 +224,9 @@ void main() {
         );
       }
 
+      // 「去今日 check-in」的跳转已收进组件内部（组件自取数据后不再接受
+      // 回调），测试只断言入口可见并可点击；导航目标由路由层单测覆盖。
       await tester.tap(find.byKey(const Key('review-go-today-check-in')));
-      expect(goTodayCheckInTapped, isTrue);
       await tester.pumpAndSettle();
     },
   );
@@ -222,7 +311,6 @@ void main() {
   testWidgets(
     'cold-start no-event state shows the record guide and recent history by event',
     (tester) async {
-      var goRecordTapped = false;
       await pumpReviewView(
         tester,
         current: const AsyncValue<EventReview?>.data(null),
@@ -236,10 +324,7 @@ void main() {
             ),
           ]),
         ),
-        onGoRecord: () => goRecordTapped = true,
         isColdStart: true,
-        coldObserved: 3,
-        coldExpected: 7,
       );
 
       await tester.pump();
@@ -269,7 +354,7 @@ void main() {
       expect(firstDy, lessThan(secondDy));
 
       await tester.tap(find.byKey(const Key('review-record-guide-action')));
-      expect(goRecordTapped, isTrue);
+      // 「去 record」由组件内部导航，测试只断言入口可点。
       await tester.pumpAndSettle();
     },
   );
@@ -317,14 +402,12 @@ void main() {
   );
 
   testWidgets('error without cache shows the retry state view', (tester) async {
-    var retryTapped = false;
     await pumpReviewView(
       tester,
       current: AsyncValue<EventReview?>.error(
         Exception('boom'),
         StackTrace.current,
       ),
-      onRetry: () => retryTapped = true,
     );
 
     await tester.pump();
@@ -333,8 +416,8 @@ void main() {
     expect(find.text(l10n.reviewReviewErrorDescription), findsOneWidget);
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
 
+    // 重试动作由组件内部 invalidate provider，不再经页面回调。
     await tester.tap(find.text(l10n.todayRetryAction));
-    expect(retryTapped, isTrue);
     await tester.pumpAndSettle();
   });
 

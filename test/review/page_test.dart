@@ -29,6 +29,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../review/widgets/review_fixtures.dart';
@@ -329,6 +330,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           reviewRepositoryProvider.overrideWithValue(
             _FakeReviewRepository(
@@ -374,6 +376,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             reviewRepositoryProvider.overrideWithValue(
               _FakeReviewRepository(
@@ -426,7 +429,6 @@ void main() {
 
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
-
       // 默认周视角，且周 tab 渲染。
       expect(find.byType(ReviewPeriodSwitch), findsOneWidget);
       expect(find.text(l10n.reviewPeriodWeek), findsOneWidget);
@@ -465,6 +467,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           reviewRepositoryProvider.overrideWithValue(
             _FakeReviewRepository(
@@ -576,6 +579,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             reviewRepositoryProvider.overrideWithValue(
               _FakeReviewRepository(
@@ -803,6 +807,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             reviewRepositoryProvider.overrideWithValue(repo),
             reviewDashboardProvider.overrideWith(
@@ -952,6 +957,7 @@ Widget _buildApp({
 }) {
   return ProviderScope(
     overrides: [
+      ...compositionTestOverrides(),
       authSessionProvider.overrideWith(
         signedIn
             ? _SignedInAuthSessionNotifier.new

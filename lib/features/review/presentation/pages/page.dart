@@ -5,7 +5,6 @@ import 'package:flutter/semantics.dart' show OrdinalSortKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/app/composition/review/review.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
@@ -17,9 +16,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
-import 'package:luminous/features/review/presentation/providers/data_access.dart';
 import 'package:luminous/features/review/presentation/providers/review.dart';
-import 'package:luminous/features/review/presentation/providers/trend.dart';
 import 'package:luminous/features/review/presentation/utils/export_actions.dart';
 import 'package:luminous/features/review/presentation/widgets/sheets/more_actions.dart';
 import 'package:luminous/features/review/presentation/widgets/sheets/share_management.dart';
@@ -70,71 +67,6 @@ class ReviewPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(authSessionProvider);
-    final canAccessProtectedData = session.canAccessProtectedData;
-    final isPreview = session.isConfirmedSignedOut;
-
-    final currentAsync = ref.watch(reviewCurrentProvider);
-    final cachedReview = ref.watch(reviewLastCurrentProvider);
-    final historyAsync = ref.watch(reviewHistoryProvider);
-    final historyStatus = ref.watch(reviewHistoryStatusProvider);
-
-    final dashboardQuery = ref.watch(reviewDashboardSelectedQueryProvider);
-    final dashboardAsync = ref.watch(reviewDashboardProvider(dashboardQuery));
-
-    // 将每次成功结果写入 reviewLastDashboardProvider 缓存。
-    ref.listen<AsyncValue<ReviewDashboard>>(
-      reviewDashboardProvider(dashboardQuery),
-      (_, next) {
-        next.whenData((dashboard) {
-          ref.read(reviewLastDashboardProvider.notifier).set(dashboard);
-        });
-      },
-    );
-    final cachedDashboard = ref.watch(reviewLastDashboardProvider);
-
-    // 加载中且无新数据时，展示上次成功缓存（stale），避免整页骨架。
-    final effectiveDashboardAsync =
-        dashboardAsync.isLoading &&
-            !dashboardAsync.hasValue &&
-            cachedDashboard != null
-        ? AsyncValue<ReviewDashboard>.data(cachedDashboard)
-        : dashboardAsync;
-
-    final trendSeries =
-        effectiveDashboardAsync.asData?.value.trends ?? const [];
-    final dashboardStartDate =
-        effectiveDashboardAsync.asData?.value.startDate ?? '----.--.--';
-    // 覆盖率概览行数据：dashboard metrics（各健康维度覆盖小卡）。
-    final coverageMetrics =
-        effectiveDashboardAsync.asData?.value.metrics ?? const <ReviewMetric>[];
-    // 值得注意区数据：dashboard findings 与数据窗口。
-    final findings =
-        effectiveDashboardAsync.asData?.value.findings ??
-        const <ReviewFinding>[];
-    final findingsWindowStart =
-        effectiveDashboardAsync.asData?.value.startDate ?? '----.--.--';
-    final findingsWindowEnd =
-        effectiveDashboardAsync.asData?.value.endDate ?? '----.--.--';
-    // 单维趋势卡当前选中的维度（覆盖概览行点击联动）。
-    final selectedTrendKind = ref.watch(reviewTrendDimensionProvider);
-    // 冷启动判定：无进行中事件且当前周期数据过稀（metrics 空 / 无足量覆盖
-    // / 趋势全空）时，用记录引导卡替代「开始观察」动作（动作收口 Today）。
-    final coldObserved = coverageMetrics
-        .map((m) => m.observedMetric?.observedCount ?? 0)
-        .fold(0, (a, b) => a > b ? a : b);
-    final coldExpected = dashboardQuery.range == ReviewDashboardRange.last30Days
-        ? 30
-        : 7;
-    final hasUsableCoverage = coverageMetrics.any(
-      (m) =>
-          m.observedMetric != null &&
-          m.observedMetric!.coverage != ReviewObservedMetricCoverage.none &&
-          m.observedMetric!.observedCount >= 2,
-    );
-    final isColdStart =
-        coverageMetrics.isEmpty || (!hasUsableCoverage && trendSeries.isEmpty);
-
     return ShellDeferredContent(
       child: _ReviewOpenedTracker(
         child: _ReportMobileShell(
@@ -173,50 +105,9 @@ class ReviewPage extends ConsumerWidget {
               ),
             ),
           ),
-          child: ReviewView(
-            currentAsync: currentAsync,
-            cachedReview: cachedReview,
-            historyAsync: historyAsync,
-            historyStatus: historyStatus,
-            onHistoryStatusChanged: (status) =>
-                ref.read(reviewHistoryStatusProvider.notifier).select(status),
-            canAccessProtectedData: canAccessProtectedData,
-            isPreview: isPreview,
-            onRetry: () => ref.invalidate(reviewCurrentProvider),
-            onGoRecord: () => context.go(Routes.record),
-            isColdStart: isColdStart,
-            coldObserved: coldObserved,
-            coldExpected: coldExpected,
-            onGoTodayCheckIn: () => context.go(Routes.home),
-            onSignIn: () => context.push(loginRouteForCurrentLocation(context)),
-            onHistoryRetry: () => ref.invalidate(reviewHistoryProvider),
-            onEventTap: (event) => context.push(
-              Routes.reviewDetail.replaceAll(':eventId', event.id),
-            ),
-            onHistoryLoadMore: (cursor) async {
-              final result = await ref
-                  .read(reviewRepositoryProvider)
-                  .fetchHistory(status: historyStatus, cursor: cursor)
-                  .run();
-              // Left 重抛，由 ReviewHistorySection 的既有 catch 投影为
-              // 加载更多失败行（widget 不导入 fpdart、不读 code/status）。
-              return result.fold((failure) => throw failure, (page) => page);
-            },
-            // 纵向洞察折线图：饮水/睡眠/用药单折线图。
-            trendSeries: trendSeries,
-            trendStartDate: dashboardStartDate,
-            periodRange: dashboardQuery.range,
-            onPeriodRangeChanged: (range) => ref
-                .read(reviewDashboardSelectedQueryProvider.notifier)
-                .setRange(range),
-            coverageMetrics: coverageMetrics,
-            findings: findings,
-            findingsWindowStart: findingsWindowStart,
-            findingsWindowEnd: findingsWindowEnd,
-            selectedTrendKind: selectedTrendKind,
-            onTrendKindChanged: (kind) =>
-                ref.read(reviewTrendDimensionProvider.notifier).select(kind),
-          ),
+          // 页面只负责外壳（顶栏 / 滚动 / 下拉刷新）；内容由 review 表面的
+          // 组件按 reviewSurfaceDefinition 自取数据并装配。
+          child: const ReviewView(),
         ),
       ),
     );
