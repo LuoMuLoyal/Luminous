@@ -77,7 +77,7 @@ Future<void> _startPhotoScan(
       if (context.mounted) {
         await showAuthRequiredDialog(
           context,
-          onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+          onLogin: () => requestSignIn(context),
         );
       }
       return;

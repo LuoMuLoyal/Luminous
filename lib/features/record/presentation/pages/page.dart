@@ -148,8 +148,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         children: [
           if (isPreview) ...[
             SignInHintBanner(
-              onSignIn: () =>
-                  context.push(loginRouteForCurrentLocation(context)),
+              onSignIn: () => requestSignIn(context),
             ),
             const SizedBox(height: Spacing.lg),
           ],

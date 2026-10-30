@@ -113,7 +113,7 @@ class _LegacyReadinessComponent
         ReviewDashboardRange.last30Days => l10n.reviewRangeLast30Days,
         ReviewDashboardRange.custom => l10n.reviewRangeCustom,
       },
-      onSignIn: () => context.push(loginRouteForCurrentLocation(context)),
+      onSignIn: () => requestSignIn(context),
       onContinueRecord: () => context.push('/record/create'),
     );
   }

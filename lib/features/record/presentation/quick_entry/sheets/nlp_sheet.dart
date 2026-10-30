@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/utils/hour_minute.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
@@ -32,7 +31,7 @@ Future<void> openNlpSheet({
     case NlpSheetNeedsSignInIntent():
       await showAuthRequiredDialog(
         context,
-        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+        onLogin: () => requestSignIn(context),
       );
       return;
     case NlpSheetOpenIntent(:final occurredAt):

@@ -242,7 +242,7 @@ class LegacyDashboardCompatPage extends ConsumerWidget {
       clinicShareInFlight: clinicShareInFlight,
       isPreview: isPreview,
       generatedAtLabel: generatedAtLabel,
-      onSignIn: () => context.push(loginRouteForCurrentLocation(context)),
+      onSignIn: () => requestSignIn(context),
       onContinueRecord: () => context.push('/record/create'),
       onSync: () => _refreshDashboard(ref),
       suggestionHistory: suggestionHistory,

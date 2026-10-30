@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
@@ -31,7 +30,7 @@ Future<void> markMedicineDose(
     if (context.mounted) {
       await showAuthRequiredDialog(
         context,
-        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+        onLogin: () => requestSignIn(context),
       );
     }
     return;

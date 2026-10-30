@@ -351,8 +351,7 @@ class RecordCreatePage extends HookConsumerWidget {
                       ],
                     )
                   : AuthRequiredDialogGate(
-                      onLogin: () =>
-                          context.push(loginRouteForCurrentLocation(context)),
+                      onLogin: () => requestSignIn(context),
                     ),
             ],
           ),

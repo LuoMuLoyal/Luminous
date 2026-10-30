@@ -53,11 +53,7 @@ class QuickEntryExecutor {
     final buildContext = context.buildContext;
     if (!context.canAccessProtectedData) {
       if (context.isAuthLoading) return;
-      await showAuthRequiredDialog(
-        buildContext,
-        onLogin: () =>
-            buildContext.push(loginRouteForCurrentLocation(buildContext)),
-      );
+      await requestSignIn(buildContext);
       return;
     }
 

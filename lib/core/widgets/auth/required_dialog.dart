@@ -142,16 +142,58 @@ Future<void> pushAuthRequiredRoute(BuildContext context, String route) async {
 
   // When not signed in, show login dialog and return to current location
   // after login. The user can then retry navigating to the target route.
+  await requestSignIn(context);
+}
+
+/// The single sign-in gate for the whole app: shows the auth-required dialog
+/// and navigates to the login screen only when the user accepts it.
+///
+/// Every "you need an account for this" path must go through this function —
+/// jumping straight to `/login` on a tap is the one behaviour it replaces:
+/// a silent redirect leaves the user wondering why the screen changed, while
+/// the dialog names the requirement and offers a way out.
+Future<void> requestSignIn(
+  BuildContext context, {
+  String? returnTo,
+}) async {
+  if (returnTo == null) {
+    return _showSignInDialog(context);
+  }
+
+  // A caller that knows the destination the user was heading for (a deep link,
+  // a feature entry point) returns there instead of wherever the dialog
+  // happens to be opened from.
+  await showAuthRequiredDialog(
+    context,
+    onLogin: () => _pushLogin(context, loginRouteForReturnTo(returnTo)),
+  );
+}
+
+Future<void> _showSignInDialog(BuildContext context) async {
   await showAuthRequiredDialog(
     context,
     // The login action fires on a later user tap; guard the push in case the
     // calling surface was closed in between (a deactivated context pushed
     // through trips the `_dependents.isEmpty` assertion).
-    onLogin: () {
-      if (!context.mounted) return;
-      unawaited(context.push(loginRouteForCurrentLocation(context)));
-    },
+    onLogin: () => _pushLogin(context, _currentLocationLoginRoute(context)),
   );
+}
+
+/// Pushes [location], skipping the push when the context is gone or the login
+/// route is already on top (a second dialog confirmation must not stack two
+/// copies of the sign-in screen).
+void _pushLogin(BuildContext context, String location) {
+  if (!context.mounted) return;
+  if (GoRouterState.of(context).uri.toString() == location) return;
+  unawaited(context.push(location));
+}
+
+String _currentLocationLoginRoute(BuildContext context) {
+  final location = GoRouterState.of(context).uri.toString();
+  if (location.isEmpty || !location.startsWith('/')) {
+    return loginRouteForReturnTo(CoreRoutes.home);
+  }
+  return loginRouteForReturnTo(location);
 }
 
 /// Builds the login route location carrying [returnTo] as a `return-to`
@@ -160,12 +202,13 @@ String loginRouteForReturnTo(String returnTo) {
   return loginRouteLocation(returnTo);
 }
 
-/// Builds the login route location that returns to the current location
-/// after login, falling back to the home shell for empty/relative locations.
+/// Builds the login route location that returns to the current location after
+/// login, falling back to the home shell for empty/relative locations.
+///
+/// Only for surfaces that navigate to sign-in directly by design — the sign-out
+/// button pressed while signed out, and the preview-state account actions.
+/// **Do not use this for an auth gate**: a gate must confirm with
+/// [requestSignIn] so the user knows why the screen changes.
 String loginRouteForCurrentLocation(BuildContext context) {
-  final location = GoRouterState.of(context).uri.toString();
-  if (location.isEmpty || !location.startsWith('/')) {
-    return loginRouteForReturnTo(CoreRoutes.home);
-  }
-  return loginRouteForReturnTo(location);
+  return _currentLocationLoginRoute(context);
 }

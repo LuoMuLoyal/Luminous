@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
@@ -182,7 +181,7 @@ class _MedicineDetailContentState extends ConsumerState<MedicineDetailContent> {
       if (context.mounted) {
         await showAuthRequiredDialog(
           context,
-          onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+          onLogin: () => requestSignIn(context),
         );
       }
       return;

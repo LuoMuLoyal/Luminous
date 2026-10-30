@@ -118,7 +118,7 @@ class MedicinePage extends ConsumerWidget {
         },
         readyBuilder: (workspace, isPreview) {
           final onSignIn = isPreview
-              ? () => context.push(loginRouteForCurrentLocation(context))
+              ? () => requestSignIn(context)
               : null;
           final content = MedicineMobileDashboardView(workspace: workspace);
           final dashboardContent = isPreview

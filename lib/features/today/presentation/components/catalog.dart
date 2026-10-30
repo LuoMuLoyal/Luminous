@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
@@ -92,7 +91,7 @@ class _PreviewBannerComponent extends ComponentDescriptor<NoComponentConfig> {
     final l10n = AppLocalizations.of(context)!;
     return SignInHintBanner(
       message: l10n.todayPreviewBannerMessage,
-      onSignIn: () => context.push(loginRouteForCurrentLocation(context)),
+      onSignIn: () => requestSignIn(context),
     );
   }
 }

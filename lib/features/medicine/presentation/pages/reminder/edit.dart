@@ -319,8 +319,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
               session.isLoading
                   ? const ReminderLoading()
                   : AuthRequiredDialogGate(
-                      onLogin: () =>
-                          context.push(loginRouteForCurrentLocation(context)),
+                      onLogin: () => requestSignIn(context),
                     ),
             ],
           ),

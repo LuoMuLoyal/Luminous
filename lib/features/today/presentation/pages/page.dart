@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
@@ -69,7 +68,7 @@ class TodayPage extends ConsumerWidget {
         dashboard: dashboard,
         isPreview: isPreview,
         onSignIn: isPreview
-            ? () => context.push(loginRouteForCurrentLocation(context))
+            ? () => requestSignIn(context)
             : null,
         onRefresh: () => _refreshAll(context, ref),
       ),

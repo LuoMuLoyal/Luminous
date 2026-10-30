@@ -302,7 +302,7 @@ Future<void> handleMedicationQuickAction(
     if (isAuthLoading) return;
     await showAuthRequiredDialog(
       context,
-      onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+      onLogin: () => requestSignIn(context),
     );
     return;
   }

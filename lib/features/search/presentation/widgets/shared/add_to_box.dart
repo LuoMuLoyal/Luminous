@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -42,19 +41,10 @@ Future<void> addMedicineToBoxWithPrecheck(
       return;
     }
     if (context.mounted) {
-      await showAuthRequiredDialog(
-        context,
-        // The login action runs on a later user tap: the calling surface
-        // (e.g. the recognition dialog) may already be closed by then, so
-        // guard the push with a fresh mounted check — pushing through a
-        // deactivated context registers an Inherited dependency on a dying
-        // element and trips `debugDeactivated`'s `_dependents.isEmpty`
-        // assertion.
-        onLogin: () {
-          if (!context.mounted) return;
-          unawaited(context.push(loginRouteForCurrentLocation(context)));
-        },
-      );
+      // `requestSignIn` already re-checks `mounted` before pushing: the login
+      // action runs on a later user tap, by which time the calling surface
+      // (e.g. the recognition dialog) may be gone.
+      await requestSignIn(context);
     }
     return;
   }
