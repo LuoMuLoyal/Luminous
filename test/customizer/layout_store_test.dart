@@ -14,7 +14,7 @@ const _second = ComponentId('summary.metrics');
 final _catalog = SurfaceCatalog(const [
   SurfaceDefinition(
     surface: _surface,
-    available: [_first, _second],
+    owned: [_first, _second],
     defaultLayout: SurfaceLayout(
       placements: [
         ComponentPlacement(id: _first),

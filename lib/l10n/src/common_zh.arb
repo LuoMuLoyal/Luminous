@@ -69,6 +69,7 @@
   "customizerTitle": "编排组件",
   "customizerResetAction": "恢复默认",
   "customizerDoneAction": "完成",
+  "customizerCancelAction": "取消",
   "customizerRemoveAction": "移除",
   "customizerAllAdded": "所有组件都已添加",
   "customizerAddComponents": "添加组件",
@@ -109,5 +110,10 @@
   "componentNameArchiveSummary": "归档概览",
   "componentNamePrivacyNotice": "隐私说明",
   "componentNameReminderSettings": "提醒设置",
-  "componentNameAccountSecurity": "账号安全"
+  "componentNameAccountSecurity": "账号安全",
+  "componentNameReadinessLegacy": "旧版准备度",
+  "componentNameFindingsLegacy": "旧版发现",
+  "componentNameAiSummaryLegacy": "旧版 AI 摘要",
+  "componentNamePatternsLegacy": "旧版规律",
+  "componentNameSuggestionHistoryLegacy": "旧版建议历史"
 }

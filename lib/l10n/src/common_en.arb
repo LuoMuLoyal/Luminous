@@ -69,6 +69,7 @@
   "customizerTitle": "Customize",
   "customizerResetAction": "Reset",
   "customizerDoneAction": "Done",
+  "customizerCancelAction": "Cancel",
   "customizerRemoveAction": "Remove",
   "customizerAllAdded": "All components added",
   "customizerAddComponents": "Add components",
@@ -109,5 +110,10 @@
   "componentNameArchiveSummary": "Archive summary",
   "componentNamePrivacyNotice": "Privacy notice",
   "componentNameReminderSettings": "Reminders",
-  "componentNameAccountSecurity": "Account security"
+  "componentNameAccountSecurity": "Account security",
+  "componentNameReadinessLegacy": "Legacy readiness",
+  "componentNameFindingsLegacy": "Legacy findings",
+  "componentNameAiSummaryLegacy": "Legacy AI summary",
+  "componentNamePatternsLegacy": "Legacy patterns",
+  "componentNameSuggestionHistoryLegacy": "Legacy suggestion history"
 }
