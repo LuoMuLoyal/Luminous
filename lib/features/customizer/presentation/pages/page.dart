@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/customizer/domain/entities/draft.dart';
 import 'package:luminous/features/customizer/domain/entities/edit.dart';
 import 'package:luminous/features/customizer/presentation/providers/draft.dart';
 import 'package:luminous/features/customizer/presentation/widgets/palette.dart';
@@ -60,80 +61,142 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
     // children 与 onReorder 共用同一份列表：它既是渲染来源，也是重排回调
     // 算新顺序的输入。key 用组件 id，重排后据此还原是哪个组件动了。
     final children = <Widget>[
-      for (final placement in placements)
+      for (var index = 0; index < placements.length; index += 1)
         _PlacementTile(
-          key: ValueKey(placement.id.value),
+          key: ValueKey(placements[index].id.value),
           surface: widget.surface,
-          placement: placement,
-          isLast: placement.id == placements.last.id,
+          placement: placements[index],
+          isLast: index == placements.length - 1,
         ),
     ];
 
-    return FScaffold(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _Header(
-            title: _surfaceTitle(l10n, widget.surface),
-            onDone: () => _finish(context),
-            onReset: () =>
-                ref.read(editSessionProvider.notifier).resetToDefaults(),
+    // 窄屏放不下两栏：主列表占满，可选组件走底部面板。
+    // 桌面/平板仍然并排——那里宽度足够，两栏能同时看见。
+    final isNarrow = MediaQuery.sizeOf(context).width < Breakpoints.tablet;
+
+    final builder = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _Header(
+          title: surfaceTitle(l10n, widget.surface),
+          onDone: () => _finish(context),
+          onReset: () => ref.read(editSessionProvider.notifier).resetToDefaults(),
+          onAdd: isNarrow ? () => _openPalette(context, catalog, draft) : null,
+        ),
+        Expanded(
+          child: isNarrow
+              ? _buildList(context, children, placements)
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: _buildList(context, children, placements),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: CustomizerPalette(
+                        current: widget.surface,
+                        catalog: catalog,
+                        draft: draft,
+                      ),
+                    ),
+                  ],
+                ),
+        ),
+      ],
+    );
+
+    // 顶部安全区由 Scaffold 的 SafeArea 负责：编排页是自定义 header，不是
+    // `page_scaffold` 那套带返回箭头的顶栏，不包 SafeArea 时标题会被状态栏压住。
+    return Scaffold(
+      backgroundColor: context.theme.scaffoldStyle.backgroundColor,
+      body: SafeArea(bottom: false, child: builder),
+    );
+  }
+
+  /// 主列表 + 跨 tab 拖入落点。
+  Widget _buildList(
+    BuildContext context,
+    List<Widget> children,
+    List<ComponentPlacement> placements,
+  ) {
+    return DragTarget<ComponentId>(
+      onAcceptWithDetails: (details) {
+        ref
+            .read(editSessionProvider.notifier)
+            .applyEdit(
+              LayoutEdit.add(
+                surface: widget.surface,
+                id: details.data,
+                toIndex: placements.length,
+              ),
+            );
+      },
+      builder: (context, candidates, _) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            border: candidates.isEmpty
+                ? null
+                : Border.all(
+                    color: SemanticColor.primary.solid(context),
+                    width: 2,
+                  ),
           ),
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 跨 tab 拖入的落点。
-                Expanded(
-                  flex: 3,
-                  child: DragTarget<ComponentId>(
-                    onAcceptWithDetails: (details) {
-                      ref
-                          .read(editSessionProvider.notifier)
-                          .applyEdit(
-                            LayoutEdit.add(
-                              surface: widget.surface,
-                              id: details.data,
-                              toIndex: placements.length,
-                            ),
-                          );
-                    },
-                    builder: (context, candidates, _) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          border: candidates.isEmpty
-                              ? null
-                              : Border.all(
-                                  color: SemanticColor.primary.solid(context),
-                                  width: 2,
-                                ),
-                        ),
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.all(Spacing.lg),
-                          child: ReorderableBuilder<Widget>(
-                            onReorder: (reorder) =>
-                                _onReorder(reorder, children, placements),
-                            children: children,
-                            builder: (ordered) =>
-                                Column(children: ordered.toList()),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: CustomizerPalette(
-                    current: widget.surface,
-                    catalog: catalog,
-                    draft: draft,
-                  ),
-                ),
-              ],
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+              Spacing.lg,
+              0,
+              Spacing.lg,
+              Spacing.xl,
+            ),
+            child: ReorderableBuilder<Widget>(
+              onReorder: (reorder) =>
+                  _onReorder(reorder, children, placements),
+              children: children,
+              builder: (ordered) => Column(children: ordered.toList()),
             ),
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  /// 窄屏的「添加组件」面板：底部弹出，占屏幕一半高度。
+  Future<void> _openPalette(
+    BuildContext context,
+    SurfaceCatalog catalog,
+    LayoutDraft draft,
+  ) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: context.theme.scaffoldStyle.backgroundColor,
+      builder: (sheetContext) => SafeArea(
+        top: false,
+        child: SizedBox(
+          height: MediaQuery.sizeOf(sheetContext).height * 0.55,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(Spacing.lg),
+                child: Text(
+                  AppLocalizations.of(sheetContext)!.customizerAddComponents,
+                  style: context.theme.typography.body.md.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: CustomizerPalette(
+                  current: widget.surface,
+                  catalog: catalog,
+                  draft: draft,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -185,28 +248,20 @@ ComponentId? _idOfKey(Object? key) {
   return null;
 }
 
-/// Surface 的标题复用 tab 的 ARB 名称，不另起一套文案。
-String _surfaceTitle(AppLocalizations l10n, SurfaceId surface) {
-  return switch (surface) {
-    SurfaceId.today => l10n.tabToday,
-    SurfaceId.record => l10n.tabRecord,
-    SurfaceId.medicine => l10n.tabMedicine,
-    SurfaceId.review => l10n.tabReview,
-    SurfaceId.mine => l10n.tabMine,
-    SurfaceId.tabChrome => l10n.customizerTitle,
-  };
-}
-
 class _Header extends StatelessWidget {
   const _Header({
     required this.title,
     required this.onReset,
     required this.onDone,
+    this.onAdd,
   });
 
   final String title;
   final VoidCallback onReset;
   final VoidCallback onDone;
+
+  /// 窄屏才有：打开「添加组件」面板（宽屏上面板常驻，不需要入口）。
+  final VoidCallback? onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -228,6 +283,18 @@ class _Header extends StatelessWidget {
         child: const Icon(SemanticIcons.actionReset),
       ),
     );
+    final addButton = onAdd == null
+        ? null
+        : FTooltip(
+            tipBuilder: (context, controller) =>
+                Text(l10n.customizerAddComponents),
+            child: FButton.icon(
+              size: FButtonSizeVariant.sm,
+              onPress: onAdd,
+              semanticsLabel: l10n.customizerAddComponents,
+              child: const Icon(SemanticIcons.actionAdd),
+            ),
+          );
     final doneButton = FTooltip(
       tipBuilder: (context, controller) => Text(l10n.customizerDoneAction),
       child: FButton.icon(
@@ -239,16 +306,25 @@ class _Header extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.all(Spacing.lg),
-      // 结构化装配：标题吃剩余宽度，两个操作按钮以 `Flexible` 参与分配，
+      padding: const EdgeInsets.fromLTRB(
+        Spacing.lg,
+        Spacing.md,
+        Spacing.lg,
+        Spacing.md,
+      ),
+      // 结构化装配：标题吃剩余宽度，操作按钮以 `Flexible` 参与分配，
       // 窄屏 + 大字号时也不会把标题挤成多行（见 luminous_lints 规则
       // `non_shrinking_row_child`）。
       child: Row(
         children: [
           Expanded(child: titleText),
           const SizedBox(width: Spacing.sm),
+          if (addButton != null) ...[
+            Flexible(child: addButton),
+            const SizedBox(width: Spacing.xs),
+          ],
           Flexible(child: resetButton),
-          const SizedBox(width: Spacing.sm),
+          const SizedBox(width: Spacing.xs),
           Flexible(child: doneButton),
         ],
       ),
@@ -273,7 +349,6 @@ class _PlacementTile extends ConsumerWidget {
   final bool isLast;
 
   @override
-  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final notifier = ref.read(editSessionProvider.notifier);
@@ -283,13 +358,29 @@ class _PlacementTile extends ConsumerWidget {
 
     // 结构化装配：名称吃剩余宽度；显隐与移除交给 `Flexible`，窄屏 + 大字号
     // 时不会把名称挤成多行（luminous_lints 规则 non_shrinking_row_child）。
-    final nameText = Text(
-      id.value,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      style: context.theme.typography.body.sm.copyWith(
-        color: known ? null : SemanticColor.neutral.solid(context),
-      ),
+    // 主行是用户能读懂的名字，id 作为副行保留——id 才是持久化与下架的真正
+    // 身份，出问题时用户报的就是它。
+    final nameText = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          componentDisplayName(l10n, id),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: context.theme.typography.body.sm.copyWith(
+            color: known ? null : SemanticColor.neutral.solid(context),
+          ),
+        ),
+        Text(
+          id.value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: context.theme.typography.body.xs2.copyWith(
+            color: SemanticColor.neutral.solid(context),
+          ),
+        ),
+      ],
     );
     final visibilitySwitch = FSwitch(
       value: placement.visible,

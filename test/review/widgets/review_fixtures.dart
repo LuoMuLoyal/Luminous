@@ -1,3 +1,5 @@
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 
 /// Review 展示层 widget 测试共享的领域实体夹具。
@@ -166,5 +168,47 @@ EventReview reviewPartial() {
         ReviewSectionReasonCodes.noCompletedActions,
       ),
     ),
+  );
+}
+/// 有覆盖率、但没有任何事件历史的周期看板。
+///
+/// 「确认无事件」的判定要求 dashboard **不是**冷启动（至少一个指标有可用
+/// 覆盖），否则记录引导卡会顶替 no-event 解释卡。凡是断言 no-event 渲染的
+/// 用例都要带上它。
+ReviewDashboard reviewDashboardWithCoverage() {
+  const observed = ReviewObservedMetric(
+    value: 1.5,
+    state: ReviewObservedMetricState.observed,
+    coverage: ReviewObservedMetricCoverage.sufficient,
+    sources: [ReviewObservedMetricSource.manual],
+    observedCount: 4,
+    expectedCount: 7,
+    windowStart: '2026-08-01',
+    windowEnd: '2026-08-07',
+  );
+  return const ReviewDashboard(
+    range: ReviewDashboardRange.last7Days,
+    startDate: '2026-08-01',
+    endDate: '2026-08-07',
+    generatedAt: '2026-08-07T00:00:00.000Z',
+    metrics: [
+      ReviewMetric(
+        kind: ReviewDataKind.water,
+        iconName: 'water',
+        color: SemanticColor.primary,
+        value: '1500',
+        unit: 'ml',
+        status: ReviewStatus.good,
+        delta: '+100',
+        direction: ReviewMetricDirection.up,
+        sparkline: [1200, 1400, 1500],
+        observedMetric: observed,
+      ),
+    ],
+    trends: [],
+    findings: [],
+    exportActions: [],
+    patterns: [],
+    aiSummaryEnabled: false,
   );
 }

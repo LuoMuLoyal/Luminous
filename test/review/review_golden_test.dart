@@ -1,9 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
+import 'package:luminous/features/review/presentation/providers/dashboard.dart';
+import 'package:luminous/features/review/presentation/providers/review.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import 'widgets/review_fixtures.dart';
@@ -30,32 +34,36 @@ void main() {
       tester.view.resetPhysicalSize();
     });
 
-    final body = ReviewView(
-      currentAsync: current,
-      cachedReview: null,
-      historyAsync:
-          history ??
-          const AsyncValue<ReviewEventPage>.data(
-            ReviewEventPage(items: [], total: 0),
-          ),
-      canAccessProtectedData: true,
-      isPreview: false,
-      onRetry: () {},
-      onGoRecord: () {},
-      onGoTodayCheckIn: () {},
-      onSignIn: () {},
-      isColdStart: false,
-      coldObserved: 0,
-      coldExpected: 0,
-    );
+    // `ReviewView` 无参，数据从 provider 取；因此这里注入的是数据而不是构造参数。
+    final overrides = [
+      ...compositionTestOverrides(),
+      reviewCurrentProvider.overrideWith(
+        (ref) async => current.asData?.value,
+      ),
+      // no-event 解释卡的判定要求「不是冷启动」，因此给一份有覆盖率的看板；
+      // 其它状态不受影响（有事件时该卡片自行隐藏）。
+      reviewDashboardProvider(
+        const ReviewDashboardQuery(range: ReviewDashboardRange.last7Days),
+      ).overrideWith((ref) async => reviewDashboardWithCoverage()),
+      reviewHistoryProvider.overrideWith(
+        (ref) async =>
+            (history ?? const AsyncValue<ReviewEventPage>.data(
+              ReviewEventPage(items: [], total: 0),
+            )).asData?.value ??
+            const ReviewEventPage(items: [], total: 0),
+      ),
+    ];
 
     await tester.pumpWidget(
-      TestForuiApp(
-        themeMode: themeMode,
-        locale: locale,
-        home: MediaQuery(
-          data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
-          child: Scaffold(body: SingleChildScrollView(child: body)),
+      ProviderScope(
+        overrides: overrides,
+        child: TestForuiApp(
+          themeMode: themeMode,
+          locale: locale,
+          home: MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
+            child: const Scaffold(body: SingleChildScrollView(child: ReviewView())),
+          ),
         ),
       ),
     );
