@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation_streams.dart';
@@ -49,7 +50,8 @@ mixin ConversationManagement on Notifier<AssistantState>, ConversationStreams {
   ///
   /// The list entry title is replaced immediately (trimmed; empty becomes
   /// null), then the backend is called. On failure the previous title is
-  /// restored and the error is rethrown so the page can toast it.
+  /// restored and the failure is rethrown as [LucentFailureException] so the
+  /// page's catch hands it to `userMessageFromError`.
   Future<void> renameConversation({
     required String conversationId,
     required String title,
@@ -101,7 +103,7 @@ mixin ConversationManagement on Notifier<AssistantState>, ConversationStreams {
                 )
                 .toList(growable: false),
           );
-          throw value;
+          throw LucentFailureException(value);
         case Right():
           break;
       }
@@ -129,6 +131,8 @@ mixin ConversationManagement on Notifier<AssistantState>, ConversationStreams {
   /// to [loadLatestConversation] so the drawer/page never shows a stale or
   /// blank conversation; [loadLatestConversation] already handles the
   /// no-conversation case (returns an empty state, not a white screen).
+  ///
+  /// A failed delete is rethrown as [LucentFailureException] for the page.
   Future<void> deleteConversation(String conversationId) async {
     final result = await ref
         .read(assistantRepositoryProvider)
@@ -139,7 +143,7 @@ mixin ConversationManagement on Notifier<AssistantState>, ConversationStreams {
         ref
             .read(talkerProvider)
             .error('AssistantController.deleteConversation: failed: $value');
-        throw value;
+        throw LucentFailureException(value);
       case Right():
         break;
     }

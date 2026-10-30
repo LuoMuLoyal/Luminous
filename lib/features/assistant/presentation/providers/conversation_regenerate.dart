@@ -10,15 +10,25 @@ import 'package:luminous/features/assistant/presentation/providers/data_access.d
 
 mixin MessageRegeneration on Notifier<AssistantState>, MessageSending {
   /// Regenerates the last assistant message of the current conversation
-  /// (F-5b). Requires a persisted conversation; the backend only allows the
-  /// last message to be regenerated and rejects anything else with 400,
-  /// surfaced as a toast by the page.
+  /// (F-5b). The backend only allows the last message to be regenerated and
+  /// rejects anything else with 400, surfaced as a toast by the page.
+  ///
+  /// Without a persisted conversation there is nothing to regenerate, and
+  /// with a send already in flight the incoming reply would race this one, so
+  /// both are under the same guard: a logged no-op, never a thrown error the
+  /// page would toast for an action that never reached the backend.
   Future<void> regenerateLastMessage() async {
     final conversationId = state.conversationId;
-    if (conversationId == null || conversationId.isEmpty) {
-      throw StateError('No persisted conversation to regenerate.');
-    }
-    if (state.isSending || state.isLoadingConversation) {
+    if (conversationId == null ||
+        conversationId.isEmpty ||
+        state.isSending ||
+        state.isLoadingConversation) {
+      ref
+          .read(talkerProvider)
+          .error(
+            'AssistantController.regenerateLastMessage: ignored (no persisted '
+            'conversation or a send is in flight)',
+          );
       return;
     }
 

@@ -73,7 +73,7 @@ void main() {
     );
 
     test(
-      'regenerateExpiredProposal throws when no user message precedes it',
+      'regenerateExpiredProposal is a no-op when no user message precedes it',
       () async {
         KvTestStore.install(seed: const <String, Object>{});
         final assistantMessage = buildAssistantMessage(
@@ -103,8 +103,9 @@ void main() {
             messageId: messageIdFor(assistantMessage),
             proposalId: 'proposal-expired',
           ),
-          throwsA(isA<StateError>()),
+          completes,
         );
+        expect(fake.streamMessagesCallCount, 0);
       },
     );
 
@@ -310,7 +311,7 @@ void main() {
     });
 
     test(
-      'regenerateLastMessage throws without a persisted conversation',
+      'regenerateLastMessage is a no-op without a persisted conversation',
       () async {
         KvTestStore.install(seed: const <String, Object>{});
         final fake = FakeAssistantRepository();
@@ -321,11 +322,9 @@ void main() {
         await controller.loadCapabilities();
         await controller.loadLatestConversation();
 
-        await expectLater(
-          controller.regenerateLastMessage(),
-          throwsA(isA<StateError>()),
-        );
+        await expectLater(controller.regenerateLastMessage(), completes);
         expect(fake.regenerateCallCount, 0);
+        expect(container.read(assistantControllerProvider).isSending, isFalse);
       },
     );
 

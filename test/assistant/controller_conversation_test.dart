@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
@@ -137,7 +138,7 @@ void main() {
             messageId: messageIdFor(state.messages.last),
             proposalId: 'proposal-1',
           ),
-          throwsA(isA<LucentFailure>()),
+          throwsA(isA<LucentFailureException>()),
         );
 
         final updated = container.read(assistantControllerProvider);
@@ -152,44 +153,48 @@ void main() {
       },
     );
 
-    test(
-      'confirmProposedAction throws without a persisted conversation',
-      () async {
-        KvTestStore.install(seed: const <String, Object>{});
-        final fake = FakeAssistantRepository(
-          streamOverride: Stream<AssistantGenerationEvent>.fromIterable([
-            AssistantGenerationResultEvent(
-              conversationId: '',
-              message: buildAssistantMessage(
-                content: '建议：记录喝水。',
-                proposedActions: <AssistantProposedAction>[
-                  createDailyRecordProposal(id: 'proposal-1'),
-                ],
-              ),
+    test('confirmProposedAction marks the proposal failed without a persisted '
+        'conversation', () async {
+      KvTestStore.install(seed: const <String, Object>{});
+      final fake = FakeAssistantRepository(
+        streamOverride: Stream<AssistantGenerationEvent>.fromIterable([
+          AssistantGenerationResultEvent(
+            conversationId: '',
+            message: buildAssistantMessage(
+              content: '建议：记录喝水。',
+              proposedActions: <AssistantProposedAction>[
+                createDailyRecordProposal(id: 'proposal-1'),
+              ],
             ),
-          ]),
-        );
-        final container = buildContainer(fake);
-        addTearDown(container.dispose);
-
-        final controller = container.read(assistantControllerProvider.notifier);
-        await controller.loadCapabilities();
-        await controller.loadLatestConversation();
-        await controller.sendMessage('帮我记一杯水');
-
-        final state = container.read(assistantControllerProvider);
-        expect(state.conversationId, isNull);
-
-        await expectLater(
-          controller.confirmProposedAction(
-            messageId: messageIdFor(state.messages.last),
-            proposalId: 'proposal-1',
           ),
-          throwsA(isA<StateError>()),
-        );
-        expect(fake.confirmCalls, isEmpty);
-      },
-    );
+        ]),
+      );
+      final container = buildContainer(fake);
+      addTearDown(container.dispose);
+
+      final controller = container.read(assistantControllerProvider.notifier);
+      await controller.loadCapabilities();
+      await controller.loadLatestConversation();
+      await controller.sendMessage('帮我记一杯水');
+
+      final state = container.read(assistantControllerProvider);
+      expect(state.conversationId, isNull);
+
+      await expectLater(
+        controller.confirmProposedAction(
+          messageId: messageIdFor(state.messages.last),
+          proposalId: 'proposal-1',
+        ),
+        completes,
+      );
+      expect(fake.confirmCalls, isEmpty);
+      final proposal = container
+          .read(assistantControllerProvider)
+          .messages
+          .expand((message) => message.proposedActions)
+          .singleWhere((item) => item.id == 'proposal-1');
+      expect(proposal.executionState, AssistantProposalExecutionState.failed);
+    });
 
     test('renameConversation updates the title optimistically', () async {
       KvTestStore.install(seed: const <String, Object>{});
@@ -306,7 +311,7 @@ void main() {
             conversationId: 'c1',
             title: 'New title',
           ),
-          throwsA(isA<LucentFailure>()),
+          throwsA(isA<LucentFailureException>()),
         );
 
         final rolledBack = container
