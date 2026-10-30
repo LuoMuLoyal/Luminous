@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/scan/data/datasources/ocr_model_hashes.dart';
 import 'package:luminous/features/scan/data/datasources/ocr_model_manager.dart';
+import 'package:luminous/features/scan/domain/entities/ocr_error.dart';
 
 /// Downloader stub that writes a fixed byte payload to the target path and
 /// records the URLs it was asked to download.
@@ -72,7 +73,7 @@ void main() {
         await expectLater(
           manager.downloadModels(),
           throwsA(
-            isA<OcrModelIntegrityException>().having(
+            isA<OcrFailure>().having(
               (e) => e.fileName,
               'fileName',
               'det_inference.onnx',
@@ -162,7 +163,7 @@ void main() {
       await expectLater(
         manager.downloadModels(),
         throwsA(
-          isA<OcrModelIntegrityException>().having(
+          isA<OcrFailure>().having(
             (e) => e.fileName,
             'fileName',
             'rec_inference.yml',

@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/app_log.dart';
+import 'package:luminous/features/scan/domain/entities/ocr_error.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'ocr_model_hashes.dart';
@@ -42,24 +43,6 @@ class DioOcrModelDownloader implements OcrModelDownloader {
       onReceiveProgress: onReceiveProgress,
     );
   }
-}
-
-/// Thrown when a downloaded OCR model file fails its SHA-256 integrity check.
-///
-/// This is a supply-chain guard: the ONNX models are executed by the native
-/// OCR engine, so files that do not match the pinned digest must never be
-/// loaded. The caller should surface a retryable error UI.
-class OcrModelIntegrityException implements Exception {
-  const OcrModelIntegrityException(this.fileName, this.expected, this.actual);
-
-  final String fileName;
-  final String expected;
-  final String actual;
-
-  @override
-  String toString() =>
-      'OCR model integrity check failed for $fileName: '
-      'expected sha256 $expected, got $actual';
 }
 
 /// Strategy for verifying a downloaded model file's digest.
@@ -141,10 +124,9 @@ class OcrModelManager {
   ///
   /// [onProgress] receives a 0.0–1.0 progress value.
   ///
-  /// Throws on network or file system errors, and on
-  /// [OcrModelIntegrityException] when a downloaded file does not match its
-  /// pinned SHA-256 digest (the offending file is deleted so a stale copy can
-  /// never be reused).
+  /// Throws on network or file system errors, and [OcrFailure] when a
+  /// downloaded file does not match its pinned SHA-256 digest (the offending
+  /// file is deleted so a stale copy can never be reused).
   Future<void> downloadModels({
     void Function(double progress)? onProgress,
   }) async {
@@ -218,7 +200,7 @@ class OcrModelManager {
       // is appropriate.
       onProgress?.call(1.0);
     } catch (e, st) {
-      if (e is OcrModelIntegrityException) rethrow;
+      if (e is OcrFailure) rethrow;
       // Progress stays at 2/3 on failure; the caller's catch block handles
       // the error UI. Re-throw so the caller can show the failure dialog.
       appLog.error('OCR config copy failed', e, st);
@@ -229,7 +211,7 @@ class OcrModelManager {
   }
 
   /// Verifies [file] against the expected digest for [fileName]; on mismatch
-  /// the file is deleted and [OcrModelIntegrityException] is thrown.
+  /// the file is deleted and [OcrFailure] is thrown.
   Future<void> _verifyOrDelete(
     File file,
     String fileName, {
@@ -244,7 +226,7 @@ class OcrModelManager {
       );
       // Never keep a tampered/incomplete file for a later run to load.
       await _deleteQuietly(file, reason: 'integrity check failed');
-      throw OcrModelIntegrityException(fileName, expectedDigest, actual);
+      throw OcrFailure.integrity(fileName, expectedDigest, actual);
     }
   }
 

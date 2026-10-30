@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/scan/data/datasources/paddle_ocr_provider.dart';
+import 'package:luminous/features/scan/domain/entities/ocr_error.dart';
 import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:paddle_ocr_native/paddle_ocr_native.dart';
 import 'package:paddle_ocr_native/src/paddle_ocr_platform.dart'
@@ -124,14 +125,14 @@ void main() {
     });
 
     test(
-      'ensureInitialized throws OcrModelsNotDownloadedException when models are missing',
+      'ensureInitialized throws OcrFailure when models are missing',
       () async {
         const noModelsManager = FakeOcrModelManager(modelsAvailable: false);
         final engine = PaddleOcrEngine(noModelsManager);
 
         await expectLater(
           engine.ensureInitialized(),
-          throwsA(isA<OcrModelsNotDownloadedException>()),
+          throwsA(isA<OcrFailure>()),
         );
         expect(fakePlatform.initCalls, 0);
       },

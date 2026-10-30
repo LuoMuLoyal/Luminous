@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/features/scan/data/datasources/ocr_model_manager.dart';
+import 'package:luminous/features/scan/domain/entities/ocr_error.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:paddle_ocr_native/paddle_ocr_native.dart';
 
@@ -29,12 +30,12 @@ class PaddleOcrEngine {
   /// the device supports the required native libraries (e.g. arm64-v8a ABI)
   /// and whether the model files are available locally.
   ///
-  /// Throws if models are not downloaded or if native init fails.
+  /// Throws [OcrFailure] if models are not downloaded or if native init fails.
   Future<void> ensureInitialized() async {
     if (_initialized) return;
 
     if (!_modelManager.isModelAvailable()) {
-      throw const OcrModelsNotDownloadedException();
+      throw const OcrFailure.modelsNotDownloaded();
     }
 
     final paths = _modelManager.modelPaths;
@@ -84,15 +85,6 @@ class PaddleOcrEngine {
       _initialized = false;
     }
   }
-}
-
-/// Thrown when OCR model files are not available locally and need to be
-/// downloaded before the engine can be initialised.
-class OcrModelsNotDownloadedException implements Exception {
-  const OcrModelsNotDownloadedException();
-
-  @override
-  String toString() => 'OCR models not downloaded. Download required (~30MB).';
 }
 
 /// Riverpod provider for the PaddleOCR engine.
