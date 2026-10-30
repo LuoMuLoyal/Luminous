@@ -52,6 +52,10 @@ hooks:
       #
       # 不确定下载是否成功时，跑一次应用看 `connection_io` 的加密引擎断言：
       # 它会在启动时直接指出当前加载的是不是加密构建。
+      #
+      # 本仓库当前指向本地镜像（见下方 url_pattern），因为构建环境的 Dart 进程
+      # 解析不到 github.com。切换回官方源：注释掉 url_pattern 一行即可。
+      url_pattern: "http://127.0.0.1:8787/$FILENAME"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
