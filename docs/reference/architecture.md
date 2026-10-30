@@ -40,6 +40,8 @@ lib/
 │   ├── analytics/         # Usage analytics
 │   ├── auth/              # 会话状态与鉴权守卫（feature-free 值模型）
 │   ├── config/            # Developer settings, feature flags, env keys, pref keys
+│   ├── composition/       # 可组合表面：组件目录/注册表、表面布局、宿主；responsive/ 下是
+│   │                      # 三档列数与跨列（手机 1 列 / 平板 2 列 / 桌面 3 列）
 │   ├── database/          # Drift schema/DAOs/connection(io+web)/sync worker/cache cleanup
 │   ├── design/            # 设计令牌：color/（SemanticColor）、tokens/（Spacing、图标、动效、断点）、layout/
 │   ├── errors/            # Shared error types and handling

@@ -123,12 +123,24 @@ AI-native 只是类比（把稳定单位抽出来，让上层按同一套规则�
 
 原则：**能用依赖解决的都引入依赖**，但只在它替代一批自研代码时才引入；已有依赖能覆盖的不重复引入。
 
-### 1.1 本阶段要新增的两个
+### 1.1 本阶段要新增的
 
 | 包 | 版本 | 用在哪 | 传递依赖 |
 | --- | --- | --- | --- |
-| `flutter_layout_grid` | `^2.0.8` | A3：把 `ComponentSize{compact,regular,wide}` 落成 CSS-Grid 式跨列；同一份布局在手机 1 列 / 平板 2 列 / 桌面 3 列自动重排（桌面侧已有 `DesktopTabShell`，这条是刚需） | `collection`（已有）+ `quiver`（纯 Dart，小） |
 | `flutter_reorderable_grid_view` | `^5.7.0` | A3 起的编排编辑器网格模式：拖拽重排带位移动画，满足 Cloudscape「移动时保持尺寸与内容状态」 | 零（只依赖 Flutter） |
+
+**`flutter_layout_grid` 已实测放弃**（原计划用它在 A3 承担三档跨列，依赖已移除）：
+
+1. 它的自动放置无法可靠放置跨列项。最小复现：3 列网格里两个 `columnSpan: 2`
+   的子项就抛 `GridPlacement.columnEnd cannot exceed column count` —— 游标逐列
+   +1 前进，宽项从最后一列起算时算出 `columnEnd > columns`。`[3, 2]` 不报，
+   `[2, 2]` 必报。手动指定 `columnStart` 也不行，会与库的游标不同步。
+2. 它把子项放进内部 shrink-wrapping viewport，任何查询固有尺寸的后代都抛
+   `RenderShrinkWrappingViewport does not support returning intrinsic dimensions`。
+   Forui 的 `FBadge` 内部就是 `IntrinsicWidth`，含徽章的卡片无法放进网格。
+
+跨列改用 `Row` + `Expanded(flex: span)`（`lib/core/composition/responsive/`）：
+列数固定、按 span 分配，语义足够，且没有上述两类问题。
 
 选 `flutter_reorderable_grid_view` 而非 `reorderable_grid_view`：后者最后发布 2023-11（`2.2.8`），
 前者 2026-05 仍在更新，SDK 约束 `>=3.3.1` 与当前 Flutter 匹配。
@@ -389,7 +401,11 @@ LayoutDoc = { version: int, schemaVersion: int, payload: <客户端自定义 JSO
 | review | 20（含 legacy 5） | 主路径 14 项与原顺序一致 | `test/review` 296 / 9 失败 | legacy 5 进 available、不进默认布局 |
 
 门禁：`--clean-layers` 25 条（全部为跨 feature 的 `presentation` 深引用，非本轮引入）。
-`flutter analyze lib` 无问题。
+`flutter analyze` 全仓库无问题。
+
+**A2 / A4 已在模拟器上实测通过**（2026-10-30）：从 Today 点标题进编排页 → `＋` 打开面板
+→ 加入 Record 的 `calendar.strip`、Mine 的 `archive.summary` → 面板实时消失、列表末尾
+出现 → `✓` 保存后写入 `layout.today` 的 KV 持久化数据。
 
 **已知未完成项**（不计入验收通过）：
 
@@ -445,36 +461,82 @@ LayoutDoc = { version: int, schemaVersion: int, payload: <客户端自定义 JSO
 - `application/`：`StartDraft`（读布局生成草稿，读取失败回退默认）、`commitDraft`、
   `EditSession`（会话生命周期）。
 - `data/`：KV 缓存（`layout.<surface>`）+ cache-first + 乐观写的 `CachedLayoutRepository`。
-- 跨 tab 面板 = 「本 surface 可挂但未挂」的组件，点按或拖入即加回。
+- 跨 tab 面板按来源 tab 分组列出**所有可挂但未挂**的组件，点按或长按拖入即加入。
 - 允许**全隐**：`visible` 与「从列表移除」是两件事；移除进未挂载池，可再加回。
+- 顶部操作：`✕ 取消`（丢弃草稿退出）、`＋ 添加组件`（窄屏才有）、`恢复默认`、`✓ 完成`。
+- 窄屏的面板是**可拖高的底部 sheet**（220dp–0.9 屏），宽屏则是常驻右栏。
 
-**依赖**：`flutter_reorderable_grid_view: ^5.7.0`；`flutter_layout_grid` 推迟到 A3。
+**两条踩过的坑（都是静默失败，务必保留）**：
+
+1. `_add` 曾经只在「本页移除过的组件池」里查，首次加入的组件直接返回原草稿——
+   表现为「点了没反应」，无报错。现在池里没有就按目录新建 placement。
+2. 面板**必须自己 `ref.watch` 草稿**，不能接收调用方传入的快照。窄屏面板长在
+   `showModalBottomSheet` 的 builder 里，那个 builder 不在页面重建范围内：传快照
+   进来时组件确实加进了草稿，面板却按旧数据渲染，条目仍留在列表里——同样是
+   「点了没反应」，但数据层其实已经成功。
+
+**依赖**：`flutter_reorderable_grid_view: ^5.7.0`。
 
 **未完成**：
 
 - Lucent `GET/PUT /ui/layouts` 不存在，`LayoutRemote` 是占位实现（fetchAll 返回空）。
   布局只存本地，不同步跨设备、不入 `pending_sync_queue`。
-- 跨 surface 搬组件还没有 UI 入口（`LayoutEdit.move` 的跨 surface 分支未接线）。
+- 跨 surface **移动**（`LayoutEdit.move` 的 from≠to 分支）还没有 UI 入口：目前只能
+  「在本页移除 → 在另一页加入」，不能一次拖动完成。
 - 显隐/顺序只有列表形态，网格 + 尺寸档是 A3。
 
 ### A3 尺寸档 + 组件内选项/变体
 
+**响应式三档已完成**（2026-10-30，`lib/core/composition/responsive/`）：
 
-- `ComponentSize` 三档落地：`compact`（半宽/双列）、`regular`、`wide`（通栏）
+- `ComponentLayout` {mobile 1 列 / tablet 2 列 / desktop 3 列}，阈值沿用既有
+  `Breakpoints`（960 / 1200），不引入新数字。
+- `spanOf(ComponentSize)`：`compact` 恒 1 列；`regular` 在 2 列下占满、3 列下占 2；
+  `wide` 占满；一律 clamp 到列数。
+- `layoutGridRows` 按「从左到右填、放不下换行」分组，`ResponsiveGrid` 每行是
+  `Row` + `Expanded(flex: span)`，行尾用 `Spacer` 占掉未使用的列（半宽卡片因此
+  不会被拉成通栏）。
+- `ComponentHostGrid` / `ComponentHostGridSliver`：单列时退回纵向列表，不付网格代价。
+- 桌面端随之退出「手写双栏」：`desktop_dashboard.dart` 改渲染与移动端同一份
+  `SurfaceId.today` 布局。顺带修掉一个既有遗漏——旧桌面双栏从不渲染
+  `health_event.active`，`_refreshAll` 里「只在移动端刷新」的判断因此是错的。
+- 不用 `flutter_layout_grid`（理由见 §1.1）；也不用 `IntrinsicHeight` 强制行等高：
+  业务卡片可能内部带滚动视图，查固有高度会抛
+  `RenderShrinkWrappingViewport does not support returning intrinsic dimensions`。
+  行内改为 `CrossAxisAlignment.start`，各卡片保持自然高度。
+- 编排页有尺寸选择器（三档 chip，选中实心、未选中描边），只在组件支持的档位
+  多于一个时出现。
+- 验收：`test/core/composition/responsive/layout_geometry_test.dart` 按**真实几何**
+  断言 1/2/3 列下的宽度与换行，含未支持档位回退、未知 id 跳过、空布局。
+
+**未完成**：
+
 - 组件选项按 sealed 类型落地，先做需求里点名的两个：
   - `summary.metrics`：`SummaryCompact{3 个 MetricKind}` / `SummaryTrendSingle{metric, range}`
   - `record` 两种风格：默认布局预设 `classic` / `calendar`（两个预设，不做两套页面代码）
 - 横屏/宽屏不是独立页面：由 `wide` 尺寸 + 同一组件的宽屏布局承担（需求第 5 条）
-- 本阶段引入两个依赖（§1.1）：`flutter_layout_grid` 承担三档跨列与响应式列数，
-  `flutter_reorderable_grid_view` 承担网格模式拖拽；两者都只是布局/手势，样式仍取 Forui tokens
-- 验收：每个新选项有 golden；`decode` 失败降级用例；1/2/3 列三种宽度下的重排用例
-- 估：10–12 天（含依赖接入与三档布局调试）
+- `flutter_reorderable_grid_view` 的网格模式拖拽（编排页目前仍是列表形态）
+- 每个新选项的 golden
 
 ### A4 跨表面挂载（L3 的开关）
 
-- 编辑器支持「把这个组件也加到另一个 tab」；`SurfaceCatalog.available` 决定可选项
-- 组件必须能被多个 surface 复用而不复制代码：**同一份 descriptor、同一个 builder**
-- 默认布局随之调整：例如用药页默认首屏 = 风险检查首卡（需求第 4、10 条）
+**已完成**（2026-10-30）：
+
+- `SurfaceCatalog` 把「所有权」与「挂载许可」拆成两件事：
+  - `ownedBy(surface)`（原 `availableOf`）：这个 surface 自己 feature 提供的组件，
+    只决定默认顺序与面板分组，**不是**权限表；
+  - `mountableOn(surface, id)`：挂载许可。**任何已注册组件都能挂到任何页面**，
+    只排除不存在的 surface 与 `tabChrome`。
+- `SurfaceDefinition.available` 字段同步改名 `owned`，避免继续被当成权限表读。
+- 跨 tab 面板按来源 tab 分组列出全部候选，用户可以把 Record / Review / Mine 的组件
+  加到 Today（已在模拟器上实测 `calendar.strip`、`archive.summary`）。
+- 组件被多个 surface 复用时仍是**同一份 descriptor、同一个 builder**，没有复制代码。
+
+**未完成**：
+
+- 默认布局尚未按需求第 4、10 条调整（用药页首屏 = 风险检查首卡）。
+- 跨 surface 一次性移动（一次拖动从 A 页搬到 B 页）仍需两次操作。
+
 - 验收：`water.trend` 同时挂在 today 与 record 两个 surface 的用例；
   同一 id 在两处共享同一个 provider 订阅（不重复请求）
 - 估：5–7 天
@@ -648,8 +710,8 @@ A6（与 A1–A5 无耦合，但要独占时间窗：动 shell + router）
   （唯一例外：A6 的 tab 自由文本）
 - **Forui 优先**：组件层与编排 UI 一律用 Forui 原语（`FButton`/`FSwitch`/`FDialog`/`FSidebar`/
   `FCard`/`FPopover`）；**不引入 Material 组件**，也不为 Forui 已有控件再包一层只预设样式的薄壳
-  （`docs/reference/design-system.md`）。第三方包（`flutter_layout_grid`、
-  `flutter_reorderable_grid_view`）只提供布局与手势，视觉一律取 Forui tokens
+  （`docs/reference/design-system.md`）。第三方包（`flutter_reorderable_grid_view`）
+  只提供手势，视觉一律取 Forui tokens
   （`context.theme.style.borderRadius.*`、`context.theme.typography.*`）与 `SemanticColor`
 - 每个阶段结束追加 `docs/logs/migration-log/YYYY-MM-DD.md`（只追加不覆盖）
 - 契约变更后：`Lucent` 跑 `pnpm export:openapi`，`Luminous` 跑
