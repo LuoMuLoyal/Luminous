@@ -30,12 +30,12 @@ void main() {
         reason: '${placement.id} 出现在默认布局里却没有注册',
       );
     }
-    expect(registry.length, recordSurfaceDefinition.available.length);
+    expect(registry.length, recordSurfaceDefinition.owned.length);
   });
 
   test('component ids never name the record tab', () {
     // id 首段说的是「显示什么」，不是「挂在哪个 tab」——同一个组件要能挂到别的表面。
-    for (final id in recordSurfaceDefinition.available) {
+    for (final id in recordSurfaceDefinition.owned) {
       expect(
         id.value.split('.').first,
         isNot(anyOf('record', 'tab')),
@@ -49,7 +49,7 @@ void main() {
       recordSurfaceDefinition.defaultLayout.placements
           .map((placement) => placement.id)
           .toList(),
-      recordSurfaceDefinition.available,
+      recordSurfaceDefinition.owned,
       reason: '默认布局应当就是改动前的移动端区块顺序',
     );
   });
@@ -72,8 +72,8 @@ void main() {
       final catalog = container.read(surfaceCatalogProvider);
       expect(catalog.definitionOf(SurfaceId.record), isNotNull);
       expect(
-        catalog.availableOf(SurfaceId.record),
-        recordSurfaceDefinition.available,
+        catalog.ownedBy(SurfaceId.record),
+        recordSurfaceDefinition.owned,
       );
     });
   });

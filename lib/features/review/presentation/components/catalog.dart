@@ -70,7 +70,7 @@ const reviewStaleBannerId = ComponentId('status.stale_banner');
 /// same page in the same order.
 const reviewSurfaceDefinition = SurfaceDefinition(
   surface: SurfaceId.review,
-  available: [
+  owned: [
     reviewPeriodSwitchId,
     todayPreviewBannerId,
     reviewTrendId,

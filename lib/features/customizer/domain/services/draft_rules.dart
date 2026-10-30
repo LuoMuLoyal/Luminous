@@ -30,8 +30,7 @@ LayoutDraft _move(
   required ComponentId id,
   required int toIndex,
 }) {
-  // 目标 surface 必须允许挂载该组件；跨 tab 的自由度上限由 catalog 决定。
-  if (!catalog.availableOf(to).contains(id)) return draft;
+  // 目标 surface 必须能挂这个组件。任何已注册组件都能挂到任何页面（跨 tab\n  // 复用正是组件系统的目的），所以这里只排除「目标 surface 不存在」。\n  if (!catalog.mountableOn(to, id)) return draft;
 
   final source = draft.layoutOf(from).placements;
   final placement = source.where((p) => p.id == id).firstOrNull;
@@ -103,7 +102,7 @@ LayoutDraft _add(
   required ComponentId id,
   required int toIndex,
 }) {
-  if (!catalog.availableOf(surface).contains(id)) return draft;
+  if (!catalog.mountableOn(surface, id)) return draft;
 
   final layout = draft.layoutOf(surface);
   // 已经在表上就是空操作：`add` 的语义是「让这个组件出现在这里」。

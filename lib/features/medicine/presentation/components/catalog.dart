@@ -25,7 +25,7 @@ const medicineQuickOperationId = ComponentId('quick_action.medicine');
 /// 所以从不编辑布局的用户看到的页面与之前一致。
 const medicineSurfaceDefinition = SurfaceDefinition(
   surface: SurfaceId.medicine,
-  available: [
+  owned: [
     medicineDrugBoxId,
     medicineRecordsId,
     medicineSafetyEngineId,

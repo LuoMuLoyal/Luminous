@@ -50,7 +50,7 @@ const accountSecurityId = ComponentId('account.security');
 /// here in prose rather than in a golden that later tab changes would churn.
 const mineSurfaceDefinition = SurfaceDefinition(
   surface: SurfaceId.mine,
-  available: [
+  owned: [
     accountSyncBannerId,
     accountHeroId,
     profileAlertsId,

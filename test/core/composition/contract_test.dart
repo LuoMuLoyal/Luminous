@@ -18,7 +18,7 @@ void main() {
       final registry = buildComponentRegistry();
       final catalog = buildSurfaceCatalog();
       final mounted = <ComponentId>{
-        for (final surface in SurfaceId.values) ...catalog.availableOf(surface),
+        for (final surface in SurfaceId.values) ...catalog.ownedBy(surface),
       };
 
       expect(registry.length, greaterThan(0));
@@ -41,7 +41,7 @@ void main() {
     test('a surface default layout only uses ids it may mount', () {
       final catalog = buildSurfaceCatalog();
       for (final definition in catalog.definitions) {
-        final available = definition.available.toSet();
+        final available = definition.owned.toSet();
         for (final placement in definition.defaultLayout.placements) {
           expect(
             available,
@@ -58,7 +58,7 @@ void main() {
       final registry = buildComponentRegistry();
       final catalog = buildSurfaceCatalog();
       for (final definition in catalog.definitions) {
-        for (final id in definition.available) {
+        for (final id in definition.owned) {
           expect(
             registry.find(id),
             isNotNull,

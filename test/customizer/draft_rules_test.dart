@@ -13,12 +13,13 @@ void main() {
   const surface = SurfaceId.today;
   const existing = ComponentId('daily.greeting');
   const fresh = ComponentId('summary.metrics');
-  const notMountable = ComponentId('dose.records');
+  // 属于别的 tab 的组件：跨 tab 复用是组件系统的目的，必须能加进来。
+  const fromOtherSurface = ComponentId('dose.records');
 
   final catalog = SurfaceCatalog(const [
     SurfaceDefinition(
       surface: surface,
-      available: [existing, fresh],
+      owned: [existing, fresh],
       defaultLayout: SurfaceLayout(
         placements: [ComponentPlacement(id: existing)],
       ),
@@ -59,15 +60,28 @@ void main() {
     );
   });
 
-  test('a component the surface may not mount is refused', () {
-    final draft = baseDraft();
+  test('a component owned by another surface can be added here', () {
     final next = applyEdit(
-      draft,
-      const LayoutEdit.add(surface: surface, id: notMountable, toIndex: 1),
+      baseDraft(),
+      const LayoutEdit.add(surface: surface, id: fromOtherSurface, toIndex: 1),
       catalog,
     );
 
-    // 拒绝的编辑返回同一份草稿（而不是抛异常或部分应用）。
+    expect(next.layoutOf(surface).placements.map((p) => p.id), [
+      existing,
+      fromOtherSurface,
+    ]);
+  });
+
+  test('a surface that does not exist refuses every component', () {
+    final draft = baseDraft();
+    final next = applyEdit(
+      draft,
+      const LayoutEdit.add(surface: SurfaceId.tabChrome, id: fresh, toIndex: 0),
+      catalog,
+    );
+
+    // 拒绝的编辑返回同一份草稿（不抛异常、不部分应用）。
     expect(identical(next, draft), isTrue);
   });
 

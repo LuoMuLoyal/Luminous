@@ -20,12 +20,12 @@ void main() {
     for (final id in mounted) {
       expect(registry.contains(id), isTrue, reason: 'not registered: $id');
       expect(
-        mineSurfaceDefinition.available,
+        mineSurfaceDefinition.owned,
         contains(id),
         reason: 'default layout mounts an id the surface cannot host: $id',
       );
     }
-    expect(registry.length, mineSurfaceDefinition.available.length);
+    expect(registry.length, mineSurfaceDefinition.owned.length);
   });
 
   test('component ids are <domain>.<view> and never mention the tab', () {
@@ -46,7 +46,7 @@ void main() {
     expect(mineSurfaceDefinition.surface, SurfaceId.mine);
     expect(
       mineSurfaceDefinition.defaultLayout.placements.length,
-      mineSurfaceDefinition.available.length,
+      mineSurfaceDefinition.owned.length,
     );
   });
 
@@ -54,8 +54,8 @@ void main() {
     final catalog = SurfaceCatalog([mineSurfaceDefinition]);
     expect(
       catalog.defaultLayoutOf(SurfaceId.mine).placements.length,
-      mineSurfaceDefinition.available.length,
+      mineSurfaceDefinition.owned.length,
     );
-    expect(catalog.availableOf(SurfaceId.mine), isNotEmpty);
+    expect(catalog.ownedBy(SurfaceId.mine), isNotEmpty);
   });
 }

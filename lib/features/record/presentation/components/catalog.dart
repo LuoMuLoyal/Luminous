@@ -28,7 +28,7 @@ const recordTimelineId = ComponentId('timeline.daily');
 /// 所以本次是纯重构：从不编辑布局的用户看到的页面与改动前一致。
 const recordSurfaceDefinition = SurfaceDefinition(
   surface: SurfaceId.record,
-  available: [
+  owned: [
     recordDateId,
     recordQuickEntryId,
     recordFilterId,

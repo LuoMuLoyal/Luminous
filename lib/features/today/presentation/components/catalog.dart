@@ -40,7 +40,7 @@ const todayQuickActionsId = ComponentId('quick_action.strip');
 /// refactor — a user who never edits anything sees the same page.
 const todaySurfaceDefinition = SurfaceDefinition(
   surface: SurfaceId.today,
-  available: [
+  owned: [
     todayPreviewBannerId,
     todayGreetingId,
     todayPrimarySuggestionId,
