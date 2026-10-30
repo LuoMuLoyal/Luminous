@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:hive_ce/hive.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 /// Key-value store for small, non-relational preferences.
 ///
@@ -72,9 +76,21 @@ class HiveKvStore implements KvStore {
   final Box<dynamic> _box;
 
   /// Opens the box and installs it as [KvStore.instance]. Call once at bootstrap.
+  ///
+  /// `Hive.openBox` needs either an explicit path or an initialized Hive.
+  /// Nothing else in the app initializes Hive, and the drift database already
+  /// lives in the application documents directory, so the box is pointed at a
+  /// path derived from the same root instead of adding a second storage root.
   static Future<KvStore> open() async {
-    final box = await Hive.openBox<dynamic>(boxName);
+    final box = await Hive.openBox<dynamic>(boxName, path: await _storagePath());
     return KvStore.installForTesting(HiveKvStore(box));
+  }
+
+  static Future<String> _storagePath() async {
+    final dir = await getApplicationDocumentsDirectory();
+    final boxDir = Directory(p.join(dir.path, 'kv'));
+    await boxDir.create(recursive: true);
+    return boxDir.path;
   }
 
   @override
