@@ -107,9 +107,12 @@ final class NoThrowRule extends AnalysisRule {
   /// data-layer boundary.
   ///
   /// A data source reports its failure by throwing it — the repository wraps
-  /// the call in `TaskEither.tryCatch`, so the throw *is* the failure value.
-  /// `LucentFailure` itself, a `failure` variable, and the client-detected
-  /// `LucentFailure.client(...)` builders all qualify.
+  /// the call in `TaskEither.tryCatch`, so the throw *is* the failure value
+  /// there. A `data/` stream (`async*`) has no Either to carry it, so it throws
+  /// the same failure value and the consumer's `catch` maps it. Every accepted
+  /// shape is a `LucentFailure`: the class itself, a `failure` variable, a
+  /// client-detected builder (`LucentFailure.client(...)`), or the app's SSE
+  /// helper (`mapSseStreamError`) / any `…failure…` builder call.
   static bool isFailureThrow(ThrowExpression statement) {
     final expression = _unwrap(statement.expression);
     if (expression is InstanceCreationExpression) {
@@ -129,13 +132,13 @@ final class NoThrowRule extends AnalysisRule {
   }
 
   /// `mapSseStreamError(data)` / `failureFor(code)` / …: a call whose callee
-  /// names a failure (identified by the `failure` identifier). The concrete
-  /// type cannot be checked in a syntactic rule, so the naming convention is
-  /// the contract.
+  /// names the failure it builds. The concrete type cannot be checked in a
+  /// syntactic rule, so the naming convention is the contract — the implicit
+  /// helper the app owns (`mapSseStreamError`) is listed explicitly.
   static bool _isFailureBuilderCall(Expression expression) {
     if (expression is! MethodInvocation) return false;
-    final method = expression.methodName.name;
-    return method.toLowerCase().contains('failure');
+    final method = expression.methodName.name.toLowerCase();
+    return method == 'mapssestreamerror' || method.contains('failure');
   }
 
   static Expression _unwrap(Expression expression) {
