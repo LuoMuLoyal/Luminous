@@ -60,5 +60,11 @@
   "commonInvalidLinkMissingEventId": "Invalid link: missing event ID.",
   "commonListSeparator": ", ",
   "commonLabelValueSeparator": ": ",
-  "commonClauseSeparator": "; "
+  "commonClauseSeparator": "; ",
+  "commonStatusRefreshing": "Updating",
+  "commonStatusOffline": "Offline data",
+  "commonStatusStale": "Update failed",
+  "commonStaleHint": "Update failed, showing the last data we had",
+  "commonRetryingHint": "Update failed, retrying automatically",
+  "customizerTitle": "Customize"
 }

@@ -60,5 +60,11 @@
   "commonInvalidLinkMissingEventId": "链接无效，缺少事件编号",
   "commonListSeparator": "、",
   "commonLabelValueSeparator": "：",
-  "commonClauseSeparator": "；"
+  "commonClauseSeparator": "；",
+  "commonStatusRefreshing": "更新中",
+  "commonStatusOffline": "离线数据",
+  "commonStatusStale": "更新失败",
+  "commonStaleHint": "更新失败，当前显示上次获取的数据",
+  "commonRetryingHint": "更新失败，正在自动重试",
+  "customizerTitle": "编排组件"
 }

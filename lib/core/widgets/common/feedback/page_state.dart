@@ -26,12 +26,76 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// content.
 sealed class PageViewState<T> {
   const PageViewState();
+
+  /// The displayable payload, or `null` when there is nothing to show yet.
+  ///
+  /// [PageViewStateLoading] and [PageViewStateFatalError] carry no data;
+  /// [PageViewStateReady], [PageViewStateRefreshing] and [PageViewStateStale]
+  /// all do — which is the whole point of separating them: a refresh or a failed
+  /// refresh must not take the content away.
+  T? get dataOrNull => switch (this) {
+    PageViewStateReady<T>(:final data) => data,
+    PageViewStateRefreshing<T>(:final data) => data,
+    PageViewStateStale<T>(:final data) => data,
+    PageViewStateLoading<T>() => null,
+    PageViewStateEmptyInsufficient<T>() => null,
+    PageViewStateFatalError<T>() => null,
+  };
+
+  /// Whether content is on screen in a degraded form (stale or refreshing).
+  bool get isDegraded => switch (this) {
+    PageViewStateRefreshing<T>() => true,
+    PageViewStateStale<T>() => true,
+    _ => false,
+  };
 }
 
 /// Data is still being fetched or the auth session is being restored with a
 /// cache miss.
 class PageViewStateLoading<T> extends PageViewState<T> {
   const PageViewStateLoading();
+}
+
+/// Data is already on screen and a newer read is in flight.
+///
+/// [AsyncValue.isLoading] does **not** exclude [AsyncValue.hasValue], so a
+/// "refreshing" page is not the same thing as a first load. Rendering it as
+/// [PageViewStateLoading] replaces real content with a skeleton and makes the
+/// page flash on every rebuild — `ref.invalidate` from `DataChangeBus`,
+/// pull-to-refresh, or a dependency change all land here.
+class PageViewStateRefreshing<T> extends PageViewState<T> {
+  const PageViewStateRefreshing({
+    required this.data,
+    this.isPreview = false,
+    this.fromCache = false,
+  });
+
+  final T data;
+  final bool isPreview;
+
+  /// The value came from the offline cache; the in-flight read may be offline.
+  final bool fromCache;
+}
+
+/// A read failed, but data from an earlier successful read is still displayable.
+///
+/// The data must stay on screen with a visible "update failed" affordance.
+/// Collapsing this into [PageViewStateFatalError] throws away usable content;
+/// collapsing it into [PageViewStateReady] hides a failure.
+class PageViewStateStale<T> extends PageViewState<T> {
+  const PageViewStateStale({
+    required this.data,
+    required this.error,
+    this.isPreview = false,
+    this.retrying = false,
+  });
+
+  final T data;
+  final Object error;
+  final bool isPreview;
+
+  /// A retry is scheduled but its backoff has not elapsed yet.
+  final bool retrying;
 }
 
 /// A fatal error occurred while loading page data.
@@ -103,34 +167,54 @@ PageViewState<T> resolvePageViewState<T>({
   IconData errorIcon = SemanticIcons.statusError,
 }) {
   final isPreview = session.isConfirmedSignedOut;
+  final value = data.value;
 
-  // If the data is refreshing (loading but has a previous value), keep
-  // showing the previous data instead of flashing a skeleton.
-  if (data.isLoading && data.hasValue) {
-    final previousValue = data.value as T;
+  PageViewState<T> readyWith(T previousValue) {
     if (isInsufficient != null && isInsufficient(previousValue)) {
       return PageViewStateEmptyInsufficient<T>(title: '', description: '');
     }
     return PageViewStateReady<T>(previousValue, isPreview: isPreview);
   }
 
-  // Resolve based on the async data state.
-  return data.when(
-    loading: () => PageViewStateLoading<T>(),
-    error: (error, stackTrace) {
-      return PageViewStateFatalError<T>(
-        title: '',
-        description: '',
-        icon: errorIcon,
-      );
-    },
-    data: (value) {
-      if (isInsufficient != null && isInsufficient(value)) {
-        return PageViewStateEmptyInsufficient<T>(title: '', description: '');
-      }
-      return PageViewStateReady<T>(value, isPreview: isPreview);
-    },
-  );
+  // 1. Data on screen + a newer read in flight → keep the content, mark refresh.
+  //    (`isLoading` and `hasValue` are not mutually exclusive.)
+  if (value != null && data.isLoading) {
+    if (isInsufficient != null && isInsufficient(value)) {
+      return PageViewStateEmptyInsufficient<T>(title: '', description: '');
+    }
+    return PageViewStateRefreshing<T>(
+      data: value,
+      isPreview: isPreview,
+      fromCache: data.isFromCache,
+    );
+  }
+
+  // 2. Data on screen + the newer read failed → keep the content, surface it.
+  if (value != null && data.hasError) {
+    return PageViewStateStale<T>(
+      data: value,
+      error: data.error!,
+      isPreview: isPreview,
+      retrying: data.retrying,
+    );
+  }
+
+  // 3. Data on screen and stable.
+  if (value != null) {
+    return readyWith(value);
+  }
+
+  // 4. Nothing to show and the read failed.
+  if (data.hasError) {
+    return PageViewStateFatalError<T>(
+      title: '',
+      description: '',
+      icon: errorIcon,
+    );
+  }
+
+  // 5. Nothing to show yet.
+  return PageViewStateLoading<T>();
 }
 
 /// A widget that switches between [PageViewState] variants and renders the
@@ -176,8 +260,47 @@ class PageStateSwitch<T> extends StatelessWidget {
     PageViewStateLoading<T>() => 'loading',
     PageViewStateFatalError<T>() => 'error',
     PageViewStateEmptyInsufficient<T>() => 'empty',
+    // Refreshing and stale keep the content on screen, so they share the
+    // 'ready' key: the page must not re-run its transition animation when a
+    // background refresh starts or a background read fails.
+    PageViewStateRefreshing<T>() => 'ready',
+    PageViewStateStale<T>() => 'ready',
     PageViewStateReady<T>() => 'ready',
   };
+
+  /// Renders the existing content with a slim "refreshing" affordance.
+  ///
+  /// Deliberately not a skeleton: the previous data is still valid, replacing
+  /// it would make every background rebuild of a `DataChangeBus`-driven page
+  /// flash. Offline reads say so instead of pretending the data is fresh.
+  Widget _withRefreshHint(BuildContext context, bool fromCache) {
+    final refreshing = state as PageViewStateRefreshing<T>;
+    final l10n = AppLocalizations.of(context)!;
+    return _ContentWithNotice(
+      label: fromCache
+          ? l10n.commonStatusOffline
+          : l10n.commonStatusRefreshing,
+      tone: StateNoticeTone.neutral,
+      busy: !fromCache,
+      child: readyBuilder(refreshing.data, refreshing.isPreview),
+    );
+  }
+
+  /// Renders the last good content with a visible "update failed" affordance.
+  ///
+  /// The alternative — showing the stale data as if it were current, or
+  /// replacing it with a full error page — loses information either way.
+  Widget _withStaleHint(BuildContext context, PageViewStateStale<T> stale) {
+    final l10n = AppLocalizations.of(context)!;
+    return _ContentWithNotice(
+      label: stale.retrying
+          ? l10n.commonRetryingHint
+          : l10n.commonStaleHint,
+      tone: StateNoticeTone.warning,
+      busy: stale.retrying,
+      child: readyBuilder(stale.data, stale.isPreview),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -202,6 +325,9 @@ class PageStateSwitch<T> extends StatelessWidget {
               onAction: empty.onAction,
               icon: empty.icon,
             ),
+      final PageViewStateRefreshing<T> refreshing =>
+        _withRefreshHint(context, refreshing.fromCache),
+      final PageViewStateStale<T> stale => _withStaleHint(context, stale),
       PageViewStateReady<T>(:final data, :final isPreview) => readyBuilder(
         data,
         isPreview,
@@ -504,6 +630,94 @@ class _DefaultEmptyInsufficientView extends StatelessWidget {
       actionLabel: actionLabel,
       onAction: onAction,
       tone: StateTone.neutral,
+    );
+  }
+}
+
+/// Tone of the notice strip rendered above stale/refreshing content.
+enum StateNoticeTone { neutral, warning }
+
+/// Stacks a notice strip above content without taking the content away.
+///
+/// Used for [PageViewStateRefreshing] and [PageViewStateStale]: the page keeps
+/// showing real data while telling the user what is happening.
+class _ContentWithNotice extends StatelessWidget {
+  const _ContentWithNotice({
+    required this.child,
+    required this.label,
+    required this.tone,
+    required this.busy,
+  });
+
+  final Widget child;
+  final String label;
+  final StateNoticeTone tone;
+  final bool busy;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = switch (tone) {
+      StateNoticeTone.neutral => SemanticColor.info.solid(context),
+      StateNoticeTone.warning => SemanticColor.warning.solid(context),
+    };
+    // The notice is an **overlay**, never a sibling of the content.
+    //
+    // Wrapping content in a Column hands it "available height minus the strip";
+    // a full-screen shell (`Column` + `Expanded(ListView)`) receives unbounded
+    // height from a Column and asserts. Stacking keeps the content's constraints
+    // identical to the ready state, so the layout does not change just because a
+    // background refresh started. IgnorePointer keeps the strip from stealing
+    // taps aimed at the content underneath.
+    return Stack(
+      fit: StackFit.passthrough,
+      children: [
+        child,
+        Positioned(
+          left: 0,
+          right: 0,
+          top: 0,
+          child: IgnorePointer(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Spacing.lg,
+                vertical: Spacing.sm,
+              ),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: context.theme.colors.background,
+                  borderRadius: context.theme.style.borderRadius.md,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.md,
+                    vertical: Spacing.sm,
+                  ),
+                  child: Row(
+                    children: [
+                      if (busy) ...[
+                        const SizedBox(
+                          width: IconSizeTokens.sm,
+                          height: IconSizeTokens.sm,
+                          child: FProgress(),
+                        ),
+                        const SizedBox(width: Spacing.sm),
+                      ],
+                      Expanded(
+                        child: Text(
+                          label,
+                          style: context.theme.typography.body.xs.copyWith(
+                            color: color,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
