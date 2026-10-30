@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/common/control/icon_action_button.dart';
@@ -58,6 +59,7 @@ class MinePage extends ConsumerWidget {
       child: isDesktop
           ? DesktopTabShell(
               title: l10n.tabMine,
+              titleSurface: SurfaceId.mine,
               suffixes: [
                 IconActionButton(
                   tooltip: l10n.mineHeaderNotifications,

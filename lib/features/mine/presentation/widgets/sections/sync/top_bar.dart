@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/composition/notification/unread_count.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/surface_title_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Mine page top bar. Uses [FHeader.nested], placed at the top of a [Column]
@@ -28,7 +30,10 @@ class MineTopBar extends ConsumerWidget {
         unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
 
     return FHeader.nested(
-      title: Text(l10n.tabMine),
+      title: SurfaceTitleEntry(
+        surface: SurfaceId.mine,
+        title: l10n.tabMine,
+      ),
       suffixes: [
         FTooltip(
           tipBuilder: (context, controller) =>

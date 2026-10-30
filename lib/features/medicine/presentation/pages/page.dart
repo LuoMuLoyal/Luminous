@@ -5,9 +5,11 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/control/surface_title_button.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
@@ -44,6 +46,7 @@ class MedicinePage extends ConsumerWidget {
         loadingBuilder: () => isDesktop
             ? DesktopTabShell(
                 title: l10n.tabMedicine,
+                titleSurface: SurfaceId.medicine,
                 suffixes: const [
                   _MedicineSafeGuardPill(),
                   _MedicineNotificationButton(),
@@ -62,6 +65,7 @@ class MedicinePage extends ConsumerWidget {
         fatalErrorBuilder: (error) => isDesktop
             ? DesktopTabShell(
                 title: l10n.tabMedicine,
+                titleSurface: SurfaceId.medicine,
                 suffixes: const [
                   _MedicineSafeGuardPill(),
                   _MedicineNotificationButton(),
@@ -96,6 +100,7 @@ class MedicinePage extends ConsumerWidget {
           return isDesktop
               ? DesktopTabShell(
                   title: l10n.tabMedicine,
+                  titleSurface: SurfaceId.medicine,
                   suffixes: const [
                     _MedicineSafeGuardPill(),
                     _MedicineNotificationButton(),
@@ -129,6 +134,7 @@ class MedicinePage extends ConsumerWidget {
           return isDesktop
               ? DesktopTabShell(
                   title: l10n.tabMedicine,
+                  titleSurface: SurfaceId.medicine,
                   suffixes: const [
                     _MedicineSafeGuardPill(),
                     _MedicineNotificationButton(),
@@ -164,7 +170,10 @@ class _MedicineMobileShell extends StatelessWidget {
       child: Column(
         children: [
           FHeader.nested(
-            title: Text(l10n.tabMedicine),
+            title: SurfaceTitleEntry(
+              surface: SurfaceId.medicine,
+              title: l10n.tabMedicine,
+            ),
             suffixes: const [
               _MedicineSafeGuardPill(),
               _MedicineNotificationButton(),

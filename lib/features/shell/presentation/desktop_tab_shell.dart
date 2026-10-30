@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:forui/forui.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/surface_title_button.dart';
 import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 
 /// Desktop tab page unified shell.
@@ -16,6 +18,7 @@ class DesktopTabShell extends StatelessWidget {
   const DesktopTabShell({
     super.key,
     required this.title,
+    this.titleSurface,
     this.suffixes = const [],
     required this.child,
     this.scrollable = true,
@@ -26,6 +29,12 @@ class DesktopTabShell extends StatelessWidget {
 
   /// 主标题，显示在 FHeader 中。
   final String title;
+
+  /// 该标题对应的 surface：传入时标题变成按钮，点一下进入这页的编排页。
+  ///
+  /// 默认 `null` 保持纯文本标题——编排入口是 tab 根页的能力，不是所有
+  /// 复用这个外壳的页面的能力。
+  final SurfaceId? titleSurface;
 
   /// 右侧操作按钮列表（FHeader.suffixes）。
   final List<Widget> suffixes;
@@ -62,7 +71,12 @@ class DesktopTabShell extends StatelessWidget {
       child: Column(
         children: [
           if (showHeader)
-            FHeader.nested(title: Text(title), suffixes: suffixes),
+            FHeader.nested(
+              title: titleSurface == null
+                  ? Text(title)
+                  : SurfaceTitleEntry(surface: titleSurface!, title: title),
+              suffixes: suffixes,
+            ),
           // 内容区
           Expanded(child: _buildContent(layout)),
         ],

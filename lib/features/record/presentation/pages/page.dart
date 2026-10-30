@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/date_picker.dart';
+import 'package:luminous/core/widgets/common/control/surface_title_button.dart';
 import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -190,6 +192,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       return ShellDeferredContent(
         child: DesktopTabShell(
           title: l10n.tabRecord,
+          titleSurface: SurfaceId.record,
           suffixes: headerActions,
           scrollStorageKey: 'record-desktop-scroll',
           onRefresh: () => _refreshAll(context),
@@ -222,7 +225,10 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     return ShellDeferredContent(
       child: FScaffold(
         header: FHeader.nested(
-          title: Text(l10n.tabRecord),
+          title: SurfaceTitleEntry(
+            surface: SurfaceId.record,
+            title: l10n.tabRecord,
+          ),
           suffixes: headerActions,
         ),
         child: scaffoldBody,
