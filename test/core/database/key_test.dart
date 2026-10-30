@@ -8,16 +8,16 @@ import 'package:luminous/core/database/key.dart';
 /// [DatabaseKeyProvider] 的契约测试。
 ///
 /// 关键不变量：
-/// - 密钥是 32 字节原始随机量（SQLCipher 的 256-bit key），不是字符串再编码；
+/// - 密钥是 32 字节原始随机量（256-bit key），不是字符串再编码；
 /// - 同一安装内重复读取返回同一把密钥（否则库会被写坏）；
-/// - 存储不可用时抛错，绝不返回兜底明文密钥。
+/// - 存储不可用时返回 failure，绝不返回兜底明文密钥。
 void main() {
   group('DatabaseKeyProvider', () {
     test('generates a 32-byte key on first use and persists it', () async {
       final storage = _MemorySecureStorage();
       final provider = DatabaseKeyProvider(storage: storage);
 
-      final key = await provider.key();
+      final key = (await provider.key()).getOrElse((_) => Uint8List(0));
 
       expect(key, hasLength(DatabaseKeyProvider.keyLength));
       expect(storage.values[DatabaseKeyProvider.storageKey], isNotNull);
@@ -27,8 +27,10 @@ void main() {
       final storage = _MemorySecureStorage();
       final provider = DatabaseKeyProvider(storage: storage);
 
-      final first = await provider.key();
-      final second = await DatabaseKeyProvider(storage: storage).key();
+      final first = (await provider.key()).getOrElse((_) => Uint8List(0));
+      final second = (await DatabaseKeyProvider(
+        storage: storage,
+      ).key()).getOrElse((_) => Uint8List(0));
 
       expect(second, equals(first));
     });
@@ -46,29 +48,29 @@ void main() {
     });
 
     test('distinct installs get distinct keys', () async {
-      final a = await DatabaseKeyProvider(
+      final a = (await DatabaseKeyProvider(
         storage: _MemorySecureStorage(),
-      ).key();
-      final b = await DatabaseKeyProvider(
+      ).key()).getOrElse((_) => Uint8List(0));
+      final b = (await DatabaseKeyProvider(
         storage: _MemorySecureStorage(),
-      ).key();
+      ).key()).getOrElse((_) => Uint8List(0));
       expect(a, isNot(equals(b)));
     });
 
-    test(
-      'throws instead of returning a fallback when storage read fails',
-      () async {
-        final provider = DatabaseKeyProvider(storage: _ThrowingSecureStorage());
-        expect(provider.key(), throwsA(isA<DatabaseKeyException>()));
-      },
-    );
+    test('reports a failure instead of a fallback when storage read fails', () async {
+      final provider = DatabaseKeyProvider(storage: _ThrowingSecureStorage());
+
+      final result = await provider.key();
+
+      expect(result.isLeft(), isTrue);
+    });
 
     test('spreads bytes across the range', () async {
       final provider = DatabaseKeyProvider(
         storage: _MemorySecureStorage(),
         random: Random(7),
       );
-      final key = await provider.key();
+      final key = (await provider.key()).getOrElse((_) => Uint8List(0));
       expect(key.toSet().length, greaterThan(1));
     });
   });

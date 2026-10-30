@@ -3,7 +3,9 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Owns the SQLCipher key for the local database.
 ///
@@ -35,13 +37,14 @@ class DatabaseKeyProvider {
 
   /// Returns the raw database key, creating and persisting one on first use.
   ///
-  /// Throws [DatabaseKeyException] when the key cannot be obtained; callers must
-  /// surface that as a hard error rather than retrying with plaintext.
-  Future<Uint8List> key() async {
+  /// A [LucentFailure] in the left slot means the key could not be obtained;
+  /// callers must surface that as a hard error rather than retrying with
+  /// plaintext.
+  Future<Either<LucentFailure, Uint8List>> key() async {
     try {
       final existing = await _storage.read(key: storageKey);
       if (existing != null && existing.trim().isNotEmpty) {
-        return base64Decode(existing);
+        return Right(base64Decode(existing));
       }
     } catch (error, stackTrace) {
       appTalker.error(
@@ -49,20 +52,30 @@ class DatabaseKeyProvider {
         error,
         stackTrace,
       );
-      throw DatabaseKeyException('read failed', error);
+      return Left(
+        LucentFailure.unknown(
+          message: 'Database key could not be read from secure storage',
+          cause: error,
+        ),
+      );
     }
 
     try {
       final generated = _generate();
       await _storage.write(key: storageKey, value: base64Encode(generated));
-      return generated;
+      return Right(generated);
     } catch (error, stackTrace) {
       appTalker.error(
         'DatabaseKeyProvider: key create failed',
         error,
         stackTrace,
       );
-      throw DatabaseKeyException('create failed', error);
+      return Left(
+        LucentFailure.unknown(
+          message: 'Database key could not be created in secure storage',
+          cause: error,
+        ),
+      );
     }
   }
 
@@ -90,6 +103,9 @@ class DatabaseKeyProvider {
 }
 
 /// Thrown when the database key cannot be read or created.
+///
+/// Kept for platforms/adapters that cannot speak [LucentFailure]; the
+/// [DatabaseKeyProvider] API itself returns failures instead.
 class DatabaseKeyException implements Exception {
   const DatabaseKeyException(this.reason, this.cause);
 
@@ -100,11 +116,16 @@ class DatabaseKeyException implements Exception {
   String toString() => 'DatabaseKeyException($reason): $cause';
 }
 
-/// Renders the raw [key] bytes as a SQLCipher `PRAGMA key` argument.
+/// Renders the raw [key] bytes as a `PRAGMA key` argument.
 ///
-/// The `x'...'` form passes the bytes through verbatim, so SQLCipher uses them
-/// directly as the 256-bit key. A quoted string would instead be run through
-/// SQLCipher's KDF, producing different key material.
+/// The `x'...'` form passes the bytes through verbatim, so the encryption engine
+/// uses them directly as the 256-bit key. A quoted string would instead be run
+/// through the engine's KDF, producing different key material.
+///
+/// Syntax-compatible with both supported engines (see `pubspec.yaml`'s
+/// `hooks.user_defines.sqlite3.source`); on plain SQLite the statement does not
+/// exist at all and fails with a syntax error — that means the encryption engine
+/// is not built in, not that the key is wrong.
 String sqlCipherKeyExpression(Uint8List key) {
   final hex = key.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
   return "x'$hex'";
