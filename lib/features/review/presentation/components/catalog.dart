@@ -72,6 +72,7 @@ const reviewSurfaceDefinition = SurfaceDefinition(
   surface: SurfaceId.review,
   available: [
     reviewPeriodSwitchId,
+    todayPreviewBannerId,
     reviewTrendId,
     reviewCoverageStripId,
     reviewEventHeaderId,
