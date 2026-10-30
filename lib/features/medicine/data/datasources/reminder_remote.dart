@@ -251,7 +251,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
                 'MedicineReminderRemoteDataSource._responseItems: item is '
                 'not a map: $item',
               );
-              throw const FormatException('Reminder item is not a map');
+              throw _protocolFailure('Reminder item is not a map');
             }
             return map;
           })
@@ -261,7 +261,15 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
       'MedicineReminderRemoteDataSource._responseItems: items is not a '
       'list: $items',
     );
-    throw const FormatException('Reminder items is not a list');
+    throw _protocolFailure('Reminder items is not a list');
+  }
+
+  /// 协议不变量失败的统一出口：抛出的就是仓库要返回的 `LucentFailure`。
+  LucentFailure _protocolFailure(String message) {
+    return LucentFailure.network(
+      message: message,
+      networkErrorCode: NetworkErrorCode.emptyResponse,
+    );
   }
 
   Map<String, dynamic> _responseData(Object? value) {

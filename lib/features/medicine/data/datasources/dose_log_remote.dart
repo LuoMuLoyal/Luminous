@@ -37,7 +37,7 @@ class DoseLogRemoteDataSource {
       appLog.error(
         'DoseLogRemoteDataSource.fetchForDate: items is not a list: $items',
       );
-      throw const FormatException('Dose log list items is not a list');
+      throw _protocolFailure('Dose log list items is not a list');
     }
     return items
         .map<DoseLogItem>((d) => _fromJson(_requireItemMap(d)))
@@ -133,17 +133,26 @@ class DoseLogRemoteDataSource {
     return data;
   }
 
-  /// Coerces a list item into a [Map<String, dynamic>], throwing a protocol
-  /// exception if the item is not a map.
+  /// Coerces a list item into a [Map<String, dynamic>], reporting a protocol
+  /// failure when the item is not a map.
   Map<String, dynamic> _requireItemMap(Object? item) {
     final map = coerceToStringMap(item);
     if (map == null) {
       appLog.error(
         'DoseLogRemoteDataSource._requireItemMap: item is not a map: $item',
       );
-      throw const FormatException('Dose log item is not a map');
+      throw _protocolFailure('Dose log item is not a map');
     }
     return map;
+  }
+
+  /// 协议不变量失败的统一出口：与其它 data 层失败一样，抛出的就是仓库要
+  /// 返回的 `LucentFailure`（`TaskEither.tryCatch` 把它变成 `Left`）。
+  LucentFailure _protocolFailure(String message) {
+    return LucentFailure.network(
+      message: message,
+      networkErrorCode: NetworkErrorCode.emptyResponse,
+    );
   }
 
   String? _optionalString(Object? value) {
