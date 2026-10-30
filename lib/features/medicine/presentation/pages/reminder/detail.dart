@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
@@ -55,7 +56,9 @@ class MedicineReminderDetailPage extends ConsumerWidget {
               session.isLoading
                   ? const ReminderLoading()
                   : AuthRequiredDialogGate(
-                      onLogin: () => unawaited(context.push(loginRouteForCurrentLocation(context)))
+                      onLogin: () => unawaited(
+                        context.push(loginRouteForCurrentLocation(context)),
+                      ),
                     ),
             ],
           ),
@@ -79,9 +82,11 @@ class MedicineReminderDetailPage extends ConsumerWidget {
                 data: (data) => _ReminderDetailBody(data: data),
                 loading: () => const ReminderLoading(),
                 error: (error, _) {
+                  // provider 抛的是 failure 通道的 LucentFailureException；
+                  // 用 mapper 还原出 failure 再按 code 判定（不解析 message）。
                   final isNotFound =
-                      error is StateError &&
-                      error.message == kMedicineReminderNotFoundCode;
+                      LucentErrorMapper.fromObject(error).code ==
+                      kMedicineReminderNotFoundCode;
                   return StateErrorView(
                     title: isNotFound
                         ? l10n.medicineReminderNotFoundTitle
