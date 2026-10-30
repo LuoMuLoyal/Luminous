@@ -115,5 +115,9 @@
   "componentNameFindingsLegacy": "旧版发现",
   "componentNameAiSummaryLegacy": "旧版 AI 摘要",
   "componentNamePatternsLegacy": "旧版规律",
-  "componentNameSuggestionHistoryLegacy": "旧版建议历史"
+  "componentNameSuggestionHistoryLegacy": "旧版建议历史",
+  "customizerSizeLabel": "组件宽度",
+  "customizerSizeCompact": "窄",
+  "customizerSizeRegular": "标准",
+  "customizerSizeWide": "通栏"
 }

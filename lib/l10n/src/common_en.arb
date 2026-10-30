@@ -115,5 +115,9 @@
   "componentNameFindingsLegacy": "Legacy findings",
   "componentNameAiSummaryLegacy": "Legacy AI summary",
   "componentNamePatternsLegacy": "Legacy patterns",
-  "componentNameSuggestionHistoryLegacy": "Legacy suggestion history"
+  "componentNameSuggestionHistoryLegacy": "Legacy suggestion history",
+  "customizerSizeLabel": "Width",
+  "customizerSizeCompact": "Narrow",
+  "customizerSizeRegular": "Standard",
+  "customizerSizeWide": "Full"
 }

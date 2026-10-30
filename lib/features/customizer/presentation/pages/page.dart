@@ -42,7 +42,10 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
   ///
   /// 行高是固定的（名称占两行、尾部操作定宽），因此用首行顶部 + 行高换算，
   /// 不必逐行测量。
-  int _insertIndexAt(Offset globalPosition, List<ComponentPlacement> placements) {
+  int _insertIndexAt(
+    Offset globalPosition,
+    List<ComponentPlacement> placements,
+  ) {
     final box = _listKey.currentContext?.findRenderObject();
     if (box is! RenderBox || !box.hasSize || placements.isEmpty) {
       return placements.length;
@@ -103,7 +106,8 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
           title: surfaceTitle(l10n, widget.surface),
           onDone: () => _finish(context),
           onCancel: () => _cancel(context),
-          onReset: () => ref.read(editSessionProvider.notifier).resetToDefaults(),
+          onReset: () =>
+              ref.read(editSessionProvider.notifier).resetToDefaults(),
           onAdd: isNarrow ? () => _openPalette(context, catalog) : null,
         ),
         Expanded(
@@ -121,7 +125,7 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
                       child: CustomizerPalette(
                         current: widget.surface,
                         catalog: catalog,
-                            ),
+                      ),
                     ),
                   ],
                 ),
@@ -179,8 +183,7 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
               Spacing.xl,
             ),
             child: ReorderableBuilder<Widget>(
-              onReorder: (reorder) =>
-                  _onReorder(reorder, children, placements),
+              onReorder: (reorder) => _onReorder(reorder, children, placements),
               // 移动端要求「按住这一行就能拖」：默认 500ms 的长按门槛在真机
               // 上显得像没反应，缩短到 120ms；桌面用鼠标拖动同样生效。
               longPressDelay: const Duration(milliseconds: 120),
@@ -198,7 +201,10 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
   /// 拖动条在顶部标题上：向上拉可以铺满到接近全屏（组件多时不用反复滚），
   /// 向下拉收起列表只留标题。初始高度 0.6 屏，介于「看得见下面的编排页」
   /// 和「一次能浏览十来个组件」之间。
-  Future<void> _openPalette(BuildContext context, SurfaceCatalog catalog) async {
+  Future<void> _openPalette(
+    BuildContext context,
+    SurfaceCatalog catalog,
+  ) async {
     final screenHeight = MediaQuery.sizeOf(context).height;
     const minHeight = 220.0;
     final maxHeight = screenHeight * 0.9;
@@ -237,8 +243,9 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
                       ),
                       const SizedBox(height: Spacing.md),
                       Text(
-                        AppLocalizations.of(sheetContext)!
-                            .customizerAddComponents,
+                        AppLocalizations.of(
+                          sheetContext,
+                        )!.customizerAddComponents,
                         style: sheetContext.theme.typography.body.md.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -248,7 +255,10 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
                 ),
               ),
               Expanded(
-                child: CustomizerPalette(current: widget.surface, catalog: catalog),
+                child: CustomizerPalette(
+                  current: widget.surface,
+                  catalog: catalog,
+                ),
               ),
             ],
           ),
@@ -435,6 +445,23 @@ class _PlacementTile extends ConsumerWidget {
     final id = placement.id;
     final known = registry.contains(id);
 
+    // 尺寸档：只有支持多于一个档位的组件才给选择器。持久化的 size 可能来自
+    // 旧版本、或超出该组件当前支持的档位，此时不高亮任何一项，用户点一下即可修正。
+    final supportedSizes =
+        registry.find(id)?.supportedSizes ?? const <ComponentSize>{};
+    final sizePicker = supportedSizes.length > 1
+        ? Padding(
+            padding: const EdgeInsets.only(top: Spacing.xs),
+            child: _SizePicker(
+              selected: placement.size,
+              supported: supportedSizes,
+              onSelect: (size) => notifier.applyEdit(
+                LayoutEdit.resize(surface: surface, id: id, size: size),
+              ),
+            ),
+          )
+        : null;
+
     // 结构化装配：名称吃剩余宽度；显隐与移除交给 `Flexible`，窄屏 + 大字号
     // 时不会把名称挤成多行（luminous_lints 规则 non_shrinking_row_child）。
     // 主行是用户能读懂的名字，id 作为副行保留——id 才是持久化与下架的真正
@@ -459,6 +486,7 @@ class _PlacementTile extends ConsumerWidget {
             color: SemanticColor.neutral.solid(context),
           ),
         ),
+        if (sizePicker != null) sizePicker,
       ],
     );
     final visibilitySwitch = FSwitch(
@@ -512,10 +540,101 @@ class _PlacementTile extends ConsumerWidget {
 /// 列表顶部到第一行顶部的距离（SingleChildScrollView 的 top padding 为 0）。
 const double _listTopInset = 0;
 
-/// 单行的总高度：行内容 + 卡片间距。名称固定占两行文本，尾部操作定宽，
-/// 所以行高不随组件不同而变化。
-const double _rowExtent = 72;
+/// 单行的总高度：行内容 + 卡片间距。
+///
+/// 名称固定占两行文本，尾部操作定宽；带尺寸选择器的组件多一行，这里取两者
+/// 中较高的一个。`_insertIndexAt` 靠它换算落点，宁可偏大（落点靠前）也不要
+/// 偏小，否则跨列表拖入会插到错误位置。
+const double _rowExtent = 96;
 
 const double _switchWidth = 56;
 
 const double _removeWidth = 44;
+
+/// 三档宽度选择器：一行紧凑的 chip 式按钮。
+///
+/// 用一排按钮而不是下拉菜单：只有三个选项，用户需要在**看到**当前档位的同时
+/// 一眼看完可选范围——下拉菜单会把"还能选什么"藏起来。
+///
+/// 选中态用 `primary` 变体（实心）而不是 `outline`：outline 与未选中的 ghost
+/// 在浅色主题下几乎无区别，用户看不出当前是哪一档。
+class _SizePicker extends StatelessWidget {
+  const _SizePicker({
+    required this.selected,
+    required this.supported,
+    required this.onSelect,
+  });
+
+  final ComponentSize selected;
+  final Set<ComponentSize> supported;
+  final ValueChanged<ComponentSize> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    // 按从小到大固定顺序渲染，保证同一组件每次进入编排页按钮顺序一致。
+    final options = [
+      for (final size in ComponentSize.values)
+        if (supported.contains(size)) size,
+    ];
+
+    return Semantics(
+      label: l10n.customizerSizeLabel,
+      child: Wrap(
+        spacing: Spacing.xs,
+        runSpacing: Spacing.xs,
+        children: [
+          for (final size in options)
+            _SizeChip(
+              label: _sizeLabel(l10n, size),
+              selected: size == selected,
+              onPress: () => onSelect(size),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 单个尺寸档位按钮。
+///
+/// 不用 `FButton`：Forui 按钮的 xs 尺寸仍带最小宽度与内边距，三个并排会
+/// 撑满整行宽度并换行，把一行装饰性信息变成三行主内容。这里直接用
+/// `FBadge`——它本来就是「短标签」的语义，且自带圆角与主题色。
+class _SizeChip extends StatelessWidget {
+  const _SizeChip({
+    required this.label,
+    required this.selected,
+    required this.onPress,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onPress,
+      child: FBadge(
+        variant: selected ? FBadgeVariant.primary : FBadgeVariant.outline,
+        child: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: context.theme.typography.body.xs2.copyWith(
+            fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+String _sizeLabel(AppLocalizations l10n, ComponentSize size) => switch (size) {
+  ComponentSize.compact => l10n.customizerSizeCompact,
+  ComponentSize.regular => l10n.customizerSizeRegular,
+  ComponentSize.wide => l10n.customizerSizeWide,
+};
