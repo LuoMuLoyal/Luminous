@@ -162,14 +162,26 @@ class LucentHealthEventRepository implements HealthEventRepository {
   }
 
   /// Protocol invariant: a write/detail response without event data is not a
-  /// valid success. Kept as a recorded [StateError]; the repository boundary
-  /// maps it to `Left(unknown)` with the cause preserved.
+  /// valid success. Reported as the failure value the repository returns.
   HealthEvent _mapRequired(api.HealthEventResponse? dto) {
     if (dto == null) {
       appLog.error('LucentHealthEventRepository: 响应缺少事件数据（协议不变量）');
-      throw StateError('Health event response did not include event data.');
+      throw _protocolFailure(
+        'Health event response did not include event data.',
+        cause: dto,
+      );
     }
     return _map(_canonical(dto));
+  }
+
+  /// 协议不变量失败的统一出口：与其它 data 层失败一样，抛出的就是仓库要
+  /// 返回的 `LucentFailure`（`TaskEither.tryCatch` 把它变成 `Left`）。
+  LucentFailure _protocolFailure(String message, {Object? cause}) {
+    return LucentFailure.network(
+      message: message,
+      networkErrorCode: NetworkErrorCode.emptyResponse,
+      cause: cause,
+    );
   }
 
   /// Normalizes a per-endpoint event DTO to the canonical list-item DTO
@@ -231,11 +243,11 @@ class LucentHealthEventRepository implements HealthEventRepository {
     };
   }
 
-  /// 协议不变量：未知状态枚举，记录后保持抛 `StateError` →
-  /// `Left(unknown)`（cause 保留）。
+  /// 协议不变量：未知状态枚举，记录后抛仓库 failure →
+  /// `Left(...)`（cause 保留）。
   Never _unknownStatus(String value) {
     appLog.error('LucentHealthEventRepository: 未知健康事件状态 $value');
-    throw StateError('Unknown health event status: $value');
+    throw _protocolFailure('Unknown health event status: $value', cause: value);
   }
 
   HealthEventOutcome _mapOutcome(
@@ -253,11 +265,14 @@ class LucentHealthEventRepository implements HealthEventRepository {
     };
   }
 
-  /// 协议不变量：未知结果枚举，记录后保持抛 `StateError` →
-  /// `Left(unknown)`（cause 保留）。
+  /// 协议不变量：未知结果枚举，记录后抛仓库 failure →
+  /// `Left(...)`（cause 保留）。
   Never _unknownOutcome(String value) {
     appLog.error('LucentHealthEventRepository: 未知健康事件结果 $value');
-    throw StateError('Unknown health event outcome: $value');
+    throw _protocolFailure(
+      'Unknown health event outcome: $value',
+      cause: value,
+    );
   }
 
   HealthEventOutcome _mapCheckInOutcome(
