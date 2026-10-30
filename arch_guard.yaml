@@ -1,0 +1,101 @@
+# arch_guard.yaml — 循环依赖本地检查（arch_guard）。
+#
+# 分层权威仍是 `tool/luminous_lints --clean-layers`（R1–R9，含 core 子树白名单、
+# 跨 feature providers 接缝豁免）。这里是它的粗粒度镜像，**不是第二套门禁**：
+# 只用来发现循环依赖，以及用 baseline 冻结存量、只报新增。口径冲突时以
+# luminous_lints 为准。
+#
+# 本地运行（不接 pre-push / daily / CI）：
+#   dart run scripts/arch/guard.dart              # 只拦新增循环依赖
+#   dart run arch_guard                           # 原始 CLI：循环 + 层违规 + 禁用包
+#   dart run arch_guard --update-baseline         # 冻结当前问题后 review baseline diff
+
+ignore:
+  - "**/*.g.dart"
+  - "**/*.freezed.dart"
+  - "**/*.gr.dart"
+  # 由 dart_pubspec_licenses 生成的许可清单（已 gitignore，不手改）。
+  - "lib/oss_licenses.dart"
+
+# 层违规是否阻断，只在直接跑 `dart run arch_guard` 时生效；
+# scripts/arch/guard.dart 只把"新增循环依赖"当阻断项。
+fail_on_layer_violation: true
+
+# 唯一全局禁令：镜像与代码反射在 Flutter 全平台都不可用。
+forbidden_packages:
+  - "dart:mirrors"
+
+# 匹配规则：文件属于第一个命中的层（glob 对 `lib/...` 相对路径匹配），
+# 因此窄模式要排在宽模式前面；`other` 兜底保证不会有文件因为"没分层"而免检。
+layers:
+  # core 反转到 app 的两个接缝文件（router 实例 + session 适配器）。
+  # 放在最前，才能让 core 只看见这两个文件而不是整个 lib/app。
+  app_seam:
+    patterns: ["lib/app/router.dart", "lib/app/auth_session_adapter.dart"]
+    allowed_imports: [app_seam, app, core, shared, generated, feature_domain, feature_application, feature_presentation, feature_data, feature_shell]
+    forbidden_packages: []
+
+  # 应用入口：main.dart 是薄壳，bootstrap 在 lib/app。
+  entry:
+    patterns: ["lib/main.dart", "lib/theme/**"]
+    allowed_imports: [entry, app, core, shared, generated, feature_domain, feature_application, feature_data, feature_presentation, feature_shell]
+    forbidden_packages: []
+
+  # Flutter 生成的本地化代码：几乎被所有层 import，本身不受限。
+  generated:
+    patterns: ["lib/l10n/**"]
+    allowed_imports: [generated, core, shared, feature_domain, feature_application, feature_presentation, feature_data]
+    forbidden_packages: []
+
+  # 横切基础设施。不得 import features（R7），例外只有两个既有接缝：
+  # `app_seam`（GoRouter 实例 / 会话类型适配器）和 `features/shell`（tab 外壳）。
+  core:
+    patterns: ["lib/core/**"]
+    allowed_imports: [core, shared, generated, feature_shell, app_seam]
+    forbidden_packages: []
+
+  shared:
+    patterns: ["lib/shared/**"]
+    allowed_imports: [shared]
+    forbidden_packages: []
+
+  # 组合根：唯一允许同时看见 data 与 presentation 的地方。
+  app:
+    patterns: ["lib/app/**"]
+    allowed_imports: [app, app_seam, core, shared, generated, feature_domain, feature_application, feature_presentation, feature_data, feature_shell]
+    forbidden_packages: []
+
+  # tab 外壳（features/shell）：所有 tab root 共用，跨 feature 的 presentation
+  # 访问在 luminous_lints 里被显式豁免，这里同样放行。
+  feature_shell:
+    patterns: ["lib/features/shell/**"]
+    allowed_imports: [feature_shell, core, shared, generated, feature_domain, feature_application, feature_presentation]
+    forbidden_packages: []
+
+  feature_domain:
+    patterns: ["lib/features/*/domain/**"]
+    allowed_imports: [feature_domain, shared]
+    # domain 零框架依赖（对应 luminous_lints R1/R2 的 bannedInDomain 文本检查）。
+    forbidden_packages: [flutter, "flutter_*", dio, drift, hive_ce, path_provider, permission_handler, "dart:io", "dart:ui"]
+
+  feature_application:
+    patterns: ["lib/features/*/application/**"]
+    allowed_imports: [feature_application, feature_domain, shared]
+    forbidden_packages: [flutter, "flutter_*", dio, drift, "dart:ui"]
+
+  feature_data:
+    patterns: ["lib/features/*/data/**"]
+    allowed_imports: [feature_data, feature_domain, core, shared, generated]
+    forbidden_packages: [flutter, "flutter_*", "dart:ui"]
+
+  feature_presentation:
+    patterns: ["lib/features/*/presentation/**"]
+    allowed_imports: [feature_presentation, feature_application, feature_domain, core, shared, generated]
+    forbidden_packages: []
+
+  # 兜底：不在上面任何路径里的文件（新根目录、顶层单文件）先归到这里，
+  # 避免"没归层 = 不检查"的静默漏洞；出现真实需求时再拆成独立层。
+  other:
+    patterns: ["**"]
+    allowed_imports: [other, entry, app, core, shared, generated, feature_domain, feature_application, feature_data, feature_presentation, feature_shell]
+    forbidden_packages: []

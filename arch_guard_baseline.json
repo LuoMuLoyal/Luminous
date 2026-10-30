@@ -1,0 +1,1136 @@
+{
+  "version": 1,
+  "cycles": [
+    {
+      "files": [
+        "lib/app/auth_session_adapter.dart",
+        "lib/app/composition/components/registry.dart",
+        "lib/app/composition/health_context/health_context.dart",
+        "lib/app/composition/medicine/workspace.dart",
+        "lib/app/composition/mine/mine.dart",
+        "lib/app/composition/notification/unread_count.dart",
+        "lib/app/composition/snapshot/health_context.dart",
+        "lib/app/composition/snapshot/mine.dart",
+        "lib/app/composition/snapshot/notification.dart",
+        "lib/app/composition/snapshot/today.dart",
+        "lib/app/composition/snapshot/today_suggestion.dart",
+        "lib/app/composition/today/suggestion.dart",
+        "lib/app/composition/today/today_suggestion.dart",
+        "lib/app/composition/tokens/medicine_workspace.dart",
+        "lib/app/push_handlers.dart",
+        "lib/app/router.dart",
+        "lib/app/settings_adapters.dart",
+        "lib/app/sync_handlers.dart",
+        "lib/core/providers/session/auth_guarded.dart",
+        "lib/core/providers/session/sensitive_action_resolver.dart",
+        "lib/core/providers/session/session_snapshot.dart",
+        "lib/core/push/lifecycle.dart",
+        "lib/core/push/message_handler.dart",
+        "lib/core/router/action_route_mapper.dart",
+        "lib/core/widgets/auth/required_dialog.dart",
+        "lib/core/widgets/common/control/back_button.dart",
+        "lib/core/widgets/common/feedback/connectivity_banner.dart",
+        "lib/core/widgets/common/feedback/page_state.dart",
+        "lib/core/widgets/common/feedback/route_not_found.dart",
+        "lib/core/widgets/common/state_views.dart",
+        "lib/core/widgets/layout/page_scaffold.dart",
+        "lib/features/assistant/presentation/pages/page.dart",
+        "lib/features/assistant/presentation/providers/conversation.dart",
+        "lib/features/assistant/presentation/providers/conversation_capabilities.dart",
+        "lib/features/assistant/presentation/providers/conversation_management.dart",
+        "lib/features/assistant/presentation/providers/conversation_proposals.dart",
+        "lib/features/assistant/presentation/providers/conversation_regenerate.dart",
+        "lib/features/assistant/presentation/providers/conversation_sending.dart",
+        "lib/features/assistant/presentation/providers/conversation_streams.dart",
+        "lib/features/assistant/presentation/routes.dart",
+        "lib/features/assistant/presentation/utils/ui_formatters.dart",
+        "lib/features/assistant/presentation/widgets/chat_adapter.dart",
+        "lib/features/assistant/presentation/widgets/chat_surface.dart",
+        "lib/features/assistant/presentation/widgets/dialogs/capabilities_panel.dart",
+        "lib/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart",
+        "lib/features/assistant/presentation/widgets/dialogs/conversation_drawer_list.dart",
+        "lib/features/assistant/presentation/widgets/sections/above_composer.dart",
+        "lib/features/assistant/presentation/widgets/sections/page_body.dart",
+        "lib/features/assistant/presentation/widgets/shared/loading_view.dart",
+        "lib/features/assistant/presentation/widgets/shared/proposal_card.dart",
+        "lib/features/assistant/presentation/widgets/source_strip.dart",
+        "lib/features/auth/presentation/pages/account/account_security.dart",
+        "lib/features/auth/presentation/pages/account/change_email.dart",
+        "lib/features/auth/presentation/pages/account/manage/helpers.dart",
+        "lib/features/auth/presentation/pages/account/manage/page.dart",
+        "lib/features/auth/presentation/pages/account/manage/sections.dart",
+        "lib/features/auth/presentation/pages/account/security_center.dart",
+        "lib/features/auth/presentation/pages/account/sessions.dart",
+        "lib/features/auth/presentation/pages/login/forgot_password.dart",
+        "lib/features/auth/presentation/pages/login/login.dart",
+        "lib/features/auth/presentation/pages/login/register.dart",
+        "lib/features/auth/presentation/pages/oauth/oauth_callback_hook.dart",
+        "lib/features/auth/presentation/pages/oauth/oauth_handlers.dart",
+        "lib/features/auth/presentation/pages/oauth/oauth_navigation.dart",
+        "lib/features/auth/presentation/pages/oauth/oauth_uris.dart",
+        "lib/features/auth/presentation/providers/account/account.dart",
+        "lib/features/auth/presentation/providers/account/sessions.dart",
+        "lib/features/auth/presentation/providers/forms/login.dart",
+        "lib/features/auth/presentation/providers/oauth/oauth_login.dart",
+        "lib/features/auth/presentation/routes.dart",
+        "lib/features/health_data/presentation/pages/health_sync.dart",
+        "lib/features/health_data/presentation/routes.dart",
+        "lib/features/health_event/presentation/providers/active_event.dart",
+        "lib/features/legal/presentation/pages/detail.dart",
+        "lib/features/legal/presentation/pages/list.dart",
+        "lib/features/legal/presentation/routes.dart",
+        "lib/features/medicine/presentation/components/catalog.dart",
+        "lib/features/medicine/presentation/pages/detail.dart",
+        "lib/features/medicine/presentation/pages/detail_section_view.dart",
+        "lib/features/medicine/presentation/pages/medicine_detail_content.dart",
+        "lib/features/medicine/presentation/pages/page.dart",
+        "lib/features/medicine/presentation/pages/reminder/detail.dart",
+        "lib/features/medicine/presentation/pages/reminder/edit.dart",
+        "lib/features/medicine/presentation/pages/risk_check.dart",
+        "lib/features/medicine/presentation/providers/data_access.dart",
+        "lib/features/medicine/presentation/providers/medicine_detail.dart",
+        "lib/features/medicine/presentation/providers/reminders.dart",
+        "lib/features/medicine/presentation/providers/risk_check.dart",
+        "lib/features/medicine/presentation/providers/surface.dart",
+        "lib/features/medicine/presentation/providers/workspace.dart",
+        "lib/features/medicine/presentation/routes.dart",
+        "lib/features/medicine/presentation/utils/reminder_format.dart",
+        "lib/features/medicine/presentation/widgets/reminder/detail/detail_info_tiles.dart",
+        "lib/features/medicine/presentation/widgets/reminder/detail/loading.dart",
+        "lib/features/medicine/presentation/widgets/reminder/detail/log_panels.dart",
+        "lib/features/medicine/presentation/widgets/reminder/detail/rows.dart",
+        "lib/features/medicine/presentation/widgets/reminder/form/form_body.dart",
+        "lib/features/medicine/presentation/widgets/reminder/form/form_fields.dart",
+        "lib/features/medicine/presentation/widgets/sections/drug_box.dart",
+        "lib/features/medicine/presentation/widgets/sections/mobile_safety.dart",
+        "lib/features/medicine/presentation/widgets/sections/quick_operation.dart",
+        "lib/features/medicine/presentation/widgets/sections/records.dart",
+        "lib/features/medicine/presentation/widgets/sections/safety_cards.dart",
+        "lib/features/medicine/presentation/widgets/sections/safety_engine.dart",
+        "lib/features/medicine/presentation/widgets/shared/dose_marking.dart",
+        "lib/features/medicine/presentation/widgets/views/mobile_dashboard_view.dart",
+        "lib/features/medicine/presentation/widgets/views/skeleton_view.dart",
+        "lib/features/medicine/presentation/widgets/views/workspace_view.dart",
+        "lib/features/mine/presentation/components/catalog.dart",
+        "lib/features/mine/presentation/pages/allergy_edit.dart",
+        "lib/features/mine/presentation/pages/condition_edit.dart",
+        "lib/features/mine/presentation/pages/current_medicine_edit.dart",
+        "lib/features/mine/presentation/pages/page.dart",
+        "lib/features/mine/presentation/pages/sync_failures.dart",
+        "lib/features/mine/presentation/providers/dashboard.dart",
+        "lib/features/mine/presentation/providers/data_access.dart",
+        "lib/features/mine/presentation/providers/health_edit_forms.dart",
+        "lib/features/mine/presentation/providers/surface.dart",
+        "lib/features/mine/presentation/routes.dart",
+        "lib/features/mine/presentation/utils/archive_handlers.dart",
+        "lib/features/mine/presentation/widgets/sections/account/account_hero.dart",
+        "lib/features/mine/presentation/widgets/sections/account/account_security.dart",
+        "lib/features/mine/presentation/widgets/sections/account/ai_privacy.dart",
+        "lib/features/mine/presentation/widgets/sections/account/notifications_reminders.dart",
+        "lib/features/mine/presentation/widgets/sections/archive/archive.dart",
+        "lib/features/mine/presentation/widgets/sections/archive/archive_row.dart",
+        "lib/features/mine/presentation/widgets/sections/sync/status_alerts.dart",
+        "lib/features/mine/presentation/widgets/sections/sync/sync_failed_banner.dart",
+        "lib/features/mine/presentation/widgets/sections/sync/top_bar.dart",
+        "lib/features/mine/presentation/widgets/views/dashboard_view.dart",
+        "lib/features/mine/presentation/widgets/views/skeleton_view.dart",
+        "lib/features/notification/presentation/pages/detail.dart",
+        "lib/features/notification/presentation/pages/list.dart",
+        "lib/features/notification/presentation/providers/data_access.dart",
+        "lib/features/notification/presentation/providers/notification.dart",
+        "lib/features/notification/presentation/routes.dart",
+        "lib/features/record/presentation/components/catalog.dart",
+        "lib/features/record/presentation/controllers/nlp.dart",
+        "lib/features/record/presentation/pages/create.dart",
+        "lib/features/record/presentation/pages/detail.dart",
+        "lib/features/record/presentation/pages/edit.dart",
+        "lib/features/record/presentation/pages/page.dart",
+        "lib/features/record/presentation/pages/quick_entry_reorder.dart",
+        "lib/features/record/presentation/pages/quick_entry_settings.dart",
+        "lib/features/record/presentation/providers/dashboard.dart",
+        "lib/features/record/presentation/providers/surface.dart",
+        "lib/features/record/presentation/quick_entry/core/dispatcher.dart",
+        "lib/features/record/presentation/quick_entry/core/executor.dart",
+        "lib/features/record/presentation/quick_entry/core/tap_decision.dart",
+        "lib/features/record/presentation/quick_entry/meal.dart",
+        "lib/features/record/presentation/quick_entry/meal_flow.dart",
+        "lib/features/record/presentation/quick_entry/medication.dart",
+        "lib/features/record/presentation/quick_entry/sheets/detail_actions.dart",
+        "lib/features/record/presentation/quick_entry/sheets/nlp_sheet.dart",
+        "lib/features/record/presentation/quick_entry/sheets/record_date.dart",
+        "lib/features/record/presentation/quick_entry/sleep.dart",
+        "lib/features/record/presentation/routes.dart",
+        "lib/features/record/presentation/widgets/detail/body.dart",
+        "lib/features/record/presentation/widgets/dialogs/nlp_sheet.dart",
+        "lib/features/record/presentation/widgets/edit/edit_parts.dart",
+        "lib/features/record/presentation/widgets/header_actions.dart",
+        "lib/features/record/presentation/widgets/nlp/candidate_editor.dart",
+        "lib/features/record/presentation/widgets/nlp/candidate_review.dart",
+        "lib/features/record/presentation/widgets/sections/dashboard/date_section.dart",
+        "lib/features/record/presentation/widgets/sections/dashboard/filter_section.dart",
+        "lib/features/record/presentation/widgets/sections/detail/mobile_timeline.dart",
+        "lib/features/record/presentation/widgets/sections/detail/timeline.dart",
+        "lib/features/record/presentation/widgets/sections/detail/timeline_item.dart",
+        "lib/features/record/presentation/widgets/sections/detail/timeline_section.dart",
+        "lib/features/record/presentation/widgets/sections/quick_entry/quick_action_section.dart",
+        "lib/features/record/presentation/widgets/views/dashboard_view.dart",
+        "lib/features/record/presentation/widgets/views/skeleton_view.dart",
+        "lib/features/review/presentation/components/catalog.dart",
+        "lib/features/review/presentation/components/legacy.dart",
+        "lib/features/review/presentation/pages/clinic_summary_shared.dart",
+        "lib/features/review/presentation/pages/detail.dart",
+        "lib/features/review/presentation/pages/legacy_dashboard_compat.dart",
+        "lib/features/review/presentation/pages/page.dart",
+        "lib/features/review/presentation/providers/ai_summary.dart",
+        "lib/features/review/presentation/providers/clinic_summary.dart",
+        "lib/features/review/presentation/providers/dashboard.dart",
+        "lib/features/review/presentation/providers/review.dart",
+        "lib/features/review/presentation/providers/surface.dart",
+        "lib/features/review/presentation/utils/export_actions.dart",
+        "lib/features/review/presentation/widgets/dialogs/clinic_summary_field_selection.dart",
+        "lib/features/review/presentation/widgets/dialogs/clinic_summary_preview_dialog.dart",
+        "lib/features/review/presentation/widgets/sections/event/ai_summary.dart",
+        "lib/features/review/presentation/widgets/sections/legacy/ai_summary.dart",
+        "lib/features/review/presentation/widgets/sections/legacy/findings.dart",
+        "lib/features/review/presentation/widgets/sections/legacy/patterns.dart",
+        "lib/features/review/presentation/widgets/sections/legacy/suggestion_history.dart",
+        "lib/features/review/presentation/widgets/sections/overview/coverage_strip.dart",
+        "lib/features/review/presentation/widgets/sections/preview/export.dart",
+        "lib/features/review/presentation/widgets/sections/preview/trend.dart",
+        "lib/features/review/presentation/widgets/shared/section_models.dart",
+        "lib/features/review/presentation/widgets/sheets/share_management.dart",
+        "lib/features/review/presentation/widgets/views/dashboard_preview.dart",
+        "lib/features/review/presentation/widgets/views/legacy/dashboard_view.dart",
+        "lib/features/review/presentation/widgets/views/review_view.dart",
+        "lib/features/review/presentation/widgets/views/skeleton_view.dart",
+        "lib/features/scan/presentation/pages/barcode_scanner.dart",
+        "lib/features/scan/presentation/pages/box_scan.dart",
+        "lib/features/scan/presentation/routes.dart",
+        "lib/features/scan/presentation/widgets/dialogs/recognize_dialog.dart",
+        "lib/features/scan/presentation/widgets/scan_result_sheet.dart",
+        "lib/features/search/presentation/pages/page.dart",
+        "lib/features/search/presentation/widgets/sections/quick_actions.dart",
+        "lib/features/search/presentation/widgets/shared/add_to_box.dart",
+        "lib/features/search/presentation/widgets/views/content.dart",
+        "lib/features/settings/presentation/pages/about/about.dart",
+        "lib/features/settings/presentation/pages/about/help.dart",
+        "lib/features/settings/presentation/pages/about/oss_licenses.dart",
+        "lib/features/settings/presentation/pages/advanced/advanced.dart",
+        "lib/features/settings/presentation/pages/advanced/ai.dart",
+        "lib/features/settings/presentation/pages/advanced/feature_flags.dart",
+        "lib/features/settings/presentation/pages/appearance/accessibility.dart",
+        "lib/features/settings/presentation/pages/appearance/language.dart",
+        "lib/features/settings/presentation/pages/appearance/theme.dart",
+        "lib/features/settings/presentation/pages/notification/dnd.dart",
+        "lib/features/settings/presentation/pages/notification/notification.dart",
+        "lib/features/settings/presentation/pages/notification/sleep_reminder.dart",
+        "lib/features/settings/presentation/pages/page.dart",
+        "lib/features/settings/presentation/pages/profile.dart",
+        "lib/features/settings/presentation/pages/storage/data_export.dart",
+        "lib/features/settings/presentation/pages/storage/data_storage.dart",
+        "lib/features/settings/presentation/providers/data_export.dart",
+        "lib/features/settings/presentation/providers/notification/notification.dart",
+        "lib/features/settings/presentation/providers/profile_sync.dart",
+        "lib/features/settings/presentation/providers/user_settings.dart",
+        "lib/features/settings/presentation/routes.dart",
+        "lib/features/settings/presentation/widgets/about_section.dart",
+        "lib/features/settings/presentation/widgets/account_header.dart",
+        "lib/features/settings/presentation/widgets/general_section.dart",
+        "lib/features/settings/presentation/widgets/privacy_section.dart",
+        "lib/features/settings/presentation/widgets/quick_entry_section.dart",
+        "lib/features/shell/presentation/page.dart",
+        "lib/features/today/presentation/components/catalog.dart",
+        "lib/features/today/presentation/pages/page.dart",
+        "lib/features/today/presentation/providers/ai_analysis.dart",
+        "lib/features/today/presentation/providers/dashboard.dart",
+        "lib/features/today/presentation/providers/data_access.dart",
+        "lib/features/today/presentation/providers/suggestion.dart",
+        "lib/features/today/presentation/providers/surface.dart",
+        "lib/features/today/presentation/providers/user_timezone.dart",
+        "lib/features/today/presentation/quick_entry/water.dart",
+        "lib/features/today/presentation/widgets/sections/observation.dart",
+        "lib/features/today/presentation/widgets/sections/quick_actions.dart",
+        "lib/features/today/presentation/widgets/sections/suggestion.dart",
+        "lib/features/today/presentation/widgets/sections/suggestion_interactive.dart",
+        "lib/features/today/presentation/widgets/sections/suggestion_primary_card.dart",
+        "lib/features/today/presentation/widgets/sections/suggestion_state_views.dart",
+        "lib/features/today/presentation/widgets/sections/summary.dart",
+        "lib/features/today/presentation/widgets/shared/top_bar.dart",
+        "lib/features/today/presentation/widgets/shared/view_models.dart",
+        "lib/features/today/presentation/widgets/views/dashboard_view.dart",
+        "lib/features/today/presentation/widgets/views/desktop_dashboard.dart",
+        "lib/features/today/presentation/widgets/views/health_event_section.dart",
+        "lib/features/today/presentation/widgets/views/mobile_dashboard.dart",
+        "lib/features/today/presentation/widgets/views/skeleton_view.dart"
+      ]
+    },
+    {
+      "files": [
+        "lib/app/composition/health_data/health_sync.dart",
+        "lib/app/composition/health_sync/health_sync.dart"
+      ]
+    },
+    {
+      "files": [
+        "lib/app/composition/review/review.dart",
+        "lib/app/composition/tokens/review_dashboard.dart"
+      ]
+    },
+    {
+      "files": [
+        "lib/core/database/daos/health/health_context.dart",
+        "lib/core/database/daos/medicine/current_medicine.dart",
+        "lib/core/database/daos/medicine/medicine_dose_log.dart",
+        "lib/core/database/daos/medicine/medicine_workspace.dart",
+        "lib/core/database/daos/medicine/search_result.dart",
+        "lib/core/database/daos/mine/mine_dashboard.dart",
+        "lib/core/database/daos/notification/notification_page.dart",
+        "lib/core/database/daos/records/daily_record.dart",
+        "lib/core/database/daos/records/daily_record_summary.dart",
+        "lib/core/database/daos/review/review.dart",
+        "lib/core/database/daos/review/review_dashboard.dart",
+        "lib/core/database/daos/review/today_suggestion.dart",
+        "lib/core/database/daos/settings/user_settings_cache.dart",
+        "lib/core/database/daos/sync/pending_sync.dart",
+        "lib/core/database/database.dart"
+      ]
+    },
+    {
+      "files": [
+        "lib/core/design/color/semantic_color.dart",
+        "lib/core/design/color/theme_extension.dart"
+      ]
+    },
+    {
+      "files": [
+        "lib/core/i18n/locale.dart",
+        "lib/core/network/i18n/app_locale.dart"
+      ]
+    },
+    {
+      "files": [
+        "lib/l10n/app_localizations.dart",
+        "lib/l10n/app_localizations_en.dart",
+        "lib/l10n/app_localizations_zh.dart"
+      ]
+    }
+  ],
+  "layerViolations": [
+    {
+      "sourceFile": "lib/features/assistant/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/assistant/data/repositories/lucent.dart"
+    },
+    {
+      "sourceFile": "lib/features/assistant/presentation/routes.dart",
+      "targetFile": "lib/app/router_helpers.dart"
+    },
+    {
+      "sourceFile": "lib/features/assistant/presentation/widgets/sections/page_body.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/controllers/wechat_oauth.dart",
+      "targetFile": "lib/app/composition/auth/auth.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/account/account_security.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/account/change_email.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/account/manage/page.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/account/manage/page.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/account/manage/sections.dart",
+      "targetFile": "lib/app/composition/support/resources.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/account/manage/sections.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/account/security_center.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/account/security_center.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/account/sessions.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/login/forgot_password.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/login/login.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/login/register.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/oauth/oauth_handlers.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/oauth/oauth_navigation.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/pages/oauth/oauth_uris.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/account/account.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/auth/auth.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/auth/sessions.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/auth/data/services/avatar_uploader.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/forms/login.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/forms/password_reset.dart",
+      "targetFile": "lib/app/composition/auth/auth.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/forms/register.dart",
+      "targetFile": "lib/app/composition/auth/auth.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/oauth/oauth_login.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/session/account_view.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/session_state.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/shared/data_access.dart",
+      "targetFile": "lib/app/composition/auth/auth.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/shared/data_access.dart",
+      "targetFile": "lib/app/composition/auth/sessions.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/providers/shared/data_access.dart",
+      "targetFile": "lib/features/auth/data/services/avatar_uploader.dart"
+    },
+    {
+      "sourceFile": "lib/features/auth/presentation/routes.dart",
+      "targetFile": "lib/app/router_helpers.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/application/layout_store.dart",
+      "targetFile": "lib/core/composition/composition.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/application/layout_store.dart",
+      "targetFile": "lib/core/storage/kv_store.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/application/layout_store.dart",
+      "targetFile": "lib/features/customizer/data/datasources/layout_cache.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/application/layout_store.dart",
+      "targetFile": "lib/features/customizer/data/datasources/layout_remote.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/application/layout_store.dart",
+      "targetFile": "lib/features/customizer/data/repositories/cached_layout.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/application/orchestrators/session.dart",
+      "targetFile": "lib/core/composition/composition.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/application/usecases/edit_session.dart",
+      "targetFile": "lib/core/composition/composition.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/domain/entities/draft.dart",
+      "targetFile": "lib/core/composition/composition.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/domain/entities/edit.dart",
+      "targetFile": "lib/core/composition/composition.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/domain/repositories/layout.dart",
+      "targetFile": "lib/core/composition/composition.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/domain/services/draft_rules.dart",
+      "targetFile": "lib/core/composition/composition.dart"
+    },
+    {
+      "sourceFile": "lib/features/customizer/presentation/routes.dart",
+      "targetFile": "lib/app/router_helpers.dart"
+    },
+    {
+      "sourceFile": "lib/features/health_data/presentation/pages/health_sync.dart",
+      "targetFile": "lib/app/composition/health_sync/health_sync.dart"
+    },
+    {
+      "sourceFile": "lib/features/health_data/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/health_data/health_sync.dart"
+    },
+    {
+      "sourceFile": "lib/features/health_data/presentation/routes.dart",
+      "targetFile": "lib/app/router_helpers.dart"
+    },
+    {
+      "sourceFile": "lib/features/health_event/presentation/providers/active_event.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/health_event/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/health_event/health_event.dart"
+    },
+    {
+      "sourceFile": "lib/features/legal/presentation/pages/detail.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/legal/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/legal/data/repositories/lucent.dart"
+    },
+    {
+      "sourceFile": "lib/features/legal/presentation/providers/legal.dart",
+      "targetFile": "lib/app/composition/snapshot/legal.dart"
+    },
+    {
+      "sourceFile": "lib/features/legal/presentation/routes.dart",
+      "targetFile": "lib/app/router_helpers.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/pages/medicine_detail_content.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/pages/page.dart",
+      "targetFile": "lib/app/composition/notification/unread_count.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/pages/page.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/pages/page.dart",
+      "targetFile": "lib/features/shell/presentation/deferred_content.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/pages/page.dart",
+      "targetFile": "lib/features/shell/presentation/desktop_tab_shell.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/pages/reminder/edit.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/pages/reminder/edit.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/medicine/workspace.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/medicine/data/datasources/dose_log_cached.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/medicine/data/datasources/dose_log_remote.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/medicine/data/datasources/medicine_detail_remote.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/medicine/data/datasources/reminder_local_preferences.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/medicine/data/datasources/reminder_remote.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/medicine/data/datasources/safety_tips_remote.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/medicine/data/repositories/risk_check.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/providers/reminders.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/routes.dart",
+      "targetFile": "lib/app/router_helpers.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/widgets/reminder/form/form_body.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/widgets/sections/drug_box.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/widgets/sections/quick_operation.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/medicine/presentation/widgets/sections/safety_cards.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/pages/allergy_edit.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/pages/condition_edit.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/pages/current_medicine_edit.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/pages/page.dart",
+      "targetFile": "lib/app/composition/notification/unread_count.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/pages/page.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/pages/page.dart",
+      "targetFile": "lib/features/shell/presentation/deferred_content.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/pages/page.dart",
+      "targetFile": "lib/features/shell/presentation/desktop_tab_shell.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/mine/mine.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/providers/health_edit_forms.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/routes.dart",
+      "targetFile": "lib/app/router_helpers.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/utils/archive_handlers.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/widgets/sections/account/account_hero.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/widgets/sections/account/account_security.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/widgets/sections/account/ai_privacy.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/widgets/sections/account/notifications_reminders.dart",
+      "targetFile": "lib/app/composition/notification/unread_count.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/widgets/sections/account/notifications_reminders.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/widgets/sections/archive/archive_row.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/mine/presentation/widgets/sections/sync/top_bar.dart",
+      "targetFile": "lib/app/composition/notification/unread_count.dart"
+    },
+    {
+      "sourceFile": "lib/features/notification/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/notification/unread_count.dart"
+    },
+    {
+      "sourceFile": "lib/features/notification/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/notification/data/repositories/lucent.dart"
+    },
+    {
+      "sourceFile": "lib/features/notification/presentation/routes.dart",
+      "targetFile": "lib/app/router_helpers.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/pages/page.dart",
+      "targetFile": "lib/features/shell/presentation/deferred_content.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/pages/page.dart",
+      "targetFile": "lib/features/shell/presentation/desktop_tab_shell.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/pages/quick_entry_settings.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/providers/dashboard.dart",
+      "targetFile": "lib/app/composition/snapshot/record.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/record/record_access.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/record/symptom_catalog.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/record/water_target.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/record/data/datasources/quick_entry_preferences.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/providers/record_edit_controller.dart",
+      "targetFile": "lib/app/composition/record/record_access.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/quick_entry/core/quick_entry_providers.dart",
+      "targetFile": "lib/app/composition/record/record_access.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/quick_entry/core/tap_decision.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/quick_entry/medication.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/quick_entry/medication.dart",
+      "targetFile": "lib/app/composition/medicine/workspace.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/quick_entry/medication.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/quick_entry/medication.dart",
+      "targetFile": "lib/features/medicine/data/datasources/dose_log_cached.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/quick_entry/sheets/detail_actions.dart",
+      "targetFile": "lib/app/composition/record/record_access.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/quick_entry/sheets/nlp_sheet.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/quick_entry/sleep.dart",
+      "targetFile": "lib/app/composition/record/record_access.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/routes.dart",
+      "targetFile": "lib/app/router_helpers.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/widgets/detail/body.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/widgets/dialogs/fast_entry_dialog.dart",
+      "targetFile": "lib/app/composition/record/record_access.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/widgets/edit/edit_parts.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/record/presentation/widgets/header_actions.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/review/presentation/components/catalog.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/review/presentation/components/legacy.dart",
+      "targetFile": "lib/app/composition/today/suggestion.dart"
+    },
+    {
+      "sourceFile": "lib/features/review/presentation/pages/legacy_dashboard_compat.dart",
+      "targetFile": "lib/app/composition/today/suggestion.dart"
+    },
+    {
+      "sourceFile": "lib/features/review/presentation/pages/page.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/review/presentation/pages/page.dart",
+      "targetFile": "lib/features/shell/presentation/deferred_content.dart"
+    },
+    {
+      "sourceFile": "lib/features/review/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/review/review.dart"
+    },
+    {
+      "sourceFile": "lib/features/review/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/review/data/repositories/lucent_ai_summary.dart"
+    },
+    {
+      "sourceFile": "lib/features/scan/presentation/pages/barcode_scanner.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/scan/presentation/pages/barcode_scanner.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/scan/presentation/pages/box_scan.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/scan/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/scan/data/datasources/ocr_model_manager.dart"
+    },
+    {
+      "sourceFile": "lib/features/scan/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/scan/data/datasources/paddle_ocr_provider.dart"
+    },
+    {
+      "sourceFile": "lib/features/scan/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/scan/data/repositories/scan.dart"
+    },
+    {
+      "sourceFile": "lib/features/scan/presentation/routes.dart",
+      "targetFile": "lib/app/router_helpers.dart"
+    },
+    {
+      "sourceFile": "lib/features/scan/presentation/widgets/dialogs/recognize_dialog.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/scan/presentation/widgets/scan_result_sheet.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/search/presentation/pages/page.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/search/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/search/data/datasources/recent_searches.dart"
+    },
+    {
+      "sourceFile": "lib/features/search/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/search/data/repositories/lucent.dart"
+    },
+    {
+      "sourceFile": "lib/features/search/presentation/widgets/sections/quick_actions.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/search/presentation/widgets/shared/add_to_box.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/search/presentation/widgets/shared/add_to_box.dart",
+      "targetFile": "lib/features/medicine/data/repositories/risk_check.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/pages/about/about.dart",
+      "targetFile": "lib/app/composition/support/resources.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/pages/about/about.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/pages/about/help.dart",
+      "targetFile": "lib/app/composition/support/resources.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/pages/advanced/ai.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/pages/notification/notification.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/pages/page.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/pages/profile.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/pages/profile.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/pages/profile.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/settings/data_storage.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/settings/notification_permission.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/settings/notification_preferences.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/settings/profile.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/settings/data/repositories/lucent.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/providers/notification/notification.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/routes.dart",
+      "targetFile": "lib/app/router_helpers.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/widgets/about_section.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/widgets/general_section.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/widgets/privacy_section.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/settings/presentation/widgets/quick_entry_section.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/shell/presentation/page.dart",
+      "targetFile": "lib/app/composition/notification/unread_count.dart"
+    },
+    {
+      "sourceFile": "lib/features/shell/presentation/page.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/pages/page.dart",
+      "targetFile": "lib/features/shell/presentation/deferred_content.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/pages/page.dart",
+      "targetFile": "lib/features/shell/presentation/desktop_tab_shell.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/snapshot/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/today/suggestion.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/providers/data_access.dart",
+      "targetFile": "lib/app/composition/today/today_suggestion.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/today/data/repositories/lucent_ai.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/providers/data_access.dart",
+      "targetFile": "lib/features/today/data/utils/suggestion_json_codec.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/providers/user_timezone.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/quick_entry/water.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/widgets/sections/suggestion_primary_card.dart",
+      "targetFile": "lib/features/medicine/data/datasources/dose_log_cached.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/widgets/sections/summary.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/widgets/shared/top_bar.dart",
+      "targetFile": "lib/app/composition/notification/unread_count.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/widgets/shared/top_bar.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/widgets/shared/view_models.dart",
+      "targetFile": "lib/app/router.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/widgets/views/health_event_section.dart",
+      "targetFile": "lib/app/composition/health_context/health_context.dart"
+    },
+    {
+      "sourceFile": "lib/features/today/presentation/widgets/views/health_event_section.dart",
+      "targetFile": "lib/app/composition/record/record_access.dart"
+    },
+    {
+      "sourceFile": "lib/main.dart",
+      "targetFile": "lib/app/auth_session_adapter.dart"
+    },
+    {
+      "sourceFile": "lib/shared/design/medicine_workspace.dart",
+      "targetFile": "lib/core/design/design.dart"
+    },
+    {
+      "sourceFile": "lib/shared/design/medicine_workspace.dart",
+      "targetFile": "lib/features/medicine/domain/entities/workspace.dart"
+    },
+    {
+      "sourceFile": "lib/shared/design/review_dashboard.dart",
+      "targetFile": "lib/core/design/design.dart"
+    },
+    {
+      "sourceFile": "lib/shared/design/review_dashboard.dart",
+      "targetFile": "lib/features/review/domain/entities/dashboard.dart"
+    }
+  ],
+  "packageViolations": [
+    {
+      "sourceFile": "lib/features/assistant/domain/entities/models.dart",
+      "package": "flutter"
+    },
+    {
+      "sourceFile": "lib/features/auth/data/datasources/wechat/callback/desktop_oauth_callback_listener_io.dart",
+      "package": "flutter"
+    },
+    {
+      "sourceFile": "lib/features/auth/data/datasources/wechat/client/mobile_auth_client_fluwx.dart",
+      "package": "flutter"
+    },
+    {
+      "sourceFile": "lib/features/customizer/application/layout_store.dart",
+      "package": "flutter_riverpod"
+    },
+    {
+      "sourceFile": "lib/features/health_data/data/datasources/health_platform.dart",
+      "package": "flutter"
+    },
+    {
+      "sourceFile": "lib/features/health_data/data/repositories/health_sync.dart",
+      "package": "flutter"
+    },
+    {
+      "sourceFile": "lib/features/legal/data/repositories/lucent.dart",
+      "package": "flutter"
+    },
+    {
+      "sourceFile": "lib/features/medicine/data/repositories/lucent_workspace.dart",
+      "package": "flutter"
+    },
+    {
+      "sourceFile": "lib/features/record/application/usecases/quick_entry_sleep.dart",
+      "package": "flutter"
+    },
+    {
+      "sourceFile": "lib/features/record/data/datasources/quick_entry_preferences.dart",
+      "package": "flutter_riverpod"
+    },
+    {
+      "sourceFile": "lib/features/record/domain/services/sleep_entry.dart",
+      "package": "flutter"
+    },
+    {
+      "sourceFile": "lib/features/scan/data/datasources/ocr_model_manager.dart",
+      "package": "flutter"
+    },
+    {
+      "sourceFile": "lib/features/scan/data/datasources/ocr_model_manager.dart",
+      "package": "flutter_riverpod"
+    },
+    {
+      "sourceFile": "lib/features/scan/data/datasources/paddle_ocr_provider.dart",
+      "package": "dart:ui"
+    },
+    {
+      "sourceFile": "lib/features/scan/data/datasources/paddle_ocr_provider.dart",
+      "package": "flutter_riverpod"
+    },
+    {
+      "sourceFile": "lib/features/scan/domain/entities/scan_result.dart",
+      "package": "dart:ui"
+    },
+    {
+      "sourceFile": "lib/features/scan/domain/services/medicine_ocr_extractor.dart",
+      "package": "dart:ui"
+    },
+    {
+      "sourceFile": "lib/features/settings/data/datasources/notification_permission.dart",
+      "package": "flutter"
+    },
+    {
+      "sourceFile": "lib/features/settings/data/datasources/notification_permission.dart",
+      "package": "flutter_local_notifications"
+    }
+  ],
+  "metricViolations": [],
+  "workspaceViolations": []
+}
