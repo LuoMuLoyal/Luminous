@@ -53,7 +53,8 @@ LucentFailure timeoutFailure({
 /// `LucentFailure` 在 Future 通道里的唯一表现形态。
 ///
 /// 它实现 [Exception]（而不是 Error），并且永远携带原始的 failure，所以在
-/// `AsyncError` 里解包不需要猜类型：`error is LucentFailureException`。
+/// `AsyncError` 里解包不需要猜类型：`error is LucentFailureException`；
+/// `LucentErrorMapper.fromObject` 也直接认它，透明还原成同一个 failure。
 final class LucentFailureException implements Exception {
   const LucentFailureException(this.failure);
 

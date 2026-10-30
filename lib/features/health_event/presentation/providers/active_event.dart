@@ -1,8 +1,12 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
+import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/data_access.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'active_event.g.dart';
@@ -17,7 +21,10 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
       fetch: () => ref.watch(healthEventRepositoryProvider).fetchActive().run(),
     ).then((result) {
       // Left 投影到 AsyncValue.error：widget 只消费 provider state。
-      final event = result.fold((failure) => throw failure, (event) => event);
+      final event = result.fold(
+        (failure) => throw LucentFailureException(failure),
+        (event) => event,
+      );
       _ensureAuthenticated(expectedUserId);
       return event;
     });
@@ -33,7 +40,10 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
             ref.read(healthEventRepositoryProvider).fetchActive().run(),
       );
       // Left 投影到 AsyncValue.error：widget 只消费 provider state。
-      return either.fold((failure) => throw failure, (event) => event);
+      return either.fold(
+        (failure) => throw LucentFailureException(failure),
+        (event) => event,
+      );
     });
     if (!_isSameAuthenticatedUser(expectedUserId)) {
       state = AsyncError(const AuthRequiredException(), StackTrace.current);
@@ -46,64 +56,68 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
     required String title,
     String? reasonRecordId,
     List<String> currentMedicineIds = const [],
-  }) async {
-    final expectedUserId = ref.read(authSessionProvider).userId;
-    final either = await authGuarded(
-      ref: ref,
-      fetch: () => ref
-          .read(healthEventRepositoryProvider)
+  }) {
+    return _mutate(
+      (repo) => repo
           .create(
             title: title,
             reasonRecordId: reasonRecordId,
             currentMedicineIds: currentMedicineIds,
           )
           .run(),
+      onSuccess: (event) => AsyncData(event),
     );
-    // Left 重抛 LucentFailure：调用方（sheet 提交回调）投影到 submitError。
-    final event = either.fold((failure) => throw failure, (event) => event);
-    _ensureAuthenticated(expectedUserId);
-    state = AsyncData(event);
-    _emitHealthEventsChanged();
-    return event;
   }
 
   Future<HealthEvent> checkIn({
     required String eventId,
     required String date,
     required HealthEventOutcome outcome,
-  }) async {
-    final expectedUserId = ref.read(authSessionProvider).userId;
-    final either = await authGuarded(
-      ref: ref,
-      fetch: () => ref
-          .read(healthEventRepositoryProvider)
-          .checkIn(eventId: eventId, date: date, outcome: outcome)
-          .run(),
+  }) {
+    return _mutate(
+      (repo) =>
+          repo.checkIn(eventId: eventId, date: date, outcome: outcome).run(),
+      onSuccess: (event) => AsyncData(event),
     );
-    // Left 重抛 LucentFailure：调用方（sheet 提交回调）投影到 submitError。
-    final event = either.fold((failure) => throw failure, (event) => event);
-    _ensureAuthenticated(expectedUserId);
-    state = AsyncData(event);
-    _emitHealthEventsChanged();
-    return event;
   }
 
   Future<HealthEvent> end({
     required String eventId,
     required HealthEventOutcome outcome,
+  }) {
+    return _mutate(
+      (repo) => repo.end(eventId: eventId, outcome: outcome).run(),
+      onSuccess: (_) => const AsyncData(null),
+    );
+  }
+
+  /// 写操作的唯一入口：失败以 [LucentFailureException] 上浮（调用方——sheet
+  /// 提交回调——用 `LucentErrorMapper.fromObject` 投影到 submitError），
+  /// 成功才改状态并广播。
+  ///
+  /// 身份在请求发起前就校验一次：身份已经变了就不该发请求，而不是等请求
+  /// 回来才发现"写进了别人的会话"。
+  Future<HealthEvent> _mutate(
+    Future<Either<LucentFailure, HealthEvent>> Function(
+      HealthEventRepository repo,
+    )
+    request, {
+    required AsyncValue<HealthEvent?> Function(HealthEvent event) onSuccess,
   }) async {
     final expectedUserId = ref.read(authSessionProvider).userId;
+    _ensureAuthenticated(expectedUserId);
+
     final either = await authGuarded(
       ref: ref,
-      fetch: () => ref
-          .read(healthEventRepositoryProvider)
-          .end(eventId: eventId, outcome: outcome)
-          .run(),
+      fetch: () => request(ref.read(healthEventRepositoryProvider)),
     );
-    // Left 重抛 LucentFailure：调用方（sheet 提交回调）投影到 submitError。
-    final event = either.fold((failure) => throw failure, (event) => event);
+    final event = either.fold(
+      (failure) => throw LucentFailureException(failure),
+      (event) => event,
+    );
+    // 请求期间换了用户：响应属于上一个身份，不能写进当前状态。
     _ensureAuthenticated(expectedUserId);
-    state = const AsyncData(null);
+    state = onSuccess(event);
     _emitHealthEventsChanged();
     return event;
   }

@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/providers/data_access.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dashboard.g.dart';
@@ -38,17 +41,21 @@ Future<ReviewDashboard> reviewDashboard(
 
   return authGuarded(
     ref: ref,
-    fetch: () async {
-      final result = await ref
+    fetch: () {
+      final result = ref
           .watch(reviewDashboardRepositoryProvider)
-          .fetchDashboard(query)
-          .run()
-          .timeout(
-            _reviewDashboardTimeout,
-            onTimeout: () => throw TimeoutException('review_dashboard_timeout'),
-          );
-      // Left 投影到 AsyncValue.error。
-      return result.fold((failure) => throw failure, (dashboard) => dashboard);
+          .fetchDashboard(query);
+      return unwrapFailure(
+        result.run().timeout(
+          _reviewDashboardTimeout,
+          onTimeout: () => Either.left(
+            timeoutFailure(
+              code: NetworkErrorCode.receiveTimeout,
+              message: 'review_dashboard_timeout',
+            ),
+          ),
+        ),
+      );
     },
     signedOutFallback: () async {
       final repo = ref.watch(reviewDashboardRepositoryProvider);

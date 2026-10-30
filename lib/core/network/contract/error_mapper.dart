@@ -3,6 +3,7 @@ import 'package:luminous/core/network/client/interceptors/trace_interceptor.dart
 import 'package:luminous/core/network/contract/lucent_failure_from_wire.dart';
 import 'package:luminous/core/network/contract/problem_details.dart';
 import 'package:luminous/core/network/map_utils.dart';
+import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 abstract final class LucentErrorMapper {
@@ -33,6 +34,13 @@ abstract final class LucentErrorMapper {
   static LucentFailure fromObject(Object error) {
     if (error is LucentFailure) {
       return error;
+    }
+
+    // The Future-channel wrapper `core/providers/channel.dart` installs around
+    // the same failure; unwrap it so a failure keeps its identity (and its
+    // 403/`AUTH_*` codes) no matter which channel carried it.
+    if (error is LucentFailureException) {
+      return error.failure;
     }
 
     if (error is DioException) {

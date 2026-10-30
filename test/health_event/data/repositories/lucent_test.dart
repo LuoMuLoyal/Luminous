@@ -253,8 +253,8 @@ void main() {
       expect(endCall.outcome, api.EndRequestOutcomeEnum.unchanged);
     });
 
-    test('rejects missing write response data as Left(unknown) keeping the '
-        'StateError cause (protocol invariant)', () async {
+    test('rejects missing write response data as an emptyResponse Left '
+        '(protocol invariant)', () async {
       when(
         () => healthEventsApi.createHealthEvent(
           createHealthEventRequest: any(named: 'createHealthEventRequest'),
@@ -287,13 +287,13 @@ void main() {
         ),
       ]) {
         final failure = await expectTaskLeft(task);
-        expect(failure.kind, LucentFailureKind.unknown);
-        expect(failure.cause, isA<StateError>());
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
       }
     });
 
-    test('maps an unknown status enum to Left(unknown) keeping the StateError '
-        'cause (protocol invariant)', () async {
+    test('maps an unknown status enum to an emptyResponse Left '
+        '(protocol invariant)', () async {
       when(
         () => healthEventsApi.upsertCheckIn(
           id: any(named: 'id'),
@@ -313,12 +313,12 @@ void main() {
           outcome: HealthEventOutcome.improved,
         ),
       );
-      expect(failure.kind, LucentFailureKind.unknown);
-      expect(failure.cause, isA<StateError>());
+      expect(failure.kind, LucentFailureKind.network);
+      expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
     });
 
-    test('maps an unknown outcome enum to Left(unknown) keeping the StateError '
-        'cause (protocol invariant)', () async {
+    test('maps an unknown outcome enum to an emptyResponse Left '
+        '(protocol invariant)', () async {
       when(
         () => healthEventsApi.end(
           id: any(named: 'id'),
@@ -336,8 +336,8 @@ void main() {
           outcome: HealthEventOutcome.unchanged,
         ),
       );
-      expect(failure.kind, LucentFailureKind.unknown);
-      expect(failure.cause, isA<StateError>());
+      expect(failure.kind, LucentFailureKind.network);
+      expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
     });
 
     test(
