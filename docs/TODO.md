@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-10-29
+updated: 2026-10-30
 ---
 
 # Luminous TODO
 
-Last updated: 2026-10-29
+Last updated: 2026-10-30
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -329,3 +329,12 @@ Product Loop Program 的延后项如下。
 - 七规则观察期收敛（`tool/luminous_lints`，warn 观察基线 27 处，全部为 `layered_import`）：`layered_import` 清零后按计划逐条转 error（`--fatal` 门禁接入 pre-push）
 - `layered_import` 剩余 27 处真实违规待重构：presentation→presentation 跨 feature 页面/widget 17 处（settings/shared widget、medicine/routes、health_event/sheets 等）、data→data 10 处
 - 七规则 IDE 插件集成：主包依赖图 freezed 钉 analyzer 12.x，而 analysis server 要求插件与其内置 analyzer 一致（14.1.0）；主包升级兼容 analyzer 14 后在 `analysis_options.yaml` 的 `plugins:` 接入 `luminous_lints`（当前仅 CLI 观察）
+
+## 2026-10-30 arch_guard 剩余循环依赖
+
+`arch_guard`（`dart run scripts/arch/guard.dart`，本地运行，不接 pre-push/CI）已从 7 组循环依赖降到 3 组，剩余两组暂按已知债务冻结在 `arch_guard_baseline.json`（只拦新增/扩大，不拦存量）：
+
+- 259 文件主环（hub 是 `lib/app/router.dart`）：根因是 `core/widgets/**`（`back_button`、`required_dialog`、`connectivity_banner`、`page_state`）反向 import `lib/app` 的 router 与 session adapter，叠加 `app/composition` 内部 token↔装配互指。拆解要反转这两类接缝，工作量大于已修部分总和；`Routes` 常量表已下沉到 `lib/core/router/app_routes.dart`，那一步已消除 `core → app/router` 的一部分边
+- `lib/core/database/database.dart` ↔ `daos/**`（15 文件）：DAO 反向 import 拿 `AppDatabase` 类型，需要在 `dao_owner.dart` 一类不依赖 `database.dart` 的类型文件里收敛
+- 新引入循环由 `scripts/arch/guard.dart` 直接拦截；修完一组后 `dart run arch_guard --update-baseline` 收窄冻结清单
+
