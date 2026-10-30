@@ -146,9 +146,9 @@ void main(List<String> args) async {
       for (final banned in bannedInDomain) {
         if (!source.contains("'$banned")) continue;
         final line = source
-                .substring(0, source.indexOf("'$banned"))
-                .split('\n')
-                .length;
+            .substring(0, source.indexOf("'$banned"))
+            .split('\n')
+            .length;
         findings.add(
           _Finding(
             rule: 'domain_purity',
@@ -363,5 +363,15 @@ final class _RuleDriverVisitor extends RecursiveAstVisitor<void> {
       report: (n, arguments) => report('non_shrinking_row_child', n, arguments),
     );
     super.visitInstanceCreationExpression(node);
+  }
+
+  @override
+  void visitThrowExpression(ThrowExpression node) {
+    NoThrowRule.checkThrow(
+      statement: node,
+      filePath: filePath,
+      report: (n) => report('no_throw', n, const []),
+    );
+    super.visitThrowExpression(node);
   }
 }

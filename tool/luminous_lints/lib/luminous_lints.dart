@@ -1,8 +1,8 @@
 /// In-house analyzer plugin for the Luminous app.
 ///
 /// Encodes the recurring code issues found in historical review reports as
-/// eight analysis rules. All rules are registered as warning rules (enabled
-/// by default); they are intended to be promoted to errors once existing
+/// analysis rules. All rules are registered as warning rules (enabled by
+/// default); they are intended to be promoted to errors once existing
 /// findings are cleaned up.
 library;
 
@@ -15,6 +15,7 @@ import 'src/layered_import.dart';
 import 'src/no_bang_on_response_data.dart';
 import 'src/no_direct_navigator.dart';
 import 'src/no_raw_datetime_parse.dart';
+import 'src/no_throw.dart';
 import 'src/non_shrinking_row_child.dart';
 
 export 'src/empty_catch_requires_comment.dart';
@@ -24,6 +25,7 @@ export 'src/layered_import.dart';
 export 'src/no_bang_on_response_data.dart';
 export 'src/no_direct_navigator.dart';
 export 'src/no_raw_datetime_parse.dart';
+export 'src/no_throw.dart';
 export 'src/non_shrinking_row_child.dart';
 
 /// All analysis rules provided by this plugin, in stable listing order.
@@ -36,4 +38,5 @@ final List<AnalysisRule> luminousLintsRules = [
   EnumParseUnknownBranchRule(),
   NoRawDatetimeParseRule(),
   NonShrinkingRowChildRule(),
+  NoThrowRule(),
 ];
