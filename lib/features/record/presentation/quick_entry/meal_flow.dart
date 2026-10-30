@@ -23,6 +23,8 @@ final mealQuickImagePickerProvider = Provider<PickMealQuickImage>((ref) {
 
     final contentType = RecordCreatePage.resolveImageContentType(image);
     if (contentType == null) {
+      // The picker edge reports "picked, but not uploadable" as the flow's own
+      // refusal value; the page maps it to recordImageUnsupportedToast.
       throw const MealQuickImageUnsupportedException();
     }
 

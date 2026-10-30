@@ -16,11 +16,17 @@ enum MealQuickImageSource { camera, gallery }
 
 class MealQuickImageUnsupportedException implements Exception {
   const MealQuickImageUnsupportedException();
+
+  @override
+  String toString() => 'MealQuickImageUnsupportedException';
 }
 
 /// Thrown by [MealQuickEntryFlow.saveDraft] when the draft carries no content
 /// at all (no title / value / note / image): an empty meal record must never be
-/// written. Callers surface it as a "fill something in" toast.
+/// written. Callers surface it as a "fill something in" toast
+/// (`recordQuickMealEmptyToast`) — it is a UI guard for a user input problem,
+/// not a failure channel, so it stays a dedicated exception the dialog catches
+/// instead of a `LucentFailure`.
 class MealQuickEntryEmptyException implements Exception {
   const MealQuickEntryEmptyException();
 
@@ -112,6 +118,14 @@ class MealQuickEntryFlow {
   final CreateDailyRecord createRecord;
   final EmitDataChangeTopic emitDataChange;
 
+  /// Opens the camera and returns the confirmed draft, or a cancelled outcome
+  /// when nothing was picked.
+  ///
+  /// [pickImage] is the platform edge: its implementation belongs to the
+  /// picker's caller (`meal_flow.dart`), which reports a content type the
+  /// upload cannot take by throwing [MealQuickImageUnsupportedException] — the
+  /// picker's `null` means "user cancelled", so the refusal needs its own
+  /// value. The page maps it to `recordImageUnsupportedToast`.
   Future<MealQuickEntryOutcome> startWithCamera(
     MealQuickEntryContext context,
   ) async {
