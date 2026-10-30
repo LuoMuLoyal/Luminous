@@ -376,24 +376,10 @@ LayoutDoc = { version: int, schemaVersion: int, payload: <客户端自定义 JSO
 ## 3. 阶段排期
 
 顺序原则（本条为 2026-10-29 修订，与旧版不同）：
-**先把现有组件全部变成可组合 → 再做变体/尺寸 → 再做用户编排 → 再做跨表面挂载 → 再补新组件与 AI。**
-旧版把「变体 + 编排 UI」放在 A2（早于 review/record/mine 的组件化），这与「所有 tab 先可组合」
-相冲突，已调整。
+**先把现有组件全部变成可组合 → 再做变体/尺寸 → 再做用户编排 → 再补新组件与 AI。**
 
-### A0 骨架 + 规则口径（纯重构，零视觉变化）
-
-- 落 §2 的 `id/size/descriptor/registry/surface/layout/store/host`
-- **改 `cross_feature_import` 规则口径**（§2.6），并同步 `AGENTS.md` 里「跨 feature import」
-  一节，使文档与规则一致
-- today 作为打样面接入 `ComponentHost`：7 个既有 section 原样登记
-- `mobile_dashboard.dart` 的 `final sections = <Widget>[...]` 换成 `ComponentHost`；
-  `SizedBox.shrink()` 占位全部删除
-- 被接入的 7 个 section 去掉页面注入的回调（`onSignIn`/`onRefresh`/`dashboard` 切片）；
-  **这一步会改 today 现有 widget 测试**，是本阶段真正的成本
-- 验收：`host_test`（未知 id 跳过 / 空组件不留间距 / 顺序即渲染顺序）；
-  `composition_contract_test` 断言 §0.5 判据 1/2/3；today 现有测试全绿；像素级不变
-- 本阶段**不引入新依赖**、不接后端；布局形态先定成 `SurfaceLayout` 值类型
-- 估：5–7 天
+骨架与门禁口径已落地（`lib/core/composition/` + today 打样面），下面的阶段从「把其余表面
+登记进目录」开始。
 
 ### A1 现有组件全量登记（零视觉变化）
 
@@ -569,11 +555,11 @@ SSE 流 + proposal 卡片，做成 `assistant.chat` 组件，可挂到 today 首
 ## 4. 依赖关系
 
 ```text
-A0 ──┬─→ A1 ──→ A2 ──→ A3 ──→ A4 ──┬─→ A5-1 ─┐
-     │                              ├─→ A5-2 ─┤
-     │                              ├─→ A5-3 ─┼─→ A7
-     │                              └─→ A5-4 ─┘
-     └─→ A6（与 A1–A5 无耦合，但要独占时间窗：动 shell + router）
+A1 ──→ A2 ──→ A3 ──→ A4 ──┬─→ A5-1 ─┐
+                          ├─→ A5-2 ─┤
+                          ├─→ A5-3 ─┼─→ A7
+                          └─→ A5-4 ─┘
+A6（与 A1–A5 无耦合，但要独占时间窗：动 shell + router）
 ```
 
 - A5 各子项在 A4 之后彼此独立，可按人分工

@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-10-16
+updated: 2026-10-29
 ---
 
 # Luminous TODO
 
-Last updated: 2026-10-16
+Last updated: 2026-10-29
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -185,6 +185,23 @@ Product Loop Program 的延后项如下。
   - 现状：dashboard 维度仅 medication/water/sleep/general；趋势逐日 values 是 legacy scalar 投影，客户端无法区分「空档=无记录」与「0」；`coverage_strip.dart` 使用 `ReviewObservedMetricCoverage` 枚举消费该投影
   - 目标：2026 Q4 Lucent observed-metric 域迁移后删除 ignore，`coverage_strip.dart` 调用点同步调整
   - 跟踪：`// tracked-by-TODO-ignore-deprecated-metric-migration`
+
+## 2026-10-29 组件自带骨架/降级卡（组件化阶段留待决定）
+
+- 现状：今日页移动端已改为「页面渲染表面布局」，`ComponentHostSliver` 只在
+  `PageStateSwitch` 的 ready 分支内挂载，因此 4 个 section 现在遇到
+  `PageViewStateLoading` / `PageViewStateFatalError` 时返回 `SizedBox.shrink()`，
+  骨架与降级卡由页面级统一承担。
+- 待决定的问题：一旦某个组件被单独挂到另一个表面（跨表面挂载），或某表面不走
+  `PageStateSwitch`，这些 section 就没有自己的骨架/降级卡，会出现「整块空白」而不是
+  「暂时无法获取」。
+- 两条路线（互斥，选一条）：
+  1. **维持页面级统一**：约束 `ComponentHost*` 只能挂在已过状态分流的页面内，
+     在组件契约测试里加上这条断言；
+  2. **组件自带**：每个 descriptor 声明 `loadingBuilder` / `errorBuilder`，
+     `ComponentHost` 按 `PageViewState` 分发。代价是状态 UI 从一处变成两处，
+     需要先统一文案与视觉（`commonStatusStale` / `commonStaleHint` 已存在）。
+- 触发条件：做到「跨表面挂载」或任一表面绕过 `PageStateSwitch` 之前必须定案。
 
 ## 2026-08-20 Mine settings P2-1 deferred follow-up
 

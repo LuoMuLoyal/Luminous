@@ -1,5 +1,5 @@
 ---
-status: active
+status: frozen
 owner: frontend
 updated: 2026-10-29
 ---
@@ -210,7 +210,7 @@ lib/features/<feature>/
 
 估：8–10 天（`scan` 的 OCR 与 `medicine` 的提醒计划是两个独立子任务，可并行）。
 
-### C2 application 层建立（R3）
+### C2 application 层建立（R3）—— **暂缓（3/16 完成）**
 
 - 先把 3 个现存 `application/`（`record` 9、`today` 2、`settings` 1）重写成真 use case：
   去掉 `presentation/` 依赖，`Ref`/`BuildContext` 不进 use case
@@ -244,7 +244,7 @@ lib/features/<feature>/
 
 估：10–14 天。
 
-### C5 跨 feature 接缝（R6 的实质部分）
+### C5 跨 feature 接缝（R6 的实质部分）—— **暂缓（剩 51 条）**
 
 666 条边 / 219 个文件。**不与 C1–C4 同批**：先建 `application/ports/` 与跨 feature 的
 domain 接口，再按 feature 对逐个替换。按 feature 对分批，每个 PR 只处理一对
@@ -279,28 +279,9 @@ C0 ──┬─→ C1 ┐
 
 ## 5. worktree 并行划分
 
-**按层切，不按 feature 切**：违规横跨所有 feature，按 feature 切会让多个 worktree
-同时改同一批 `presentation/providers/` 与 `domain/`，合并必冲突。
-
-| # | 分支 | 范围 | 主要路径 | 前置 |
-| --- | --- | --- | --- | --- |
-| W0 | `arch/gates` | C0 | `tool/luminous_lints/`、`scripts/workflows/`、`.github/workflows/ci.yml` | 无 |
-| W1 | `arch/domain` | C1 | `lib/features/*/domain/` | W0 |
-| W2 | `arch/application` | C2 | `lib/features/*/application/`、`presentation/providers/` 的调用方式 | W0 |
-| W3 | `arch/data` | C3 | `lib/features/*/data/`、`lib/app/infrastructure/` | W2 |
-| W4 | `arch/presentation` | C4 | `lib/features/*/presentation/{pages,widgets,controllers}/` | W3 |
-| W5 | `arch/core` | C6 | `lib/core/`、`lib/app/` | W2 |
-| W6 | `arch/dirs` | C7 | 8 个 presentation/core 目录 | W0（纯移动，越早越好，但要在 C4 之后避免撞路径） |
-
-C5（跨 feature 接缝）不单独占 worktree：按 feature 对开短分支，每个 < 1 天。
-
-### worktree 环境事项
-
-1. **本地数据库冲突**：`lib/core/database/connection_io.dart:27-28` 库在
-   `getApplicationDocumentsDirectory()/luminous.db`，已启用 SQLCipher。多 worktree
-   同机跑同一 package 会共用应用目录与密钥，设备测试必须串行。
-2. **Web 产物**：不要把某个 worktree 的 `build/web` 拷进 `ohos/`。
-3. **`pubspec.*`**：C0–C7 不应改依赖；迁出 `crypto`/`units_converter` 等若需替代包，单独 PR。
+六个 worktree + 六个 `arch/*` 分支（W1 domain / W2 application / W3 data / W4 presentation /
+W5 core / W6 dirs，按层切而非按 feature 切）已于 2026-10-29 全部合入 `develop` 并回收，
+独立引导脚本保留在 `scripts/arch/bootstrap-worktree.ps1`。
 
 ## 6. 不在本计划
 
@@ -332,3 +313,33 @@ C5（跨 feature 接缝）不单独占 worktree：按 feature 对开短分支，
 | `scan`/`medicine` 的 domain 迁出改变调用面 | 两个 feature 各拆独立 PR，先建 `application/ports/` 再改调用点 |
 | 目录拆分与 C4 改同一批文件 | C7 排在 C4 之后；只移动不改内容，冲突时以 C4 为准 |
 | 16 个 feature 建 application 后 use case 变成 repository 转发 | 按用户意图命名（`log_water` 而非 `create_record`），一个意图可以对多个 repository 调用 |
+
+## 9. 收口状态（2026-10-29）
+
+本计划**冻结**：规则部分已全部落地，剩下的 C2（application 层推广到其余 13 个 feature）与
+C5（跨 feature 接缝收敛）暂缓，等组件化计划推进到编排层再决定是否重启。
+
+已完成并合入 `develop`：
+
+| 阶段 | 结果 |
+| --- | --- |
+| C0 门禁落地 | `--clean-layers` 模式 R1–R9 生效，违规即 exit 1；接入 pre-push、`daily.dart`、CI（CI 暂带 `continue-on-error`） |
+| C1 domain 纯净 | 清零（`lib/shared/domain/` 作为共享内核被显式允许） |
+| C3 data 层归位 | 清零；`data/providers/` 目录删除并纳入 `forbidden_directory`；provider 装配上移 `lib/app/composition/` |
+| C4 presentation 去 data | 清零；取数统一走各 feature 的 `presentation/providers/data_access.dart` 接缝 |
+| C6 core 去 feature | 清零（`core/auth`、`core/push` 的旧豁免一并取消） |
+| C7 目录收敛 | 清零；阈值 8 与 `AGENTS.md` 对齐 |
+
+未完成、暂缓：
+
+| 阶段 | 现状 | 暂缓原因 |
+| --- | --- | --- |
+| C2 application 层 | 3/16（`record`、`settings`、`today`）；其余 13 个 feature 的编排仍在 `presentation/providers/` | 与组件化计划的「表面挂载 + 组件取数」共用同一批 provider 装配，先定组件模型再回填，避免两次搬迁 |
+| C5 跨 feature 接缝 | 剩 51 条（`presentation/providers/` 19、widgets 12、`shell` 9、其余零散） | 组件化计划 A0 会把 `cross_feature_import` 口径对齐到既有的 providers 接缝与 `shell` 豁免，届时多数条目不再算违规 |
+
+验收项因此只达成一半：R1–R9 除 `cross_feature_import` 外全部为 0，
+`presentation → data` 为 0，`core → features` 为 0，目录超限为 0；
+`cross_feature_import` 与 16 个 feature 的 application 覆盖两项随 C2/C5 一起挂起。
+
+重启时的入口：先读 `plans/2026-10-28-composable-tabs.md` 的 A0/A4，那里定义了新的编排层形态，
+C2/C5 的剩余工作应在其之后按新形态执行，不再按本计划原文推进。
