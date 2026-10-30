@@ -30,16 +30,28 @@ cache-first / offline-first 的存储底座：`AppDatabase` 单例 + 缓存表�
 
 ## 加密（原生平台）
 
-- 密钥为 **32 字节原始随机量**（SQLCipher 的 256-bit key），由 `Random.secure()`
+- **加密引擎由 `pubspec.yaml` 的 native-assets hook 选择**：
+  `hooks.user_defines.sqlite3.source: sqlite3mc`（SQLite3MultipleCiphers）。
+  `sqlite3` v3 默认装配的是**普通** SQLite——没有加密、也不认 `PRAGMA key`，
+  症状是 `SqliteException(1): near "x'…'": syntax error`。
+  `sqlcipher_flutter_libs` 自 0.7.0 起是空壳包（README 原话：no longer does
+  anything），它存在与否都不影响是否加密。
+- 选 SQLite3MultipleCiphers 而非 SQLCipher 构建：`PRAGMA key` 语法与原始密钥
+  （`x'<hex>'`）形式两边一致，而 SQLCipher 构建会在 Windows/Linux/Android 链接
+  OpenSSL 并牵进 Zetetic 许可证。
+- **打开数据库前先校验引擎**：`requireCipherEngine` 读 `PRAGMA cipher`——它只存在于
+  加密构建里。校验失败返回 `LucentFailure`（不抛异常），`connection_io` 据此让打开
+  失败，而不是拿普通 SQLite 继续写明文。上游 drift 文档推荐的正是这条探针。
+- 密钥为 **32 字节原始随机量**（256-bit key），由 `Random.secure()`
   生成——底层是平台 CSPRNG，不是 `Random()`。
 - 密钥存平台安全存储（iOS Keychain / Android Keystore / Windows DPAPI /
   Linux Secret Service），**不落库、不落 KV、不进日志**。
 - 打开数据库时经 `PRAGMA key = x'<hex>'` 以原始字节形式注入；`x'...'` 形态让
-  SQLCipher 直接把字节当密钥，而引号字符串会走 KDF 得到不同密钥材料。
+  引擎直接把字节当密钥，而引号字符串会走 KDF 得到不同密钥材料。
 - **密钥取不到时直接失败，绝不降级为明文**——静默明文落盘比打不开更糟。
 - **明文库不迁移**：检测到「没有密钥但文件存在」即删除重建。本地库只是可丢弃的缓存，
   重建安全，且避免明文残留。
-- **Web 不加密**：`connection_web.dart` 走 `WasmDatabase`，SQLCipher 不适用，
+- **Web 不加密**：`connection_web.dart` 走 `WasmDatabase`，加密引擎不适用，
   该平台由浏览器 origin 隔离保护。ADR-0006 §5 明确把加密范围限定在原生平台。
 
 ## 不变量
@@ -63,8 +75,9 @@ cache-first / offline-first 的存储底座：`AppDatabase` 单例 + 缓存表�
 - 不 import `features/**`。新增「要读用户设置才能决定」的行为时，把策略放在 feature
   侧、本层只留接缝（保留期清理即此形态），不要反过来让 core 读 feature 的 provider。
 - 禁手编 `*.g.dart`；表结构变更只能改 `tables/` 后由 build_runner 再生成。
-- `sqlite3_flutter_libs` 不得与 `sqlcipher_flutter_libs` 并存：两者都提供原生
-  `sqlite3` 符号，同时引入会链接冲突。原生库统一由 `sqlcipher_flutter_libs` 提供。
+- 加密引擎只能有一个来源：`sqlite3` 的 hook 选源（当前 `sqlite3mc`）。
+  不要再引入 `sqlite3_flutter_libs` / `sqlcipher_flutter_libs`——
+  前者会换回普通 SQLite（`PRAGMA key` 直接语法错），后者的 0.7.0 起已是空壳。
 
 ## 陷阱与决策
 
