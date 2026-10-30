@@ -4,8 +4,8 @@ import 'package:luminous/shared/domain/failure.dart';
 
 /// 布局的远端数据源。
 ///
-/// **当前为占位实现**：Lucent 还没有 `/ui/layouts` 端点，生成客户端里也就没有
-/// 可调的 API。契约（`GET /ui/layouts`、`PUT /ui/layouts/:surface`）已在
+/// **当前为占位实现**：Lucent 还没有 `/layouts` 端点，生成客户端里也就没有
+/// 可调的 API。契约（`GET /layouts`、`PUT /layouts/:surface`）已在
 /// `plans/2026-10-28-composable-tabs.md` §2.7 定义，后端落地后替换本类即可——
 /// domain / application / 编排 UI 都不依赖这一层。
 ///

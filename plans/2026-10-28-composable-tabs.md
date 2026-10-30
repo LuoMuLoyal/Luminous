@@ -7,7 +7,8 @@ updated: 2026-10-30
 # 全 Tab 组件化：可组合组件库、变体、用户编排、跨 Tab 挂载、生成式 UI
 
 Created: 2026-10-28（2026-10-29 按 L3 目标重写：组件 id 改按域命名、注册表改为「全局目录 + 表面挂载」、
-阶段顺序改为「先可组合 → 再变体 → 再编排 → 再跨 Tab」）
+阶段顺序改为「先可组合 → 再变体 → 再编排 → 再跨 Tab」；2026-10-30 末更新进度、
+记录 `flutter_layout_grid` 实测放弃与 A3 响应式三档收口）
 
 > **目标级别：L3。** 每个 tab 是一个**可组合表面**：用户决定挂哪些组件、什么顺序、多大尺寸、
 > 组件内部选项；同一组件可以挂到多个表面（今日页挂用药风险、用药页挂血糖趋势）；
@@ -25,7 +26,7 @@ Created: 2026-10-28（2026-10-29 按 L3 目标重写：组件 id 改按域命名
 > 3. **组件层零新增 UI 框架依赖**：只加两个布局/拖拽包（§1），其余全部用现有
 >    riverpod + freezed + hive_ce + forui + genui。
 
-- 范围：`Luminous`（Flutter 客户端）+ `Lucent`（**3 组**新端点：`/ui/layouts` 读写、`month-overview`、`generate-layout` SSE）
+- 范围：`Luminous`（Flutter 客户端）+ `Lucent`（**3 组**新端点：`/layouts` 读写、`month-overview`、`/layouts/:surface/generate` SSE）
 - 分 8 个阶段（A0–A7），**每个阶段可单独发布**，不允许跨阶段混提交
 
 ## 0. 需求原文（逐条，作为验收清单）
@@ -208,7 +209,7 @@ lib/core/composition/
   layout.dart        SurfaceLayout { schemaVersion, version, placements[] } + ComponentPlacement
   layout/
     cache.dart       本地缓存（drift `ui_layouts` 表，cache-first）
-    remote.dart      `GET/PUT /ui/layouts/:surface`（生成客户端，错误走 LucentFailure）
+    remote.dart      `GET/PUT /layouts/:surface`（生成客户端，错误走 LucentFailure）
     sync.dart        乐观写入 + `pending_sync_queue`（entityType `ui_layout`/`tab_chrome`）
     store.dart       SurfaceLayoutStore：读缓存立即返回 → 后台拉远端 → 差异则更新
   chrome.dart        TabChromeConfig { tabId, customLabel?, iconName?, orderIndex, visible }
@@ -334,17 +335,27 @@ presentation，应改用领域实体、共享快照 hub 或 DataChangeBus；而 
 
 #### 契约（`Lucent` 新增，A2 需要）
 
+> **状态（2026-10-30）**：端点尚未实现。`Luminous` 侧 `LayoutRemote` 保持占位
+> （`fetchAll` 返回空、`put` 成功），domain / application / 编排 UI 都不依赖该层，
+> 后端落地后替换这一个文件即可。
+
 ```text
-GET  /ui/layouts
+GET  /layouts
   → 200 { surfaces: { <surface>: LayoutDoc } }
 
-PUT  /ui/layouts/:surface
+PUT  /layouts/:surface
   body: { ifVersion: int?, doc: LayoutDoc }
   → 200 LayoutDoc
   → 409 { current: LayoutDoc }        // 版本冲突，客户端以服务端为准并提示
 
 LayoutDoc = { version: int, schemaVersion: int, payload: <客户端自定义 JSON> }
 ```
+
+**命名依据**：资源名直接放在根路径下（`/layouts`），不加 `/ui` 这类领域前缀。
+Grafana 是 `/dashboards/:uid`、Notion 是 `/blocks/:id`、`/pages/:id`，业内惯例是
+**以资源名开头 + 复数 + 个体用 ID 路径段**；本仓既有端点也是
+`/daily-records`、`/medicine-reminders` 这类扁平资源名，`/ui/layouts` 会同时偏离
+业内惯例与自身风格。
 
 - `surface` 取值：`today` / `record` / `medicine` / `review` / `mine` / `tab_chrome`。
   **tab 配置与页面布局共用资源**，只是 payload 结构不同（少一套端点）
@@ -357,7 +368,7 @@ LayoutDoc = { version: int, schemaVersion: int, payload: <客户端自定义 JSO
 
 1. 读 drift 缓存表 `ui_layouts(surface PK, payload, version, schemaVersion, cachedAt)`
    —— 命中即渲染，**不阻塞首帧**
-2. 后台 `GET /ui/layouts`，`version` 与缓存不同则写回缓存并 invalidate provider
+2. 后台 `GET /layouts`，`version` 与缓存不同则写回缓存并 invalidate provider
 3. 未命中（首次安装）→ 用**代码内默认布局**渲染首帧，同时拉远端；
    远端也没有（新账号）→ 把默认布局 `PUT` 上去
 
@@ -390,31 +401,51 @@ LayoutDoc = { version: int, schemaVersion: int, payload: <客户端自定义 JSO
 顺序原则（本条为 2026-10-29 修订，与旧版不同）：
 **先把现有组件全部变成可组合 → 再做变体/尺寸 → 再做用户编排 → 再补新组件与 AI。**
 
-### 进度（2026-10-30）
+### 进度（2026-10-30 末）
 
-| 表面 | 组件数 | 默认布局 | 测试 | 备注 |
-| --- | --- | --- | --- | --- |
-| today | 8 | 与原顺序一致 | `test/today` 全绿 | P0 打样面 |
-| record | 4 | 与原顺序一致 | `test/record` 513 全绿 | 区块原为内联 widget，已提为独立组件 |
-| medicine | 4 | 与原顺序一致 | `test/medicine` 407 / 1 失败 | 余 1 条打卡撤销用例（见下） |
-| mine | 7 | 与原顺序一致 | `test/mine` 104 全绿 | 桌面双栏保留手写，section 已自取 |
-| review | 20（含 legacy 5） | 主路径 14 项与原顺序一致 | `test/review` 296 / 9 失败 | legacy 5 进 available、不进默认布局 |
+| 阶段 | 状态 |
+| --- | --- |
+| A1 现有组件全量登记 | 完成；缺 2 条验收（见下） |
+| A2 编排 UI | 完成；缺后端 `/layouts`（`LayoutRemote` 仍是占位实现） |
+| A3 尺寸档 | 响应式三档完成；组件内 sealed 变体未做 |
+| A4 跨表面挂载 | 完成 |
+| A5 各 tab 补组件 | 未开始 |
+| A6 底部 tab 可配 | 未开始 |
+| A7 生成式 UI | 未开始 |
 
-门禁：`--clean-layers` 25 条（全部为跨 feature 的 `presentation` 深引用，非本轮引入）。
-`flutter analyze` 全仓库无问题。
+| 表面 | 组件数 | 默认布局 | 备注 |
+| --- | --- | --- | --- |
+| today | 8 | 与原顺序一致 | P0 打样面；移动端单列、桌面端多列 |
+| record | 4 | 与原顺序一致 | 区块原为内联 widget，已提为独立组件 |
+| medicine | 4 | 与原顺序一致 | |
+| mine | 7 | 与原顺序一致 | 桌面双栏保留手写，section 已自取 |
+| review | 20（含 legacy 5） | 主路径 14 项与原顺序一致 | legacy 5 进 available、不进默认布局 |
+
+门禁：`--clean-layers` 40 条（全部为既有的跨 feature `presentation` 深引用，本轮零新增）。
+`flutter analyze lib test` 无问题。
 
 **A2 / A4 已在模拟器上实测通过**（2026-10-30）：从 Today 点标题进编排页 → `＋` 打开面板
 → 加入 Record 的 `calendar.strip`、Mine 的 `archive.summary` → 面板实时消失、列表末尾
 出现 → `✓` 保存后写入 `layout.today` 的 KV 持久化数据。
+
+**A3 响应式已在模拟器上实测通过**（2026-10-30）：手机端单列渲染无回归；编排页三档尺寸
+选择器排版与选中态正常。**桌面端未在真机验证**——Windows 构建因网络无法解析
+`github.com`、`sentry_flutter` 的原生依赖拉不下来而失败；Web 端因 `path_provider`
+在 web 上没有实现而停在启动。桌面的正确性目前只由 widget 测试与几何断言保证。
 
 **已知未完成项**（不计入验收通过）：
 
 - medicine：`home dose check-in undo reverts to planned`。打卡会 emit `doseLogs` →
   页面重建 → `Toast.showWithAction` 的 context 失效，点撤销时 `context.mounted` 为 false。
   这是组件化引入的真实回归（改造前的 Column 版本同样失败），不是布局问题。
-- review：`review_golden_test` / `review_semantics_test` 仍在用已删除的构造参数（编译失败）；
+- review：`review_golden_test` / `review_semantics_test` 仍在用已删除的构造参数，
+  导致 `ai_summary_provider_test.dart` 整个文件加载失败；
   `page_test` 的 history 筛选用例、`review_view_test` 的冷启动用例未通。
 - A1 的两条验收（五个 tab 的 golden 兜底、「未挂载 id 即渲染」用例）尚未补齐。
+
+当前测试基线：`test/review` + `test/medicine` + `test/mine` 合计 829 通过 / 8 失败；
+`test/core/composition` + `test/customizer` + `test/today` 全绿。在基线干净之前，
+新增改动无法可靠判断是否引入回归——清理这批失败是下一阶段的前置条件。
 
 ### 兼容性约定（本轮确立即长期有效）
 
@@ -479,11 +510,12 @@ LayoutDoc = { version: int, schemaVersion: int, payload: <客户端自定义 JSO
 
 **未完成**：
 
-- Lucent `GET/PUT /ui/layouts` 不存在，`LayoutRemote` 是占位实现（fetchAll 返回空）。
+- Lucent `GET/PUT /layouts` 不存在，`LayoutRemote` 是占位实现（fetchAll 返回空）。
   布局只存本地，不同步跨设备、不入 `pending_sync_queue`。
 - 跨 surface **移动**（`LayoutEdit.move` 的 from≠to 分支）还没有 UI 入口：目前只能
   「在本页移除 → 在另一页加入」，不能一次拖动完成。
-- 显隐/顺序只有列表形态，网格 + 尺寸档是 A3。
+- 编排列表仍是纵向列表形态；`flutter_reorderable_grid_view` 的**网格模式拖拽**未接入
+  （尺寸档本身已由 A3 落地，编排页可设置档位，但拖拽看不到格子预览）。
 
 ### A3 尺寸档 + 组件内选项/变体
 
@@ -615,6 +647,10 @@ GET /daily-records/month-overview?month=YYYY-MM&kind=<可选>
   `[{tabId, customLabel?, iconName, orderIndex, visible}]`；离线走 `pending_sync_queue`
 - 估：8–10 天
 
+**排期约束**：A6 与 A1–A5 无代码耦合，但动 `shell/` + `router.dart` + `app.dart`，
+与任何阶段的文件冲突面都大，**需要独占时间窗**。A3 已收口、A5 尚未开始的空档是
+合适窗口。
+
 ### A7 生成式 UI + 轻量 AI 会话
 
 > 需求第 8、9 条。genui 作为**渲染引擎**接入，不是组件定义者。
@@ -631,11 +667,14 @@ GET /daily-records/month-overview?month=YYYY-MM&kind=<可选>
 `Lucent` 新增：
 
 ```text
-POST /ui/generate-layout
-  body: { surface, dataScope, catalogSchema, prompt, currentLayout? }
+POST /layouts/:surface/generate
+  body: { dataScope, catalogSchema, prompt, currentLayout? }
   → SSE：A2UI message chunks（createSurface / updateComponents / updateDataModel）
   解析失败则本次生成失败，UI 保留上一份 surface
 ```
+
+命名同样挂在 `/layouts` 资源下：生成的是**某个 surface 的布局**，作为该 surface 的
+子动作（`generate` 用动词路径段，与 `GET/PUT /layouts/:surface` 同一资源根）。
 
 必须 SSE：`A2uiTransportAdapter` 按 chunk 流设计，一次性返回会失去渐进渲染。
 
@@ -666,6 +705,9 @@ SSE 流 + proposal 卡片，做成 `assistant.chat` 组件，可挂到 today 首
 - 估：A7 拆两次提交：A7a 每个 tab 的生成式组件 + 后端端点；A7b `assistant.chat` 组件
 - 合计：12–16 天
 
+**前置条件**：A4（跨表面挂载）已就绪；仍需 A5-2（趋势）与 A5-3（日历）先落地——
+它们是 A2UI 的主要词汇，没有这些组件，生成式 UI 能排的东西只有现有基础卡片。
+
 ## 4. 依赖关系
 
 ```text
@@ -679,6 +721,25 @@ A6（与 A1–A5 无耦合，但要独占时间窗：动 shell + router）
 - A5 各子项在 A4 之后彼此独立，可按人分工
 - A6 与 A5 无代码耦合，但动 `shell/` + `router.dart` + `app.dart`，**与任何阶段的文件冲突面都大**
 - A7 依赖 A4（要能挂到多表面）与 A5-2/A5-3（趋势与日历组件是 A2UI 的主要词汇）
+
+### 4.1 下一步（2026-10-30 末的现状判断）
+
+A1–A4 的主干已通（A1 差两条验收，A2 差后端端点），A5–A7 全部未开始。按当前约束，
+优先级从高到低：
+
+1. **清理失败的测试用例**（不在原计划的阶段划分里，但是前置条件）。
+   `test/review` + `test/medicine` + `test/mine` 现有 8 条失败，其中
+   `review_golden_test` / `review_semantics_test` 的编译错误会让
+   `ai_summary_provider_test.dart` 整个文件加载失败，基线因此不可信——在这样的
+   基线上做 A5/A6，无法判断新改动是否引入回归。
+2. **补 A1 的两条验收**（五个 tab 的 golden 兜底、「未挂载 id 即渲染」用例）。
+   「未挂载 id 即渲染」直接验证 §0.5 判据 4，成本低，且能防止后续阶段破坏
+   组件化本身的成立条件。
+3. **`Lucent` 落地 `/layouts`**（§2.7 契约已定稿，只需替换 `LayoutRemote` 占位）。
+   这是 A2 遗留的唯一缺口：目前布局只存本地，换机 / 重装会丢，多设备不一致。
+4. **A6**：趁 A3 收口、A5 未开始的空档做，这是唯一不与其他阶段冲突的窗口。
+5. **A5 / A7**：A5 四项里有三项需要新后端端点，A7 又依赖 A5-2/A5-3，建议放到
+   后端排期明确之后。
 
 ## 5. 风险与红线
 
