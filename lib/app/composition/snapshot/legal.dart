@@ -1,5 +1,5 @@
+import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/core/network/i18n/app_locale.dart';
 import 'package:luminous/features/legal/data/repositories/lucent.dart';
 import 'package:luminous/features/legal/domain/repositories/documents.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

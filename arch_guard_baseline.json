@@ -282,12 +282,6 @@
         "lib/core/database/daos/sync/pending_sync.dart",
         "lib/core/database/database.dart"
       ]
-    },
-    {
-      "files": [
-        "lib/core/i18n/locale.dart",
-        "lib/core/network/i18n/app_locale.dart"
-      ]
     }
   ],
   "layerViolations": [

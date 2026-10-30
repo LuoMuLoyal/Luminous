@@ -12,8 +12,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
-export 'package:luminous/core/i18n/locale.dart' show localeControllerProvider;
-
 enum AppLocale {
   system('system'),
   en('en'),

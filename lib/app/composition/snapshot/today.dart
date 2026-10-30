@@ -1,5 +1,5 @@
 import 'package:luminous/app/composition/today/suggestion.dart';
-import 'package:luminous/core/network/i18n/app_locale.dart';
+import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
