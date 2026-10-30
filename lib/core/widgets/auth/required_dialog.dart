@@ -182,9 +182,15 @@ Future<void> _showSignInDialog(BuildContext context) async {
 /// Pushes [location], skipping the push when the context is gone or the login
 /// route is already on top (a second dialog confirmation must not stack two
 /// copies of the sign-in screen).
+///
+/// Reads the current location from the [GoRouter] handle rather than
+/// `GoRouterState.of(context)`: the dialog's context is a navigation-dialog
+/// subtree and reading route state through it registers an InheritedWidget
+/// dependency on a widget that is being torn down.
 void _pushLogin(BuildContext context, String location) {
   if (!context.mounted) return;
-  if (GoRouterState.of(context).uri.toString() == location) return;
+  final router = GoRouter.maybeOf(context);
+  if (router?.state.matchedLocation == location) return;
   unawaited(context.push(location));
 }
 

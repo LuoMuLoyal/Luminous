@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
@@ -36,7 +39,7 @@ class RecordDetailPage extends ConsumerWidget {
               session.isLoading
                   ? const RecordDetailLoading()
                   : AuthRequiredDialogGate(
-                      onLogin: () => requestSignIn(context),
+                      onLogin: () => unawaited(context.push(loginRouteForCurrentLocation(context)))
                     ),
             ],
           ),

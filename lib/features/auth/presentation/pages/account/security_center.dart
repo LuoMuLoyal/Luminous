@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -89,7 +90,7 @@ class SecurityCenterPage extends ConsumerWidget {
             const _SecurityCenterLoading(),
           ] else if (signedOut) ...[
             AuthRequiredDialogGate(
-              onLogin: () => requestSignIn(context),
+              onLogin: () => unawaited(context.push(loginRouteForCurrentLocation(context)))
             ),
           ] else ...[
             // 账号概要：头像 + 昵称 / 邮箱，与个人信息页同一「左标签 / 右数据」观感，

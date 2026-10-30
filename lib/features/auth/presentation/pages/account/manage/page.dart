@@ -110,7 +110,7 @@ class AccountManagePage extends HookConsumerWidget {
             const AccountManageLoading(),
           ] else if (signedOut) ...[
             AuthRequiredDialogGate(
-              onLogin: () => requestSignIn(context),
+              onLogin: () => unawaited(context.push(loginRouteForCurrentLocation(context)))
             ),
           ] else ...[
             // 账号管理列表（头像与昵称在个人信息页，这里只列出可管理项）

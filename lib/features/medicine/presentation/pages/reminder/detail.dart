@@ -55,7 +55,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
               session.isLoading
                   ? const ReminderLoading()
                   : AuthRequiredDialogGate(
-                      onLogin: () => requestSignIn(context),
+                      onLogin: () => unawaited(context.push(loginRouteForCurrentLocation(context)))
                     ),
             ],
           ),
