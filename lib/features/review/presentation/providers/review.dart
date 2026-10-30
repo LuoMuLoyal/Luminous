@@ -1,10 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/providers/data_access.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'review.g.dart';
@@ -59,16 +60,18 @@ Future<EventReview?> reviewCurrent(Ref ref) {
   return authGuarded(
     ref: ref,
     fetch: () async {
-      final result = await ref
-          .watch(reviewRepositoryProvider)
-          .fetchCurrentReview()
-          .run()
-          .timeout(
-            _reviewTimeout,
-            onTimeout: () => throw TimeoutException('review_current_timeout'),
-          );
-      // Left 投影到 AsyncValue.error。
-      return result.fold((failure) => throw failure, (value) => value);
+      final result = ref.watch(reviewRepositoryProvider).fetchCurrentReview();
+      return unwrapFailure(
+        result.run().timeout(
+          _reviewTimeout,
+          onTimeout: () => Either.left(
+            timeoutFailure(
+              code: NetworkErrorCode.receiveTimeout,
+              message: 'review_current_timeout',
+            ),
+          ),
+        ),
+      );
     },
     signedOutFallback: () async => null,
   );
@@ -97,16 +100,20 @@ Future<ReviewEventPage> reviewHistory(Ref ref) {
   return authGuarded(
     ref: ref,
     fetch: () async {
-      final result = await ref
+      final result = ref
           .watch(reviewRepositoryProvider)
-          .fetchHistory(status: status)
-          .run()
-          .timeout(
-            _reviewTimeout,
-            onTimeout: () => throw TimeoutException('review_history_timeout'),
-          );
-      // Left 投影到 AsyncValue.error。
-      return result.fold((failure) => throw failure, (value) => value);
+          .fetchHistory(status: status);
+      return unwrapFailure(
+        result.run().timeout(
+          _reviewTimeout,
+          onTimeout: () => Either.left(
+            timeoutFailure(
+              code: NetworkErrorCode.receiveTimeout,
+              message: 'review_history_timeout',
+            ),
+          ),
+        ),
+      );
     },
     signedOutFallback: () async => const ReviewEventPage(items: [], total: 0),
   );
@@ -134,16 +141,18 @@ Future<EventReview> reviewDetail(Ref ref, String eventId) {
   return authGuarded(
     ref: ref,
     fetch: () async {
-      final result = await ref
-          .watch(reviewRepositoryProvider)
-          .fetchReview(eventId)
-          .run()
-          .timeout(
-            _reviewTimeout,
-            onTimeout: () => throw TimeoutException('review_detail_timeout'),
-          );
-      // Left 投影到 AsyncValue.error。
-      return result.fold((failure) => throw failure, (value) => value);
+      final result = ref.watch(reviewRepositoryProvider).fetchReview(eventId);
+      return unwrapFailure(
+        result.run().timeout(
+          _reviewTimeout,
+          onTimeout: () => Either.left(
+            timeoutFailure(
+              code: NetworkErrorCode.receiveTimeout,
+              message: 'review_detail_timeout',
+            ),
+          ),
+        ),
+      );
     },
   );
 }
