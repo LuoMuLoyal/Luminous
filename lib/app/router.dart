@@ -105,6 +105,9 @@ class Routes {
   static const mineMedicineNew = '/mine/medicine/new';
   static const mineSyncFailures = '/mine/sync/failures';
 
+  /// 编排页前缀；具体 location 由 `CustomizeRoute(surface: …).location` 生成。
+  static const customize = '/customize';
+
   static const notifications = '/notifications';
 
   static const assistant = '/assistant';
@@ -161,6 +164,9 @@ const _publicRoutePrefixes = <String>[
   Routes.settingsMore,
   Routes.settingsNotifications,
   Routes.recordQuickEntrySettings,
+  // 编排页只读写本地布局（KV），不触达服务端数据：未登录用户也可以调整
+  // 自己的预览页布局，登录后落到账号上的是同一份布局。
+  Routes.customize,
 ];
 
 /// 该 location 是否允许未登录访问。

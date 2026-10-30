@@ -9,13 +9,24 @@ part 'routes.g.dart';
 
 /// 编排页入口。
 ///
-/// 一个路由服务五个 surface：`surface` 用 `SurfaceId.wireValue`
-/// （`today` / `record` / …），所以 tab 页上的按钮只需把它自己的 surface
-/// 带进来，不必各写一条路由。
+/// 一个路由服务五个 surface。路径参数保持 `String`（go_router 只能从 URL
+/// 里拿到字符串），但**调用方永远给 [SurfaceId]**：[forSurface] 接收枚举，
+/// 写错的 surface 因此是编译错误，而不是运行时才回退到默认页。
 @TypedGoRoute<CustomizeRoute>(path: '/customize/:surface')
 class CustomizeRoute extends GoRouteData with $CustomizeRoute {
   const CustomizeRoute({required this.surface});
 
+  /// 按枚举构造。
+  ///
+  /// 深链仍可能带来任意字符串，[buildPage] 负责把它解析回枚举并在看不懂时
+  /// 回退到今日页。
+  factory CustomizeRoute.forSurface(SurfaceId surface) =>
+      CustomizeRoute(surface: surface.wireValue);
+
+  /// 要编排的表面的 wire 值（`:surface` 路径参数）。
+  ///
+  /// `@TypedGoRoute` 的占位符类型由其 path 决定，所以字段必须保持 `String`；
+  /// 调用方用 [forSurface] 而不是手拼字符串。
   final String surface;
 
   @override

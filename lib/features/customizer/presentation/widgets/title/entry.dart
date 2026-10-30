@@ -16,7 +16,7 @@ void openSurfaceCustomizer(BuildContext context, SurfaceId surface) {
   final router = GoRouter.maybeOf(context);
   if (router == null) return;
 
-  final location = CustomizeRoute(surface: surface.wireValue).location;
+  final location = CustomizeRoute.forSurface(surface).location;
   if (router.state.matchedLocation == location) return;
 
   unawaited(context.push(location));
