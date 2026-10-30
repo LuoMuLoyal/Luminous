@@ -214,13 +214,17 @@ class DailyRecordRemoteDataSource {
 
     if (response.statusCode != 204) {
       // Protocol invariant: a delete that did not return 204 is a structural
-      // mismatch, logged for diagnosability and kept throwing; the repository
-      // boundary maps it to Left(unknown) with the original cause preserved.
+      // mismatch, logged for diagnosability and reported as the failure the
+      // repository returns (Left with a preserved cause).
       appLog.error(
         'DailyRecordRemoteDataSource.delete: expected 204, got '
         '${response.statusCode}.',
       );
-      throw StateError('Daily record delete returned ${response.statusCode}.');
+      throw LucentFailure.network(
+        message: 'Daily record delete returned ${response.statusCode}.',
+        networkErrorCode: NetworkErrorCode.badResponse,
+        cause: response.statusCode,
+      );
     }
   }
 
