@@ -42,6 +42,30 @@ final class GenerativeTransport {
     controller.handleMessage(message);
   }
 
+  /// 喂一条**已解码但尚未转成 A2UI 类型**的消息对象。
+  ///
+  /// 这是服务端 SSE `event: chunk` 的形态：Lucent 发来的 `data` 已经是一个
+  /// 解析好的消息 JSON 对象，拿它去走 [feedJsonLine] 要先编码再解码、走
+  /// [feedChunk] 则完全错——后者是给未解析的 LLM 文本做增量解析的。
+  ///
+  /// 形状不认识时返回 `Left`，与 [feedJsonLine] 同语义：调用方据此判断这一条
+  /// 是否可用，而不是让页面停在半渲染状态。
+  Either<GenerativeMessageError, void> feedMessageJson(
+    Map<String, Object?> message,
+  ) {
+    if (message.isEmpty) {
+      return const Left(GenerativeMessageError.notAnObject());
+    }
+    try {
+      controller.handleMessage(core.A2uiMessage.fromJson(message));
+    } on Object catch (error) {
+      // `fromJson` 对不认识的形状抛异常（协议版本 / 变体名对不上）。那是输入
+      // 数据的问题，不是程序错误，作为可返回的失败值交出去。
+      return Left(GenerativeMessageError.malformedJson(error.toString()));
+    }
+    return const Right(null);
+  }
+
   /// 喂一行 JSON（A2UI JSONL 的单行）。
   ///
   /// 形状不认识时返回 `Left`——调用方（重放、测试）据此判断这一行是否可用，
