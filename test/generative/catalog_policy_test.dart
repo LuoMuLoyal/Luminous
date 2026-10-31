@@ -226,6 +226,65 @@ void main() {
     });
   });
 
+  group('finding 的稳定 id', () {
+    /// 用真实 id 集合（而不是上面那组合成 id）构造 scope，验的是**生产会用的
+    /// 那份词表**能不能通过准入。
+    DataScope realScope() => DataScope(
+      surface: SurfaceId.review,
+      entries: [
+        for (final id in generativeFindingIds)
+          DataScopeEntry(
+            key: id,
+            kind: DataScopeKind.finding,
+            description: 'finding',
+          ),
+      ],
+    );
+
+    test('词表非空且是 ASCII 下划线命名', () {
+      expect(generativeFindingIds, isNotEmpty);
+      for (final id in generativeFindingIds) {
+        expect(
+          RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(id),
+          isTrue,
+          reason:
+              '$id 必须是稳定的 ASCII 标识符：它进 API 契约与提示词，'
+              '翻译或驼峰都会让服务端与客户端对不上',
+        );
+      }
+    });
+
+    test('每个真实 id 都能通过准入', () {
+      for (final id in generativeFindingIds) {
+        expect(
+          checkComponent(
+            component: {'component': 'finding', 'findingId': id},
+            policies: policies,
+            scope: realScope(),
+          ),
+          isEmpty,
+          reason: '$id 是后端真实存在的规则 id，不该被判违规',
+        );
+      }
+    });
+
+    test('用 kind 冒充 findingId 会被拒', () {
+      // kind 是四值枚举（medication/hydration/sleep/general），多条规则共用
+      // 一个 kind，所以它不是 id。如果哪天有人图省事拿 kind 当引用键，这条会红。
+      for (final kind in ['hydration', 'medication', 'sleep', 'general']) {
+        expect(
+          checkComponent(
+            component: {'component': 'finding', 'findingId': kind},
+            policies: policies,
+            scope: realScope(),
+          ),
+          isNotEmpty,
+          reason: '$kind 是 kind 不是 id，不能当引用键',
+        );
+      }
+    });
+  });
+
   group('整棵组件树', () {
     test('只挑出有问题的组件', () {
       final violations = checkComponents(

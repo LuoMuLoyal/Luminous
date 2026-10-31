@@ -22,6 +22,7 @@ void main() {
             aiSummaryEnabled: false,
             findings: [
               lucent.ReportDashboardResponseFindings(
+                id: 'sleep_insufficient',
                 kind: lucent.ReportDashboardResponseFindingsKindEnum.sleep,
                 title: '睡眠数据不足',
                 body: '最近 7 天还没有睡眠记录。',
@@ -93,6 +94,7 @@ void main() {
             findings: [
               for (var index = 1; index <= 4; index += 1)
                 lucent.ReportDashboardResponseFindings(
+                  id: 'hydration_low_$index',
                   kind:
                       lucent.ReportDashboardResponseFindingsKindEnum.hydration,
                   title: '发现$index',

@@ -57,6 +57,7 @@ void main() {
     String body = '下午摄入咖啡后睡眠时长下降',
   }) {
     return ReviewFinding(
+      id: 'hydration_low',
       kind: kind,
       iconName: 'telescope',
       color: SemanticColor.warning,

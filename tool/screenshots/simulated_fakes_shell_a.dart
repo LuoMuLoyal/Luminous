@@ -791,6 +791,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
     ],
     findings: const <ReviewFinding>[
       ReviewFinding(
+        id: 'medication_stable',
         kind: ReviewInsightKind.medication,
         iconName: 'badge-check',
         color: SemanticColor.primary,
@@ -798,6 +799,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
         body: '本周 28 次计划服药完成 23 次，晚间那一次最容易漏服。',
       ),
       ReviewFinding(
+        id: 'hydration_low',
         kind: ReviewInsightKind.hydration,
         iconName: 'droplets',
         color: SemanticColor.info,
@@ -805,6 +807,7 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
         body: '1500 ml 中有 1000 ml 在 12:00 前完成，午后偏少。',
       ),
       ReviewFinding(
+        id: 'sleep_insufficient',
         kind: ReviewInsightKind.sleep,
         iconName: 'moon-star',
         color: SemanticColor.neutral,

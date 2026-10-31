@@ -102,6 +102,7 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
     ],
     findings: <ReviewFinding>[
       ReviewFinding(
+        id: 'hydration_low',
         kind: ReviewInsightKind.general,
         iconName: 'chart-line',
         color: SemanticColor.primary,
@@ -205,6 +206,7 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
     ],
     findings: <ReviewFinding>[
       ReviewFinding(
+        id: 'sleep_insufficient',
         kind: ReviewInsightKind.general,
         iconName: 'lock',
         color: SemanticColor.primary,

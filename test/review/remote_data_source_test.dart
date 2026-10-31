@@ -101,6 +101,7 @@ class _FakeReportAdapter implements HttpClientAdapter {
     ],
     'findings': <Object?>[
       <String, Object?>{
+        'id': 'hydration_low',
         'kind': 'hydration',
         'title': '饮水改善',
         'body': '最近 7 天饮水量较前期更稳定。',
