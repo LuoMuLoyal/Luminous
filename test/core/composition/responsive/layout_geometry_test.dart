@@ -183,15 +183,15 @@ void main() {
     });
   });
 
-  group('桌面宽度（3 列）', () {
-    testWidgets('compact=1 列、regular=2 列、wide=3 列', (tester) async {
-      const columns = 3;
+  group('桌面宽度（2 列）', () {
+    testWidgets('compact=1 列、regular=2 列、wide=2 列', (tester) async {
+      const columns = 2;
       expect(ComponentLayout.desktop.columns, columns);
 
       for (final probe in [
         (_compactId, 'p-compact', 1),
         (_regularId, 'p-regular', 2),
-        (_wideId, 'p-wide', 3),
+        (_wideId, 'p-wide', 2),
       ]) {
         final (id, key, span) = probe;
         final layout = SurfaceLayout(
@@ -221,12 +221,14 @@ void main() {
     testWidgets('compact 与 regular 并排在同一行', (tester) async {
       final r = await _measure(tester, width: 1440, layout: layout);
 
-      // compact(1 列) + regular(2 列) = 3 列，正好一行 → top 相同。
-      expect(r['p-compact']!.top, closeTo(r['p-regular']!.top, 0.5));
-      // regular 紧接在 compact 右侧（中间隔一个 columnSpacing）。
-      expect(r['p-regular']!.left, closeTo(r['p-compact']!.right + 12, 0.5));
-      // wide(3 列) 独占下一行。
-      expect(r['p-wide']!.top, greaterThan(r['p-compact']!.top));
+      // compact(1 列) + regular(2 列) 超过 2 列，所以 compact 独占一行，
+      // regular 换行；这与 3 列时「两者同一行」的行为不同——两列正是为了
+      // 消除 regular 每行留下的空列。
+      expect(r['p-compact']!.top, lessThan(r['p-regular']!.top));
+      // regular 回到左边起始位置（新行）。
+      expect(r['p-regular']!.left, closeTo(r['p-compact']!.left, 0.5));
+      // wide 在 2 列下等价于整行，另起一行。
+      expect(r['p-wide']!.top, greaterThan(r['p-regular']!.top));
     });
   });
 
@@ -243,7 +245,7 @@ void main() {
       // 回退到 compact → 桌面端只占 1 列，而不是撑满 3 列。
       expect(
         r['p-compact']!.width,
-        closeTo(_singleItemWidth(1440, columns: 3, span: 1, gap: 12), 1),
+        closeTo(_singleItemWidth(1440, columns: 2, span: 1, gap: 12), 1),
       );
     });
 
@@ -259,7 +261,7 @@ void main() {
       expect(r['p-compact'], isNotNull);
       expect(
         r['p-compact']!.width,
-        closeTo(_singleItemWidth(1440, columns: 3, span: 1, gap: 12), 1),
+        closeTo(_singleItemWidth(1440, columns: 2, span: 1, gap: 12), 1),
       );
     });
 

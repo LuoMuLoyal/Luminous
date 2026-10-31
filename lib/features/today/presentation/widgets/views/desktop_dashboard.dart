@@ -14,9 +14,13 @@ import 'package:luminous/features/today/presentation/widgets/shared/top_bar.dart
 /// regardless of what the user mounted.
 ///
 /// It now renders the **same** `SurfaceId.today` layout as mobile through
-/// [ComponentHostGridSliver]: the desktop gets three columns and each component
-/// spans them according to its [ComponentSize]. One persisted layout therefore
-/// describes both form factors.
+/// [ComponentHostGridSliver]: the desktop lays it out in two columns and each
+/// component spans them according to its [ComponentSize]. One persisted layout
+/// therefore describes both form factors.
+///
+/// Two columns, not three: a `regular` component spans two columns, so a
+/// three-column grid left every row one column short (the packing never
+/// back-fills), which read as a permanent gap on a wide monitor.
 class DesktopTodayDashboard extends ConsumerWidget {
   const DesktopTodayDashboard({super.key, required this.onRefresh});
 

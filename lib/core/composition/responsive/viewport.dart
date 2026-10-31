@@ -18,8 +18,14 @@ enum ComponentLayout {
   /// Two columns. A `compact` component takes one, anything else takes both.
   tablet(2),
 
-  /// Three columns. `compact` = 1, `regular` = 2, `wide` = 3.
-  desktop(3);
+  /// Two columns, same as [tablet].
+  ///
+  /// Desktop used to lay out three columns, but in practice a `regular`
+  /// component spans two of them, so every row ended with an empty column
+  /// (the packing in `layoutGridRows` is sparse and never back-fills). Two
+  /// columns keeps the same aspect ratio on a wide monitor without the
+  /// permanent gap, and lets one persisted layout describe every form factor.
+  desktop(2);
 
   const ComponentLayout(this.columns);
 
