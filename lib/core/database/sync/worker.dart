@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show BindingBase;
 import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
@@ -45,14 +46,41 @@ class SyncWorker {
   }
 
   /// Starts listening to connectivity changes.
+  ///
+  /// Connectivity 走平台通道，单元测试与无 UI 的容器里没有 binding 会直接抛
+  /// `Binding has not yet been initialized`。监听失败不该让整个 worker（以及
+  /// 首个读到它的调用方）崩掉：只是「联网自动重放」这条边没了，手动 flush 与
+  /// 登录后 flush 都还在。
   Future<void> start() async {
-    await _subscription?.cancel();
-    _subscription = Connectivity().onConnectivityChanged.listen((results) {
-      final hasConnection = results.any((r) => r != ConnectivityResult.none);
-      if (hasConnection) {
-        unawaited(flush());
-      }
-    });
+    try {
+      await _subscription?.cancel();
+      _subscription = Connectivity().onConnectivityChanged.listen(
+        (results) {
+          final hasConnection = results.any(
+            (r) => r != ConnectivityResult.none,
+          );
+          if (hasConnection) {
+            unawaited(flush());
+          }
+        },
+        // 平台通道在 `listen` 之后才异步抛错（EventChannel 的
+        // `receiveBroadcastStream` 在无 binding 时于订阅回调里断言），外层
+        // try/catch 抓不到，必须挂 onError。
+        onError: (Object error, StackTrace stackTrace) {
+          talker.warning(
+            'SyncWorker.start: connectivity stream failed, auto-replay '
+            'disabled: $error',
+          );
+        },
+        cancelOnError: true,
+      );
+    } catch (error) {
+      talker.warning(
+        'SyncWorker.start: connectivity unavailable, auto-replay disabled: '
+        '$error',
+      );
+      _subscription = null;
+    }
   }
 
   /// Stops listening to connectivity changes.
@@ -67,6 +95,11 @@ class SyncWorker {
   /// manually (e.g. after a write operation). The returned summary lets a
   /// background worker decide between success and retry.
   Future<SyncFlushResult> flush() async {
+    // 没有 Flutter binding 就没有可读的本地库（drift 走平台通道）：直接返回空
+    // 结果，而不是让断言从异步链上冒出来把调用方（登录流程）带崩。
+    if (BindingBase.debugBindingType() == null) {
+      return const SyncFlushResult();
+    }
     if (_isFlushing) return const SyncFlushResult();
     _isFlushing = true;
 
@@ -287,10 +320,20 @@ SyncWorker syncWorker(Ref ref) {
   // own handlers when they come online. This avoids circular dependencies.
   // See LucentDailyRecordRepository for an example of handler registration.
 
-  // start() is async (awaits subscription cancellation before listening).
-  // Fire-and-forget is safe here — the worker starts listening as soon as
-  // the previous subscription (if any) is cancelled.
-  unawaited(worker.start());
+  // 平台通道只在有 binding 时可用。单元测试、无 UI 的后台容器里没有 binding，
+  // 而 `Connectivity().onConnectivityChanged` 会在订阅回调里直接断言，`try/catch`
+  // 与 `onError` 都拦不住（断言抛在 zone 上）。所以先判断 binding 是否就绪：
+  // 没有就只提供手动 `flush()`，不订阅网络。
+  //
+  // 生产路径第一次访问本 provider 时 binding 一定已初始化（`bootstrap` 里
+  // `WidgetsFlutterBinding.ensureInitialized()` 在 `runApp` 之前）。
+  if (BindingBase.debugBindingType() != null) {
+    unawaited(worker.start());
+  } else {
+    talker.warning(
+      'syncWorker: no Flutter binding, connectivity auto-replay disabled',
+    );
+  }
   ref.onDispose(worker.stop);
 
   return worker;
