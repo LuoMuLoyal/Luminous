@@ -26,6 +26,7 @@ import 'package:luminous/features/review/presentation/widgets/sections/overview/
 import 'package:luminous/features/review/presentation/widgets/sections/overview/next_step.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/noteworthy.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/record_guide.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/preview/multi_trend.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/preview_locked.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
@@ -57,6 +58,11 @@ const reviewKeyChangesId = ComponentId('overview.key_changes');
 const reviewCompletedActionsId = ComponentId('overview.completed_actions');
 const reviewNextStepId = ComponentId('overview.next_step');
 const reviewTrendId = ComponentId('trend.single');
+
+/// 多维度趋势：几条线叠在同一张图上，回答「几个指标是否同向变化」。
+/// 进 available 与默认布局（放在单维趋势之后）：它是需求原文第 5 条
+/// 「单维度、多维度组件都做」里的后者，默认就要能看到。
+const reviewMultiTrendId = ComponentId('trend.multi');
 const reviewHistoryId = ComponentId('history.review');
 const reviewAiSummaryId = ComponentId('ai_summary.event');
 const reviewPreviewOverviewId = ComponentId('preview.overview');
@@ -74,6 +80,7 @@ const reviewSurfaceDefinition = SurfaceDefinition(
     reviewPeriodSwitchId,
     todayPreviewBannerId,
     reviewTrendId,
+    reviewMultiTrendId,
     reviewCoverageStripId,
     reviewEventHeaderId,
     reviewWhatHappenedId,
@@ -120,6 +127,8 @@ const reviewSurfaceDefinition = SurfaceDefinition(
       ComponentPlacement(id: reviewNextStepId),
       // 纵向洞察折线图：空趋势时不渲染。
       ComponentPlacement(id: reviewTrendId),
+      // 多维度趋势：单维之后。空趋势时同样不渲染。
+      ComponentPlacement(id: reviewMultiTrendId),
       ComponentPlacement(id: reviewHistoryId),
     ],
   ),
@@ -137,6 +146,7 @@ void registerReviewComponents(ComponentRegistry registry) {
   registry.registerDescriptor(const _CompletedActionsComponent());
   registry.registerDescriptor(const _NextStepComponent());
   registry.registerDescriptor(const _TrendComponent());
+  registry.registerDescriptor(const _MultiTrendComponent());
   registry.registerDescriptor(const _HistoryComponent());
   registry.registerDescriptor(const _AiSummaryComponent());
   registry.registerDescriptor(const _PreviewOverviewComponent());
@@ -400,6 +410,27 @@ class _TrendComponent extends ComponentDescriptor<NoComponentConfig> {
   }
 }
 
+/// 多维度趋势：把有数据的几个维度叠在同一张图上。
+class _MultiTrendComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _MultiTrendComponent();
+
+  @override
+  ComponentId get id => reviewMultiTrendId;
+
+  @override
+  NoComponentConfig get defaultConfig => const NoComponentConfig();
+
+  @override
+  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+    final dashboard = ref.watch(reviewSurfaceStateProvider).dataOrNull;
+    // 少于两个维度就没有「多维度」可谈，交给单维趋势卡。
+    if (dashboard == null || dashboard.trends.length < 2) return null;
+    return ReviewMultiTrendSection(
+      trends: dashboard.trends,
+      startDate: dashboard.startDate,
+    );
+  }
+}
 class _HistoryComponent extends ComponentDescriptor<NoComponentConfig> {
   const _HistoryComponent();
 

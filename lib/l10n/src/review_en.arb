@@ -216,6 +216,9 @@
   "reviewMoreShareManagementSubtitle": "View and revoke shared links",
   "reviewTrendEmptyTitle": "No trend data yet",
   "reviewTrendEmptyBody": "Record water, medication, or sleep on 2+ days to see trends.",
+  "reviewMultiTrendTitle": "Multi-metric trend",
+  "reviewMultiTrendSubtitle": "Compare trends",
+  "reviewMultiTrendNormalizedNote": "Values shown above",
   "reviewTrendCoverage": "{observed} of {expected} days recorded",
   "@reviewTrendCoverage": {
     "placeholders": {
