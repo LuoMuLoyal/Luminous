@@ -17,14 +17,35 @@ final class LayoutWire {
   };
 
   /// 解出布局；文档形状不认识时返回 `null`，由调用方回退默认布局。
+  ///
+  /// 接受两种输入：
+  /// - 服务端的 `LayoutDoc`（`{version, schemaVersion, payload}`）——409 冲突时
+  ///   `errors.current` 就是这种形状；
+  /// - 裸 payload JSON（本地缓存、`LayoutRemote.fetchAll` 传回来的字符串）。
   SurfaceLayout? fromDoc(Object? doc) {
+    if (doc == null) return null;
+    if (doc is String) {
+      final decoded = _tryDecode(doc);
+      return decoded == null ? null : SurfaceLayout.fromJson(decoded);
+    }
     if (doc is! Map) return null;
-    final payload = doc['payload'];
+    // 有 payload 键就是 LayoutDoc，取它的 payload；否则当作裸 payload。
+    final payload = doc.containsKey('payload') ? doc['payload'] : doc;
     if (payload == null) return null;
-
-    // payload 可能是 JSON 字符串（缓存里存的）也可能是已解析的 map。
-    final decoded = payload is String ? jsonDecode(payload) : payload;
+    final decoded = payload is String ? _tryDecode(payload) : payload;
+    if (decoded is! Map) return null;
     return SurfaceLayout.fromJson(decoded);
+  }
+
+  Map<String, Object?>? _tryDecode(String raw) {
+    try {
+      final decoded = jsonDecode(raw);
+      return decoded is Map
+          ? {for (final e in decoded.entries) e.key.toString(): e.value}
+          : null;
+    } on FormatException {
+      return null;
+    }
   }
 
   /// 缓存里存 payload 的字符串形式，避免 drift 表结构随布局模型演进而迁移。

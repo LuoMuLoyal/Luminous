@@ -7,6 +7,7 @@ import 'package:luminous/features/customizer/presentation/providers/layout_store
 import 'package:luminous/features/customizer/presentation/widgets/palette.dart';
 
 import '../helpers/kv_test_store.dart';
+import '../helpers/layout_remote.dart';
 import '../helpers/test_forui_app.dart';
 
 /// 组件面板的回归用例。
@@ -40,7 +41,10 @@ void main() {
   /// 建一个已经 `begin()` 过的容器，使面板能读到草稿。
   Future<ProviderContainer> startedContainer(SurfaceCatalog catalog) async {
     final container = ProviderContainer(
-      overrides: [surfaceCatalogProvider.overrideWithValue(catalog)],
+      overrides: [
+        surfaceCatalogProvider.overrideWithValue(catalog),
+        fakeLayoutRepositoryOverride(),
+      ],
     );
     addTearDown(container.dispose);
     await container.read(surfaceLayoutsProvider.future);

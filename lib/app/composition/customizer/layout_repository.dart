@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/customizer/data/datasources/layout_cache.dart';
 import 'package:luminous/features/customizer/data/datasources/layout_remote.dart';
@@ -16,6 +17,6 @@ import 'package:luminous/features/customizer/domain/repositories/layout.dart';
 final layoutRepositoryProvider = Provider<LayoutRepository>((ref) {
   return CachedLayoutRepository(
     cache: LayoutCache(KvStore.instance),
-    remote: const LayoutRemote(),
+    remote: LucentLayoutRemote(ref.watch(lucentClientProvider)),
   );
 });

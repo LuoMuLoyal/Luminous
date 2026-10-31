@@ -5,6 +5,7 @@ import 'package:luminous/features/customizer/domain/entities/draft.dart';
 import 'package:luminous/features/customizer/presentation/providers/layout_store.dart';
 
 import '../helpers/kv_test_store.dart';
+import '../helpers/layout_remote.dart';
 
 const _surface = SurfaceId.today;
 
@@ -31,7 +32,10 @@ void main() {
 
   ProviderContainer createContainer() {
     final container = ProviderContainer(
-      overrides: [surfaceCatalogProvider.overrideWithValue(_catalog)],
+      overrides: [
+        surfaceCatalogProvider.overrideWithValue(_catalog),
+        fakeLayoutRepositoryOverride(),
+      ],
     );
     addTearDown(container.dispose);
     return container;

@@ -73,11 +73,26 @@ final class CachedLayoutRepository implements LayoutRepository {
       await _cache.write(surface, layout);
 
       final result = await _remote
-          .put(surface, _wire.encodePayload(layout), ifVersion: ifVersion)
+          .put(
+            surface,
+            _wire.encodePayload(layout),
+            schemaVersion: layout.schemaVersion,
+            ifVersion: ifVersion,
+          )
           .run();
       return result.match(
         (failure) {
-          // 远端失败不回滚本地：用户的选择已经生效，队列会重放。
+          // 409：另一台设备先写了。服务端在 `errors.current` 带回当前文档，
+          // 采纳它并写回缓存——不重试、不合并，与 §2.7 的约定一致。
+          final adopted = _adoptConflict(surface, failure);
+          if (adopted != null) {
+            appLog.warning(
+              'CachedLayoutRepository.write(${surface.wireValue}): '
+              'version conflict, adopted server layout',
+            );
+            return Right<LucentFailure, SurfaceLayout>(adopted);
+          }
+          // 其它失败不回滚本地：用户的选择已经生效，队列会重放。
           appLog.warning(
             'CachedLayoutRepository.write(${surface.wireValue}): '
             'queued for retry, remote failed: ${failure.message}',
@@ -87,5 +102,16 @@ final class CachedLayoutRepository implements LayoutRepository {
         (_) => Right<LucentFailure, SurfaceLayout>(layout),
       );
     });
+  }
+
+  /// 409 `LAYOUT_VERSION_CONFLICT` 时把服务端文档写回缓存并返回它；其余失败返回
+  /// `null`。缓存写是异步的，这里 fire-and-forget——下一次 `readAll` 会再拉一次。
+  SurfaceLayout? _adoptConflict(SurfaceId surface, LucentFailure failure) {
+    if (failure.statusCode != 409) return null;
+    final current = failure.errors?['current'];
+    final adopted = _wire.fromDoc(current);
+    if (adopted == null) return null;
+    unawaited(_cache.write(surface, adopted));
+    return adopted;
   }
 }
