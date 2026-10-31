@@ -54,6 +54,28 @@ agent 能决定「展示什么、怎么排、什么形式」，**不能决定数
 `item_catalog.dart` 的 `generativeMetricKinds` **声明**，`DataScope` 由它生成；不手抄
 第二份。
 
+## 实验性功能：默认关闭，需用户显式启用
+
+生成式 UI 是**实验性功能**，默认关闭。开关在 settings → advanced → 实验开关页
+（`genUiEnabled`）；开启后才在编排页出现入口。
+
+| 位置 | 受开关控制的事 |
+| --- | --- |
+| `app/composition/components/registry.dart` | `buildComponentRegistry` 是否注册 `generative.<surface>` |
+| 同上 | `buildSurfaceCatalog` 是否把这些 id 追加进各 surface 的 `owned` |
+| `isComposableSurface` | 判定依据是同一个 `generativeSurfaces` 清单 |
+
+**两件事必须一起做**：编排页的候选面板只列 `SurfaceDefinition.owned` 里的 id
+（`customizer/presentation/widgets/palette.dart`）。只注册组件而不进 `owned`，
+组件能用却永远不出现在面板里——用户看不到也就够不到。测试
+`test/core/composition/genui_flag_test.dart` 把这两条一起断言。
+
+**两个 override 都必须是 `overrideWith` 而不是 `overrideWithValue`**：回调在
+provider 读取时求值并 `watch(genUiEnabledProvider)`，所以用户一开开关就立即生效；
+写死成值则整个进程只有启动那一刻的判断，用户必须重启 app。开关关闭时组件根本
+不注册，已存布局即使提到它，`ComponentHost` 也按「未知 id」跳过——这是组件系统
+对任何未注册 id 的既有降级行为，不需要额外分支。
+
 ## 接后端生成端点（A7b）
 
 端点：`POST /layouts/:surface/generate`（Lucent `layouts` 模块），SSE 四帧。

@@ -38,8 +38,12 @@
 - 不 import `features/**`，不依赖 network / database；只依赖 `core/config` 的
   `EnvReader`。
 - feature 代码不得借本层绕过 Lucent 后端流程（仓库 `AGENTS.md` 的 seam 边界）。
-- **生成式 UI 不走这一层**：`lib/core/composition/genui/` 是渲染引擎接缝，
-  与「实验开关」是两件事，不要合并。
+- **生成式 UI 的开关不在这里**：本层只解析构建期环境变量（`RuntimeConfig`），
+  而生成式 UI 是**用户可切换**的实验功能，开关值由 settings 的
+  `FeatureFlagsController.genUiEnabled` 持有（默认 false），装配层通过
+  `core/config/feature_flags.dart` 的 `genUiEnabledProvider` 读取。
+  `lib/core/composition/genui/` 是渲染引擎接缝，与「实验开关」仍是两件事，
+  不要合并。
 
 ## 陷阱与决策
 
