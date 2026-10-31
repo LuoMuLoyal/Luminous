@@ -94,9 +94,17 @@ final class GenerationRequest {
     required this.surface,
     required this.prompt,
     required this.scope,
+    this.range,
   });
 
   final SurfaceId surface;
   final GenerationPrompt prompt;
   final DataScope scope;
+
+  /// 用户偏好的时间范围。
+  ///
+  /// 可选且**只是偏好**：服务端文档写明「the model may ignore it」。真正的
+  /// 取值范围仍由 `kind` 的 `DataScopeEntry.allowedRanges` 约束，这里不重复
+  /// 校验——两处都判会让「模型忽略 range」变成一次失败。
+  final RangeKey? range;
 }
