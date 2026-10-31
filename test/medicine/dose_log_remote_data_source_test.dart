@@ -89,19 +89,19 @@ void main() {
     });
 
     test(
-      'fetchForDate throws FormatException when items is not a list',
+      'fetchForDate reports a LucentFailure when items is not a list',
       () async {
         adapter.getBodyOverride = <String, Object?>{'items': 'not-a-list'};
 
         await expectLater(
           dataSource.fetchForDate('2026-07-10'),
-          throwsA(isA<FormatException>()),
+          throwsA(isA<LucentFailure>()),
         );
       },
     );
 
     test(
-      'fetchForDate throws FormatException when an item is not a map',
+      'fetchForDate reports a LucentFailure when an item is not a map',
       () async {
         adapter.getBodyOverride = <String, Object?>{
           'items': <Object?>[42],
@@ -109,7 +109,7 @@ void main() {
 
         await expectLater(
           dataSource.fetchForDate('2026-07-10'),
-          throwsA(isA<FormatException>()),
+          throwsA(isA<LucentFailure>()),
         );
       },
     );

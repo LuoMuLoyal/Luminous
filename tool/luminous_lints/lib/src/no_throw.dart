@@ -75,7 +75,10 @@ final class NoThrowRule extends AnalysisRule {
     if (layer != 'application' && layer != 'presentation' && layer != 'data') {
       return;
     }
-    if (layer == 'data' && isFailureThrow(statement)) return;
+    // 失败通道的显式抛出在任何层都放行：data 层抛裸 LucentFailure，
+    // presentation/application 抛 LucentFailureException（统一包装），
+    // 两者都是「把失败值交出去」，不是隐式控制流。
+    if (isFailureThrow(statement)) return;
     if (_ownerAllowsThrow(statement)) return;
     report(statement);
   }
@@ -103,21 +106,26 @@ final class NoThrowRule extends AnalysisRule {
     return 'other';
   }
 
-  /// Whether [statement] throws one of the failure renderings allowed at the
-  /// data-layer boundary.
+  /// Whether [statement] throws a value the package contract owns rather than
+  /// a chosen control-flow escape.
   ///
-  /// A data source reports its failure by throwing it — the repository wraps
-  /// the call in `TaskEither.tryCatch`, so the throw *is* the failure value
-  /// there. A `data/` stream (`async*`) has no Either to carry it, so it throws
-  /// the same failure value and the consumer's `catch` maps it. Every accepted
-  /// shape is a `LucentFailure`: the class itself, a `failure` variable, a
-  /// client-detected builder (`LucentFailure.client(...)`), or the app's SSE
-  /// helper (`mapSseStreamError`) / any `…failure…` builder call.
+  /// Accepted shapes:
+  /// - a failure value: `LucentFailure` (data layer), `LucentFailureException`
+  ///   (the Future-channel wrapper from `core/providers/channel.dart`), or a
+  ///   `failure` variable / `…failure…` builder call;
+  /// - a **named domain guard** (`class XException implements Exception`
+  ///   declared in the same file, caught by type at the call site, e.g.
+  ///   `MealQuickEntryEmptyException`): the flow contract is "refuse with this
+  ///   value", and the caller switches on the type. These are not failure
+  ///   channel either, but they are the explicit, typed alternative to a bare
+  ///   `throw StateError('…')`.
   static bool isFailureThrow(ThrowExpression statement) {
     final expression = _unwrap(statement.expression);
     if (expression is InstanceCreationExpression) {
       final name = expression.constructorName.type.name.lexeme;
-      return name == 'LucentFailure';
+      return name == 'LucentFailure' ||
+          name == 'LucentFailureException' ||
+          name.endsWith('Exception');
     }
     if (expression is SimpleIdentifier) {
       return expression.name == 'failure';

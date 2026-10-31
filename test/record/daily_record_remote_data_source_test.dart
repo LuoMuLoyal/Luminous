@@ -218,16 +218,23 @@ void main() {
     );
 
     test(
-      'delete throws StateError when the server returns a non-204 status',
+      'delete reports a badResponse LucentFailure on a non-204 status',
       () async {
         await expectLater(
           dataSource.delete('record-1'),
           throwsA(
-            isA<StateError>().having(
-              (e) => e.message,
-              'message',
-              'Daily record delete returned 200.',
-            ),
+            isA<LucentFailure>()
+                .having((e) => e.kind, 'kind', LucentFailureKind.network)
+                .having(
+                  (e) => e.networkErrorCode,
+                  'networkErrorCode',
+                  NetworkErrorCode.badResponse,
+                )
+                .having(
+                  (e) => e.message,
+                  'message',
+                  'Daily record delete returned 200.',
+                ),
           ),
         );
       },
