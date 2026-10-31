@@ -46,6 +46,12 @@ final class _FakeRepository implements GenerationRepository {
     seed = null;
     return const Right(unit);
   }
+
+  /// `GenerationSession` 本身不驱动流（驱动是 presentation 层 notifier 与远端
+  /// 的职责），所以替身只需满足接口；事件由各用例直接喂给 session。
+  @override
+  Stream<GenerationStreamEvent> generate(GenerationRequest request) =>
+      const Stream.empty();
 }
 
 const _scope = DataScope(
