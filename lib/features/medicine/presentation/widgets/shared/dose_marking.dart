@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
@@ -54,19 +55,19 @@ Future<void> markMedicineDose(
         .run();
     result.fold((failure) => throw failure, (_) {});
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
+    // toast 的 action 在**之后**的某次点击才执行。那时 `mark` 拿到的这个
+    // context 所属的 widget 很可能已经重建（行状态从 planned 变成 taken，
+    // 整行被替换），`context.mounted` 就是 false——撤销按钮会静默失效。
+    // 所以闭包只捕获 provider 容器（与 widget 生命周期无关），context 仅在
+    // 此刻用来弹 toast。
     if (context.mounted) {
+      final container = ProviderScope.containerOf(context, listen: false);
       unawaited(
         Toast.showWithAction(
           context,
           l10n.medicineDoseActionSavedToast,
           l10n.medicineDoseUndoAction,
-          // The undo action fires on a later user tap; the page may have
-          // been popped in between, so guard before using the context
-          // (deactivated context trips the `_dependents.isEmpty` assertion).
-          () {
-            if (!context.mounted) return;
-            unawaited(undoMedicineDose(context, ref, request, dateStr));
-          },
+          () => unawaited(_undoMarkedDose(container, request, dateStr)),
         ),
       );
     }
@@ -79,16 +80,16 @@ Future<void> markMedicineDose(
 }
 
 /// 撤销一次打卡：把该日该槽位写回 planned。
-Future<void> undoMedicineDose(
-  BuildContext context,
-  WidgetRef ref,
+///
+/// 由 toast 的 action 在稍后的点击里调用，那时 UI 上下文可能已经失效，所以
+/// 只依赖 [ProviderContainer]，不碰 `BuildContext` 与 `WidgetRef`。
+Future<void> _undoMarkedDose(
+  ProviderContainer container,
   MedicineDoseMarkRequest request,
   String dateStr,
 ) async {
-  if (!context.mounted) return;
-  final l10n = AppLocalizations.of(context)!;
   try {
-    final result = await ref
+    final result = container
         .read(cachedDoseLogDataSourceProvider)
         .mark(
           currentMedicineId: request.currentMedicineId,
@@ -98,15 +99,11 @@ Future<void> undoMedicineDose(
           date: dateStr,
         )
         .run();
-    result.fold((failure) => throw failure, (_) {});
-    ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
-    if (context.mounted) {
-      unawaited(Toast.show(context, l10n.medicineDoseUndoneToast));
-    }
+    await unwrapFailure(result);
+    container
+        .read(dataChangeBusProvider.notifier)
+        .emit(DataChangeTopic.doseLogs);
   } catch (error) {
-    ref.read(talkerProvider).error('undoMedicineDose: failed: $error');
-    if (context.mounted) {
-      unawaited(Toast.show(context, l10n.medicineDoseActionFailedToast));
-    }
+    container.read(talkerProvider).error('undoMedicineDose: failed: $error');
   }
 }

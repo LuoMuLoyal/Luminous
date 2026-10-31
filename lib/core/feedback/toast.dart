@@ -114,6 +114,15 @@ class Toast {
     _currentMessage = null;
     _currentAction = null;
   }
+
+  /// 清掉跨用例的残留状态（仅测试使用）。
+  ///
+  /// `Toast` 的状态是静态的：一个用例里弹出又自动消失的 toast 会把
+  /// `_currentMessage` 留在"同消息重放"分支的判定条件里，下一个用例再弹同一
+  /// 条消息时就走重放路径——按钮由旧 entry 渲染，回调却指向已卸载的组件，
+  /// 点了没反应。测试必须在 `setUp` 里清一次。
+  @visibleForTesting
+  static void resetForTesting() => _reset();
 }
 
 class _ActionConfig {

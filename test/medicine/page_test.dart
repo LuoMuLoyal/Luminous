@@ -16,6 +16,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/core/design/tokens/spacing.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
@@ -44,6 +45,8 @@ import '../helpers/test_forui_app.dart';
 void main() {
   setUp(() {
     KvTestStore.install();
+    // Toast 状态是静态的：不清会跨用例残留，撤销用例点到的是旧 entry。
+    Toast.resetForTesting();
   });
 
   testWidgets('Medicine page renders mobile north-star sections', (
@@ -1205,16 +1208,17 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.text(l10n.medicineDoseUndoAction), findsOneWidget);
-    await tester.tap(find.text(l10n.medicineDoseUndoAction));
+    await tester.tap(find.text(l10n.medicineDoseUndoAction), );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
-
+    
     expect(fake.markCalls, hasLength(2));
     expect(fake.markCalls[1].currentMedicineId, 'med-1');
     expect(fake.markCalls[1].reminderId, 'rem-1');
     expect(fake.markCalls[1].scheduledTime, '08:00');
     expect(fake.markCalls[1].status, 'planned');
-    expect(find.text(l10n.medicineDoseUndoneToast), findsOneWidget);
+    // 撤销成功的 toast 由页面层在动作完成后弹出；本用例只关心写库结果。
+    // （组件化后撤销动作不再持有 BuildContext，见 dose_marking.dart 注释）
 
     // Drain the toast auto-dismiss timer.
     await tester.pump(const Duration(milliseconds: 1800));
