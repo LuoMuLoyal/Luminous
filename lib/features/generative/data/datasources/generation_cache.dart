@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/generative/domain/entities/generation.dart';
-import 'package:luminous/features/generative/domain/repositories/generation.dart';
 import 'package:luminous/shared/domain/composition/surface.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
@@ -15,19 +14,24 @@ import 'package:luminous/shared/domain/failure.dart';
 ///
 /// 冷启动重放，不重复烧 LLM。
 ///
+/// **它不实现 `GenerationRepository`**：仓储接口现在同时包含「远端生成」与
+/// 「本地读写」两件事，而缓存只配做后者。让缓存类型去实现整个接口，就得为
+/// `generate` 写一个永远抛异常的桩——那是把「未实现」伪装成「实现」。接口由
+/// `CachedGenerationRepository` 收口，缓存只提供三个本地方法。
+///
 /// **为什么在 `data/` 而不在 `core/composition/genui/`**：`GenerativeSurfaceDocument`
 /// 带着 `SurfaceId`（shared 内核）和「消息序列」这个值类型，属于生成式 UI 自己的
 /// 词汇；而 `KvStore` 只允许 `data/` 和 `core/` 碰。放在 core 会让 feature 的
 /// domain 反过来依赖 core，放在这里则两边都合法：`data/` 允许 import
 /// `core/storage`。
-final class GenerativeMessageCache implements GenerationRepository {
+final class GenerativeMessageCache {
   GenerativeMessageCache(this._store);
 
   final KvStore _store;
 
   static String _key(SurfaceId surface) => 'genui.${surface.wireValue}.surface';
 
-  @override
+  /// 读出该 surface 上次生成的文档；没生成过返回 `null`。
   Future<Either<LucentFailure, GenerativeSurfaceDocument?>> read(
     SurfaceId surface,
   ) async {
@@ -72,7 +76,7 @@ final class GenerativeMessageCache implements GenerationRepository {
     );
   }
 
-  @override
+  /// 写回一次生成结果，供冷启动重放。
   Future<Either<LucentFailure, Unit>> write(
     GenerativeSurfaceDocument document,
   ) async {
@@ -80,7 +84,7 @@ final class GenerativeMessageCache implements GenerationRepository {
     return const Right(unit);
   }
 
-  @override
+  /// 清掉该 surface 的生成结果（「恢复默认」用）。
   Future<Either<LucentFailure, Unit>> clear(SurfaceId surface) async {
     await _store.remove(_key(surface));
     return const Right(unit);
