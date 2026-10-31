@@ -596,15 +596,6 @@ listTransportRoutes getMedicationOverview
 - 图查询失败是 `200 + status`，必须渲染「暂时无法给出机理分析」，**不得渲染成「无风险」**
 - 估：10–14 天
 
-#### A5-2 回顾：单维 / 多维 / legacy 并入
-
-后端 `GET /reports/dashboard` 已返回 `metrics`/`trends`/`findings`/`patterns`（含 `sparkline`），无需新端点。
-
-- 单维：`review.trend_single`；多维：`review.metric_grid`、`review.trend_multi`
-- legacy 页面（`legacy_dashboard_compat.dart` + `views/legacy/` + `sections/legacy/`）
-  改进后拆成组件并入目录，随后删除 `/review/legacy` 路由
-- 估：10–14 天
-
 #### A5-3 记录：大日历（含后端新端点）
 
 - `RecordCalendarDay.markers` 已是 `List<SemanticColor>`，但 `staticMonthDays()`
@@ -668,7 +659,7 @@ GET /daily-records/month-overview?month=YYYY-MM&kind=<可选>
 
 ```text
 POST /layouts/:surface/generate
-  body: { dataScope, catalogSchema, prompt, currentLayout? }
+  body: { prompt, range? }
   → SSE：A2UI message chunks（createSurface / updateComponents / updateDataModel）
   解析失败则本次生成失败，UI 保留上一份 surface
 ```
