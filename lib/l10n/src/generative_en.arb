@@ -1,0 +1,36 @@
+{
+  "generativeGenerateAction": "Compose with AI",
+  "generativeRegenerateAction": "Compose again",
+  "generativeComposeTitle": "Compose this section",
+  "generativePromptLabel": "What should appear here?",
+  "generativePromptHint": "For example: three small cards side by side for daily water",
+  "generativePromptEmpty": "Enter an instruction first",
+  "generativeCancelAction": "Cancel",
+  "generativeSubmitAction": "Compose",
+  "generativeFailedMessage": "Could not compose this section. Your previous layout is kept.",
+  "generativeEmptyMessage": "Nothing composed yet",
+  "@generativeGenerateAction": {
+    "description": "Entry point that opens the instruction sheet."
+  },
+  "@generativeRegenerateAction": {
+    "description": "Entry point that re-opens the instruction sheet for an existing composed section."
+  },
+  "@generativeComposeTitle": {
+    "description": "Sheet title. Kept short: it is a control label, not an explanation."
+  },
+  "@generativePromptLabel": {
+    "description": "Field label for the natural-language instruction."
+  },
+  "@generativePromptHint": {
+    "description": "Placeholder showing the kind of instruction that works."
+  },
+  "@generativePromptEmpty": {
+    "description": "Inline error when the instruction is blank."
+  },
+  "@generativeFailedMessage": {
+    "description": "Shown when a compose attempt failed and the previous surface is still displayed."
+  },
+  "@generativeEmptyMessage": {
+    "description": "Shown when the surface has never been composed."
+  }
+}
