@@ -78,7 +78,10 @@ const List<String> allowedCoreForPresentation = [
   'lib/core/errors/',
   'lib/core/forms/',
   'lib/core/router/',
-  'lib/core/ai/',
+  // 实验性运行时开关（provider/kind 的只读解析）。2026-10-31 由 `core/ai/`
+  // 下沉而来：它本来就在白名单里，改名后沿用同一条理由——设置页要读当前
+  // 取值来渲染开关，不是 I/O。
+  'lib/core/experiments/',
   // 组件化组装层：ComponentHost / ComponentId / SurfaceLayout 是纯 UI 数据与渲染，
   // 页面只声明自己是哪个 surface，不直接把 section 列表写在 pages/ 里。
   'lib/core/composition/',
@@ -175,8 +178,9 @@ String? checkImportPath({required String importer, required String target}) {
   //   - `features/shell/presentation/`: the tab shell shared by every tab root.
   // Cross-feature `data/` and plain `presentation` pages/widgets stay forbidden.
   final isProviderSeam = target.contains('/presentation/providers/');
-  final isShellInfrastructure =
-      target.startsWith('lib/features/shell/presentation/');
+  final isShellInfrastructure = target.startsWith(
+    'lib/features/shell/presentation/',
+  );
   if (importerFeature != null &&
       targetFeature != null &&
       importerFeature != targetFeature &&
