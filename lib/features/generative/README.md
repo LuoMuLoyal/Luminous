@@ -24,6 +24,16 @@ agent 能决定「展示什么、怎么排、什么形式」，**不能决定数
 | AI 生成可写动作 | `core/composition/genui/catalog.dart` 的白名单**不含** `Button` / `TextField` / 表单 |
 | AI 改写医学结论 | `finding` item 只有 `findingId`，没有任何文案属性进白名单 |
 
+`findingId` 是后端 `ReviewFinding.id`——稳定规则标识（`hydration_low` /
+`medication_stable` / `sleep_insufficient`），由 Lucent `dashboard-presenter.ts`
+的 `FINDING_IDS` 产生，跨请求跨语言不变。客户端词表见
+`domain/services/item_catalog.dart` 的 `generativeFindingIds`。
+
+两点容易写错：**不能拿 `kind` 当 id**（四值枚举，多条规则共用一个 kind，无法
+唯一标识）；**`DataScope` 必须声明 finding 条目**（`findingPolicy` 要求引用值
+存在于 scope，少了这一组任何合法 `finding` 都会被判违规，整次生成失败——这是
+A7a 遗留的真 bug，已随本次修掉）。
+
 三条都有测试：`test/generative/catalog_policy_test.dart`（规则）与
 `test/generative/generative_surface_test.dart`（渲染层确实拿不到 `Button`）。
 
