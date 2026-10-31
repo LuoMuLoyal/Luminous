@@ -13,12 +13,33 @@ import 'package:luminous/core/composition/composition.dart';
 /// Scope: the `today` surface, which is the one wired in this batch. The
 /// cross-surface checks grow with each surface as it is componentized.
 void main() {
+  /// Ids exempt from the "first segment is never a surface" rule.
+  ///
+  /// `generative.<surface>` is the one deliberate exception (plan
+  /// `2026-10-31-a2ui-generative.md` §7 answer 2): a generated surface is
+  /// **per-surface by definition** — its result is stored under
+  /// `genui.<surface>.surface` and it is rendered by that surface's own
+  /// `GenerativeTransport`. Pretending it is a reusable component would mean
+  /// one engine instance serving several pages, and "which page does this
+  /// result belong to" would become a runtime question.
+  ///
+  /// Keeping the id self-describing is the point: `generative.today` tells you
+  /// both that it is a generative slot and which surface it belongs to.
+  bool isSurfaceScopedGenerativeId(ComponentId id) =>
+      id.value.startsWith('generative.');
+
   group('registry and surfaces', () {
     test('every registered id is well formed and mounted on some surface', () {
       final registry = buildComponentRegistry();
       final catalog = buildSurfaceCatalog();
+
+      // Surface-scoped generative ids are not in any `owned` list: they are
+      // mounted by their feature's renderer, not offered in the customizer.
       final mounted = <ComponentId>{
         for (final surface in SurfaceId.values) ...catalog.ownedBy(surface),
+      };
+      final registered = <ComponentId>{
+        for (final component in registry.components) component.id,
       };
 
       expect(registry.length, greaterThan(0));
@@ -28,12 +49,22 @@ void main() {
           isTrue,
           reason: 'component id must be domain.view: ${component.id}',
         );
+        if (isSurfaceScopedGenerativeId(component.id)) continue;
         expect(
           mounted,
           contains(component.id),
           reason:
               '${component.id} is registered but no surface may mount it — '
               'registration without a mount point is dead code',
+        );
+      }
+
+      // ...and the reverse: nothing offered in a surface is unregistered.
+      for (final id in mounted) {
+        expect(
+          registered,
+          contains(id),
+          reason: '$id is offered by a surface but nothing registers it',
         );
       }
     });
@@ -73,6 +104,8 @@ void main() {
     test('component ids never encode the surface that hosts them', () {
       final registry = buildComponentRegistry();
       for (final component in registry.components) {
+        // Deliberate exception, see [isSurfaceScopedGenerativeId].
+        if (isSurfaceScopedGenerativeId(component.id)) continue;
         final domain = component.id.value.split('.').first;
         expect(
           {'today', 'record', 'medicine', 'review', 'mine', 'tab_chrome'},
@@ -80,6 +113,27 @@ void main() {
           reason:
               '${component.id}: the first segment names what the component '
               'shows, never the surface — otherwise it cannot be mounted twice',
+        );
+      }
+    });
+
+    test('a generative id names exactly one known surface', () {
+      final registry = buildComponentRegistry();
+      final generative = registry.components.where(
+        (c) => isSurfaceScopedGenerativeId(c.id),
+      );
+      expect(generative, isNotEmpty);
+
+      final wires = {for (final s in SurfaceId.values) s.wireValue};
+      for (final component in generative) {
+        final parts = component.id.value.split('.');
+        expect(parts, hasLength(2), reason: 'expected generative.<surface>');
+        expect(
+          wires,
+          contains(parts[1]),
+          reason:
+              '${component.id} names a surface that does not exist — a typo '
+              'here would register a slot nothing can ever mount',
         );
       }
     });
