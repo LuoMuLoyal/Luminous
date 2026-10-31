@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/composition/customizer/layout_repository.dart';
-import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/customizer/data/datasources/layout_cache.dart';
 import 'package:luminous/features/customizer/data/datasources/layout_remote.dart';
 import 'package:luminous/features/customizer/data/repositories/cached_layout.dart';
 import 'package:luminous/features/customizer/data/sync/layout_sync_queue.dart';
 import 'package:luminous/features/customizer/domain/repositories/layout.dart';
+import 'package:luminous/shared/domain/composition/layout.dart';
 import 'package:luminous/shared/domain/composition/surface.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
@@ -52,6 +52,21 @@ final class FakeLayoutRemote implements LayoutRemote {
   }
 }
 
+/// 不碰数据库的离线队列替身。
+///
+/// 真实实现写 pending_sync_queue，widget 测试没有 drift 表，且会把
+/// Dio/drift 的 Timer 留在树上。测布局渲染时队列本身不是被测对象。
+final class NoopLayoutSyncQueue implements LayoutSyncQueue {
+  const NoopLayoutSyncQueue();
+
+  @override
+  Future<void> enqueue({
+    required SurfaceId surface,
+    required SurfaceLayout layout,
+    int? ifVersion,
+  }) async {}
+}
+
 /// 用 [FakeLayoutRemote] 装配的布局仓储覆盖。
 ///
 /// 与生产装配（`lib/app/composition/customizer/layout_repository.dart`）同构，
@@ -61,7 +76,7 @@ Override fakeLayoutRepositoryOverride([FakeLayoutRemote? remote]) {
     return CachedLayoutRepository(
       cache: LayoutCache(KvStore.instance),
       remote: remote ?? FakeLayoutRemote(),
-      syncQueue: LayoutSyncQueue(ref.watch(pendingSyncDaoProvider)),
+      syncQueue: const NoopLayoutSyncQueue(),
     );
   });
 }

@@ -19,12 +19,12 @@ import 'package:luminous/features/customizer/domain/repositories/layout.dart';
 final layoutRepositoryProvider = Provider<LayoutRepository>((ref) {
   final remote = LucentLayoutRemote(ref.watch(lucentClientProvider));
   final syncWorker = ref.watch(syncWorkerProvider);
-  final queue = LayoutSyncQueue(ref.watch(pendingSyncDaoProvider));
+  final queue = PendingLayoutSyncQueue(ref.watch(pendingSyncDaoProvider));
 
   // 重放：联网后把队列里的布局文档推给服务端。`SyncWorker` 负责退避与
   // 永久失败，这里只做一次请求，失败就让它按既有策略重试。
   syncWorker.registerHandler(LayoutSyncQueue.entityType, (entry) async {
-    final decoded = LayoutSyncQueue.decode(entry);
+    final decoded = decodeLayoutPayload(entry);
     if (decoded == null) return;
     final result = await remote
         .put(

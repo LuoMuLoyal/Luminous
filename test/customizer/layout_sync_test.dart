@@ -48,7 +48,7 @@ void main() {
       final repository = CachedLayoutRepository(
         cache: LayoutCache(KvStore.instance),
         remote: remote,
-        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
+        syncQueue: PendingLayoutSyncQueue(db.pendingSyncDao),
       );
 
       final result = await repository.readAll().run();
@@ -70,7 +70,7 @@ void main() {
       final repository = CachedLayoutRepository(
         cache: LayoutCache(KvStore.instance),
         remote: remote,
-        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
+        syncQueue: PendingLayoutSyncQueue(db.pendingSyncDao),
       );
 
       final layouts = (await repository.readAll().run()).getOrElse(
@@ -91,7 +91,7 @@ void main() {
       final repository = CachedLayoutRepository(
         cache: LayoutCache(KvStore.instance),
         remote: remote,
-        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
+        syncQueue: PendingLayoutSyncQueue(db.pendingSyncDao),
       );
 
       await repository.write(SurfaceId.today, _layoutWith('summary.metrics')).run();
@@ -119,7 +119,7 @@ void main() {
       final repository = CachedLayoutRepository(
         cache: LayoutCache(KvStore.instance),
         remote: remote,
-        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
+        syncQueue: PendingLayoutSyncQueue(db.pendingSyncDao),
       );
 
       final result = await repository
@@ -143,7 +143,7 @@ void main() {
       final repository = CachedLayoutRepository(
         cache: LayoutCache(KvStore.instance),
         remote: remote,
-        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
+        syncQueue: PendingLayoutSyncQueue(db.pendingSyncDao),
       );
 
       await repository.write(SurfaceId.today, _layoutWith('water.trend')).run();
@@ -159,7 +159,7 @@ void main() {
       );
       // 连改两次仍只有一条：布局是整份文档，中间状态没有重放价值。
       expect(entries, hasLength(1));
-      final decoded = LayoutSyncQueue.decode(entries.single)!;
+      final decoded = decodeLayoutPayload(entries.single)!;
       expect(decoded.surface, SurfaceId.today);
       expect(decoded.payload, contains('summary.metrics'));
     });
@@ -182,7 +182,7 @@ void main() {
       final repository = CachedLayoutRepository(
         cache: LayoutCache(KvStore.instance),
         remote: remote,
-        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
+        syncQueue: PendingLayoutSyncQueue(db.pendingSyncDao),
       );
 
       await repository
