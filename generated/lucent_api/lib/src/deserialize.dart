@@ -175,6 +175,9 @@ import 'package:lucent_api/src/model/health_event_response_check_in.dart';
 import 'package:lucent_api/src/model/health_event_response_coverage.dart';
 import 'package:lucent_api/src/model/health_response.dart';
 import 'package:lucent_api/src/model/health_response_info_value.dart';
+import 'package:lucent_api/src/model/layout_list_response.dart';
+import 'package:lucent_api/src/model/layout_list_response_surfaces_value.dart';
+import 'package:lucent_api/src/model/layout_response.dart';
 import 'package:lucent_api/src/model/legal_document_detail_response.dart';
 import 'package:lucent_api/src/model/legal_document_list_response.dart';
 import 'package:lucent_api/src/model/legal_document_list_response_items.dart';
@@ -297,6 +300,7 @@ import 'package:lucent_api/src/model/reset_password_request.dart';
 import 'package:lucent_api/src/model/reset_password_response.dart';
 import 'package:lucent_api/src/model/run_risk_check_request.dart';
 import 'package:lucent_api/src/model/run_risk_check_request_candidate.dart';
+import 'package:lucent_api/src/model/save_layout_request.dart';
 import 'package:lucent_api/src/model/send_verification_code_request.dart';
 import 'package:lucent_api/src/model/send_verification_code_response.dart';
 import 'package:lucent_api/src/model/session_list_item_entry.dart';
@@ -1129,6 +1133,17 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'HealthResponseInfoValue':
       return HealthResponseInfoValue.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'LayoutListResponse':
+      return LayoutListResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'LayoutListResponseSurfacesValue':
+      return LayoutListResponseSurfacesValue.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'LayoutResponse':
+      return LayoutResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'LegalDocumentDetailResponse':
       return LegalDocumentDetailResponse.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1641,6 +1656,9 @@ ReturnType deserialize<ReturnType, BaseType>(
       return RunRiskCheckRequestCandidate.fromJson(
             value as Map<String, dynamic>,
           )
+          as ReturnType;
+    case 'SaveLayoutRequest':
+      return SaveLayoutRequest.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'SendVerificationCodeRequest':
       return SendVerificationCodeRequest.fromJson(value as Map<String, dynamic>)
