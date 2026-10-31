@@ -153,7 +153,12 @@ void main() {
     expect(repository.endedOutcome, HealthEventOutcome.improved);
   });
 
-  testWidgets('does not render health observation controls on desktop', (
+  // 组件化之后桌面端与移动端渲染同一份 `SurfaceId.today` 布局（见
+  // `desktop_dashboard.dart` 的注释：旧的手写 7:5 双栏已删除），所以「桌面端
+  // 不出现健康事件控件」这个旧前提不再成立。现在两端都渲染同一个
+  // `health_event.active` 组件；这里断言的是**没有进行中事件时只给入口**，
+  // 不出现打卡/结束这些需要事件存在才有意义的动作。
+  testWidgets('desktop renders the health event entry without active actions', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -166,7 +171,7 @@ void main() {
     await tester.pumpWidget(_app(_FakeHealthEventRepository()));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('health-event-start-action')), findsNothing);
+    expect(find.byKey(const Key('health-event-start-action')), findsOneWidget);
     expect(find.byKey(const Key('health-event-check-in-action')), findsNothing);
     expect(find.byKey(const Key('health-event-end-action')), findsNothing);
   });
