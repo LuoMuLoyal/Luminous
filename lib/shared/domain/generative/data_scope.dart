@@ -1,13 +1,19 @@
-import 'package:luminous/shared/domain/composition/surface.dart';
-
-/// 一个 surface 能给生成式 UI 用哪些数据。
+/// 一个 surface 能给生成式 UI 用哪些数据（纯值类型，无框架依赖）。
 ///
 /// 这是**提示词的来源**：告诉 agent「这张表能拿到什么」，它才知道可以说什么。
 /// 同时也是校验依据——`kind` 不在列表里的引用键会被拒绝，避免 agent 引用一个
 /// 该 surface 根本不存在的维度。
 ///
-/// 刻意保持纯数据（无 Riverpod、无 genui 类型）：它要能被 domain 层引用，
-/// 也要能被序列化进提示词。
+/// **为什么在 `shared/domain/` 而不在 `core/composition/genui/`**：
+/// `features/generative/domain/` 的 `catalog_policy` 要用它做纯规则校验，而
+/// `domain/` 只允许 import `lib/shared/domain/`。把它留在 core 会让规则层要么
+/// 违规 import core，要么把规则写成 `core/` 的依赖——前者是门禁违规，后者是
+/// 把「什么样的值算编造」这条安全规则从领域层挪进基础设施层。
+library;
+
+import 'package:luminous/shared/domain/composition/surface.dart';
+
+/// 一个 surface 的可生成数据声明。
 final class DataScope {
   const DataScope({required this.surface, required this.entries});
 
@@ -18,8 +24,10 @@ final class DataScope {
   Set<String> get keys => {for (final entry in entries) entry.key};
 
   /// 某类引用的可用取值。
-  List<String> valuesOf(DataScopeKind kind) =>
-      entries.where((entry) => entry.kind == kind).map((e) => e.key).toList();
+  List<String> valuesOf(DataScopeKind kind) => [
+    for (final entry in entries)
+      if (entry.kind == kind) entry.key,
+  ];
 
   /// 渲染成提示词片段：只列「能展示什么」，不编造具体数值。
   String toPromptFragment() {

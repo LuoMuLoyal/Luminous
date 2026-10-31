@@ -37,8 +37,4 @@ final class GenerativeMessageError {
       'GenerativeMessageError(${kind.name}${detail == null ? '' : ': $detail'})';
 }
 
-enum GenerativeMessageErrorKind {
-  malformedJson,
-  notAnObject,
-  unknownShape,
-}
+enum GenerativeMessageErrorKind { malformedJson, notAnObject, unknownShape }
