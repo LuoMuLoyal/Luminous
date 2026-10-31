@@ -25,7 +25,6 @@ import 'package:luminous/features/record/presentation/routes.dart'
     as record_routes;
 import 'package:luminous/features/review/presentation/pages/clinic_summary_shared.dart';
 import 'package:luminous/features/review/presentation/pages/detail.dart';
-import 'package:luminous/features/review/presentation/pages/legacy_dashboard_compat.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/scan/presentation/routes.dart' as scan_routes;
 import 'package:luminous/features/settings/presentation/routes.dart'
@@ -279,14 +278,6 @@ GoRouter appRouter(Ref ref) => GoRouter(
           child: ClinicSummarySharedPage(token: token),
         );
       },
-    ),
-    // -- legacy dashboard compatibility page (Review More sheet entry) --
-    GoRoute(
-      path: Routes.reviewLegacyDashboard,
-      pageBuilder: (context, state) => slidePage(
-        key: state.pageKey,
-        child: const LegacyDashboardCompatPage(),
-      ),
     ),
     // -- event review detail page (history row tap, requires auth) --
     GoRoute(

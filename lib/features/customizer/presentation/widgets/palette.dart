@@ -53,14 +53,15 @@ String componentDisplayName(AppLocalizations l10n, ComponentId id) {
     'privacy.notice' => l10n.componentNamePrivacyNotice,
     'reminder.settings' => l10n.componentNameReminderSettings,
     'account.security' => l10n.componentNameAccountSecurity,
-    'readiness.legacy' => l10n.componentNameReadinessLegacy,
-    'findings.legacy' => l10n.componentNameFindingsLegacy,
-    'ai_summary.legacy' => l10n.componentNameAiSummaryLegacy,
-    'patterns.legacy' => l10n.componentNamePatternsLegacy,
-    'history.suggestion_legacy' => l10n.componentNameSuggestionHistoryLegacy,
+    'readiness.period' => l10n.componentNameReadinessPeriod,
+    'findings.period' => l10n.componentNameFindingsPeriod,
+    'ai_summary.period' => l10n.componentNameAiSummaryPeriod,
+    'patterns.period' => l10n.componentNamePatternsPeriod,
+    'history.suggestion' => l10n.componentNameSuggestionHistory,
     _ => id.value,
   };
 }
+
 /// 组件面板：**所有** tab 里可用的组件，按来源 tab 分组。
 ///
 /// 组件可以挂到别的 tab 上，所以这里列的不是「当前 tab 的列表」，而是
@@ -161,11 +162,7 @@ class CustomizerPalette extends ConsumerWidget {
 
   void _add(EditSessionNotifier notifier, ComponentId id, int currentCount) {
     notifier.applyEdit(
-      LayoutEdit.add(
-        surface: current,
-        id: id,
-        toIndex: currentCount,
-      ),
+      LayoutEdit.add(surface: current, id: id, toIndex: currentCount),
     );
   }
 }

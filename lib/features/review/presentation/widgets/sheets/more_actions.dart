@@ -23,7 +23,6 @@ Future<void> showReviewMoreActionsSheet(
   required Future<void> Function() onShareManagement,
   required Future<void> Function() onPdf,
   required Future<void> Function() onPrint,
-  required Future<void> Function() onLegacyReport,
 }) {
   final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
 
@@ -37,7 +36,6 @@ Future<void> showReviewMoreActionsSheet(
           onShareManagement: onShareManagement,
           onPdf: onPdf,
           onPrint: onPrint,
-          onLegacyReport: onLegacyReport,
         ),
       ),
     );
@@ -57,7 +55,6 @@ Future<void> showReviewMoreActionsSheet(
             onShareManagement: onShareManagement,
             onPdf: onPdf,
             onPrint: onPrint,
-            onLegacyReport: onLegacyReport,
           ),
         ),
       ),
@@ -73,14 +70,12 @@ class ReviewMoreActionsSheet extends StatelessWidget {
     required this.onShareManagement,
     required this.onPdf,
     required this.onPrint,
-    required this.onLegacyReport,
   });
 
   final Future<void> Function() onVisitSummary;
   final Future<void> Function() onShareManagement;
   final Future<void> Function() onPdf;
   final Future<void> Function() onPrint;
-  final Future<void> Function() onLegacyReport;
 
   @override
   Widget build(BuildContext context) {
@@ -137,14 +132,6 @@ class ReviewMoreActionsSheet extends StatelessWidget {
             onTap: () => _run(context, onPrint),
           ),
           const SizedBox(height: Spacing.sm),
-          _MoreActionTile(
-            key: const Key('more-legacy-report'),
-            icon: SemanticIcons.reportHistory,
-            color: SemanticColor.neutral,
-            title: l10n.reviewMoreLegacyTitle,
-            subtitle: l10n.reviewMoreLegacySubtitle,
-            onTap: () => _run(context, onLegacyReport),
-          ),
         ],
       ),
     );

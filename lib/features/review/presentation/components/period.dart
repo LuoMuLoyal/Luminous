@@ -9,58 +9,52 @@ import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/providers/ai_summary.dart';
 import 'package:luminous/features/review/presentation/providers/surface.dart';
 import 'package:luminous/features/review/presentation/utils/ui_formatters.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/legacy/ai_summary.dart'
-    as legacy;
-import 'package:luminous/features/review/presentation/widgets/sections/legacy/findings.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/legacy/patterns.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/legacy/readiness.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/legacy/suggestion_history.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/period/ai_summary.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/period/findings.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/period/patterns.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/period/readiness.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/period/suggestion_history.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Legacy (pre-event-first) review components.
+/// 周期视图组件：按选定区间（7/30 天）聚合的整段回顾。
 ///
-/// These five sections belonged to the old period-dashboard page. They are
-/// **registered and mountable** — the user may pick any of them in the surface
-/// editor — but none of them is in `reviewSurfaceDefinition.defaultLayout`:
-/// the default must stay byte-for-byte the current event-first page, so keeping
-/// them out is what makes today's rendering a pure refactor.
+/// 这些不是「旧版遗留」：review 页面同时存在两种视角——
+/// - **事件视角**（`event.*` / `overview.*`）：围绕一次健康事件讲发生了什么；
+/// - **周期视角**（本文件）：不管有没有事件，按区间统计趋势、发现与规律。
 ///
-/// They read from the same surface providers as the main-path components
-/// (`reviewSurfaceStateProvider` for the period dashboard), so mounting one on
-/// another surface later needs no new wiring.
+/// 两者是并列的产品形态，不是新旧替代关系。所以 id 用 `*.period` 而不是
+/// `*.legacy`：组件面板里用户看到的是「周期发现」而不是「旧版发现」，也不会
+/// 因为名字暗示「将被删除」而不敢使用。
 ///
-/// Two of them share a class name with a main-path section
-/// (`ReviewAiSummarySection`, `ReviewSuggestionHistorySection`); the import
-/// prefix plus the `.legacy` id suffix keeps them apart.
-const reviewAiSummaryLegacyId = ComponentId('ai_summary.legacy');
-const reviewFindingsLegacyId = ComponentId('findings.legacy');
-const reviewPatternsLegacyId = ComponentId('patterns.legacy');
-const reviewReadinessLegacyId = ComponentId('readiness.legacy');
-const reviewSuggestionHistoryLegacyId = ComponentId(
-  'history.suggestion_legacy',
-);
+/// 它们读的是同一组 surface provider（`reviewSurfaceStateProvider`），因此挂到
+/// 别的 surface 上不需要新接线。
+const reviewReadinessPeriodId = ComponentId('readiness.period');
+const reviewFindingsPeriodId = ComponentId('findings.period');
+const reviewAiSummaryPeriodId = ComponentId('ai_summary.period');
+const reviewPatternsPeriodId = ComponentId('patterns.period');
+const reviewSuggestionHistoryId = ComponentId('history.suggestion');
 
-/// Ids of the legacy sections, in the old page's render order.
-const reviewLegacyComponentIds = <ComponentId>[
-  reviewReadinessLegacyId,
-  reviewFindingsLegacyId,
-  reviewAiSummaryLegacyId,
-  reviewPatternsLegacyId,
-  reviewSuggestionHistoryLegacyId,
+/// Ids of the periodic sections, in the period dashboard's render order.
+const reviewPeriodComponentIds = <ComponentId>[
+  reviewReadinessPeriodId,
+  reviewFindingsPeriodId,
+  reviewAiSummaryPeriodId,
+  reviewPatternsPeriodId,
+  reviewSuggestionHistoryId,
 ];
 
-/// Registers the legacy sections into [registry].
-void registerReviewLegacyComponents(ComponentRegistry registry) {
-  registry.registerDescriptor(const _LegacyReadinessComponent());
-  registry.registerDescriptor(const _LegacyFindingsComponent());
-  registry.registerDescriptor(const _LegacyAiSummaryComponent());
-  registry.registerDescriptor(const _LegacyPatternsComponent());
-  registry.registerDescriptor(const _LegacySuggestionHistoryComponent());
+/// Registers the periodic sections into [registry].
+void registerReviewPeriodComponents(ComponentRegistry registry) {
+  registry.registerDescriptor(const _ReadinessPeriodComponent());
+  registry.registerDescriptor(const _FindingsPeriodComponent());
+  registry.registerDescriptor(const _AiSummaryPeriodComponent());
+  registry.registerDescriptor(const _PatternsPeriodComponent());
+  registry.registerDescriptor(const _SuggestionHistoryComponent());
 }
 
-/// Readiness of the period dashboard, mirroring the old page's rule.
+/// Readiness of the period dashboard, mirroring the period view's rule.
 ReviewReadinessStatus _readinessStatus(
   WidgetRef ref,
   ReviewDashboard dashboard,
@@ -77,12 +71,11 @@ ReviewReadinessStatus _readinessStatus(
   return ReviewReadinessStatus.ready;
 }
 
-class _LegacyReadinessComponent
-    extends ComponentDescriptor<NoComponentConfig> {
-  const _LegacyReadinessComponent();
+class _ReadinessPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _ReadinessPeriodComponent();
 
   @override
-  ComponentId get id => reviewReadinessLegacyId;
+  ComponentId get id => reviewReadinessPeriodId;
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
@@ -119,12 +112,11 @@ class _LegacyReadinessComponent
   }
 }
 
-class _LegacyFindingsComponent
-    extends ComponentDescriptor<NoComponentConfig> {
-  const _LegacyFindingsComponent();
+class _FindingsPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _FindingsPeriodComponent();
 
   @override
-  ComponentId get id => reviewFindingsLegacyId;
+  ComponentId get id => reviewFindingsPeriodId;
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
@@ -140,12 +132,11 @@ class _LegacyFindingsComponent
   }
 }
 
-class _LegacyAiSummaryComponent
-    extends ComponentDescriptor<NoComponentConfig> {
-  const _LegacyAiSummaryComponent();
+class _AiSummaryPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _AiSummaryPeriodComponent();
 
   @override
-  ComponentId get id => reviewAiSummaryLegacyId;
+  ComponentId get id => reviewAiSummaryPeriodId;
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
@@ -164,7 +155,7 @@ class _LegacyAiSummaryComponent
         (settings) => settings.asData?.value.aiSummariesEnabled,
       ),
     );
-    return legacy.ReviewAiSummarySection(
+    return ReviewPeriodAiSummarySection(
       dashboard: dashboard,
       canAccessProtectedData: canAccessProtectedData,
       aiSummariesEnabled: aiEnabled,
@@ -176,7 +167,9 @@ class _LegacyAiSummaryComponent
       onGenerate: canAccessProtectedData
           ? () async {
               await ref
-                  .read(reviewAiSummaryControllerProvider(selectedRange).notifier)
+                  .read(
+                    reviewAiSummaryControllerProvider(selectedRange).notifier,
+                  )
                   .generate();
             }
           : null,
@@ -185,12 +178,11 @@ class _LegacyAiSummaryComponent
   }
 }
 
-class _LegacyPatternsComponent
-    extends ComponentDescriptor<NoComponentConfig> {
-  const _LegacyPatternsComponent();
+class _PatternsPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _PatternsPeriodComponent();
 
   @override
-  ComponentId get id => reviewPatternsLegacyId;
+  ComponentId get id => reviewPatternsPeriodId;
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
@@ -206,12 +198,12 @@ class _LegacyPatternsComponent
   }
 }
 
-class _LegacySuggestionHistoryComponent
+class _SuggestionHistoryComponent
     extends ComponentDescriptor<NoComponentConfig> {
-  const _LegacySuggestionHistoryComponent();
+  const _SuggestionHistoryComponent();
 
   @override
-  ComponentId get id => reviewSuggestionHistoryLegacyId;
+  ComponentId get id => reviewSuggestionHistoryId;
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
@@ -224,7 +216,7 @@ class _LegacySuggestionHistoryComponent
     final items = async.value?.items;
     if (items == null) return null;
 
-    // Same de-duplication and cap as the legacy page: newest state per
+    // Same de-duplication and cap as the period view: newest state per
     // suggestion text, at most three rows.
     final byKey = <String, TodaySuggestionHistoryItem>{};
     for (final item in items) {

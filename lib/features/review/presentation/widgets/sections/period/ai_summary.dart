@@ -8,8 +8,8 @@ import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class ReviewAiSummarySection extends StatelessWidget {
-  const ReviewAiSummarySection({
+class ReviewPeriodAiSummarySection extends StatelessWidget {
+  const ReviewPeriodAiSummarySection({
     super.key,
     required this.dashboard,
     required this.canAccessProtectedData,

@@ -101,9 +101,6 @@ class ReviewPage extends ConsumerWidget {
                   ref,
                   ReviewExportKind.print,
                 ),
-                onLegacyReport: () async {
-                  await context.push(Routes.reviewLegacyDashboard);
-                },
               ),
             ),
           ),

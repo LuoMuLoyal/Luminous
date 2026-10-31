@@ -92,7 +92,6 @@ class Routes {
 
   /// Legacy dashboard 兼容页（Task 8）：从 Review 页 More sheet 的
   /// 「历史报告」入口进入，重建旧 dashboard 装配（7/30 天切换、导出卡）。
-  static const reviewLegacyDashboard = '/review/legacy';
 
   /// 单个历史事件的完整回顾详情页（改造项 2 H-6）：从 Review 页历史行
   /// 点入，复用事件头部 + 四段渲染。

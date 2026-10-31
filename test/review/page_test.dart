@@ -21,7 +21,7 @@ import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/history/period_switch.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/legacy/readiness.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/period/readiness.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/export.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';

@@ -6,13 +6,11 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/app/composition/review/review.dart';
-import 'package:luminous/app/router.dart';
 import 'package:luminous/core/providers/session/sensitive_action_password.dart';
 import 'package:luminous/core/providers/session/sensitive_action_resolver.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -20,7 +18,6 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
-import 'package:luminous/features/review/presentation/pages/legacy_dashboard_compat.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/review/presentation/providers/clinic_summary.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
@@ -74,53 +71,6 @@ void main() {
     },
   );
 
-  testWidgets(
-    'More sheet lists visit summary, PDF, print and legacy report without doctor-implies copy',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(390, 844);
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-
-      await tester.pumpWidget(
-        TestForuiApp(
-          home: Scaffold(
-            body: SingleChildScrollView(
-              child: ReviewMoreActionsSheet(
-                onVisitSummary: () async {},
-                onShareManagement: () async {},
-                onPdf: () async {},
-                onPrint: () async {},
-                onLegacyReport: () async {},
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pump();
-
-      expect(find.text(l10n.reviewMoreTitle), findsOneWidget);
-      expect(find.byKey(const Key('more-visit-summary')), findsOneWidget);
-      expect(find.text(l10n.reviewMoreVisitSummaryTitle), findsOneWidget);
-      expect(find.text(l10n.reviewMoreVisitSummarySubtitle), findsOneWidget);
-      expect(find.byKey(const Key('more-share-management')), findsOneWidget);
-      expect(find.text(l10n.reviewMoreShareManagementTitle), findsOneWidget);
-      expect(find.text(l10n.reviewMoreShareManagementSubtitle), findsOneWidget);
-      expect(find.byKey(const Key('more-pdf')), findsOneWidget);
-      expect(find.text(l10n.reviewMorePdfTitle), findsOneWidget);
-      expect(find.byKey(const Key('more-print')), findsOneWidget);
-      expect(find.text(l10n.reviewMorePrintTitle), findsOneWidget);
-      expect(find.byKey(const Key('more-legacy-report')), findsOneWidget);
-      expect(find.text(l10n.reviewMoreLegacyTitle), findsOneWidget);
-
-      // 不暗示医生一定查看：sheet 内不出现「分享给医生」类文案。
-      expect(find.textContaining('分享给医生'), findsNothing);
-    },
-  );
-
   testWidgets('tapping each More entry fires the matching callback', (
     tester,
   ) async {
@@ -128,7 +78,6 @@ void main() {
     var shareManagementTaps = 0;
     var pdfTaps = 0;
     var printTaps = 0;
-    var legacyTaps = 0;
 
     await tester.pumpWidget(
       TestForuiApp(
@@ -139,7 +88,6 @@ void main() {
               onShareManagement: () async => shareManagementTaps += 1,
               onPdf: () async => pdfTaps += 1,
               onPrint: () async => printTaps += 1,
-              onLegacyReport: () async => legacyTaps += 1,
             ),
           ),
         ),
@@ -155,8 +103,6 @@ void main() {
     await tester.pump();
     await tester.tap(find.byKey(const Key('more-print')));
     await tester.pump();
-    await tester.tap(find.byKey(const Key('more-legacy-report')));
-    await tester.pump();
     // 让 FTappable 的按压计时器（100ms）走完，避免测试结束时仍有挂起 Timer。
     await tester.pump(const Duration(milliseconds: 150));
 
@@ -164,7 +110,6 @@ void main() {
     expect(shareManagementTaps, 1);
     expect(pdfTaps, 1);
     expect(printTaps, 1);
-    expect(legacyTaps, 1);
   });
 
   testWidgets('showing the sheet and tapping an entry closes the sheet', (
@@ -191,7 +136,6 @@ void main() {
                     onShareManagement: () async {},
                     onPdf: () async {},
                     onPrint: () async {},
-                    onLegacyReport: () async {},
                   ),
                 );
               },
@@ -213,7 +157,7 @@ void main() {
     expect(find.byKey(const Key('more-visit-summary')), findsNothing);
   });
 
-  testWidgets('More button on the report page opens the five-entry sheet', (
+  testWidgets('More button on the report page opens the four-entry sheet', (
     tester,
   ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
@@ -233,7 +177,6 @@ void main() {
     expect(find.byKey(const Key('more-visit-summary')), findsOneWidget);
     expect(find.byKey(const Key('more-pdf')), findsOneWidget);
     expect(find.byKey(const Key('more-print')), findsOneWidget);
-    expect(find.byKey(const Key('more-legacy-report')), findsOneWidget);
   });
 
   testWidgets('visit summary entry opens the clinic summary preview', (
@@ -386,81 +329,6 @@ void main() {
     expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
     expect(find.text(l10n.authNotSignedIn), findsOneWidget);
   });
-
-  testWidgets(
-    'legacy report entry opens the legacy dashboard compatibility page',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(390, 844);
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-
-      final router = GoRouter(
-        initialLocation: Routes.review,
-        routes: [
-          GoRoute(
-            path: Routes.review,
-            pageBuilder: (context, state) =>
-                NoTransitionPage(key: state.pageKey, child: const ReviewPage()),
-          ),
-          GoRoute(
-            path: Routes.reviewLegacyDashboard,
-            pageBuilder: (context, state) => NoTransitionPage(
-              key: state.pageKey,
-              child: const LegacyDashboardCompatPage(),
-            ),
-          ),
-        ],
-      );
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-            reviewRepositoryProvider.overrideWithValue(
-              _FakeReviewRepository(
-                current: reviewActive(),
-                page: reviewHistoryPage(const []),
-              ),
-            ),
-            healthContextSnapshotProvider.overrideWith(
-              (ref) async => _healthContextSnapshot,
-            ),
-            dailyRecordListForDateProvider.overrideWith(
-              (ref, date) async =>
-                  const DailyRecordListData(items: [], total: 0),
-            ),
-            // 兼容页停留在 loading（骨架屏）即可，不依赖旧 dashboard 数据。
-            reviewDashboardProvider.overrideWith(
-              (ref, query) => Completer<ReviewDashboard>().future,
-            ),
-            userSettingsControllerProvider.overrideWith(
-              () => _FakeUserSettingsController(),
-            ),
-
-            sensitiveActionPolicyProvider.overrideWithValue(
-              _testSensitiveActionPolicy(),
-            ),
-          ],
-          child: TestForuiRouterApp(routerConfig: router),
-        ),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-
-      await tester.tap(find.byKey(const Key('review-more-action')));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.tap(find.byKey(const Key('more-legacy-report')));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 600));
-
-      expect(find.byType(LegacyDashboardCompatPage), findsOneWidget);
-      expect(find.byKey(const Key('more-legacy-report')), findsNothing);
-    },
-  );
 }
 
 Future<void> pumpPage(
