@@ -1,9 +1,15 @@
 import 'package:flutter_riverpod/misc.dart' show Override;
+import 'package:luminous/app/composition/generative/catalog.dart'
+    show buildGenerativeCatalog;
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/features/customizer/presentation/providers/layout_store.dart'
     show storedSurfaceLayoutProvider;
 import 'package:luminous/features/customizer/presentation/widgets/title/entry.dart'
     show openSurfaceCustomizer;
+import 'package:luminous/features/generative/presentation/components/catalog.dart'
+    show registerGenerativeComponents;
+import 'package:luminous/features/generative/presentation/providers/surface_state.dart'
+    show generativeCatalogProvider;
 import 'package:luminous/features/medicine/presentation/components/catalog.dart';
 import 'package:luminous/features/mine/presentation/components/catalog.dart';
 import 'package:luminous/features/record/presentation/components/catalog.dart';
@@ -28,6 +34,7 @@ ComponentRegistry buildComponentRegistry() {
   registerMedicineComponents(registry);
   registerReviewComponents(registry);
   registerMineComponents(registry);
+  registerGenerativeComponents(registry);
   return registry;
 }
 
@@ -52,14 +59,24 @@ SurfaceCatalog buildSurfaceCatalog() {
 /// - **customizer entry**: the tab title button routes through an injected
 ///   action instead of importing the customizer feature, which is what keeps
 ///   `core/` and the sibling features free of a dependency on it.
+/// - **generative catalog**: the empty default becomes the one carrying the
+///   domain items (`metric_card` / `trend_chart` / `finding`). `CatalogItem` is
+///   a `genui` type, so it may only be constructed here — this override is the
+///   whole reason the feature can stay free of the render engine.
 List<Override> compositionProviderOverrides() {
   final store = storedSurfaceLayoutProvider;
   final defaultLayout = surfaceLayoutProvider;
+  final catalog = generativeCatalogProvider;
 
   return [
     componentRegistryProvider.overrideWithValue(buildComponentRegistry()),
     surfaceCatalogProvider.overrideWithValue(buildSurfaceCatalog()),
     defaultLayout.overrideWith((ref, surface) => ref.watch(store(surface))),
     surfaceCustomizerOpenerProvider.overrideWithValue(openSurfaceCustomizer),
+    // A `family` override replaces the builder for **every** key: the callback
+    // receives the key, so one entry covers all surfaces (tab chrome included —
+    // it never renders a generative component, and an empty catalog is the
+    // correct answer there anyway).
+    catalog.overrideWith((ref, surface) => buildGenerativeCatalog(surface)),
   ];
 }
