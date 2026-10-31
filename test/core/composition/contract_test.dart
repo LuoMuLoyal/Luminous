@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/app/composition/components/registry.dart';
 import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/features/generative/presentation/components/catalog.dart'
+    show generativeSurfaces;
 
 /// Contract checks for the component system.
 ///
@@ -118,7 +120,9 @@ void main() {
     });
 
     test('a generative id names exactly one known surface', () {
-      final registry = buildComponentRegistry();
+      // 生成式组件是实验性功能，默认不注册（见下一条测试断言）。这条验的是
+      // **一旦注册**，id 的形状必须正确——所以显式打开开关。
+      final registry = buildComponentRegistry(registerGenerative: true);
       final generative = registry.components.where(
         (c) => isSurfaceScopedGenerativeId(c.id),
       );
@@ -134,6 +138,32 @@ void main() {
           reason:
               '${component.id} names a surface that does not exist — a typo '
               'here would register a slot nothing can ever mount',
+        );
+      }
+    });
+
+    test('生成式组件默认不注册：实验性功能必须显式开启', () {
+      // 这是「默认关闭」这一产品要求的可执行断言。它同时也是编排页候选面板
+      // 的证据：面板的候选集来自已注册组件，没注册就不会出现在面板里。
+      final registry = buildComponentRegistry();
+      expect(
+        registry.components.where((c) => isSurfaceScopedGenerativeId(c.id)),
+        isEmpty,
+        reason: '默认构建里不应出现 generative.<surface>',
+      );
+
+      // 打开开关后必须完整出现：五个可生成 surface 各一个（tab_chrome 除外）。
+      final enabled = buildComponentRegistry(registerGenerative: true);
+      final generativeIds = {
+        for (final c in enabled.components)
+          if (isSurfaceScopedGenerativeId(c.id)) c.id.value,
+      };
+      expect(generativeIds, hasLength(generativeSurfaces.length));
+      for (final surface in generativeSurfaces) {
+        expect(
+          generativeIds,
+          contains('generative.${surface.wireValue}'),
+          reason: '${surface.wireValue} 应有一份生成式组件',
         );
       }
     });
