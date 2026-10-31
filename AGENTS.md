@@ -270,6 +270,19 @@ Forui-led theming. Details in `docs/reference/design-system.md` and
   必现)。改成 `Wrap`(放不下自动换行)或把尾部组件包进 `Flexible`,并对按钮/徽章标签加
   `maxLines: 1` + `overflow: ellipsis`。`Wrap`/`OverflowBar`、尾部已 `Flexible`/
   `Expanded`/限宽 `ConstrainedBox` 的形态不报。
+- `no_throw` — 应用代码不得裸抛异常，错误走 `Either` / `TaskEither` 的失败通道。
+  - `application/` 与 `presentation/` 禁止 `throw`；`data/` 只允许抛 failure 值；
+    `domain/`、`lib/core/`、`lib/app/`、测试不扫描。
+  - 放行形态：`LucentFailure(...)`、`LucentFailureException(...)`、`throw failure`
+    这类失败变量、`mapSseStreamError(...)` 等 `…failure…` 构造调用，以及
+    `class XException implements Exception` 形式的**具名领域守卫**（调用方按类型
+    `catch` 分支处理）。
+  - 宿主契约自动豁免：把闭包作为实参传给包 API（`TaskEither.tryCatch`、
+    `Stream.map(onError:)`）、`@override` 的方法（如 `State.build` 抛
+    `UnimplementedError`）。
+  - presentation 层经 `lib/core/providers/channel.dart` 的 `unwrapFailure(...)` /
+    `timeoutFailure(...)` 把 `Left` / 超时统一成 `LucentFailureException`；
+    `LucentErrorMapper.fromObject` 会透明还原成同一个 `LucentFailure`。
 
 ## Data Layer
 
