@@ -39,6 +39,16 @@ abstract final class LucentApiPaths {
   static const reportSummaryGenerateStream =
       '/api/v1/user/reports/summary/generate/stream';
 
+  /// `POST /api/v1/layouts/{surface}/generate` — SSE stream of A2UI messages.
+  ///
+  /// Retrofit can't represent an event stream (see the section header), and the
+  /// response schema on the server side is an untyped `text/event-stream`, so
+  /// the generated client would only expose a `Future` that buffers the whole
+  /// body. The four frames (`chunk`/`result`/`error`/`done`) are dispatched in
+  /// `features/generative/data/datasources/generation_remote.dart`.
+  static String generativeSurface(String surface) =>
+      '/api/v1/layouts/$surface/generate';
+
   // ── Void-return endpoints (generated client discards response body) ────
 
   /// `POST /api/v1/user/files/upload` — returns presigned upload URL data

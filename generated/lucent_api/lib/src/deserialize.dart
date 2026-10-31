@@ -153,6 +153,7 @@ import 'package:lucent_api/src/model/funnel_response_totals.dart';
 import 'package:lucent_api/src/model/funnel_response_window.dart';
 import 'package:lucent_api/src/model/generate200_response.dart';
 import 'package:lucent_api/src/model/generate_candidates_request.dart';
+import 'package:lucent_api/src/model/generate_layout_surface_request.dart';
 import 'package:lucent_api/src/model/generate_request.dart';
 import 'package:lucent_api/src/model/generate_stream_request.dart';
 import 'package:lucent_api/src/model/generate_summary_request.dart';
@@ -1044,6 +1045,11 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'GenerateCandidatesRequest':
       return GenerateCandidatesRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'GenerateLayoutSurfaceRequest':
+      return GenerateLayoutSurfaceRequest.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'GenerateRequest':
       return GenerateRequest.fromJson(value as Map<String, dynamic>)

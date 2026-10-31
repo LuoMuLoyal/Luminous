@@ -189,6 +189,7 @@ export 'package:lucent_api/src/model/funnel_response_totals.dart';
 export 'package:lucent_api/src/model/funnel_response_window.dart';
 export 'package:lucent_api/src/model/generate200_response.dart';
 export 'package:lucent_api/src/model/generate_candidates_request.dart';
+export 'package:lucent_api/src/model/generate_layout_surface_request.dart';
 export 'package:lucent_api/src/model/generate_request.dart';
 export 'package:lucent_api/src/model/generate_stream_request.dart';
 export 'package:lucent_api/src/model/generate_summary_request.dart';
