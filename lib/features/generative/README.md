@@ -45,14 +45,48 @@ agent 能决定「展示什么、怎么排、什么形式」，**不能决定数
 
 | 层 | 内容 |
 | --- | --- |
-| `domain/` | `generation.dart`（`GenerationState` 四态、文档值类型）、`generation.dart`（仓储接口）、`catalog_policy.dart`（纯规则）、`item_catalog.dart`（首批 item 的 type 名与政策） |
+| `domain/` | `generation.dart`（`GenerationState` 四态、文档值类型、`GenerationRequest`）、`repositories/generation.dart`（仓储接口 + `GenerationStreamEvent`）、`catalog_policy.dart`（纯规则）、`item_catalog.dart`（首批 item 的 type 名与政策） |
 | `application/` | `generation_session.dart`（生命周期编排 + 「恢复默认」结论），无 `Ref` / `BuildContext` |
-| `data/` | `generation_cache.dart`（`KvStore`，键 `genui.<surface>.surface`）、`cached_generation.dart`（cache-first 仓储） |
-| `presentation/` | `components/catalog.dart`（注册 `generative.<surface>`）、`providers/surface_state.dart`（生成态 / transport / catalog / DataScope）、`widgets/generative_surface.dart`（三态入口） |
+| `data/` | `datasources/generation_remote.dart`（SSE 消费）、`datasources/generation_cache.dart`（`KvStore`，键 `genui.<surface>.surface`）、`repositories/cached_generation.dart`（远端生成 + 本地缓存的收口） |
+| `presentation/` | `components/catalog.dart`（注册 `generative.<surface>` 并挂入口）、`providers/surface_state.dart`（transport / catalog / DataScope）、`providers/generation.dart`（生成态 notifier + 重放 + 动作）、`widgets/generative_surface.dart`（三态渲染）、`widgets/compose_entry.dart`（触发入口） |
 
 `domain/` 不能 import 别的 feature 的 domain（`domain_purity`），所以可引用维度由
 `item_catalog.dart` 的 `generativeMetricKinds` **声明**，`DataScope` 由它生成；不手抄
 第二份。
+
+## 接后端生成端点（A7b）
+
+端点：`POST /layouts/:surface/generate`（Lucent `layouts` 模块），SSE 四帧。
+`data/datasources/generation_remote.dart` 是本仓唯一知道这些帧名的地方
+（`GenerativeSseEvents`）。事件名收成常量而不是写在 `switch` 里：它们是跨仓契约，
+漏改一处的后果是「事件被静默跳过」——用户看到的是永远转圈。
+
+**`chunk` 不是 LLM 文本流**。它的 `data` 是一条服务端已解析好的 A2UI 消息对象，所以
+喂给 `GenerativeTransport.feedMessageJson`（或 `feedJsonLine`），**不是** `feedChunk`
+——后者是给未解析文本做增量解析的，形状对不上。
+
+两条失败的到达路径不同，别混：
+
+| 何时 | 形态 | 处理 |
+| --- | --- | --- |
+| 开流**前**（空 prompt / `tab_chrome` / 超长） | 普通 HTTP 400/422 | `DioException` → `LucentErrorMapper` |
+| 开流**后**（模型输出被拒、LLM 未配置、熔断） | `event: error` + 完整 Problem Details | `mapSseStreamError` |
+
+`chunk` 只作渐进反馈，**`result` 才是权威序列**：落盘与重放都用后者。没有 `result`
+就结束的流视为失败，否则页面会停在骨架上面永远转圈。
+
+**谁会重放**：`providers/generation.dart` 的 notifier。渲染层靠
+`transport.contextFor(surfaceId)` 取上下文，消息没喂进引擎就永远是 `null`，于是有
+结果也不渲染。所以「落地结果」与「喂给引擎」成对发生，缓存恢复时同理。
+
+## 文案与语言
+
+界面框架文案（入口、面板、失败提示、空态）走 ARB 分片 `lib/l10n/src/generative_*.arb`。
+
+生成**内容**的语言不归客户端管：它由服务端按 `Accept-Language` 决定并写进提示词，
+客户端只负责把值透传。`finding` 的医学结论文案来自后端原文，不翻译。
+`GenerationFailed.error` 是诊断信息（Problem Details 明确写着 not for UI copy），
+所以失败提示用固定文案，不把 error 上屏。
 
 ## 组件 id
 
@@ -67,6 +101,7 @@ surface 存（`genui.<surface>.surface`），渲染引擎也按 surface 一份�
 
 ## 当前阶段
 
-A7a（catalog + 渲染链路，不接 LLM）。`generativeStateProvider` 恒为 `GenerationIdle`：
-还没有人生成，所以默认页面上什么都不出现。A7b 接后端生成端点时把它换成
-`NotifierProvider`，由 `GenerationSession` 驱动，渲染层不变。
+A7a（catalog + 渲染链路）与 A7b（接后端生成端点）均已落地：
+`generativeStateProvider` 是 `NotifierProvider`，由 `GenerationSession` 驱动，
+渲染层不变。冷启动从 `KvStore` 恢复并重放；用户通过 `compose_entry.dart` 输入一句
+指示触发生成。A7c（`chat.assistant` 组件）另行实施。
