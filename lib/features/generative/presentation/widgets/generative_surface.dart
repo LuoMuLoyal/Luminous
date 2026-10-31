@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/composition/genui/genui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/features/generative/domain/entities/generation.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// 生成式 surface 的渲染入口。
 ///
@@ -41,7 +43,8 @@ final class GenerativeSurface extends StatelessWidget {
     };
 
     if (document == null) {
-      // 正在生成且还没有任何结果 → 骨架；其余 → 不渲染。
+      // 正在生成且还没有任何结果 → 骨架；其余 → 交给触发入口（它自己决定
+      // 显示空态说明还是什么都不显示）。
       return state is GenerationInFlight
           ? const _GenerativeSkeleton()
           : const SizedBox.shrink();
@@ -54,7 +57,38 @@ final class GenerativeSurface extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return GenerativeSurfaceRenderer(surfaceContext: surfaceContext);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // 失败且仍有上一份结果时给一行提示：用户看到的是「还是原来的样子」，
+        // 但需要知道刚才那次没有生效，否则会以为点了没反应。
+        if (state case GenerationFailed(:final document) when document != null)
+          _GenerativeFailureNotice(),
+        GenerativeSurfaceRenderer(surfaceContext: surfaceContext),
+      ],
+    );
+  }
+}
+
+/// 生成失败、但仍保留上一份结果时的一行提示。
+///
+/// 用文案而不是错误详情：`GenerationFailed.error` 是**诊断信息**（Problem
+/// Details 的 detail 字段明确写着 not for UI copy），上屏只会让用户困惑。
+class _GenerativeFailureNotice extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
+    return Padding(
+      key: const Key('generative-surface-failure-notice'),
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
+      child: Text(
+        l10n.generativeFailedMessage,
+        style: typography.body.xs.copyWith(
+          color: SemanticColor.neutral.solid(context),
+        ),
+      ),
+    );
   }
 }
 

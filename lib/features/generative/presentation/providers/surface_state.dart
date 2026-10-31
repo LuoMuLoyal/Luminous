@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/composition/genui/genui.dart';
-import 'package:luminous/features/generative/domain/entities/generation.dart';
 import 'package:luminous/features/generative/domain/services/item_catalog.dart'
     show generativeMetricKinds;
 import 'package:luminous/shared/domain/composition/surface.dart';
@@ -46,19 +45,6 @@ final generativeTransportProvider =
 final generativeCatalogProvider = Provider.family<GenerativeCatalog, SurfaceId>(
   (ref, surface) => GenerativeCatalog(domainItems: const []),
   name: 'generativeCatalog',
-);
-
-/// 该 surface 的当前生成态。
-///
-/// A7a **默认恒为 [GenerationIdle]**：还没有接后端生成端点（那是 A7b），也就
-/// 没有人会把它推进 InFlight / Ready。把 `Idle` 作为默认值是有意的——它对应
-/// 「页面上不占位置」，于是新装用户在默认布局里看不到任何生成式 UI，第一次
-/// 生成之后才会出现。
-///
-/// A7b 会把它换成一个 `NotifierProvider`，由 `GenerationSession` 驱动。
-final generativeStateProvider = Provider.family<GenerationState, SurfaceId>(
-  (ref, surface) => const GenerationIdle(),
-  name: 'generativeState',
 );
 
 /// 该 surface 可引用的数据。

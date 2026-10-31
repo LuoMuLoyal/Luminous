@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/features/generative/presentation/providers/generation.dart';
 import 'package:luminous/features/generative/presentation/providers/surface_state.dart';
+import 'package:luminous/features/generative/presentation/widgets/compose_entry.dart';
 import 'package:luminous/features/generative/presentation/widgets/generative_surface.dart';
 
 /// 生成式 UI 的组件 id：`generative.<surface>`。
@@ -55,10 +57,16 @@ class _GenerativeSurfaceSlot extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final surface = ref.watch(generativeSurfaceIdProvider);
-    return GenerativeSurface(
-      state: ref.watch(generativeStateProvider(surface)),
-      transport: ref.watch(generativeTransportProvider(surface)),
-      surfaceId: generativeA2uiSurfaceId(surface),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const GenerativeComposeEntry(),
+        GenerativeSurface(
+          state: ref.watch(generativeStateProvider),
+          transport: ref.watch(generativeTransportProvider(surface)),
+          surfaceId: generativeA2uiSurfaceId(surface),
+        ),
+      ],
     );
   }
 }
