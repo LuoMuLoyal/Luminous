@@ -122,6 +122,13 @@ abstract class ReviewTrendSeries with _$ReviewTrendSeries {
 @freezed
 abstract class ReviewFinding with _$ReviewFinding {
   const factory ReviewFinding({
+    /// 后端的**稳定规则标识**（`hydration_low` / `medication_stable` /
+    /// `sleep_insufficient`）。跨请求、跨语言不变，可安全引用。
+    ///
+    /// 生成式 UI 的 `finding` catalog item 只接受这个 id：agent 能选「展示哪
+    /// 一条」，文案仍由这里的 [title] / [body] 原样提供。**不要用 [kind] 代替**
+    /// ——多条规则共用同一个 kind，kind 无法唯一标识一条 finding。
+    required String id,
     required ReviewInsightKind kind,
     required String iconName,
     required SemanticColor color,

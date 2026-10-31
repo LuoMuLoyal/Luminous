@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/composition/genui/genui.dart';
 import 'package:luminous/features/generative/domain/services/item_catalog.dart'
-    show generativeMetricKinds;
+    show generativeFindingIds, generativeMetricKinds;
 import 'package:luminous/shared/domain/composition/surface.dart';
 import 'package:luminous/shared/domain/generative/data_scope.dart';
 
@@ -53,9 +53,15 @@ final generativeCatalogProvider = Provider.family<GenerativeCatalog, SurfaceId>(
 /// `catalog_policy` 用它判断 agent 写的引用键是否存在。A7b 接后端时这张表
 /// 会随 `GET /layouts/:surface` 的能力声明一起下发。
 ///
-/// 条目**由 [generativeMetricKinds] 生成**而不是逐条手写：指标键是 policy 与
-/// DataScope 共用的同一个集合，手抄两份的话，往一边加维度就会让另一边开始
-/// 拒绝本应放行的组件。每个维度的单位与说明由 [_metricPresentation] 提供。
+/// 条目**由 [generativeMetricKinds] / [generativeFindingIds] 生成**而不是逐条
+/// 手写：指标键与 finding id 是 policy 与 DataScope 共用的同一集合，手抄两份的
+/// 话，往一边加就会让另一边开始拒绝本应放行的组件。每个维度的单位与说明由
+/// [_metricPresentation] 提供。
+///
+/// **finding 条目必须在这里声明**：`findingPolicy` 把 `findingId` 声明为
+/// `DataScopeKind.finding` 的引用键，而 `catalog_policy` 要求引用值存在于 scope
+/// 里。少了这一组，任何合法的 `finding` 组件都会被判成「引用了不存在的 id」，
+/// 整次生成失败。
 final generativeDataScopeProvider = Provider.family<DataScope, SurfaceId>((
   ref,
   surface,
@@ -74,6 +80,13 @@ final generativeDataScopeProvider = Provider.family<DataScope, SurfaceId>((
               _metricPresentation[key]?.$1 ?? 'Metric "$key" over the range.',
           allowedRanges: const [RangeKey.last7Days, RangeKey.last30Days],
           unit: _metricPresentation[key]?.$2,
+        ),
+      // findings 按稳定 id 引用，不带 range：它们本身就是区间统计的结论。
+      for (final id in generativeFindingIds)
+        DataScopeEntry(
+          key: id,
+          kind: DataScopeKind.finding,
+          description: 'A key finding, rendered verbatim from the backend.',
         ),
     ],
   );

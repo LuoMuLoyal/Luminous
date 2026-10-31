@@ -204,6 +204,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   ReviewFinding _mapFinding(lucent.ReportDashboardResponseFindings dto) {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewFinding(
+      id: dto.id,
       kind: kind,
       iconName: _insightIconName(kind),
       color: _insightColor(kind),

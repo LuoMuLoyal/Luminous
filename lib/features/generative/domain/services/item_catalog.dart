@@ -28,6 +28,26 @@ final generativeMetricKinds = <String>{
   'general',
 };
 
+/// 后端 findings 的**稳定规则标识**。
+///
+/// 与 Lucent `dashboard-presenter.ts` 的 `FINDING_IDS` 一一对应：findings 由
+/// 固定规则生成，每条规则一个 id（`hydration_low` / `medication_stable` /
+/// `sleep_insufficient`）。
+///
+/// **这不是「当前有哪些 findings」**——某个用户此刻有没有触发某条规则是运行期
+/// 事实，由 `GET /reports/dashboard` 决定；这里声明的是**词表**，即 agent 可能
+/// 引用的 id 集合，`catalog_policy` 用它做准入。
+///
+/// 为什么手写而非从契约生成：生成客户端里 `kind` 是枚举，但 `id` 在契约里是
+/// 自由字符串（服务端从规则名生成），没有可生成的枚举。所以这份清单需要与后端
+/// 对账——`test/generative/catalog_policy_test.dart` 断言它的形状（ASCII、
+/// 下划线命名），后端那边 `generative-vocabulary.e2e-spec.ts` 做跨仓对账。
+final generativeFindingIds = <String>{
+  'hydration_low',
+  'medication_stable',
+  'sleep_insufficient',
+};
+
 /// 首批领域 item 的准入规则。
 ///
 /// 三条规则对应计划 §4.1 的三行表格。共同点：

@@ -243,9 +243,12 @@ class _TrendChartSlot extends ConsumerWidget {
 
 /// 一条 finding 的原文。
 ///
-/// `findingId` 在 A7a 阶段按 `ReviewInsightKind` 对齐：后端的 findings 目前没有
-/// 稳定 id（`ReviewFinding` 只有 kind + 文案），所以先用 kind 名做引用键，
-/// `DataScope` 的 finding 条目与之保持一致。A7b 接上后端 id 后只改这一处映射。
+/// `findingId` 是后端的**稳定规则标识**（`ReviewFinding.id`，如
+/// `hydration_low`）。用它而不是 `kind`：多条规则共用同一个 kind，kind 无法
+/// 唯一标识一条 finding。
+///
+/// 文案完全来自后端的 `title` / `body`，agent 只能选展示哪一条——这条是计划
+/// §6「AI 改写医学结论」红线的落点。
 class _FindingSlot extends ConsumerWidget {
   const _FindingSlot({required this.findingId});
 
@@ -254,9 +257,7 @@ class _FindingSlot extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final frame = _ReviewFrame.of(ref);
-    final finding = frame?.findings
-        .where((f) => f.kind.name == findingId)
-        .firstOrNull;
+    final finding = frame?.findings.where((f) => f.id == findingId).firstOrNull;
     if (finding == null) return const SizedBox.shrink();
 
     final typography = context.theme.typography;
