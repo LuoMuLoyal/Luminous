@@ -2,12 +2,14 @@ import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:luminous/app/composition/generative/catalog.dart'
     show buildGenerativeCatalog;
 import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/core/config/feature_flags.dart'
+    show genUiEnabledProvider;
 import 'package:luminous/features/customizer/presentation/providers/layout_store.dart'
     show storedSurfaceLayoutProvider;
 import 'package:luminous/features/customizer/presentation/widgets/title/entry.dart'
     show openSurfaceCustomizer;
 import 'package:luminous/features/generative/presentation/components/catalog.dart'
-    show registerGenerativeComponents;
+    show generativeSurfaceComponentId, registerGenerativeComponents;
 import 'package:luminous/features/generative/presentation/providers/surface_state.dart'
     show generativeCatalogProvider;
 import 'package:luminous/features/medicine/presentation/components/catalog.dart';
@@ -27,31 +29,65 @@ import 'package:luminous/features/today/presentation/components/catalog.dart';
 /// `components/catalog.dart` (registration function + surface definition), and
 /// wiring a new surface is one line here. Component implementations never go in
 /// this file.
-ComponentRegistry buildComponentRegistry() {
+///
+/// **生成式 UI 是实验性功能，默认关闭。** `registerGenerative` 为假的构建里
+/// 根本不注册 `generative.<surface>`，于是：
+/// - 编排页的候选面板列不出它（候选集来自已注册组件）；
+/// - 已存的布局即使提到它，`ComponentHost` 也按「未知 id」跳过——
+///   这是组件系统对任何未注册 id 的既有降级行为，不需要额外分支。
+///
+/// 开关在 settings → advanced 的实验开关页（`genUiEnabled`，默认 false）。
+ComponentRegistry buildComponentRegistry({bool registerGenerative = false}) {
   final registry = ComponentRegistry();
   registerTodayComponents(registry);
   registerRecordComponents(registry);
   registerMedicineComponents(registry);
   registerReviewComponents(registry);
   registerMineComponents(registry);
-  registerGenerativeComponents(registry);
+  if (registerGenerative) {
+    registerGenerativeComponents(registry);
+  }
   return registry;
 }
 
 /// Surface definitions for the whole app.
-SurfaceCatalog buildSurfaceCatalog() {
-  return SurfaceCatalog([
+///
+/// [registerGenerative] 为真时，把 `generative.<surface>` 追加进每个可生成
+/// surface 的 `owned` 列表。
+///
+/// **为什么必须加进 `owned`**：编排页的候选面板只列 `definition.owned` 里的
+/// id（见 `customizer/presentation/widgets/palette.dart`）。只注册组件而不进
+/// `owned`，组件虽然能用、却永远不会出现在面板里——用户看不到也就够不到。
+///
+/// 追加在**末尾**：`owned` 也决定默认顺序与面板分组，生成式组件是实验性功能，
+/// 不该插到既有组件前面改变默认观感。
+SurfaceCatalog buildSurfaceCatalog({bool registerGenerative = false}) {
+  const bases = [
     todaySurfaceDefinition,
     recordSurfaceDefinition,
     medicineSurfaceDefinition,
     reviewSurfaceDefinition,
     mineSurfaceDefinition,
+  ];
+  if (!registerGenerative) return SurfaceCatalog(bases);
+
+  return SurfaceCatalog([
+    for (final base in bases)
+      SurfaceDefinition(
+        surface: base.surface,
+        owned: [
+          ...base.owned,
+          if (base.surface != SurfaceId.tabChrome)
+            generativeSurfaceComponentId(base.surface),
+        ],
+        defaultLayout: base.defaultLayout,
+      ),
   ]);
 }
 
 /// Provider overrides that install the composition root into the app container.
 ///
-/// Two seams are swapped here:
+/// Three seams are swapped here:
 ///
 /// - **layout**: the static default becomes the stateful store, so every
 ///   `ComponentHost` renders the user's layout once one is stored and that
@@ -69,8 +105,26 @@ List<Override> compositionProviderOverrides() {
   final catalog = generativeCatalogProvider;
 
   return [
-    componentRegistryProvider.overrideWithValue(buildComponentRegistry()),
-    surfaceCatalogProvider.overrideWithValue(buildSurfaceCatalog()),
+    // **必须是 `overrideWith` 而不是 `overrideWithValue`。**
+    //
+    // 生成式 UI 由实验开关控制（`genUiEnabled`，默认 false）。`overrideWith`
+    // 的回调在 provider 首次读取时求值并 `watch` 开关，所以用户在 settings
+    // 里一打开，registry 就会重建、编排页的候选面板随即出现生成式组件；
+    // 写死成值则整个进程生命周期只有启动那一刻的判断，用户必须重启 app。
+    //
+    // 这不违反 `appProviderOverrides` 的约束：那条说的是 overrides **列表**
+    // 必须在 `ProviderContainer(overrides: ...)` 时给全，而单个 override 内部
+    // 用 `overrideWith` 是允许的（下面的 layout / catalog 就是这样）。
+    componentRegistryProvider.overrideWith(
+      (ref) => buildComponentRegistry(
+        registerGenerative: ref.watch(genUiEnabledProvider),
+      ),
+    ),
+    surfaceCatalogProvider.overrideWith(
+      (ref) => buildSurfaceCatalog(
+        registerGenerative: ref.watch(genUiEnabledProvider),
+      ),
+    ),
     defaultLayout.overrideWith((ref, surface) => ref.watch(store(surface))),
     surfaceCustomizerOpenerProvider.overrideWithValue(openSurfaceCustomizer),
     // A `family` override replaces the builder for **every** key: the callback

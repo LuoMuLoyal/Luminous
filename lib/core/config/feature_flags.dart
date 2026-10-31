@@ -15,8 +15,7 @@ part 'feature_flags.freezed.dart';
 abstract class FeatureFlagsState with _$FeatureFlagsState {
   const factory FeatureFlagsState({
     @Default(false) bool onDeviceRuntime,
-    @Default(RuntimeProviderKind.none)
-    RuntimeProviderKind runtimeProvider,
+    @Default(RuntimeProviderKind.none) RuntimeProviderKind runtimeProvider,
     @Default(false) bool genUiEnabled,
     @Default(true) bool assistantStreamMode,
     @Default(false) bool medicineBarcodeScan,
@@ -153,3 +152,20 @@ final featureFlagsControllerProvider =
     AsyncNotifierProvider<FeatureFlagsController, FeatureFlagsState>(
       FeatureFlagsController.new,
     );
+
+/// `genUiEnabled` 的同步读法，供**装配层**判断「要不要注册生成式组件」。
+///
+/// 为什么不直接用 `featureFlagsControllerProvider`：
+/// - 它是 `AsyncValue`，首帧（flag 还没从 `KvStore` 读出来）是 `loading`。
+///   装配点若把 loading 当成 false 去注册，会让「已开启」的用户在冷启动首帧
+///   看到组件缺失；若当成 true 又会让默认关闭的用户短暂拿到组件。
+///   这里在加载中沿用 [FeatureFlagsState] 的默认值（genUi 默认关闭），
+///   与「默认关闭」的语义一致。
+/// - 装配点是同步 build，不能 await。
+///
+/// 加载完成后它随 controller 一起更新，所以用户改开关会**立即**引发 registry
+/// 重建（前提是读取方用 `watch`，见 `app/composition/components/registry.dart`）。
+final genUiEnabledProvider = Provider<bool>((ref) {
+  final flags = ref.watch(featureFlagsControllerProvider).asData?.value;
+  return flags?.genUiEnabled ?? const FeatureFlagsState().genUiEnabled;
+}, name: 'genUiEnabled');

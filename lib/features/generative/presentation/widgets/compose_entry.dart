@@ -6,6 +6,8 @@ import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/generative/domain/entities/generation.dart';
+import 'package:luminous/features/generative/presentation/components/catalog.dart'
+    show generativeSurfaces;
 import 'package:luminous/features/generative/presentation/providers/generation.dart';
 import 'package:luminous/features/generative/presentation/providers/surface_state.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -102,6 +104,8 @@ class GenerativeComposeEntry extends HookConsumerWidget {
 
 /// surface 是否还能继续生成（`tab_chrome` 不是页面，不参与生成）。
 ///
-/// 与后端 `GENERATIVE_SURFACES` 对齐：服务端会拒 400
-/// `GENERATIVE_SURFACE_UNSUPPORTED`，客户端在这里先挡住，省一次往返。
-bool isComposableSurface(SurfaceId surface) => surface != SurfaceId.tabChrome;
+/// 与服务端 `GENERATIVE_SURFACES` 对齐，判定依据是 [generativeSurfaces] 这份
+/// 共享清单——不在这里重复写 `surface != SurfaceId.tabChrome`，否则注册逻辑与
+/// 入口判断会各有一份「哪些 surface 可生成」的答案，迟早漂移。
+bool isComposableSurface(SurfaceId surface) =>
+    generativeSurfaces.contains(surface);

@@ -18,6 +18,20 @@ import 'package:luminous/features/generative/presentation/widgets/generative_sur
 ComponentId generativeSurfaceComponentId(SurfaceId surface) =>
     ComponentId('generative.${surface.wireValue}');
 
+/// 可以挂生成式组件的 surface。
+///
+/// 排除 `tab_chrome`：它是底部栏（图标、名称、顺序），不是页面，客户端用另
+/// 一套模型渲染。服务端也在 `GENERATIVE_SURFACES` 里做了同样的排除，两边的
+/// 差集必须一致——否则打开实验开关后，客户端会给一个服务端拒绝生成的 surface
+/// 注册入口，用户点下去必然拿到 400 `GENERATIVE_SURFACE_UNSUPPORTED`。
+///
+/// 导出成常量而不是在各处重复 `surface != SurfaceId.tabChrome`：注册逻辑与
+/// 契约测试必须基于**同一份**清单，各写一份迟早漂移。
+final List<SurfaceId> generativeSurfaces = [
+  for (final surface in SurfaceId.values)
+    if (surface != SurfaceId.tabChrome) surface,
+];
+
 /// 注册 `generative.<surface>` 组件。
 ///
 /// builder 直接返回 [GenerativeSurface]：三态（不渲染 / 骨架 / 渲染）的判断在
@@ -26,10 +40,10 @@ ComponentId generativeSurfaceComponentId(SurfaceId surface) =>
 /// 跳过间距」，而生成式 UI 的结果通常要占满整行，由它自己决定间距更合适。
 ///
 /// **注意**：`ComponentId` 只接受 `[a-z0-9_]`，`SurfaceId.tabChrome` 的 wire
-/// 值是 `tab_chrome`，合法；但 tab 栏本身不是页面，生成式 UI 不挂它。
+/// 值是 `tab_chrome`，合法；但 tab 栏本身不是页面，生成式 UI 不挂它
+/// （见 [generativeSurfaces]）。
 void registerGenerativeComponents(ComponentRegistry registry) {
-  for (final surface in SurfaceId.values) {
-    if (surface == SurfaceId.tabChrome) continue;
+  for (final surface in generativeSurfaces) {
     registry.register(
       RegisteredComponent(
         id: generativeSurfaceComponentId(surface),
