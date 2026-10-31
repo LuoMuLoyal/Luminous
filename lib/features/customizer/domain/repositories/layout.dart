@@ -1,5 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/shared/domain/composition/layout.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 /// 布局的读写接口。

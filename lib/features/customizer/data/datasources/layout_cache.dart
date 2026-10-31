@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/storage/kv_store.dart';
+import 'package:luminous/shared/domain/composition/layout.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
 
 /// 布局的本地缓存。
 ///

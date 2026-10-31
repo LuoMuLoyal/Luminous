@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/shared/domain/composition/layout.dart';
 
 /// 布局在本地缓存/网络上的编解码。
 ///

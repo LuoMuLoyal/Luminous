@@ -1,14 +1,14 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/app_log.dart';
+import 'package:luminous/shared/domain/composition/layout.dart';
+import 'package:luminous/shared/domain/composition/size.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
 
 import 'descriptor.dart';
-import 'layout.dart';
 import 'registry.dart';
 import 'responsive/grid.dart';
 import 'responsive/viewport.dart';
-import 'size.dart';
-import 'surface.dart';
 
 /// Resolves [layout] into widgets, in order, paired with their column spans.
 ///

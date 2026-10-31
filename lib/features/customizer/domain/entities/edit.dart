@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/shared/domain/composition/id.dart';
+import 'package:luminous/shared/domain/composition/size.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
 
 part 'edit.freezed.dart';
 

@@ -1,7 +1,7 @@
-import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/features/customizer/domain/entities/draft.dart';
 import 'package:luminous/features/customizer/domain/entities/edit.dart';
 import 'package:luminous/features/customizer/domain/services/draft_rules.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
 
 /// 编排会话：进入 → 一系列编辑 → 提交或取消。
 ///

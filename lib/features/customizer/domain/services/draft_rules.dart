@@ -1,6 +1,9 @@
-import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/features/customizer/domain/entities/draft.dart';
 import 'package:luminous/features/customizer/domain/entities/edit.dart';
+import 'package:luminous/shared/domain/composition/id.dart';
+import 'package:luminous/shared/domain/composition/layout.dart';
+import 'package:luminous/shared/domain/composition/size.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
 
 /// 草稿上的纯规则：把一次 [LayoutEdit] 应用到 [LayoutDraft]，返回新草稿。
 ///

@@ -12,12 +12,13 @@
 /// component can be mounted on several surfaces.
 library;
 
+export 'package:luminous/shared/domain/composition/id.dart';
+export 'package:luminous/shared/domain/composition/layout.dart';
+export 'package:luminous/shared/domain/composition/size.dart';
+
 export 'descriptor.dart';
 export 'host.dart';
-export 'id.dart';
-export 'layout.dart';
 export 'registry.dart';
 export 'responsive/grid.dart';
 export 'responsive/viewport.dart';
-export 'size.dart';
 export 'surface.dart';

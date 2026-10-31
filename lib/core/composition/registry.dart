@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/shared/domain/composition/id.dart';
 
 import 'descriptor.dart';
-import 'id.dart';
 
 /// Open registry of component types, keyed by [ComponentId].
 ///

@@ -1,7 +1,8 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/features/customizer/domain/entities/draft.dart';
 import 'package:luminous/features/customizer/domain/repositories/layout.dart';
+import 'package:luminous/shared/domain/composition/layout.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 /// 进入编排：读取现有布局 → 生成草稿。

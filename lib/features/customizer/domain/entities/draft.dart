@@ -1,4 +1,5 @@
-import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/shared/domain/composition/layout.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
 
 /// 一次编排会话的草稿。
 ///

@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 /// 布局的远端数据源。

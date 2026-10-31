@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:luminous/core/design/tokens/breakpoints.dart';
 
-import '../size.dart';
+import 'package:luminous/shared/domain/composition/size.dart';
 
 /// How many columns a surface renders at, i.e. which device class the current
 /// viewport is.

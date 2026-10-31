@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'id.dart';
-import 'size.dart';
+import 'package:luminous/shared/domain/composition/id.dart';
+import 'package:luminous/shared/domain/composition/size.dart';
 
 /// Configuration of a component type that takes no options.
 ///

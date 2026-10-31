@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:luminous/core/composition/composition.dart';
-import 'package:luminous/features/customizer/application/layout_store.dart'
+import 'package:luminous/features/customizer/presentation/providers/layout_store.dart'
     show storedSurfaceLayoutProvider;
 import 'package:luminous/features/customizer/presentation/widgets/title/entry.dart'
     show openSurfaceCustomizer;

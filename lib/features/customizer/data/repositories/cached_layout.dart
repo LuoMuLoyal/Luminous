@@ -1,12 +1,13 @@
 import 'dart:async';
 
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/features/customizer/data/datasources/layout_cache.dart';
 import 'package:luminous/features/customizer/data/datasources/layout_remote.dart';
 import 'package:luminous/features/customizer/data/mappers/layout_wire.dart';
 import 'package:luminous/features/customizer/domain/repositories/layout.dart';
+import 'package:luminous/shared/domain/composition/layout.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 /// 布局仓储：cache-first 读取 + 乐观写入。
