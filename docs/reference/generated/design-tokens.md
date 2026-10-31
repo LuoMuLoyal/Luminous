@@ -213,6 +213,8 @@ is the machine projection; the interpretive contract lives in
 | `actionAdd` | `` | `FLucideIcons.plus` |  |
 | `actionAddCard` | `` | `FLucideIcons.squarePlus` |  |
 | `actionEdit` | `` | `FLucideIcons.pencil` |  |
+| `actionDone` | `` | `FLucideIcons.check` | 编排页「完成」：结束本次编辑并提交。 |
+| `actionDragHandle` | `` | `FLucideIcons.gripVertical` | 拖动把手：编排页里组件的重排入口。 |
 | `actionEditCard` | `` | `FLucideIcons.squarePen` |  |
 | `actionDelete` | `` | `FLucideIcons.trash2` |  |
 | `actionSearch` | `` | `FLucideIcons.search` |  |
