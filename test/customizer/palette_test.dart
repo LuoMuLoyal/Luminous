@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/composition/composition.dart';
-import 'package:luminous/features/customizer/application/layout_store.dart';
 import 'package:luminous/features/customizer/presentation/providers/draft.dart';
+import 'package:luminous/features/customizer/presentation/providers/layout_store.dart';
 import 'package:luminous/features/customizer/presentation/widgets/palette.dart';
 
 import '../helpers/kv_test_store.dart';
