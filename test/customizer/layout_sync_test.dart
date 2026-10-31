@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/app/composition/customizer/layout_repository.dart';
+import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/customizer/data/datasources/layout_cache.dart';
 import 'package:luminous/features/customizer/data/repositories/cached_layout.dart';
+import 'package:luminous/features/customizer/data/sync/layout_sync_queue.dart';
 import 'package:luminous/shared/domain/composition/id.dart';
 import 'package:luminous/shared/domain/composition/layout.dart';
 import 'package:luminous/shared/domain/composition/surface.dart';
@@ -21,8 +24,14 @@ SurfaceLayout _layoutWith(String id) => SurfaceLayout(
 /// `payload` 是客户端自己的 JSON，服务端原样存取——这里按同形构造。
 String _payloadOf(SurfaceLayout layout) => jsonEncode(layout.toJson());
 
+late AppDatabase db;
+
 void main() {
-  setUp(() => KvTestStore.install());
+  setUp(() {
+    KvTestStore.install();
+    db = AppDatabase.forTesting(NativeDatabase.memory());
+  });
+  tearDown(() => db.close());
 
   group('CachedLayoutRepository 与远端接线', () {
     test('readAll 把服务端文档写进缓存', () async {
@@ -39,6 +48,7 @@ void main() {
       final repository = CachedLayoutRepository(
         cache: LayoutCache(KvStore.instance),
         remote: remote,
+        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
       );
 
       final result = await repository.readAll().run();
@@ -60,6 +70,7 @@ void main() {
       final repository = CachedLayoutRepository(
         cache: LayoutCache(KvStore.instance),
         remote: remote,
+        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
       );
 
       final layouts = (await repository.readAll().run()).getOrElse(
@@ -80,6 +91,7 @@ void main() {
       final repository = CachedLayoutRepository(
         cache: LayoutCache(KvStore.instance),
         remote: remote,
+        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
       );
 
       await repository.write(SurfaceId.today, _layoutWith('summary.metrics')).run();
@@ -107,6 +119,7 @@ void main() {
       final repository = CachedLayoutRepository(
         cache: LayoutCache(KvStore.instance),
         remote: remote,
+        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
       );
 
       final result = await repository
@@ -122,6 +135,66 @@ void main() {
         cached[SurfaceId.today]?.placements.single.id.value,
         'dose.risk_overview',
       );
+    });
+
+    test('非 409 失败时入离线队列，同 surface 只保留最后一次', () async {
+      final remote = FakeLayoutRemote()
+        ..failure = LucentFailure.unknown(message: 'offline');
+      final repository = CachedLayoutRepository(
+        cache: LayoutCache(KvStore.instance),
+        remote: remote,
+        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
+      );
+
+      await repository.write(SurfaceId.today, _layoutWith('water.trend')).run();
+      await repository
+          .write(SurfaceId.today, _layoutWith('summary.metrics'))
+          .run();
+      // 入队是 fire-and-forget（不阻塞用户确认），等它落库。
+      await pumpEventQueue();
+
+      final entries = await db.pendingSyncDao.fetchEntriesByEntity(
+        entityType: LayoutSyncQueue.entityType,
+        entityId: SurfaceId.today.wireValue,
+      );
+      // 连改两次仍只有一条：布局是整份文档，中间状态没有重放价值。
+      expect(entries, hasLength(1));
+      final decoded = LayoutSyncQueue.decode(entries.single)!;
+      expect(decoded.surface, SurfaceId.today);
+      expect(decoded.payload, contains('summary.metrics'));
+    });
+
+    test('409 冲突不进入离线队列', () async {
+      final remote = FakeLayoutRemote()
+        ..failure = LucentFailure(
+          kind: LucentFailureKind.business,
+          message: 'conflict',
+          statusCode: 409,
+          errors: {
+            'current': {
+              'surface': 'today',
+              'version': 9,
+              'schemaVersion': SurfaceLayout.currentSchemaVersion,
+              'payload': jsonDecode(_payloadOf(_layoutWith('water.trend'))),
+            },
+          },
+        );
+      final repository = CachedLayoutRepository(
+        cache: LayoutCache(KvStore.instance),
+        remote: remote,
+        syncQueue: LayoutSyncQueue(db.pendingSyncDao),
+      );
+
+      await repository
+          .write(SurfaceId.today, _layoutWith('summary.metrics'))
+          .run();
+      await pumpEventQueue();
+
+      final entries = await db.pendingSyncDao.fetchEntriesByEntity(
+        entityType: LayoutSyncQueue.entityType,
+        entityId: SurfaceId.today.wireValue,
+      );
+      expect(entries, isEmpty);
     });
   });
 

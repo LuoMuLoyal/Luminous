@@ -1,10 +1,12 @@
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/composition/customizer/layout_repository.dart';
+import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/customizer/data/datasources/layout_cache.dart';
 import 'package:luminous/features/customizer/data/datasources/layout_remote.dart';
 import 'package:luminous/features/customizer/data/repositories/cached_layout.dart';
+import 'package:luminous/features/customizer/data/sync/layout_sync_queue.dart';
 import 'package:luminous/features/customizer/domain/repositories/layout.dart';
 import 'package:luminous/shared/domain/composition/surface.dart';
 import 'package:luminous/shared/domain/failure.dart';
@@ -59,6 +61,7 @@ Override fakeLayoutRepositoryOverride([FakeLayoutRemote? remote]) {
     return CachedLayoutRepository(
       cache: LayoutCache(KvStore.instance),
       remote: remote ?? FakeLayoutRemote(),
+      syncQueue: LayoutSyncQueue(ref.watch(pendingSyncDaoProvider)),
     );
   });
 }

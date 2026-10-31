@@ -192,6 +192,21 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
     await (delete(pendingSyncItems)..where((t) => t.id.equals(id))).go();
   }
 
+  /// 同一 entity 的全部队列项，不区分是否在重试或已永久失败。
+  ///
+  /// 供「同一实体只保留最后一次写入」的场景使用（例如布局是整份文档，
+  /// 中间状态没有重放价值）：调用方先清掉旧项再入队新项。
+  Future<List<PendingSyncEntry>> fetchEntriesByEntity({
+    required String entityType,
+    required String entityId,
+  }) async {
+    final query = select(pendingSyncItems)
+      ..where((t) => t.entityType.equals(entityType))
+      ..where((t) => t.entityId.equals(entityId));
+    final rows = await query.get();
+    return rows.map(_toEntry).toList();
+  }
+
   /// Returns the count of pending pendingSyncItems.
   Future<int> pendingCount() async {
     final count = countAll();
