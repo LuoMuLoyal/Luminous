@@ -148,6 +148,9 @@ dependencies:
   genui: ^0.10.4
   flutter_reorderable_grid_view: ^5.7.0
   a2ui_core: ^0.1.1
+  # 生成式 UI 的 catalog item schema（`S.object` / `S.string`）。`genui` 自己
+  # 也依赖它；这里显式声明是因为组合根直接构造 `CatalogItem.dataSchema`。
+  json_schema_builder: ^0.1.7
 
 dev_dependencies:
   flutter_test:
