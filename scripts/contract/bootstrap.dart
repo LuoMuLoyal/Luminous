@@ -505,13 +505,47 @@ Future<void> _buildAppCodegen(ToolContext context) async {
   );
   stdout.writeln('');
 
+  // 根构建的 source 排除了 `generated/lucent_api/**`（build.yaml），但上一次
+  // 构建写下的 `.dart_tool/build/asset_graph.json` 里还留着子包产物。build_runner
+  // 的增量清理会去删这些"不属于当前构建"的资产，直接抛
+  // `InvalidOutputException: Tried to delete from package not in the build`。
+  //
+  // 以前靠 `maxRetries: 1` 撞过去（第一次失败清空了图，重试就过了），但那只是
+  // 把必然发生的问题藏起来，而且每次都要白跑一遍完整构建。这里在构建前把子包的
+  // 资产图删掉：增量信息没了等于全量重建，这正是我们要的语义——生成物本来就刚
+  // 被 `_buildClient` 整树重写过。
+  await _dropStaleSubpackageAssets(context.repoRoot);
+
   await runLoggedCommand(
     'dart',
     ['run', 'build_runner', 'build', '--delete-conflicting-outputs'],
     workingDirectory: context.repoRoot,
     stepName: 'dart run build_runner build --delete-conflicting-outputs',
-    maxRetries: 1,
   );
+}
+
+/// 删掉根构建资产图里属于子包（`generated/lucent_api`）的记录。
+///
+/// 只动 `.dart_tool/build/`（本地产物缓存，committed 之外的东西）；文件不存在
+/// 或没有子包记录时直接返回，不制造额外 IO。
+Future<void> _dropStaleSubpackageAssets(Directory repoRoot) async {
+  final graphFile = File(
+    '${repoRoot.path}${Platform.pathSeparator}.dart_tool'
+    '${Platform.pathSeparator}build${Platform.pathSeparator}asset_graph.json',
+  );
+  if (!graphFile.existsSync()) return;
+
+  final raw = await graphFile.readAsString();
+  if (!raw.contains('lucent_api|')) return;
+
+  // 最简单的正确做法：整份图删掉，逼迫 build_runner 全量重建。手改 JSON 需要
+  // 同步维护 checksum 与反向索引，成本远高于一次全量构建。
+  await graphFile.delete();
+  stdout.writeln(
+    'Removed stale build asset graph (it referenced the excluded '
+    'generated/lucent_api package).',
+  );
+  stdout.writeln('');
 }
 
 _ParsedArgs _parseArgs(List<String> args) {
