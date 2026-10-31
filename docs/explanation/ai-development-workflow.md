@@ -6,12 +6,12 @@ updated: 2026-10-03
 
 # AI Development Workflow
 
-本文只覆盖 AI 开发专属机制：MCP 配置、`lib/core/ai/` 实验 seam、feature flag、CI 环境变量。agent 行为与仓库通用守则以 `AGENTS.md` 为唯一规则源。
+本文只覆盖 AI 开发专属机制：MCP 配置、`lib/core/experiments/runtime/` 实验 seam、feature flag、CI 环境变量。agent 行为与仓库通用守则以 `AGENTS.md` 为唯一规则源。
 
 ## Integration Boundary
 
 - AI 辅助开发依赖仓库内提交的指令与 MCP 配置（`.cursor/mcp.json`、`.github/copilot-instructions.md`），不依赖私有 IDE 状态。
-- 线上 AI 功能走 Lucent 后端 API；本地 app-side AI 运行时是 `lib/core/ai/` 下的非发布实验 seam。
+- 线上 AI 功能走 Lucent 后端 API；本地 app-side AI 运行时是 `lib/core/experiments/runtime/` 下的非发布实验 seam。
 
 ## MCP Usage
 
@@ -20,14 +20,14 @@ updated: 2026-10-03
 
 ## App-Side AI Runtime Boundary
 
-`lib/core/ai/` 只承载本地运行时关注点：
+`lib/core/experiments/runtime/` 只承载本地运行时关注点：
 
 - experiment flags
 - provider wiring
 - runtime capability descriptors
 - future vendor adapters
 
-以下内容不属于 `lib/core/ai/`，保持既有 feature 边界：
+以下内容不属于 `lib/core/experiments/runtime/`，保持既有 feature 边界：
 
 - Lucent API DTO mapping
 - assistant conversation UI state
@@ -42,20 +42,20 @@ seam 由编译期 dart-define 门控，默认关闭：
 
 ```bash
 flutter run \
-  --dart-define=LUMINOUS_EXPERIMENTAL_AI_RUNTIME=true \
-  --dart-define=LUMINOUS_AI_RUNTIME_PROVIDER=ai_toolkit
+  --dart-define=LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED=true \
+  --dart-define=LUMINOUS_RUNTIME_PROVIDER=ai_toolkit
 ```
 
 GenUI 探索（可选，不是当前产品壳的依赖）：
 
 ```bash
 flutter run \
-  --dart-define=LUMINOUS_EXPERIMENTAL_AI_RUNTIME=true \
-  --dart-define=LUMINOUS_AI_RUNTIME_PROVIDER=gen_ui \
+  --dart-define=LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED=true \
+  --dart-define=LUMINOUS_RUNTIME_PROVIDER=gen_ui \
   --dart-define=LUMINOUS_ENABLE_GEN_UI=true
 ```
 
-`LUMINOUS_AI_RUNTIME_PROVIDER` 接受 `none` / `ai_toolkit` / `gen_ui` / `custom`，无法识别的值按 `none` 处理。
+`LUMINOUS_RUNTIME_PROVIDER` 接受 `none` / `ai_toolkit` / `gen_ui` / `custom`，无法识别的值按 `none` 处理。
 
 ## CI/CD Environment Variables
 
@@ -71,8 +71,8 @@ flutter run \
 | `JPUSH_APP_KEY` | GitHub Secrets | `deploy-android` / `deploy-ios` | JPush AppKey；Android 侧同时作为 Gradle 环境变量填 manifest，缺失则推送静默禁用 |
 | `WECHAT_MOBILE_APP_ID` | GitHub Secrets | `deploy-android` / `deploy-ios` | 微信开放平台 AppId；iOS 侧同时写入 `ios/Flutter/Wechat.xcconfig` 供 `CFBundleURLSchemes` 展开 |
 | `WECHAT_IOS_UNIVERSAL_LINK` | GitHub Variables | `deploy-ios` | 微信 Universal Link；仍需在 Apple 账号侧配置 Associated Domains 才可用 |
-| `LUMINOUS_EXPERIMENTAL_AI_RUNTIME` | GitHub Variables | `deploy-web` | Enable experimental AI runtime（默认 `false`） |
-| `LUMINOUS_AI_RUNTIME_PROVIDER` | GitHub Variables | `deploy-web` | AI runtime provider（工作流回退值 `openai`，运行时按 `none` 处理） |
+| `LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED` | GitHub Variables | `deploy-web` | Enable experimental AI runtime（默认 `false`） |
+| `LUMINOUS_RUNTIME_PROVIDER` | GitHub Variables | `deploy-web` | AI runtime provider（工作流回退值 `openai`，运行时按 `none` 处理） |
 | `LUMINOUS_ENABLE_GEN_UI` | GitHub Variables | `deploy-web` | Enable GenUI features（默认 `false`） |
 
 `deploy-web.yml` 另外在构建前校验：`SENTRY_DSN` 若已设置，必须符合
@@ -81,7 +81,7 @@ flutter run \
 
 ## Verification Expectations
 
-改动 AI workflow 文档或 `lib/core/ai/` 时:
+改动 AI workflow 文档或 `lib/core/experiments/runtime/` 时:
 
 - `flutter test test/core/ai`
 - `flutter analyze`

@@ -210,8 +210,8 @@
     }
   },
   "settingsFeatureFlagsAiSection": "AI Runtime",
-  "settingsFeatureFlagsAiRuntime": "On-device AI Runtime",
-  "settingsFeatureFlagsAiRuntimeSubtitle": "Enable local AI inference",
+  "settingsFeatureFlagsRuntimeEnabled": "On-device runtime",
+  "settingsFeatureFlagsRuntimeEnabledSubtitle": "Enable local inference",
   "settingsFeatureFlagsAiProvider": "AI Runtime Provider",
   "settingsFeatureFlagsGenUi": "GenUI Rendering",
   "settingsFeatureFlagsGenUiSubtitle": "Enable generative UI rendering",

@@ -182,7 +182,7 @@ void main() {
       await pumpPage(tester, const FeatureFlagsSettingsPage());
 
       expect(find.text(l10n.settingsFeatureFlagsAiSection), findsOneWidget);
-      expect(find.text(l10n.settingsFeatureFlagsAiRuntime), findsOneWidget);
+      expect(find.text(l10n.settingsFeatureFlagsRuntimeEnabled), findsOneWidget);
       expect(find.text(l10n.settingsFeatureFlagsGenUi), findsOneWidget);
     });
 

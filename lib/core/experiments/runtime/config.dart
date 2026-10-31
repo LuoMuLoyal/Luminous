@@ -2,40 +2,46 @@
 import 'package:luminous/core/network/config/env_keys.dart';
 import 'package:luminous/core/network/config/env_reader.dart';
 
-enum AiRuntimeProviderKind { none, aiToolkit, genUi, custom }
+/// 实验性 runtime 的提供方种类。
+///
+/// 类名不带 `Ai`：目录已经是 `experiments/runtime`，`Ai` 在这里既不精确
+/// （它描述的不是"AI"，而是"哪个本地推理后端"），也和 feature flag 里的
+/// `onDeviceRuntime` 撞词。
+enum RuntimeProviderKind { none, aiToolkit, genUi, custom }
 
-extension AiRuntimeProviderKindX on AiRuntimeProviderKind {
-  static AiRuntimeProviderKind parse(String rawValue) {
+extension RuntimeProviderKindX on RuntimeProviderKind {
+  static RuntimeProviderKind parse(String rawValue) {
     switch (rawValue.trim().toLowerCase()) {
       case 'ai_toolkit':
       case 'aitoolkit':
       case 'toolkit':
-        return AiRuntimeProviderKind.aiToolkit;
+        return RuntimeProviderKind.aiToolkit;
       case 'gen_ui':
       case 'genui':
-        return AiRuntimeProviderKind.genUi;
+        return RuntimeProviderKind.genUi;
       case 'custom':
-        return AiRuntimeProviderKind.custom;
+        return RuntimeProviderKind.custom;
       default:
-        return AiRuntimeProviderKind.none;
+        return RuntimeProviderKind.none;
     }
   }
 }
 
-class AiRuntimeEnvironment {
-  const AiRuntimeEnvironment({
+/// 从平台环境读到的原始开关。
+class RuntimeEnvironment {
+  const RuntimeEnvironment({
     required this.enabled,
     required this.provider,
     required this.genUiEnabled,
   });
 
-  factory AiRuntimeEnvironment.fromPlatform() {
+  factory RuntimeEnvironment.fromPlatform() {
     final enabled = EnvReader.boolValue(
-      EnvKey.luminousExperimentalAiRuntime,
+      EnvKey.luminousExperimentalRuntimeEnabled,
       fallback: false,
     );
     final providerValue = EnvReader.string(
-      EnvKey.luminousAiRuntimeProvider,
+      EnvKey.luminousRuntimeProvider,
       fallback: 'none',
     );
     final genUiEnabled = EnvReader.boolValue(
@@ -43,33 +49,34 @@ class AiRuntimeEnvironment {
       fallback: false,
     );
 
-    return AiRuntimeEnvironment._fromEnvironment(
+    return RuntimeEnvironment._fromEnvironment(
       enabled: enabled,
       providerValue: providerValue,
       genUiEnabled: genUiEnabled,
     );
   }
 
-  AiRuntimeEnvironment._fromEnvironment({
+  RuntimeEnvironment._fromEnvironment({
     required this.enabled,
     required String providerValue,
     required this.genUiEnabled,
-  }) : provider = AiRuntimeProviderKindX.parse(providerValue);
+  }) : provider = RuntimeProviderKindX.parse(providerValue);
 
   final bool enabled;
-  final AiRuntimeProviderKind provider;
+  final RuntimeProviderKind provider;
   final bool genUiEnabled;
 }
 
-class AiRuntimeConfig {
-  const AiRuntimeConfig({
+/// 解析后的实验配置。
+class RuntimeConfig {
+  const RuntimeConfig({
     required this.enabled,
     required this.provider,
     required this.genUiEnabled,
   });
 
-  factory AiRuntimeConfig.fromEnvironment(AiRuntimeEnvironment environment) {
-    return AiRuntimeConfig(
+  factory RuntimeConfig.fromEnvironment(RuntimeEnvironment environment) {
+    return RuntimeConfig(
       enabled: environment.enabled,
       provider: environment.provider,
       genUiEnabled: environment.genUiEnabled,
@@ -77,9 +84,9 @@ class AiRuntimeConfig {
   }
 
   final bool enabled;
-  final AiRuntimeProviderKind provider;
+  final RuntimeProviderKind provider;
   final bool genUiEnabled;
 
   bool get exposesLocalRuntime =>
-      enabled && provider != AiRuntimeProviderKind.none;
+      enabled && provider != RuntimeProviderKind.none;
 }

@@ -73,7 +73,7 @@ drift worker（只有 `lib/core/database/connection_web.dart` 消费），移动
 | `JPUSH_APP_KEY` | Secret | ✅ Dart define + Gradle/manifest | ✅ Dart define | — |
 | `WECHAT_MOBILE_APP_ID` | Secret | ✅ Dart define | ✅ Dart define + `Wechat.xcconfig` | — |
 | `WECHAT_IOS_UNIVERSAL_LINK` | Variable | — | ✅ Dart define | — |
-| `LUMINOUS_EXPERIMENTAL_AI_RUNTIME`、`LUMINOUS_AI_RUNTIME_PROVIDER`、`LUMINOUS_ENABLE_GEN_UI` | Variable | — | — | ✅ |
+| `LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED`、`LUMINOUS_RUNTIME_PROVIDER`、`LUMINOUS_ENABLE_GEN_UI` | Variable | — | — | ✅ |
 
 Web 的三个 `LUMINOUS_*` 是 Web 实验运行时开关，移动端发布不注入，保持产品默认（关闭）。
 `WECHAT_IOS_UNIVERSAL_LINK` 还要求 Apple 账号侧配好 Associated Domains 才可用。

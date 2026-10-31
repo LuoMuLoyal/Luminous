@@ -329,8 +329,7 @@ Direct edits to `app_zh.arb` / `app_en.arb` **will be lost** on the next merge.
 ## Non-Negotiable Boundaries
 
 - This is a Flutter + Riverpod + GoRouter + Forui project.
-- Lucent owns shipping assistant/report AI backends; `lib/core/ai/` is an
-  experiment seam, not the place to replace current Lucent production flows by default.
+- Lucent owns shipping assistant/report AI backends; `lib/core/experiments/runtime/` 只读实验性 runtime 开关（从环境变量解析 provider/kind），prompt、模型调用与网络代码都不在这里。
 - Fix the requested problem directly — do not loosen lint rules or refactor nearby
   working code.
 - `domain/` 保持零框架依赖（`domain_purity`）；不要在 `data/` 下新建 provider 目录。

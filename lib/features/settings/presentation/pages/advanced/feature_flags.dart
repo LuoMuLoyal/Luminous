@@ -1,10 +1,11 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/ai/runtime_config.dart';
 import 'package:luminous/core/config/feature_flags.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/experiments/runtime/config.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -66,26 +67,26 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
                     FTile(
-                      title: Text(l10n.settingsFeatureFlagsAiRuntime),
+                      title: Text(l10n.settingsFeatureFlagsRuntimeEnabled),
                       subtitle: Text(
-                        l10n.settingsFeatureFlagsAiRuntimeSubtitle,
+                        l10n.settingsFeatureFlagsRuntimeEnabledSubtitle,
                       ),
                       suffix: FSwitch(
-                        value: flags.onDeviceAiRuntime,
-                        onChange: (v) => controller.setOnDeviceAiRuntime(v),
+                        value: flags.onDeviceRuntime,
+                        onChange: (v) => controller.setOnDeviceRuntime(v),
                       ),
-                      onPress: () => controller.setOnDeviceAiRuntime(
-                        !flags.onDeviceAiRuntime,
+                      onPress: () => controller.setOnDeviceRuntime(
+                        !flags.onDeviceRuntime,
                       ),
                     ),
                     FTile(
                       title: Text(l10n.settingsFeatureFlagsAiProvider),
-                      subtitle: Text(flags.aiRuntimeProvider.name),
+                      subtitle: Text(flags.runtimeProvider.name),
                       suffix: const Icon(SemanticIcons.actionNext),
                       onPress: () => _showProviderSheet(
                         context,
-                        flags.aiRuntimeProvider,
-                        controller.setAiRuntimeProvider,
+                        flags.runtimeProvider,
+                        controller.setRuntimeProvider,
                       ),
                     ),
                     FTile(
@@ -178,8 +179,8 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
 
   void _showProviderSheet(
     BuildContext context,
-    AiRuntimeProviderKind current,
-    Future<void> Function(AiRuntimeProviderKind) onSelect,
+    RuntimeProviderKind current,
+    Future<void> Function(RuntimeProviderKind) onSelect,
   ) {
     final l10n = AppLocalizations.of(context)!;
     unawaited(
@@ -200,8 +201,8 @@ class _ProviderSheet extends ConsumerWidget {
     required this.l10n,
   });
 
-  final AiRuntimeProviderKind current;
-  final Future<void> Function(AiRuntimeProviderKind) onSelect;
+  final RuntimeProviderKind current;
+  final Future<void> Function(RuntimeProviderKind) onSelect;
   final AppLocalizations l10n;
 
   @override
@@ -225,7 +226,7 @@ class _ProviderSheet extends ConsumerWidget {
             FTileGroup(
               style: settingsSubpageTileGroupStyle(context.theme),
               children: [
-                for (final kind in AiRuntimeProviderKind.values)
+                for (final kind in RuntimeProviderKind.values)
                   FTile(
                     title: Text(kind.name),
                     suffix: SettingsSelectionIcon(selected: kind == current),

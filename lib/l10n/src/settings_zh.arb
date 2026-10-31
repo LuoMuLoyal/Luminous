@@ -210,8 +210,8 @@
     }
   },
   "settingsFeatureFlagsAiSection": "AI 运行时",
-  "settingsFeatureFlagsAiRuntime": "端侧 AI Runtime",
-  "settingsFeatureFlagsAiRuntimeSubtitle": "启用本地 AI 推理",
+  "settingsFeatureFlagsRuntimeEnabled": "端侧 AI Runtime",
+  "settingsFeatureFlagsRuntimeEnabledSubtitle": "启用本地 AI 推理",
   "settingsFeatureFlagsAiProvider": "AI Runtime 提供方",
   "settingsFeatureFlagsGenUi": "GenUI 渲染",
   "settingsFeatureFlagsGenUiSubtitle": "启用生成式 UI 渲染",

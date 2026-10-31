@@ -117,8 +117,8 @@ jobs:
             --dart-define=LUCENT_BASE_URL="${LUCENT_BASE_URL}" \
             --dart-define=SENTRY_DSN="${SENTRY_DSN}" \
             --dart-define=SUPPORT_EMAIL="${SUPPORT_EMAIL}" \
-            --dart-define=LUMINOUS_EXPERIMENTAL_AI_RUNTIME=${{ vars.LUMINOUS_EXPERIMENTAL_AI_RUNTIME || 'false' }} \
-            --dart-define=LUMINOUS_AI_RUNTIME_PROVIDER=${{ vars.LUMINOUS_AI_RUNTIME_PROVIDER || 'openai' }} \
+            --dart-define=LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED=${{ vars.LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED || 'false' }} \
+            --dart-define=LUMINOUS_RUNTIME_PROVIDER=${{ vars.LUMINOUS_RUNTIME_PROVIDER || 'openai' }} \
             --dart-define=LUMINOUS_ENABLE_GEN_UI=${{ vars.LUMINOUS_ENABLE_GEN_UI || 'false' }}
 
       # ── 产物断言（计划 §8.2）。任一条失败都意味着壳内会白屏或行为异常，

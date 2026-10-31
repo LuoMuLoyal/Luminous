@@ -30,8 +30,8 @@ abstract final class PrefKeys {
 
   // ── Feature Flags ─────────────────────────────────────────────────────
 
-  static const featureFlagsOnDeviceAiRuntime = 'featureFlags.onDeviceAiRuntime';
-  static const featureFlagsAiRuntimeProvider = 'featureFlags.aiRuntimeProvider';
+  static const featureFlagsOnDeviceRuntime = 'featureFlags.onDeviceRuntime';
+  static const featureFlagsRuntimeProvider = 'featureFlags.runtimeProvider';
   static const featureFlagsGenUiEnabled = 'featureFlags.genUiEnabled';
   static const featureFlagsAssistantStreamMode =
       'featureFlags.assistantStreamMode';

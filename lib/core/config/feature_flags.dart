@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/ai/runtime_config.dart';
+import 'package:luminous/core/experiments/runtime/config.dart';
 import 'package:luminous/core/network/config/pref_keys.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 
@@ -14,9 +14,9 @@ part 'feature_flags.freezed.dart';
 @freezed
 abstract class FeatureFlagsState with _$FeatureFlagsState {
   const factory FeatureFlagsState({
-    @Default(false) bool onDeviceAiRuntime,
-    @Default(AiRuntimeProviderKind.none)
-    AiRuntimeProviderKind aiRuntimeProvider,
+    @Default(false) bool onDeviceRuntime,
+    @Default(RuntimeProviderKind.none)
+    RuntimeProviderKind runtimeProvider,
     @Default(false) bool genUiEnabled,
     @Default(true) bool assistantStreamMode,
     @Default(false) bool medicineBarcodeScan,
@@ -28,12 +28,12 @@ abstract class FeatureFlagsState with _$FeatureFlagsState {
   /// Count of enabled flags (for summary display).
   int get enabledCount {
     var count = 0;
-    if (onDeviceAiRuntime) count++;
+    if (onDeviceRuntime) count++;
     if (genUiEnabled) count++;
     if (assistantStreamMode) count++;
     if (medicineBarcodeScan) count++;
     if (reportExportPdf) count++;
-    // aiRuntimeProvider is an enum, not a simple toggle; skip.
+    // runtimeProvider is an enum, not a simple toggle; skip.
     return count;
   }
 
@@ -42,8 +42,8 @@ abstract class FeatureFlagsState with _$FeatureFlagsState {
 }
 
 class FeatureFlagsController extends AsyncNotifier<FeatureFlagsState> {
-  static const _onDeviceAiRuntimeKey = PrefKeys.featureFlagsOnDeviceAiRuntime;
-  static const _aiProviderKey = PrefKeys.featureFlagsAiRuntimeProvider;
+  static const _onDeviceRuntimeKey = PrefKeys.featureFlagsOnDeviceRuntime;
+  static const _aiProviderKey = PrefKeys.featureFlagsRuntimeProvider;
   static const _genUiKey = PrefKeys.featureFlagsGenUiEnabled;
   static const _streamModeKey = PrefKeys.featureFlagsAssistantStreamMode;
   static const _barcodeScanKey = PrefKeys.featureFlagsMedicineBarcodeScan;
@@ -54,15 +54,15 @@ class FeatureFlagsController extends AsyncNotifier<FeatureFlagsState> {
     final preferences = KvStore.instance;
 
     // Seed from compile-time env on first launch.
-    final envConfig = AiRuntimeConfig.fromEnvironment(
-      AiRuntimeEnvironment.fromPlatform(),
+    final envConfig = RuntimeConfig.fromEnvironment(
+      RuntimeEnvironment.fromPlatform(),
     );
 
-    final onDeviceAiRuntime = preferences.get<bool>(
-      _onDeviceAiRuntimeKey,
+    final onDeviceRuntime = preferences.get<bool>(
+      _onDeviceRuntimeKey,
       fallback: envConfig.enabled,
     );
-    final aiRuntimeProvider = _providerFromStorage(
+    final runtimeProvider = _providerFromStorage(
       preferences.getOrNull<String>(_aiProviderKey),
       envConfig.provider,
     );
@@ -75,8 +75,8 @@ class FeatureFlagsController extends AsyncNotifier<FeatureFlagsState> {
     final pdfExport = preferences.get<bool>(_pdfExportKey, fallback: false);
 
     return FeatureFlagsState(
-      onDeviceAiRuntime: onDeviceAiRuntime,
-      aiRuntimeProvider: aiRuntimeProvider,
+      onDeviceRuntime: onDeviceRuntime,
+      runtimeProvider: runtimeProvider,
       genUiEnabled: genUiEnabled,
       assistantStreamMode: streamMode,
       medicineBarcodeScan: barcodeScan,
@@ -84,16 +84,16 @@ class FeatureFlagsController extends AsyncNotifier<FeatureFlagsState> {
     );
   }
 
-  Future<void> setOnDeviceAiRuntime(bool enabled) async {
+  Future<void> setOnDeviceRuntime(bool enabled) async {
     final current = state.asData?.value ?? const FeatureFlagsState();
-    state = AsyncData(current.copyWith(onDeviceAiRuntime: enabled));
+    state = AsyncData(current.copyWith(onDeviceRuntime: enabled));
     final preferences = KvStore.instance;
-    await preferences.set(_onDeviceAiRuntimeKey, enabled);
+    await preferences.set(_onDeviceRuntimeKey, enabled);
   }
 
-  Future<void> setAiRuntimeProvider(AiRuntimeProviderKind provider) async {
+  Future<void> setRuntimeProvider(RuntimeProviderKind provider) async {
     final current = state.asData?.value ?? const FeatureFlagsState();
-    state = AsyncData(current.copyWith(aiRuntimeProvider: provider));
+    state = AsyncData(current.copyWith(runtimeProvider: provider));
     final preferences = KvStore.instance;
     await preferences.set(_aiProviderKey, provider.name);
   }
@@ -129,7 +129,7 @@ class FeatureFlagsController extends AsyncNotifier<FeatureFlagsState> {
   Future<void> reset() async {
     state = const AsyncData(FeatureFlagsState());
     final preferences = KvStore.instance;
-    await preferences.remove(_onDeviceAiRuntimeKey);
+    await preferences.remove(_onDeviceRuntimeKey);
     await preferences.remove(_aiProviderKey);
     await preferences.remove(_genUiKey);
     await preferences.remove(_streamModeKey);
@@ -137,12 +137,12 @@ class FeatureFlagsController extends AsyncNotifier<FeatureFlagsState> {
     await preferences.remove(_pdfExportKey);
   }
 
-  static AiRuntimeProviderKind _providerFromStorage(
+  static RuntimeProviderKind _providerFromStorage(
     String? stored,
-    AiRuntimeProviderKind fallback,
+    RuntimeProviderKind fallback,
   ) {
     if (stored == null) return fallback;
-    for (final kind in AiRuntimeProviderKind.values) {
+    for (final kind in RuntimeProviderKind.values) {
       if (kind.name == stored) return kind;
     }
     return fallback;

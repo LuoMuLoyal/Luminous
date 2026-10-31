@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/ai/runtime_config.dart';
 import 'package:luminous/core/config/feature_flags.dart';
+import 'package:luminous/core/experiments/runtime/config.dart';
 import 'package:luminous/core/network/config/env_keys.dart';
 import 'package:luminous/core/network/config/env_reader.dart';
 import 'package:luminous/core/storage/kv_store.dart';
@@ -32,8 +32,8 @@ void main() {
       expect(state.enabledCount, 1);
     });
 
-    test('counts onDeviceAiRuntime in addition to default', () {
-      const state = FeatureFlagsState(onDeviceAiRuntime: true);
+    test('counts onDeviceRuntime in addition to default', () {
+      const state = FeatureFlagsState(onDeviceRuntime: true);
       expect(state.enabledCount, 2);
     });
 
@@ -64,7 +64,7 @@ void main() {
 
     test('counts all enabled flags', () {
       const state = FeatureFlagsState(
-        onDeviceAiRuntime: true,
+        onDeviceRuntime: true,
         genUiEnabled: true,
         assistantStreamMode: true,
         medicineBarcodeScan: true,
@@ -84,8 +84,8 @@ void main() {
 
       final state = await container.read(featureFlagsControllerProvider.future);
 
-      expect(state.onDeviceAiRuntime, isFalse);
-      expect(state.aiRuntimeProvider, AiRuntimeProviderKind.none);
+      expect(state.onDeviceRuntime, isFalse);
+      expect(state.runtimeProvider, RuntimeProviderKind.none);
       expect(state.genUiEnabled, isFalse);
       expect(state.assistantStreamMode, isTrue);
       expect(state.medicineBarcodeScan, isFalse);
@@ -95,8 +95,8 @@ void main() {
     test('loads persisted values', () async {
       container = buildContainer(
         initialValues: const <String, Object>{
-          'featureFlags.onDeviceAiRuntime': true,
-          'featureFlags.aiRuntimeProvider': 'aiToolkit',
+          'featureFlags.onDeviceRuntime': true,
+          'featureFlags.runtimeProvider': 'aiToolkit',
           'featureFlags.genUiEnabled': true,
           'featureFlags.assistantStreamMode': false,
           'featureFlags.medicineBarcodeScan': true,
@@ -106,8 +106,8 @@ void main() {
 
       final state = await container.read(featureFlagsControllerProvider.future);
 
-      expect(state.onDeviceAiRuntime, isTrue);
-      expect(state.aiRuntimeProvider, AiRuntimeProviderKind.aiToolkit);
+      expect(state.onDeviceRuntime, isTrue);
+      expect(state.runtimeProvider, RuntimeProviderKind.aiToolkit);
       expect(state.genUiEnabled, isTrue);
       expect(state.assistantStreamMode, isFalse);
       expect(state.medicineBarcodeScan, isTrue);
@@ -115,34 +115,34 @@ void main() {
     });
 
     test('seeds from env on first launch when no preferences stored', () async {
-      EnvReader.setTestValue(EnvKey.luminousExperimentalAiRuntime, 'true');
-      EnvReader.setTestValue(EnvKey.luminousAiRuntimeProvider, 'ai_toolkit');
+      EnvReader.setTestValue(EnvKey.luminousExperimentalRuntimeEnabled, 'true');
+      EnvReader.setTestValue(EnvKey.luminousRuntimeProvider, 'ai_toolkit');
       EnvReader.setTestValue(EnvKey.luminousEnableGenUi, 'true');
 
       container = buildContainer();
 
       final state = await container.read(featureFlagsControllerProvider.future);
 
-      expect(state.onDeviceAiRuntime, isTrue);
-      expect(state.aiRuntimeProvider, AiRuntimeProviderKind.aiToolkit);
+      expect(state.onDeviceRuntime, isTrue);
+      expect(state.runtimeProvider, RuntimeProviderKind.aiToolkit);
       expect(state.genUiEnabled, isTrue);
     });
 
-    test('falls back to default for unknown aiRuntimeProvider', () async {
+    test('falls back to default for unknown runtimeProvider', () async {
       container = buildContainer(
         initialValues: const <String, Object>{
-          'featureFlags.aiRuntimeProvider': 'unknown_provider',
+          'featureFlags.runtimeProvider': 'unknown_provider',
         },
       );
 
       final state = await container.read(featureFlagsControllerProvider.future);
 
       // Falls back to envConfig.provider which is 'none' in tests
-      expect(state.aiRuntimeProvider, AiRuntimeProviderKind.none);
+      expect(state.runtimeProvider, RuntimeProviderKind.none);
     });
   });
 
-  group('setOnDeviceAiRuntime', () {
+  group('setOnDeviceRuntime', () {
     test('updates state and persists the value', () async {
       container = buildContainer();
 
@@ -150,15 +150,15 @@ void main() {
 
       await container
           .read(featureFlagsControllerProvider.notifier)
-          .setOnDeviceAiRuntime(true);
+          .setOnDeviceRuntime(true);
 
       final state = container.read(featureFlagsControllerProvider);
-      expect(state.value?.onDeviceAiRuntime, isTrue);
+      expect(state.value?.onDeviceRuntime, isTrue);
 
       final preferences = KvStore.instance;
       expect(
         preferences.get<bool>(
-          'featureFlags.onDeviceAiRuntime',
+          'featureFlags.onDeviceRuntime',
           fallback: false,
         ),
         isTrue,
@@ -166,7 +166,7 @@ void main() {
     });
   });
 
-  group('setAiRuntimeProvider', () {
+  group('setRuntimeProvider', () {
     test('updates state and persists the value', () async {
       container = buildContainer();
 
@@ -174,14 +174,14 @@ void main() {
 
       await container
           .read(featureFlagsControllerProvider.notifier)
-          .setAiRuntimeProvider(AiRuntimeProviderKind.genUi);
+          .setRuntimeProvider(RuntimeProviderKind.genUi);
 
       final state = container.read(featureFlagsControllerProvider);
-      expect(state.value?.aiRuntimeProvider, AiRuntimeProviderKind.genUi);
+      expect(state.value?.runtimeProvider, RuntimeProviderKind.genUi);
 
       final preferences = KvStore.instance;
       expect(
-        preferences.getOrNull<String>('featureFlags.aiRuntimeProvider'),
+        preferences.getOrNull<String>('featureFlags.runtimeProvider'),
         'genUi',
       );
     });
@@ -281,8 +281,8 @@ void main() {
     test('clears all feature flag keys and restores defaults', () async {
       container = buildContainer(
         initialValues: const <String, Object>{
-          'featureFlags.onDeviceAiRuntime': true,
-          'featureFlags.aiRuntimeProvider': 'genUi',
+          'featureFlags.onDeviceRuntime': true,
+          'featureFlags.runtimeProvider': 'genUi',
           'featureFlags.genUiEnabled': true,
           'featureFlags.assistantStreamMode': false,
           'featureFlags.medicineBarcodeScan': true,
@@ -295,8 +295,8 @@ void main() {
       await container.read(featureFlagsControllerProvider.notifier).reset();
 
       final state = container.read(featureFlagsControllerProvider);
-      expect(state.value?.onDeviceAiRuntime, isFalse);
-      expect(state.value?.aiRuntimeProvider, AiRuntimeProviderKind.none);
+      expect(state.value?.onDeviceRuntime, isFalse);
+      expect(state.value?.runtimeProvider, RuntimeProviderKind.none);
       expect(state.value?.genUiEnabled, isFalse);
       expect(state.value?.assistantStreamMode, isTrue);
       expect(state.value?.medicineBarcodeScan, isFalse);
@@ -304,11 +304,11 @@ void main() {
 
       final preferences = KvStore.instance;
       expect(
-        preferences.containsKey('featureFlags.onDeviceAiRuntime'),
+        preferences.containsKey('featureFlags.onDeviceRuntime'),
         isFalse,
       );
       expect(
-        preferences.containsKey('featureFlags.aiRuntimeProvider'),
+        preferences.containsKey('featureFlags.runtimeProvider'),
         isFalse,
       );
       expect(preferences.containsKey('featureFlags.genUiEnabled'), isFalse);
