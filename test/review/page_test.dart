@@ -677,6 +677,7 @@ void main() {
     );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump(const Duration(milliseconds: 400));
 
     expect(reviewRepository.lastHistoryStatus, isNull);
     expect(find.text('已结束的观察'), findsOneWidget);
@@ -713,6 +714,10 @@ void main() {
 
     expect(reviewRepository.historyCalls, 3);
     expect(reviewRepository.lastHistoryStatus, isNull);
+    // 切回「全部」后列表在长页下方，先滚回顶部再断言，避免断言落在视口外。
+    await tester.drag(find.byType(ListView).first, const Offset(0, 800));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
     expect(find.text('已结束的观察'), findsOneWidget);
     expect(find.text('进行中的观察'), findsNothing);
   });

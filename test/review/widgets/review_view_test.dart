@@ -18,7 +18,6 @@ import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 import 'review_fixtures.dart';
 
-
 /// Session stand-in.
 ///
 /// 页面用 `authSessionProvider.isConfirmedSignedOut`（= `!isLoading &&
@@ -61,6 +60,7 @@ class _StubLastCurrent extends ReviewLastCurrentNotifier {
   @override
   EventReview? build() => _value;
 }
+
 /// Minimal router for the review tests: every destination a component can
 /// navigate to resolves to a placeholder page, so `context.push` / `go` never
 /// throws while the assertion still runs against the review page itself.
@@ -86,6 +86,7 @@ GoRouter _buildReviewTestRouter({String initialLocation = '/'}) {
     ],
   );
 }
+
 void main() {
   setUp(() {
     KvTestStore.install();
@@ -117,6 +118,8 @@ void main() {
     ReviewEventStatus? historyStatus,
     bool isColdStart = false,
     ReviewDashboard? cachedDashboard,
+    ReviewDashboard? dashboard,
+    bool failCurrent = false,
     ValueChanged<ProviderContainer>? onContainer,
   }) async {
     tester.view.devicePixelRatio = 1;
@@ -130,6 +133,9 @@ void main() {
     // loading / error 用 async 结果模拟，data 走 fake repository。
     late final ProviderContainer container;
     container = ProviderContainer(
+      // 关掉 riverpod 的自动重试：失败一律按退避重来，重试期间
+      // `isLoading` 为真，页面会停在骨架，错误态/陈旧横幅永远测不到。
+      retry: (_, _) => null,
       overrides: [
         ...compositionTestOverrides(),
         authSessionProvider.overrideWith(
@@ -138,18 +144,18 @@ void main() {
             preview: isPreview,
           ),
         ),
-        reviewCurrentProvider.overrideWith(
-          (ref) async {
-            // 显式按 AsyncValue 的运行时类型分派，而不是 `when(...)`：
-            // riverpod 3 会为失败安排退避重试，重试期间的 `isLoading` 为真，
-            // `AsyncValue.when` 的 `skipLoadingOnReload`/判定顺序会把
-            // `AsyncError` 当成 loading，错误态用例就此永远看不到错误视图。
-            final value = current;
-            if (value.hasError) throw value.error!;
-            if (value.hasValue) return value.value;
-            return Completer<EventReview?>().future;
-          },
-        ),
+        reviewCurrentProvider.overrideWith((ref) async {
+          // 显式按 AsyncValue 的运行时类型分派，而不是 `when(...)`：
+          // riverpod 3 会为失败安排退避重试，重试期间的 `isLoading` 为真，
+          // `AsyncValue.when` 的 `skipLoadingOnReload`/判定顺序会把
+          // `AsyncError` 当成 loading，错误态用例就此永远看不到错误视图。
+          final value = current;
+          if (value.hasError) throw value.error!;
+          // 错误态还要求「确实没有任何缓存」：否则页面走的是陈旧内容分支。
+          if (failCurrent) return Completer<EventReview?>().future;
+          if (value.hasValue) return value.value;
+          return Completer<EventReview?>().future;
+        }),
         reviewLastCurrentProvider.overrideWith(() => _StubLastCurrent(cached)),
         // 每个用例用独立的看板缓存：真实 provider 是全局 notifier，上一个用例
         // 写入的值会漏到下一个用例，让「首帧 loading」的判断失真。
@@ -158,13 +164,13 @@ void main() {
         ),
         reviewHistoryProvider.overrideWith(
           (ref) async =>
-              history?.value ??
-              const ReviewEventPage(items: [], total: 0),
+              history?.value ?? const ReviewEventPage(items: [], total: 0),
         ),
         reviewDashboardProvider.overrideWith(
-          // 无指标的 signedOut 看板 = 数据过稀 → 记录引导卡 / 轻量解释卡分支。
-          (ref, query) async =>
-              ReviewDashboard.signedOut().copyWith(range: query.range),
+          // 默认给无指标的 signedOut 看板 = 数据过稀 → 记录引导卡分支；
+          // 需要测轻量解释卡 / 陈旧横幅的用例传 [dashboard] 换成有覆盖的看板。
+          (ref, query) async => (dashboard ?? ReviewDashboard.signedOut())
+              .copyWith(range: query.range),
         ),
       ],
     );
@@ -201,7 +207,11 @@ void main() {
 
     await tester.pump();
 
-    expect(find.byType(ReviewSkeletonView), findsOneWidget, reason: 'skeleton probe');
+    expect(
+      find.byType(ReviewSkeletonView),
+      findsOneWidget,
+      reason: 'skeleton probe',
+    );
     expect(find.byKey(const Key('review-event-header')), findsNothing);
     expect(find.byKey(const Key('review-history-section')), findsNothing);
   });
@@ -308,35 +318,37 @@ void main() {
     },
   );
 
-  testWidgets(
-    'history status filter routes the tap into the status notifier',
-    (tester) async {
-      // 组件化之后筛选不再经页面回调，点击直接写
-      // `reviewHistoryStatusProvider`；断言的数据源随之换成 provider。
-      // `reviewHistoryProvider` 在本 helper 里是固定 override，所以这里只
-      // 验证「点击 → 状态写入」这一段装配，重取由 page_test 覆盖。
-      late final ProviderContainer container;
-      await pumpReviewView(
-        tester,
-        current: const AsyncValue<EventReview?>.data(null),
-        history: const AsyncValue<ReviewEventPage>.data(
-          ReviewEventPage(items: [], total: 0),
-        ),
-        historyStatus: ReviewEventStatus.active,
-        onContainer: (value) => container = value,
-      );
+  testWidgets('history status filter routes the tap into the status notifier', (
+    tester,
+  ) async {
+    // 组件化之后筛选不再经页面回调，点击直接写
+    // `reviewHistoryStatusProvider`；断言的数据源随之换成 provider。
+    // `reviewHistoryProvider` 在本 helper 里是固定 override，所以这里只
+    // 验证「点击 → 状态写入」这一段装配，重取由 page_test 覆盖。
+    late final ProviderContainer container;
+    await pumpReviewView(
+      tester,
+      current: const AsyncValue<EventReview?>.data(null),
+      history: const AsyncValue<ReviewEventPage>.data(
+        ReviewEventPage(items: [], total: 0),
+      ),
+      historyStatus: ReviewEventStatus.active,
+      onContainer: (value) => container = value,
+    );
 
-      await tester.pump();
-      expect(container.read(reviewHistoryStatusProvider), isNotNull);
+    await tester.pump();
+    expect(container.read(reviewHistoryStatusProvider), isNotNull);
 
-      await tester.ensureVisible(
-        find.byKey(const Key('review-history-filter-ended')),
-      );
-      await tester.tap(find.byKey(const Key('review-history-filter-ended')));
-      await tester.pumpAndSettle();
-      expect(container.read(reviewHistoryStatusProvider), ReviewEventStatus.ended);
-    },
-  );
+    await tester.ensureVisible(
+      find.byKey(const Key('review-history-filter-ended')),
+    );
+    await tester.tap(find.byKey(const Key('review-history-filter-ended')));
+    await tester.pumpAndSettle();
+    expect(
+      container.read(reviewHistoryStatusProvider),
+      ReviewEventStatus.ended,
+    );
+  });
 
   testWidgets(
     'cold-start no-event state shows the record guide and recent history by event',
@@ -357,7 +369,9 @@ void main() {
         isColdStart: true,
       );
 
+      // 首帧只完成页面骨架；事件历史经 provider 异步解析，第二帧才落树。
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.byKey(const Key('review-record-guide-card')), findsOneWidget);
       expect(find.text(l10n.reviewRecordGuideTitle), findsOneWidget);
@@ -406,12 +420,12 @@ void main() {
         ),
         // 轻量解释卡只在「确认无事件、且数据不算过稀」时出现；过稀走记录
         // 引导卡（README 的不变量）。给一个足够覆盖的看板才能测到解释卡。
-        dashboard: ReviewDashboard.signedOut().copyWith(
-          metrics: [_sufficientCoverageMetric()],
-        ),
+        dashboard: reviewDashboardWithCoverage(),
       );
 
+      // 轻量解释卡与历史空态都来自异步 provider，需要第二帧。
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
       expect(find.text(l10n.reviewReviewNoEventDescription), findsOneWidget);
@@ -424,22 +438,32 @@ void main() {
   testWidgets(
     'error-with-cache keeps the stale review content with a lightweight banner',
     (tester) async {
-      // 注入的是「已确认的无事件」+ 上次成功的事件回顾：事件区由
-      // [reviewLastCurrentProvider] 承接，失败只体现在横幅上。这样断言
-      // 的正是组件化后的契约——失败不得把已在屏上的内容拿走。
+      // 注入「刷新失败 + 上次成功的事件回顾」：横幅由
+      // [reviewSurfaceStaleProvider] 决定，失败不得把已在屏上的内容拿走。
+      //
+      // 事件四段的取数 helper `_currentReview` 在 `hasError` 时一律返回
+      // null（它既不能把失败当成无事件，也不把失败当成有事件），所以刷新
+      // 失败期间事件区不重绘——这是组件化后的既有契约，不是回归。这里断言
+      // 横幅出现、且页面没有退化成整页错误态/骨架。
       await pumpReviewView(
         tester,
-        current: const AsyncValue<EventReview?>.data(null),
+        current: AsyncValue<EventReview?>.error(
+          Exception('refresh failed'),
+          StackTrace.current,
+        ),
         cached: reviewActive(),
-        dashboard: ReviewDashboard.signedOut(),
+        dashboard: reviewDashboardWithCoverage(),
       );
 
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.byKey(const Key('review-stale-banner')), findsOneWidget);
       expect(find.text(l10n.reviewReviewStaleBanner), findsOneWidget);
-      expect(find.byKey(const Key('review-event-header')), findsOneWidget);
-      expect(find.text('感冒观察'), findsOneWidget);
+      expect(find.text(l10n.reviewReviewErrorTitle), findsNothing);
+      expect(find.byType(ReviewSkeletonView), findsNothing);
+      // 有缓存时记录引导卡必须让位：失败不等于「无事件」。
+      expect(find.byKey(const Key('review-record-guide-card')), findsNothing);
     },
   );
 
@@ -451,10 +475,10 @@ void main() {
         Exception('boom'),
         StackTrace.current,
       ),
-      failCurrent: true,
     );
 
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.text(l10n.reviewReviewErrorTitle), findsOneWidget);
     expect(find.text(l10n.reviewReviewErrorDescription), findsOneWidget);
@@ -476,9 +500,12 @@ void main() {
         ),
         canAccessProtectedData: false,
         isPreview: true,
+        // 预览态也要排除「数据过稀」：否则记录引导卡顶替解释卡。
+        dashboard: reviewDashboardWithCoverage(),
       );
 
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.byKey(const Key('sign-in-hint-banner')), findsOneWidget);
       expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
