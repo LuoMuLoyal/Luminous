@@ -68,6 +68,7 @@
   "reviewStatusNeedsImprove": "Needs improvement",
   "reviewStatusStable": "Stable",
   "reviewTrendSectionTitle": "Health trends",
+  "reviewMetricGridTitle": "Metrics at a glance",
   "reviewCoverageTitle": "Coverage overview",
   "reviewRangeLast7Days": "Last 7 days",
   "reviewRangeLast30Days": "Last 30 days",
@@ -543,7 +544,5 @@
   "reviewMorePdfTitle": "PDF report",
   "reviewMorePdfSubtitle": "Monthly summary in PDF format",
   "reviewMorePrintTitle": "Print / download",
-  "reviewMorePrintSubtitle": "Paper preview or save as PDF",
-  "reviewMoreLegacyTitle": "Legacy report",
-  "reviewMoreLegacySubtitle": "Compatibility view of the previous weekly report"
+  "reviewMorePrintSubtitle": "Paper preview or save as PDF"
 }

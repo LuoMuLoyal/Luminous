@@ -8,7 +8,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
-import 'package:luminous/features/review/presentation/components/legacy.dart';
+import 'package:luminous/features/review/presentation/components/period.dart';
 import 'package:luminous/features/review/presentation/providers/ai_summary.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/providers/data_access.dart';
@@ -23,6 +23,7 @@ import 'package:luminous/features/review/presentation/widgets/sections/overview/
 import 'package:luminous/features/review/presentation/widgets/sections/overview/coverage_strip.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/event_header.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/key_changes.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/overview/metric_grid.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/next_step.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/noteworthy.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/overview/record_guide.dart';
@@ -63,6 +64,16 @@ const reviewTrendId = ComponentId('trend.single');
 /// 进 available 与默认布局（放在单维趋势之后）：它是需求原文第 5 条
 /// 「单维度、多维度组件都做」里的后者，默认就要能看到。
 const reviewMultiTrendId = ComponentId('trend.multi');
+
+/// 指标网格：一次看全所有维度、不横向滚动。
+///
+/// 与 `coverage.strip` 的分工是**排版而非数据**：strip 是首屏概览（横向滑一行），
+/// grid 是通读（固定 2/3 列换行）。两者读同一份 `metrics`，因此用户可以把 strip
+/// 换成 grid 而不改变任何数字。
+///
+/// 进 available 但**不进默认布局**：默认布局要保持与组件化前逐字节一致（A1 的
+/// 验收口径），新增可选组件只在编排页里出现。
+const reviewMetricGridId = ComponentId('metric.grid');
 const reviewHistoryId = ComponentId('history.review');
 const reviewAiSummaryId = ComponentId('ai_summary.event');
 const reviewPreviewOverviewId = ComponentId('preview.overview');
@@ -81,6 +92,7 @@ const reviewSurfaceDefinition = SurfaceDefinition(
     todayPreviewBannerId,
     reviewTrendId,
     reviewMultiTrendId,
+    reviewMetricGridId,
     reviewCoverageStripId,
     reviewEventHeaderId,
     reviewWhatHappenedId,
@@ -96,7 +108,7 @@ const reviewSurfaceDefinition = SurfaceDefinition(
     reviewStaleBannerId,
     // legacy 组件：可被用户选中编排，但不进默认布局（默认必须等于
     // 今天的事件优先页面）。
-    ...reviewLegacyComponentIds,
+    ...reviewPeriodComponentIds,
   ],
   defaultLayout: SurfaceLayout(
     placements: [
@@ -147,12 +159,13 @@ void registerReviewComponents(ComponentRegistry registry) {
   registry.registerDescriptor(const _NextStepComponent());
   registry.registerDescriptor(const _TrendComponent());
   registry.registerDescriptor(const _MultiTrendComponent());
+  registry.registerDescriptor(const _MetricGridComponent());
   registry.registerDescriptor(const _HistoryComponent());
   registry.registerDescriptor(const _AiSummaryComponent());
   registry.registerDescriptor(const _PreviewOverviewComponent());
   registry.registerDescriptor(const _NoEventExplanationComponent());
   registry.registerDescriptor(const _StaleBannerComponent());
-  registerReviewLegacyComponents(registry);
+  registerReviewPeriodComponents(registry);
 }
 
 /// Cold start: no usable coverage and no trend data for the selected range.
@@ -171,6 +184,7 @@ bool isReviewColdStart(ReviewDashboard dashboard) {
   );
   return !hasUsableCoverage && dashboard.trends.isEmpty;
 }
+
 /// Reads the current review without flattening the `AsyncValue`.
 ///
 /// `null` covers "still loading", "failed" and "confirmed no event": the page
@@ -342,7 +356,8 @@ class _KeyChangesComponent extends ComponentDescriptor<NoComponentConfig> {
   }
 }
 
-class _CompletedActionsComponent extends ComponentDescriptor<NoComponentConfig> {
+class _CompletedActionsComponent
+    extends ComponentDescriptor<NoComponentConfig> {
   const _CompletedActionsComponent();
 
   @override
@@ -431,6 +446,31 @@ class _MultiTrendComponent extends ComponentDescriptor<NoComponentConfig> {
     );
   }
 }
+
+/// 指标网格：一次看全所有维度。
+class _MetricGridComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _MetricGridComponent();
+
+  @override
+  ComponentId get id => reviewMetricGridId;
+
+  @override
+  NoComponentConfig get defaultConfig => const NoComponentConfig();
+
+  @override
+  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+    final metrics = ref.watch(reviewSurfaceStateProvider).dataOrNull?.metrics;
+    if (metrics == null || metrics.isEmpty) return null;
+    return ReviewMetricGridSection(
+      metrics: metrics,
+      // 点一下切下方趋势的维度，与 coverage.strip 的行为保持一致：两个组件
+      // 表达同一份数据，交互也不该有分歧。
+      onTap: (kind) =>
+          ref.read(reviewTrendDimensionProvider.notifier).select(kind),
+    );
+  }
+}
+
 class _HistoryComponent extends ComponentDescriptor<NoComponentConfig> {
   const _HistoryComponent();
 
@@ -496,7 +536,9 @@ class _AiSummaryComponent extends ComponentDescriptor<NoComponentConfig> {
       onGenerate: canAccessProtectedData
           ? () async {
               await ref
-                  .read(reviewAiSummaryControllerProvider(selectedRange).notifier)
+                  .read(
+                    reviewAiSummaryControllerProvider(selectedRange).notifier,
+                  )
                   .generate();
             }
           : null,
@@ -504,6 +546,7 @@ class _AiSummaryComponent extends ComponentDescriptor<NoComponentConfig> {
     );
   }
 }
+
 class _PreviewOverviewComponent extends ComponentDescriptor<NoComponentConfig> {
   const _PreviewOverviewComponent();
 
@@ -547,7 +590,9 @@ class _PreviewOverviewComponent extends ComponentDescriptor<NoComponentConfig> {
     );
   }
 }
-class _NoEventExplanationComponent extends ComponentDescriptor<NoComponentConfig> {
+
+class _NoEventExplanationComponent
+    extends ComponentDescriptor<NoComponentConfig> {
   const _NoEventExplanationComponent();
 
   @override

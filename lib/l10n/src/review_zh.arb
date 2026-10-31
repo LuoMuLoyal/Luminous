@@ -68,6 +68,7 @@
   "reviewStatusNeedsImprove": "待改善",
   "reviewStatusStable": "稳定",
   "reviewTrendSectionTitle": "健康趋势",
+  "reviewMetricGridTitle": "指标一览",
   "reviewCoverageTitle": "覆盖率概览",
   "reviewRangeLast7Days": "近 7 天",
   "reviewRangeLast30Days": "近 30 天",
@@ -550,7 +551,5 @@
   "reviewMorePdfTitle": "PDF 报告",
   "reviewMorePdfSubtitle": "月度汇总，PDF 格式",
   "reviewMorePrintTitle": "打印/下载",
-  "reviewMorePrintSubtitle": "纸质预览或保存 PDF",
-  "reviewMoreLegacyTitle": "历史报告",
-  "reviewMoreLegacySubtitle": "旧版周报兼容视图"
+  "reviewMorePrintSubtitle": "纸质预览或保存 PDF"
 }
