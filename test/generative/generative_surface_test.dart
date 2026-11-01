@@ -256,4 +256,69 @@ void main() {
       );
     });
   });
+
+  // ── 三个横排小卡 ──────────────────────────────────────────────────
+  //
+  // 这是「一张图看懂生成式 UI 能干什么」的最小形态：三张并排的卡，每张一句
+  // 短指标。结构只用展示原语（Row + Card + Text），不依赖任何领域 item，
+  // 因此与 review 的数据源无关——在哪个 surface 上都渲染得出来。
+  group('三个横排小卡', () {
+    const threeCardsMessages = <String>[
+      '{"version":"v0.9","createSurface":{"surfaceId":"generative.review","catalogId":"com.luminous.generative"}}',
+      '{"version":"v0.9","updateComponents":{"surfaceId":"generative.review","components":['
+          '{"id":"root","component":"Column","children":["cards"]},'
+          '{"id":"cards","component":"Row","children":["c1","c2","c3"]},'
+          '{"id":"c1","component":"Card","child":"t1"},'
+          '{"id":"t1","component":"Text","text":"饮水 1800 ml"},'
+          '{"id":"c2","component":"Card","child":"t2"},'
+          '{"id":"t2","component":"Text","text":"睡眠 7.2 h"},'
+          '{"id":"c3","component":"Card","child":"t3"},'
+          '{"id":"t3","component":"Text","text":"依从率 82%"}'
+          ']}}',
+    ];
+
+    testWidgets('三张卡并排渲染，且都在同一行', (tester) async {
+      final t = transport();
+      addTearDown(t.dispose);
+      feed(t, threeCardsMessages);
+
+      await pump(
+        tester,
+        GenerativeSurface(
+          state: GenerationReady(
+            GenerativeSurfaceDocument(
+              surface: SurfaceId.review,
+              messages: [
+                for (final l in threeCardsMessages)
+                  jsonDecode(l) as Map<String, Object?>,
+              ],
+              generatedAt: DateTime(2026),
+            ),
+          ),
+          transport: t,
+          surfaceId: 'generative.review',
+        ),
+      );
+
+      // 三句文案都在树上——说明 Row 的三个子节点都渲染了。
+      expect(find.text('饮水 1800 ml'), findsOneWidget);
+      expect(find.text('睡眠 7.2 h'), findsOneWidget);
+      expect(find.text('依从率 82%'), findsOneWidget);
+
+      // 卡片确实并排：三者纵向位置相同，横向依次递增。
+      // 这是「横排」与「竖排」的唯一可断言区别——只查文案在不在树上，
+      // 竖排的写法也能通过。
+      final y1 = tester.getCenter(find.text('饮水 1800 ml')).dy;
+      final y2 = tester.getCenter(find.text('睡眠 7.2 h')).dy;
+      final y3 = tester.getCenter(find.text('依从率 82%')).dy;
+      expect((y1 - y2).abs(), lessThan(1.0), reason: '三张卡必须在同一行');
+      expect((y2 - y3).abs(), lessThan(1.0), reason: '三张卡必须在同一行');
+
+      final x1 = tester.getCenter(find.text('饮水 1800 ml')).dx;
+      final x2 = tester.getCenter(find.text('睡眠 7.2 h')).dx;
+      final x3 = tester.getCenter(find.text('依从率 82%')).dx;
+      expect(x1, lessThan(x2));
+      expect(x2, lessThan(x3));
+    });
+  });
 }
