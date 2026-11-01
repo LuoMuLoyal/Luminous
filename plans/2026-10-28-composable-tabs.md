@@ -409,7 +409,7 @@ Grafana 是 `/dashboards/:uid`、Notion 是 `/blocks/:id`、`/pages/:id`，业�
 | A2 编排 UI | 完成；缺后端 `/layouts`（`LayoutRemote` 仍是占位实现） |
 | A3 尺寸档 | 响应式三档完成；组件内 sealed 变体未做 |
 | A4 跨表面挂载 | 完成 |
-| A5 各 tab 补组件 | 未开始 |
+| A5 各 tab 补组件 | A5-1 用药已完成（10 端点 + 10 组件）；A5-2/3/4 未开始 |
 | A6 底部 tab 可配 | 未开始 |
 | A7 生成式 UI | 未开始 |
 
@@ -417,7 +417,7 @@ Grafana 是 `/dashboards/:uid`、Notion 是 `/blocks/:id`、`/pages/:id`，业�
 | --- | --- | --- | --- |
 | today | 8 | 与原顺序一致 | P0 打样面；移动端单列、桌面端多列 |
 | record | 4 | 与原顺序一致 | 区块原为内联 widget，已提为独立组件 |
-| medicine | 4 | 与原顺序一致 | |
+| medicine | 14 | 与原顺序一致（4 项） | 新增 10 个关系图组件，仅进目录、不进默认布局 |
 | mine | 7 | 与原顺序一致 | 桌面双栏保留手写，section 已自取 |
 | review | 20（含 legacy 5） | 主路径 14 项与原顺序一致 | legacy 5 进 available、不进默认布局 |
 
@@ -587,14 +587,30 @@ listTransportRoutes getMedicationOverview
 
 （`getSafetyTips` / `getSequences` / `getDetail` / `runRiskCheck` / `getRiskCheck` 已在用。）
 
-- medicine 数据层新增 `relations_remote.dart` + `medication_overview_remote.dart`，
-  走既有 cache-first 模式
-- 新增组件：`dose.medication_overview` / `dose.mechanism_paths` / `dose.shared_targets` /
-  `dose.cascade_paths` / `dose.substitutes` / `dose.shortest_routes` / `dose.enzyme_duels` /
-  `dose.drug_actions` / `dose.target_drugs` / `dose.transport_routes`
-- 「用药安全工作台」= 该 surface 的默认布局（风险首卡 + overview + 机制/靶点）
-- 图查询失败是 `200 + status`，必须渲染「暂时无法给出机理分析」，**不得渲染成「无风险」**
-- 估：10–14 天
+**已完成**（2026-11-01）：
+
+- **前置：先补 Lucent 契约**。十个端点的 `200` 原本只有 `description`、没有 schema，
+  导出物无 `content`，生成客户端把返回值落成 `Response<void>`——不补，前端只能手写
+  Dio 取原始 JSON。已补信封 schema（`{ status, <数据键?> }`，数据键 optional 以免
+  失败态解析炸掉）并 `registerResponseSchema`，重新生成两端客户端。
+- 数据层：`data/datasources/medicine_relations_remote.dart` +
+  `data/mappers/medicine_relations.dart` + `data/repositories/relations.dart`。
+  图不可用的三态是**成功答案**（`Right` + `status`），只有传输故障才是 `Left`。
+- 派生规则：`domain/services/graph_drug_set.dart` 纯值，只收 `DB\d{5}`、去重、排序、
+  上限 10，并保留「在册药数」。跨 feature 字段映射在 provider（clean-layers R1）。
+- 十个组件 `dose.medication_overview` / `dose.mechanism_paths` / `dose.shared_targets` /
+  `dose.cascade_paths` / `dose.enzyme_duels` / `dose.drug_actions` /
+  `dose.transport_routes` / `dose.substitutes` / `dose.shortest_routes` /
+  `dose.target_drugs`，落在 `presentation/widgets/sections/graph/`；
+  三态渲染在 `graph_card.dart` 收口一处。
+- **红线落地**：失败态渲染成占位卡并明写「这不是『没有相互作用』」，不返回 `null`
+  （`null` 会被宿主连间距一起移除、读成「没有」）；`ok` + 空数组才是中性「没有」；
+  未知 status 按无法回答。
+- 「用药安全工作台」= 用户编排结果，**十个组件都不进默认布局**：五个需入参无法派生，
+  且都依赖 health_context 快照，默认挂上会拖住主干。默认页与改造前一致。
+- 验：新增 26 用例 + `test/medicine` 全量无回归；`flutter analyze lib test` 无问题。
+
+- 估：10–14 天（实际主要成本在契约补齐与降级语义，组件本身较轻）
 
 #### A5-3 记录：大日历（含后端新端点）
 

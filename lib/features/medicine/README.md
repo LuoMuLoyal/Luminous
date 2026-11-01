@@ -96,6 +96,30 @@
   - 类药性规则在源里是 **0/1 旗标**,不是布尔也不是文案;**渲染层**翻成「符合/不符合」,
     实体保持原始数值,别在 mapper 里丢信息。
   - 缺失字段不占位(不渲染空标签);全字段皆空等同无数据,分区整体不出现。
+- **药理关系图组件的三态契约**(`presentation/widgets/sections/graph/`,
+  `presentation/providers/relations/graph.dart`)。十个组件接通后端
+  `relations/*` 九个端点 + `medication-overview`,id 为 `dose.*`:
+  - 信封是 `{ status, <数据键?> }`。`status: ok` 且数组为空 = **图上确实没有**;
+    `notConfigured` / `unavailable` / `timeout` = **我们无法回答**。两者在
+    `GraphQueryResult` 上是 `isEmptyAnswer` 与 `!isAnswerable`,渲染成两张
+    不同的卡(中性与警告),**永不合流**——把知识缺口显示成「无风险」是这组
+    组件最不能出的错。未知 status 走 `GraphQueryStatus.unknown`,同样按「无法回答」。
+  - 图不可用时**不返回 `null`**。`ComponentHost` 把 `null` 连间距一起移除,
+    区块消失会被读成「没有相互作用」;所以降级渲染成占位卡,并明写
+    「这不是『没有相互作用』」(`medicineGraphUnavailableBody`)。
+  - **入参只有带 `DB\\d{5}` 来源编号的药**。`CurrentMedicineItem.sourceRefId`
+    仅 DrugBank 来源符合;中药/商品名/自定义录入解析不出来。因此界面必须同时给出
+    「在册药数」与「可分析药数」(`GraphCoverageNote`),否则 N 种药 + 无相互作用的
+    组合会被误读成全量结论。派生规则在 `domain/services/graph_drug_set.dart`(纯值,
+    不认识 health_context),跨 feature 的字段映射在 provider 里(clean-layers R1)。
+  - family key 用**排序后**的 id 串(`drugSetKey`)。同一组件挂两个 surface 时 key
+    相同,只发一次请求;不排序会让「换一次顺序」触发重查。
+  - 十个组件**全部不在 medicine 默认布局**里:五个需要入参(酶/起止药/基因)无法
+    自动派生,且这组卡片依赖 health_context 快照,默认挂上会拖住页面主干。默认布局
+    与改造前一致,用户从编排页「＋ 添加组件」自行挂。
+  - 测试锚点:`test/medicine/graph_components_test.dart`(降级三态、覆盖度、
+    「已注册但不在默认布局」)、`graph_drug_set_test.dart`、
+    `medicine_relations_mapper_test.dart`。
 
 ## 依赖禁区
 
