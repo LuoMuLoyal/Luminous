@@ -44,19 +44,27 @@ Future<DateTime?> showForuiDatePicker(
         // （紧凑基线 + 1.3 字号实测 43px）。这里把 daySize 钉回 44dp：日历重新
         // 获得 308dp 固有宽度，比 header 需要的更宽，横向滚动容器也有内容可滚。
         // 这是本弹窗唯一需要保住 touch 尺寸的地方，其他组件仍走紧凑基线。
+        //
+        // 纵向同理：上面这个 360 是**视口**高度，不是日历的固有高度。1.3 字缩放
+        // 下 `FCalendar.grid` 的 Column（头部 + 星期行 + 6 行日期）需要约 372dp，
+        // 超出视口 12dp 就会在 Forui 内部那个 Column 上直接报 RenderFlex 溢出。
+        // 与其把视口高度调大成 380（换一个字号档位又会溢出，且弹窗在 720dp 高的
+        // 窄屏上还要留边距），不如让纵向也走滚动：内容多高都能放下。
         child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: FCalendar.grid(
-            style: const FCalendarStyleDelta.delta(
-              dayPickerStyle: FCalendarDayPickerStyleDelta.delta(
-                daySize: Size.square(44),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: FCalendar.grid(
+              style: const FCalendarStyleDelta.delta(
+                dayPickerStyle: FCalendarDayPickerStyleDelta.delta(
+                  daySize: Size.square(44),
+                ),
               ),
-            ),
-            control: FGridCalendarControl(start: first, end: last),
-            selectionControl: FDateSelectionControl.liftedSingle(
-              value: _dateOnly(initial),
-              onChange: (date) => Navigator.of(dialogContext).pop(date),
-              toggleable: false,
+              control: FGridCalendarControl(start: first, end: last),
+              selectionControl: FDateSelectionControl.liftedSingle(
+                value: _dateOnly(initial),
+                onChange: (date) => Navigator.of(dialogContext).pop(date),
+                toggleable: false,
+              ),
             ),
           ),
         ),
