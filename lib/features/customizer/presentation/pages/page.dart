@@ -60,7 +60,12 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
     super.initState();
     // 进入编排即读现有布局生成草稿。用 postFrame 是因为 begin() 会写 provider
     // 状态，不能在 build/initState 期间同步改。
+    //
+    // 回调可能晚于本页销毁（同一帧内就被返回手势弹掉）：ConsumerState 的 `ref`
+    // 在 dispose 之后不可用，所以先确认仍挂载。begin() 自己也做了 await 之后的
+    // 存活检查，两处是不同层级的防护。
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       unawaited(
         ref
             .read(editSessionProvider.notifier)
