@@ -21,6 +21,13 @@ sealed class GraphViewMode {
   /// 持久化用的 wire 值。
   String get wireValue;
 
+  /// 是否走图视图。
+  ///
+  /// 与 [GraphComponentConfig.isGraph] 同一语义：组件在 `build` 里拿到的往往
+  /// 只是变体本身（`graphViewModesProvider` 按组件 id 存 [GraphViewMode]），
+  /// 而不是整份配置，所以判定也放在变体上。
+  bool get isGraph => this is GraphMode;
+
   /// 从持久化配置解码；无法识别时返回 [GraphViewMode.list]。
   ///
   /// 回退到**列表**而不是图：图需要布局算法与更大的空间，在无法确定用户
@@ -66,9 +73,7 @@ final class GraphComponentConfig {
 
   /// 解码失败回退默认（列表），与 [ComponentDescriptor.decode] 的约定一致。
   static GraphComponentConfig decode(Map<String, Object?> config) {
-    return GraphComponentConfig(
-      mode: GraphViewMode.fromWire(config['view']),
-    );
+    return GraphComponentConfig(mode: GraphViewMode.fromWire(config['view']));
   }
 
   static const GraphComponentConfig defaultConfig = GraphComponentConfig();
