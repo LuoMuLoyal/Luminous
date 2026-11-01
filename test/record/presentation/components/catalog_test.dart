@@ -44,14 +44,19 @@ void main() {
     }
   });
 
-  test('available and default layout agree', () {
+  test('default layout only uses owned components', () {
+    // 默认布局是 owned 的**子集**，不是等号：桌面专属面板（月历 / 筛选 / 新建）
+    // 进目录但不一定出现在每一形态的默认页里，反过来「布局里有未注册的组件」才是错。
+    final defaultIds = recordSurfaceDefinition.defaultLayout.placements
+        .map((placement) => placement.id)
+        .toList();
     expect(
-      recordSurfaceDefinition.defaultLayout.placements
-          .map((placement) => placement.id)
-          .toList(),
       recordSurfaceDefinition.owned,
-      reason: '默认布局应当就是改动前的移动端区块顺序',
+      containsAll(defaultIds),
+      reason: '默认布局里出现了目录没有的组件',
     );
+    // 顺序仍然重要：默认布局按声明顺序渲染，重复项会让同一个组件出现两次。
+    expect(defaultIds.toSet().length, defaultIds.length, reason: '默认布局有重复组件');
   });
 
   test('registering into a shared registry throws on a duplicate id', () {

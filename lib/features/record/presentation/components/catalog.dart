@@ -1,9 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/dashboard/calendar_section.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/dashboard/date_section.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/dashboard/filter_panel_section.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/dashboard/filter_section.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/detail/timeline_section.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/new_entry_section.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/quick_action_section.dart';
 
 /// `record` 表面的组件。
@@ -21,22 +25,37 @@ const recordDateId = ComponentId('calendar.strip');
 const recordQuickEntryId = ComponentId('quick_entry.daily');
 const recordFilterId = ComponentId('filter.types');
 const recordTimelineId = ComponentId('timeline.daily');
+const recordCalendarId = ComponentId('calendar.month');
+const recordNewEntryId = ComponentId('quick_entry.panel');
+const recordFilterPanelId = ComponentId('filter.panel');
 
 /// Surface definition: record 表面可以挂载哪些组件、默认显示什么。
 ///
-/// 默认布局就是组件化之前的区块顺序（日期条 → 快速录入 → 过滤条 → 时间线），
-/// 所以本次是纯重构：从不编辑布局的用户看到的页面与改动前一致。
+/// 默认布局是「手机上的区块顺序」，桌面端在此基础上多出两个原本只存在于手写
+/// 桌面布局里的面板（月历、新建录入）——见下方 placements 的注释。
 const recordSurfaceDefinition = SurfaceDefinition(
   surface: SurfaceId.record,
-  owned: [recordDateId, recordQuickEntryId, recordFilterId, recordTimelineId],
+  owned: [
+    recordDateId,
+    recordQuickEntryId,
+    recordFilterId,
+    recordTimelineId,
+    recordCalendarId,
+    recordNewEntryId,
+    recordFilterPanelId,
+  ],
   defaultLayout: SurfaceLayout(
     placements: [
       ComponentPlacement(id: recordDateId, size: ComponentSize.compact),
+      // 月历只在桌面出现：手机端顶部已有日期条，再放一个整月网格会把首屏挤满。
+      ComponentPlacement(id: recordCalendarId, size: ComponentSize.compact),
       ComponentPlacement(id: recordQuickEntryId, size: ComponentSize.compact),
       // Desktop renders two columns and `regular` spans both, so the filter
       // chips and the entry timeline only sit side by side when compact.
       ComponentPlacement(id: recordFilterId, size: ComponentSize.compact),
-      ComponentPlacement(id: recordTimelineId, size: ComponentSize.compact),
+      ComponentPlacement(id: recordNewEntryId, size: ComponentSize.compact),
+      ComponentPlacement(id: recordFilterPanelId, size: ComponentSize.compact),
+      ComponentPlacement(id: recordTimelineId, size: ComponentSize.wide),
     ],
   ),
 );
@@ -47,6 +66,88 @@ void registerRecordComponents(ComponentRegistry registry) {
   registry.registerDescriptor(const _QuickEntryComponent());
   registry.registerDescriptor(const _FilterComponent());
   registry.registerDescriptor(const _TimelineComponent());
+  registry.registerDescriptor(const _CalendarComponent());
+  registry.registerDescriptor(const _NewEntryComponent());
+  registry.registerDescriptor(const _FilterPanelComponent());
+}
+
+class _FilterPanelComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _FilterPanelComponent();
+
+  @override
+  ComponentId get id => recordFilterPanelId;
+
+  @override
+  NoComponentConfig get defaultConfig => const NoComponentConfig();
+
+  @override
+  Set<ComponentSize> get supportedSizes => {ComponentSize.compact};
+
+  @override
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
+    if (MediaQuery.sizeOf(context).width < Breakpoints.desktop) {
+      return const SizedBox.shrink();
+    }
+    return const RecordFilterPanelSection();
+  }
+}
+
+class _CalendarComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _CalendarComponent();
+
+  @override
+  ComponentId get id => recordCalendarId;
+
+  @override
+  NoComponentConfig get defaultConfig => const NoComponentConfig();
+
+  @override
+  Set<ComponentSize> get supportedSizes => {ComponentSize.compact};
+
+  @override
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
+    // 手机端不渲染：桌面才是这个面板的归属形态。
+    if (MediaQuery.sizeOf(context).width < Breakpoints.desktop) {
+      return const SizedBox.shrink();
+    }
+    return const RecordCalendarSection();
+  }
+}
+
+class _NewEntryComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _NewEntryComponent();
+
+  @override
+  ComponentId get id => recordNewEntryId;
+
+  @override
+  NoComponentConfig get defaultConfig => const NoComponentConfig();
+
+  @override
+  Set<ComponentSize> get supportedSizes => {ComponentSize.compact};
+
+  @override
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
+    if (MediaQuery.sizeOf(context).width < Breakpoints.desktop) {
+      return const SizedBox.shrink();
+    }
+    return const RecordNewEntrySection();
+  }
 }
 
 class _DateComponent extends ComponentDescriptor<NoComponentConfig> {
