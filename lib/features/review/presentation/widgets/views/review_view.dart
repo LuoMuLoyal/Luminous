@@ -72,10 +72,11 @@ class ReviewView extends ConsumerWidget {
     ref.watch(reviewSurfaceStateProvider);
     ref.watch(reviewSurfaceReviewProvider);
 
-    return ComponentHost(
+    return ComponentHostGrid(
       surface: SurfaceId.review,
       layout: ref.watch(surfaceLayoutProvider(SurfaceId.review)),
-      spacing: Spacing.lg,
+      rowSpacing: Spacing.lg,
+      columnSpacing: Spacing.lg,
     );
   }
 }
