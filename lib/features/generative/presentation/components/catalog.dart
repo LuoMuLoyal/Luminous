@@ -50,7 +50,12 @@ void registerGenerativeComponents(ComponentRegistry registry) {
         supportedSizes: const {ComponentSize.regular},
         defaultConfig: const {},
         build:
-            (BuildContext context, WidgetRef ref, Map<String, Object?> config) {
+            (
+              BuildContext context,
+              WidgetRef ref,
+              ComponentRenderContext render,
+              Map<String, Object?> config,
+            ) {
               return ProviderScope(
                 // 每个 surface 的生成态互相独立：一个 surface 重新生成不该让别的
                 // surface 也闪一下骨架。
