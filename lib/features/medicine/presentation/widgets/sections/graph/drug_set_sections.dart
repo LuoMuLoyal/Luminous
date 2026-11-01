@@ -177,18 +177,66 @@ class SharedTargetsSection extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               for (final target in shown)
-                GraphRelationRow(
-                  leading: target.targetGene,
-                  relation: l10n.medicineGraphSharedTargetDrugs(
-                    target.drugCount,
-                  ),
-                  // 靶点名优先，基因名作为标识已在 leading；这里展示药名清单。
-                  target: target.drugNames.join(' · '),
-                  trailing: compact ? null : target.targetName,
-                ),
+                _SharedTargetRow(target: target, compact: compact),
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+/// 一个共同靶点：基因 + 药物数 + 药名清单 + 靶点名。
+///
+/// 用三行而不是一行 `Wrap`：靶点名（如「前列腺素内过氧化物合酶 1」）很长，
+/// 与药名清单挤在同一条 `Wrap` 里时会被折到下一行，视觉上变成一条独立信息，
+/// 读起来像有两个靶点。分行之后层级是明确的：标识 → 涉及哪些药 → 这是什么。
+class _SharedTargetRow extends StatelessWidget {
+  const _SharedTargetRow({required this.target, required this.compact});
+
+  final SharedTarget target;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
+    final muted = SemanticColor.neutral.solid(context);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: Spacing.sm,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                target.targetGene,
+                style: typography.body.xs.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                l10n.medicineGraphSharedTargetDrugs(target.drugCount),
+                style: typography.body.xs.copyWith(color: muted),
+              ),
+            ],
+          ),
+          const SizedBox(height: Spacing.xs),
+          Text(
+            target.drugNames.join(' · '),
+            style: typography.body.xs,
+          ),
+          if (!compact && target.targetName.isNotEmpty) ...[
+            const SizedBox(height: Spacing.xs),
+            Text(
+              target.targetName,
+              style: typography.body.xs.copyWith(color: muted),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -415,17 +463,62 @@ class EnzymeDuelsSection extends ConsumerWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final duel in shown)
-                GraphRelationRow(
-                  leading: duel.enzymeGene,
-                  relation: l10n.medicineGraphEnzymeDuelExposureDown(
-                    duel.inhibitedSubstrate,
-                  ),
-                  target: duel.inducerDrug,
-                ),
+              for (final duel in shown) _EnzymeDuelRow(duel: duel),
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+/// 酶诱导 × 底物的一条：诱导剂 → 酶，以及谁的暴露量下降。
+///
+/// 方向必须显式读得出来：这张卡的价值正是「诱导剂让酶变多、底物药浓度下降」
+/// 这种**方向相反**的间接作用。挤在一条 `Wrap` 里时语序会变成
+/// 「CYP3A4 → 底物 暴露量下降 诱导剂」，读者要自己还原谁作用了谁。
+class _EnzymeDuelRow extends StatelessWidget {
+  const _EnzymeDuelRow({required this.duel});
+
+  final EnzymeDuel duel;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: Spacing.sm,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                duel.inducerDrug,
+                style: typography.body.xs.copyWith(fontWeight: FontWeight.w700),
+              ),
+              Text(
+                l10n.medicineGraphRelationInduces,
+                style: typography.body.xs.copyWith(
+                  color: SemanticColor.primary.solid(context),
+                ),
+              ),
+              Text(
+                duel.enzymeGene,
+                style: typography.body.xs.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+          const SizedBox(height: Spacing.xs),
+          Text(
+            l10n.medicineGraphEnzymeDuelExposureDown(duel.inhibitedSubstrate),
+            style: typography.body.xs.copyWith(
+              color: SemanticColor.neutral.solid(context),
+            ),
+          ),
+        ],
       ),
     );
   }

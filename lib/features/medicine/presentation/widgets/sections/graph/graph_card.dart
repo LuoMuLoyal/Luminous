@@ -23,39 +23,24 @@ class GraphViewToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isGraph = mode is GraphMode;
-    // FButton 在宽度有界的父节点里会撑满整行。IntrinsicWidth 把它收回到
-    // 「图标 + 文字」的固有宽度，`Align` 再把它推到右上角——切换钮是次要动作，
-    // 占满一整行会读成一个主操作。
-    return Align(
-      alignment: Alignment.centerRight,
-      child: IntrinsicWidth(
-        child: FButton(
-          key: const Key('medicine-graph-view-toggle'),
-          variant: .outline,
-          size: .sm,
-          onPress: () => onChanged(
-            isGraph ? const ListMode() : const GraphMode(),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                isGraph
-                    ? SemanticIcons.recordClipboard
-                    : SemanticIcons.tabReview,
-                size: IconSizeTokens.sm,
-                color: SemanticColor.neutral.solid(context),
-              ),
-              const SizedBox(width: Spacing.xs),
-              Text(
-                isGraph
-                    ? l10n.medicineGraphViewList
-                    : l10n.medicineGraphViewGraph,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
+    // 图标按钮，长在标题行右侧：切换是次要动作，之前单独占一行会在标题与内容
+    // 之间留出一段空白，也让「读这张卡」的主线被打断。
+    return Semantics(
+      label: isGraph
+          ? l10n.medicineGraphViewListHint
+          : l10n.medicineGraphViewGraphHint,
+      button: true,
+      child: FButton.icon(
+        key: const Key('medicine-graph-view-toggle'),
+        variant: .ghost,
+        size: .sm,
+        onPress: () => onChanged(
+          isGraph ? const ListMode() : const GraphMode(),
+        ),
+        child: Icon(
+          isGraph ? SemanticIcons.recordClipboard : SemanticIcons.tabReview,
+          size: IconSizeTokens.md,
+          color: SemanticColor.neutral.solid(context),
         ),
       ),
     );
@@ -132,16 +117,15 @@ class GraphCard extends StatelessWidget {
                   const SizedBox(width: Spacing.md),
                   trailing!,
                 ],
+                if (onToggleView != null) ...[
+                  const SizedBox(width: Spacing.xs),
+                  GraphViewToggle(
+                    mode: viewMode ?? const ListMode(),
+                    onChanged: onToggleView!,
+                  ),
+                ],
               ],
             ),
-            if (onToggleView != null)
-              Padding(
-                padding: const EdgeInsets.only(top: Spacing.sm),
-                child: GraphViewToggle(
-                  mode: viewMode ?? const ListMode(),
-                  onChanged: onToggleView!,
-                ),
-              ),
             const SizedBox(height: Spacing.md),
             child,
             if (footer != null) ...[
@@ -335,16 +319,38 @@ class GraphCoverageNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    if (total <= 0) return const SizedBox.shrink();
+    // 只在**覆盖不全**时出现。
+    //
+    // 全部可解析时说「3 / 3 种药参与分析」是一句没有信息量的话，而七个图卡
+    // 各说一遍，整页滚动下来同一句话要读七次。它的价值只在提醒「结论没有
+    // 覆盖你全部的用药」，所以有缺口才出现。
+    if (total <= 0 || unresolvable <= 0) return const SizedBox.shrink();
     return Text(
-      unresolvable > 0
-          ? l10n.medicineGraphCoverageNoteWithRest(covered, total, unresolvable)
-          : l10n.medicineGraphCoverageNote(covered, total),
+      l10n.medicineGraphCoverageNoteWithRest(covered, total, unresolvable),
       style: context.theme.typography.body.xs.copyWith(
         color: SemanticColor.neutral.solid(context),
       ),
     );
   }
+}
+
+/// 后端关系词（`INHIBITS` / `ACTS_ON` …）→ 本地化短标签。
+///
+/// 这个转换必须在一处收口：早先各组件自己 `replaceAll('_',' ').toLowerCase()`，
+/// 界面上于是出现 `inhibits`、`acts on` 这样的英文原文。关系词是**面向用户的
+/// 语义**，不是标识符，不能直接透传。
+String graphRelationLabel(AppLocalizations l10n, String raw) {
+  return switch (raw.trim().toUpperCase()) {
+    'INHIBITS' => l10n.medicineGraphRelationInhibits,
+    'INDUCES' => l10n.medicineGraphRelationInduces,
+    'ACTS_ON' => l10n.medicineGraphRelationActsOn,
+    'SUBSTRATE_OF' => l10n.medicineGraphRelationSubstrateOf,
+    '' => '',
+    // 受控词表之外的新边：`GraphRelationKind` 保留了 `unknown` 的原始标签，
+    // 这里也保留原文而不是丢掉——「图上有一条关系，只是这个版本不认识它」
+    // 比「什么都没有」更接近事实。
+    _ => raw,
+  };
 }
 
 /// 计数徽章。

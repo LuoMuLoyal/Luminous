@@ -921,5 +921,10 @@
         "type": "int"
       }
     }
-  }
+  },
+  "medicineGraphRelationActsOn": "acts on",
+  "medicineGraphRelationSubstrateOf": "is substrate of",
+  "medicineGraphRelationUnknown": "related",
+  "medicineGraphSelectEnzymeHint": "e.g. CYP2C9",
+  "medicineGraphSelectGeneHint": "e.g. CYP2C9"
 }

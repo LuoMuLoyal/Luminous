@@ -928,5 +928,10 @@
         "type": "int"
       }
     }
-  }
+  },
+  "medicineGraphRelationActsOn": "作用于",
+  "medicineGraphRelationSubstrateOf": "为其底物",
+  "medicineGraphRelationUnknown": "相关",
+  "medicineGraphSelectEnzymeHint": "如 CYP2C9",
+  "medicineGraphSelectGeneHint": "如 CYP2C9"
 }

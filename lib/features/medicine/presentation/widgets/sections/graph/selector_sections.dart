@@ -127,9 +127,7 @@ class _DrugActionsSectionState extends ConsumerState<DrugActionsSection> {
       title: l10n.medicineGraphTitleDrugActions,
       trailing: result != null && result.isAnswerable
           ? GraphCountBadge(
-              label: l10n.medicineGraphSharedTargetDrugs(
-                result.safeItems.length,
-              ),
+              label: l10n.medicineGraphCountActions(result.safeItems.length),
             )
           : null,
       child: Column(
@@ -154,14 +152,15 @@ class _DrugActionsSectionState extends ConsumerState<DrugActionsSection> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // 作用谱的一条 = 「药 → 靶点（方式）」。
+                    // 不要把箭头塞进 `relation` 参数：`GraphRelationRow` 自己
+                    // 会画方向符，外面再传一个就渲染成 `→ →`。关系词也必须
+                    // 走 `graphRelationLabel`，否则界面上出现英文 `inhibits`。
                     for (final action in shown)
                       GraphRelationRow(
-                        leading: action.relation
-                            .replaceAll('_', ' ')
-                            .toLowerCase(),
-                        relation: '→',
-                        target: action.targetGene,
-                        trailing: widget.compact ? null : action.targetName,
+                        leading: action.targetGene,
+                        relation: graphRelationLabel(l10n, action.relation),
+                        target: widget.compact ? '' : action.targetName,
                       ),
                   ],
                 );
@@ -212,9 +211,7 @@ class _TransportRoutesSectionState
       title: l10n.medicineGraphTitleTransportRoutes,
       trailing: result != null && result.isAnswerable
           ? GraphCountBadge(
-              label: l10n.medicineGraphSharedTargetDrugs(
-                result.safeItems.length,
-              ),
+              label: l10n.medicineGraphCountRoutes(result.safeItems.length),
             )
           : null,
       child: Column(
@@ -243,12 +240,14 @@ class _TransportRoutesSectionState
                     for (final route in shown)
                       GraphRelationRow(
                         leading: selected,
-                        relation: route.inverted ? '←' : '→',
-                        target: route.transporterGene,
-                        // 方向讲反与讲错结论一样危险：逆向时显式标注。
-                        trailing: route.inverted
+                        // 结构是「药 ─边→ 转运体」：箭头由 `inverted` 决定方向，
+                        // 中间是边的标识（基因名），后面是转运体名。不再自己塞
+                        // 箭头字符，否则会和渲染层的方向符叠成 `→ →`。
+                        relation: route.transporterGene,
+                        target: route.transporterName,
+                        trailing: route.inverted && !widget.compact
                             ? l10n.medicineGraphTransportInverted
-                            : (widget.compact ? null : route.transporterName),
+                            : null,
                         inverted: route.inverted,
                       ),
                   ],
@@ -320,6 +319,13 @@ class _SubstitutesSectionState extends ConsumerState<SubstitutesSection> {
 
     return GraphCard(
       title: l10n.medicineGraphTitleSubstitutes,
+      trailing: result != null && result.isAnswerable
+          ? GraphCountBadge(
+              label: l10n.medicineGraphCountSubstitutes(
+                result.safeItems.length,
+              ),
+            )
+          : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -332,7 +338,11 @@ class _SubstitutesSectionState extends ConsumerState<SubstitutesSection> {
             ),
             _EnzymeInput(
               label: l10n.medicineGraphSelectEnzyme,
-              initial: _enzyme,
+              hint: l10n.medicineGraphSelectEnzymeHint,
+              // 显示**生效中**的酶，而不是 `_enzyme`（用户还没输入时为 null）。
+              // 传 null 会让输入框停在占位示例上，看起来像已经选了那个值，
+              // 而实际查询用的是推导出的默认酶——显示与生效不一致。
+              initial: enzyme,
               onSubmit: (value) => setState(() => _enzyme = value),
             ),
           ],
@@ -385,11 +395,16 @@ class _SubstitutesSectionState extends ConsumerState<SubstitutesSection> {
 class _EnzymeInput extends StatefulWidget {
   const _EnzymeInput({
     required this.label,
+    required this.hint,
     required this.initial,
     required this.onSubmit,
   });
 
   final String label;
+
+  /// 占位示例（`如 CYP2C9`），本地化文案。不写死英文示例。
+  final String hint;
+
   final String? initial;
   final ValueChanged<String> onSubmit;
 
@@ -401,6 +416,18 @@ class _EnzymeInputState extends State<_EnzymeInput> {
   late final TextEditingController _controller = TextEditingController(
     text: widget.initial ?? '',
   );
+
+  @override
+  void didUpdateWidget(_EnzymeInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 默认值来自异步查询（先拿机制通路才知道默认用哪个酶），到达时要把输入框
+    // 同步过去——否则框里是空/hint，而查询已经按默认值在跑。
+    // 只在用户没改过、且控件未聚焦时覆盖，避免打断正在输入的人。
+    final next = widget.initial ?? '';
+    if (next == oldWidget.initial || next.isEmpty) return;
+    if (_controller.text.isNotEmpty) return;
+    _controller.text = next;
+  }
 
   @override
   void dispose() {
@@ -415,7 +442,7 @@ class _EnzymeInputState extends State<_EnzymeInput> {
       child: FTextField(
         control: .managed(controller: _controller),
         label: Text(widget.label),
-        hint: 'CYP2C9',
+        hint: widget.hint,
         onSubmit: (value) {
           final trimmed = value.trim();
           if (trimmed.isNotEmpty) widget.onSubmit(trimmed);
@@ -465,10 +492,11 @@ class _TargetDrugsSectionState extends ConsumerState<TargetDrugsSection> {
       title: l10n.medicineGraphTitleTargetDrugs,
       trailing: result != null && result.isAnswerable
           ? GraphCountBadge(
-              label: l10n.medicineGraphSharedTargetDrugs(
+              label: l10n.medicineGraphCountDrugs(
                 result.safeItems.length,
               ),
             )
+
           : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -476,7 +504,9 @@ class _TargetDrugsSectionState extends ConsumerState<TargetDrugsSection> {
           if (!widget.compact)
             _EnzymeInput(
               label: l10n.medicineGraphSelectGene,
-              initial: _gene,
+              hint: l10n.medicineGraphSelectGeneHint,
+              // 同替代候选：显示生效中的基因，而不是「用户还没输入」的 null。
+              initial: gene,
               onSubmit: (value) => setState(() => _gene = value),
             ),
           if (gene == null)
@@ -501,9 +531,7 @@ class _TargetDrugsSectionState extends ConsumerState<TargetDrugsSection> {
                     for (final drug in shown)
                       GraphRelationRow(
                         leading: drug.name,
-                        relation: drug.relation
-                            .replaceAll('_', ' ')
-                            .toLowerCase(),
+                        relation: graphRelationLabel(l10n, drug.relation),
                         target: gene,
                         trailing: widget.compact ? null : drug.drugbankId,
                       ),
@@ -565,9 +593,7 @@ class _ShortestRoutesSectionState extends ConsumerState<ShortestRoutesSection> {
       title: l10n.medicineGraphTitleShortestRoutes,
       trailing: result != null && result.isAnswerable
           ? GraphCountBadge(
-              label: l10n.medicineGraphSharedTargetDrugs(
-                result.safeItems.length,
-              ),
+              label: l10n.medicineGraphCountRoutes(result.safeItems.length),
             )
           : null,
       child: Column(
