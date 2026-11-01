@@ -28,7 +28,7 @@ void main() {
     // 整个 A5-1 最重要的一条断言：知识缺口不能被渲染成安全结论。
     await tester.pumpWidget(
       wrap(
-        const MechanismPathsSection(),
+        MechanismPathsSection(componentId: medicineMechanismPathsId.value),
         overrides: [
           graphDrugSetProvider.overrideWith(
             (ref) async => const GraphDrugSet(
@@ -59,7 +59,7 @@ void main() {
     // notConfigured 要「去配」，unavailable 要「等/重试」，不能同一句话。
     await tester.pumpWidget(
       wrap(
-        const MechanismPathsSection(),
+        MechanismPathsSection(componentId: medicineMechanismPathsId.value),
         overrides: [
           graphDrugSetProvider.overrideWith(
             (ref) async => const GraphDrugSet(
@@ -89,7 +89,7 @@ void main() {
   testWidgets('查询成功但为空时用中性措辞，不用警告', (tester) async {
     await tester.pumpWidget(
       wrap(
-        const MechanismPathsSection(),
+        MechanismPathsSection(componentId: medicineMechanismPathsId.value),
         overrides: [
           graphDrugSetProvider.overrideWith(
             (ref) async => const GraphDrugSet(
@@ -117,7 +117,7 @@ void main() {
   testWidgets('可分析药不足两个时说明需要至少两种药', (tester) async {
     await tester.pumpWidget(
       wrap(
-        const MechanismPathsSection(),
+        MechanismPathsSection(componentId: medicineMechanismPathsId.value),
         overrides: [
           graphDrugSetProvider.overrideWith(
             (ref) async =>
@@ -135,7 +135,7 @@ void main() {
   testWidgets('有数据时渲染通路并显示覆盖度', (tester) async {
     await tester.pumpWidget(
       wrap(
-        const MechanismPathsSection(),
+        MechanismPathsSection(componentId: medicineMechanismPathsId.value),
         overrides: [
           graphDrugSetProvider.overrideWith(
             (ref) async => const GraphDrugSet(
