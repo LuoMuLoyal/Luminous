@@ -55,10 +55,17 @@ const todaySurfaceDefinition = SurfaceDefinition(
       ComponentPlacement(id: todayPreviewBannerId, size: ComponentSize.wide),
       ComponentPlacement(id: todayGreetingId),
       ComponentPlacement(id: todayPrimarySuggestionId),
-      ComponentPlacement(id: todaySecondarySuggestionsId),
-      ComponentPlacement(id: todaySummaryId),
-      ComponentPlacement(id: todayHealthEventId),
-      ComponentPlacement(id: todayObservationId),
+      // Desktop lays the surface out in two columns, and `regular` spans both
+      // of them — so only `compact` cards actually sit side by side. These
+      // four are the ones that read well at half width; the greeting stays a
+      // full-width lead-in, and the banner/quick-actions strip stay `wide`.
+      ComponentPlacement(
+        id: todaySecondarySuggestionsId,
+        size: ComponentSize.compact,
+      ),
+      ComponentPlacement(id: todaySummaryId, size: ComponentSize.compact),
+      ComponentPlacement(id: todayHealthEventId, size: ComponentSize.compact),
+      ComponentPlacement(id: todayObservationId, size: ComponentSize.compact),
       ComponentPlacement(id: todayQuickActionsId, size: ComponentSize.wide),
     ],
   ),
