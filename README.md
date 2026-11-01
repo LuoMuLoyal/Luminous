@@ -2,7 +2,15 @@
 
 [![Backend: Lucent](https://img.shields.io/badge/backend-LuoMuLoyal%2FLucent-2563eb?logo=github)](https://github.com/LuoMuLoyal/Lucent)
 
-Flutter 主动式个人健康助手。以低负担的稀疏记录与用户授权的数据构建可检查的个人上下文，在日 / 周 / 月尺度发现值得注意的变化，给出有证据、可解释、可执行的建议；证据不足时明确弃权。用药安全与短期健康事件是其中证据要求最高的一条主线，不是产品天花板。
+Flutter 主动式个人健康助手，手机与桌面共用一套客户端。
+
+产品由三条主线构成，它们不是并列的功能清单，而是同一个「可检查的个人上下文」的不同切入面：
+
+- **记录与洞察**：以低负担的稀疏记录积累事实，在日 / 周 / 月尺度发现值得注意的变化。缺失表示未知而非零，每条结论携带覆盖率，证据不足时明确弃权。
+- **用药与药理知识**：从个人用药盒延伸到药物—酶—靶点—通路的关系网络，把「我这样吃药有没有风险」与「这些药之间是什么机制关联」放在同一个工作区里。用药安全是其中证据要求最高的一条主线，不是产品天花板。
+- **可编排的工作台**：每个 tab 由已注册的组件装配而成，用户自己决定出现哪些、按什么顺序、多大尺寸；同一份布局同时描述手机、平板与桌面三种形态。
+
+AI 在这三条主线里只承担理解、总结、解释与提醒文案；任何写操作都以提案形式出现，需用户显式确认。诊断、处方与药物风险判定不交给模型。
 
 Current version: **0.1.0-dev**
 
@@ -33,6 +41,27 @@ Current version: **0.1.0-dev**
 - Tabs: `today / record / medicine / review / mine` — Today is the action panel, Record is the
   sparse-record fact panel, Medicine is the drug workspace, Review is longitudinal insight, Mine
   holds profile and settings. Each tab's boundaries live in its feature README.
+- **Platforms**: phone is the first-release surface; **desktop is a shipping target**, evolving in
+  step with phone from one Flutter codebase and one Lucent backend (ADR-0008, 2026-11 修订). The two
+  share the design system and business semantics; they differ in layout and density, not in product
+  definition. Desktop-only structure lives in `lib/features/shell/`.
+- **Composable surfaces**: every tab is assembled from registered components rather than a
+  hand-written page. A surface's layout (which components, in what order, at which size, visible or
+  not) is persisted per user and synced through Lucent, so one layout describes phone, tablet and
+  desktop at once (`lib/core/composition/`, `lib/features/customizer/`). A component is identified by
+  a domain id (`summary.metrics`, `dose.safety_engine`) and can be mounted on more than one surface.
+- **Knowledge graph**: the medicine workspace renders pharmacological relations (drug → enzyme →
+  target, cascade paths, shared targets, transport routes, substitution) from Lucent's relation
+  endpoints. Each relation component has a list variant and a graph variant; the graph uses
+  `graphview`'s Sugiyama layering because these relations are directed and tiered — force-directed
+  layouts would place the same pathway differently on every open, and medical information needs a
+  repeatable reading.
+- **Generative UI is experimental and off by default**: an opt-in switch gates backend-generated
+  surface components (`generative.<surface>`); with the switch off they are never registered, and a
+  stored layout that references them degrades by skipping unknown ids.
+- **Observability**: data-layer errors and logs route through the `core/network` contract outlet
+  rather than ad-hoc logging, so failures carry the same vocabulary as user-facing states. Log sinks
+  fall back to a local Talker when none is installed.
 - Product constraints that the whole app enforces:
   - Missing data means **unknown**, never zero — no dimension may infer "didn't take the medicine"
     or "didn't drink" from an absent record.
@@ -42,12 +71,16 @@ Current version: **0.1.0-dev**
     prescribes, or decides drug risk — safety conclusions come from rules, leaflets, curated data or
     human review.
   - Assistant writes are **proposal-based**: any write requires explicit user confirmation.
-- Design tokens: color / type / spacing / radius / breakpoints / animation
+- Design tokens: color / type / spacing / radius / breakpoints / animation. Desktop adds a third
+  surface tier (sidebar < canvas < card) and a platform-dependent line height; see
+  `lib/core/design/layout/surface.dart` and `lib/core/theme/family.dart`.
 - UI framework: [Forui](https://forui.dev)（2026-07 从 Material Design 全量迁移）
+- Responsive layout: `fluid_adaptive`'s Material 3 window size classes (600 / 840 / 1200) drive
+  page padding, card density and content max width (`lib/core/design/layout/layout_scale.dart`).
 - API client: `generated/lucent_api`
 - Network layer: `lib/core/network/`
 - Local persistence: Drift, with a pending-sync queue used by the write paths that need offline
-  replay (`lib/core/database/`).
+  replay (`lib/core/database/`). Layout edits and offline writes replay through the same queue.
 - i18n: Flutter `gen-l10n` — ARB fragments live in `lib/l10n/src/`; main `app_zh.arb` / `app_en.arb` are **generated** via `dart scripts/l10n/arb_tools.dart merge` — never edit them directly.
 - WeChat OAuth: Android/iOS uses the WeChat SDK through `fluwx` to obtain an auth code and then calls Lucent's mobile callback endpoint. Desktop login starts a loopback callback listener, asks Lucent for an authorize URL with that callback URI, opens the system browser, verifies the returned `state`, and completes login automatically when Lucent redirects back with `code` and `state`. Web login passes `/login/oauth/wechat` as the callback path. Manual callback paste remains as a fallback.
 
