@@ -57,7 +57,7 @@ enum ComponentLayout {
   /// anything narrower must stay single-column to match the mobile shell.
   static ComponentLayout fromWidth(double width) {
     if (width >= Breakpoints.desktop) return desktop;
-    if (width >= Breakpoints.tablet) return tablet;
+    if (width >= Breakpoints.expanded) return tablet;
     return mobile;
   }
 

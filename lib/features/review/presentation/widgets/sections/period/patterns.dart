@@ -21,7 +21,7 @@ class ReviewPatternsSection extends StatelessWidget {
   double _patternCardHeight(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     if (width >= Breakpoints.desktop) return 196;
-    if (width >= Breakpoints.tablet) return 188;
+    if (width >= Breakpoints.expanded) return 188;
     return 176;
   }
 

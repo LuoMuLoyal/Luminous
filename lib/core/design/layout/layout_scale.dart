@@ -1,3 +1,4 @@
+import 'package:fluid_adaptive/fluid_adaptive.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/tokens/breakpoints.dart';
 import 'package:luminous/core/design/tokens/spacing.dart';
@@ -89,7 +90,7 @@ abstract final class LayoutScaleResolver {
   /// fixed [dialogMaxWidth] is used.
   static double dialogMaxWidthFor(double screenWidth) {
     if (screenWidth >= Breakpoints.desktop) return 560;
-    if (screenWidth >= Breakpoints.tablet) return 480;
+    if (screenWidth >= Breakpoints.expanded) return 480;
     return dialogMaxWidth;
   }
 
@@ -99,71 +100,86 @@ abstract final class LayoutScaleResolver {
   /// extra horizontal space on larger screens.
   static double wideDialogMaxWidthFor(double screenWidth) {
     if (screenWidth >= Breakpoints.desktop) return 640;
-    if (screenWidth >= Breakpoints.tablet) return 520;
+    if (screenWidth >= Breakpoints.expanded) return 520;
     return wideDialogMaxWidth;
   }
 
+  /// 按宽度解析布局尺度。
+  ///
+  /// 分档由 [WindowSizeClass] 决定（Material 3 window size class，阈值取
+  /// `fluid_adaptive` 的标准值）：
+  ///
+  /// | WindowSizeClass | 宽度 | 本仓库对应设备 |
+  /// | --- | --- | --- |
+  /// | `compact` | < 600 | 手机 |
+  /// | `medium` | 600–839 | 小平板 / 折叠屏 / 横屏手机 |
+  /// | `expanded` | 840–1199 | 大平板 / 小笔记本 |
+  /// | `large` | ≥ 1200 | 桌面窗口 |
+  ///
+  /// 各档的取值就是一张表——**表本身是设计决策，不该再靠 if 链表达**。
+  /// [WindowSizeClass.resolve] 提供「大档缺失时回退到次小档」的语义，
+  /// 所以档位增减只需改表，不必改分派逻辑。
+  ///
+  /// 断点直接用 [ResponsiveBreakpoints.standard]（600 / 840 / 1200），
+  /// 不再自维护 `Breakpoints` 里那组 600 / 960 / 1200——两套阈值并存时，
+  /// 布局分档与组件内判断会各说各的，这是最难查的一类界面缺陷。
   static LayoutScale resolve(double width) {
-    if (width < Breakpoints.mobile) {
-      return const LayoutScale(
-        pageHorizontalPadding: Spacing.lg,
-        sectionVerticalPadding: Spacing.xl3,
-        heroVerticalPadding: Spacing.xl5,
-        cardPadding: Spacing.lg,
-        cardPaddingLarge: Spacing.xl,
-        componentGap: Spacing.md,
-        maxContentWidth: 560,
-      );
-    }
-
-    if (width < Breakpoints.tablet) {
-      return const LayoutScale(
-        pageHorizontalPadding: Spacing.xl,
-        sectionVerticalPadding: Spacing.xl5,
-        heroVerticalPadding: Spacing.xl6,
-        cardPadding: Spacing.xl,
-        cardPaddingLarge: Spacing.xl2,
-        componentGap: Spacing.lg,
-        maxContentWidth: 760,
-      );
-    }
-
-    // 960–1200: transitional "small desktop" — wider padding + 2-col grid
-    // maxContentWidth, but not full dual-pane.
-    if (width < Breakpoints.desktop) {
-      return const LayoutScale(
-        pageHorizontalPadding: Spacing.xl2,
-        sectionVerticalPadding: Spacing.xl5,
-        heroVerticalPadding: Spacing.xl6,
-        cardPadding: Spacing.xl,
-        cardPaddingLarge: Spacing.xl2,
-        componentGap: Spacing.lg,
-        maxContentWidth: 1040,
-      );
-    }
-
-    // 1200–1400: standard desktop dual-pane.
-    if (width < Breakpoints.wide) {
-      return const LayoutScale(
-        pageHorizontalPadding: Spacing.xl2,
-        sectionVerticalPadding: Spacing.xl6,
-        heroVerticalPadding: Spacing.xl8,
-        cardPadding: Spacing.xl,
-        cardPaddingLarge: Spacing.xl2,
-        componentGap: Spacing.xl,
-        maxContentWidth: 1400,
-      );
-    }
-
-    // ≥1400: wide desktop — same spacing, wider content allowance.
-    return const LayoutScale(
-      pageHorizontalPadding: Spacing.xl3,
-      sectionVerticalPadding: Spacing.xl6,
-      heroVerticalPadding: Spacing.xl8,
-      cardPadding: Spacing.xl,
-      cardPaddingLarge: Spacing.xl2,
-      componentGap: Spacing.xl,
-      maxContentWidth: 1600,
-    );
+    return ResponsiveBreakpoints.standard
+        .sizeClassFor(width)
+        .resolve<LayoutScale>(
+          compact: _phone,
+          medium: _tablet,
+          expanded: _smallDesktop,
+          large: _desktop,
+        );
   }
+
+  /// `< 600`：手机。
+  static const LayoutScale _phone = LayoutScale(
+    pageHorizontalPadding: Spacing.lg,
+    sectionVerticalPadding: Spacing.xl3,
+    heroVerticalPadding: Spacing.xl5,
+    cardPadding: Spacing.lg,
+    cardPaddingLarge: Spacing.xl,
+    componentGap: Spacing.md,
+    maxContentWidth: 560,
+  );
+
+  /// `600–959`：平板。
+  static const LayoutScale _tablet = LayoutScale(
+    pageHorizontalPadding: Spacing.xl,
+    sectionVerticalPadding: Spacing.xl5,
+    heroVerticalPadding: Spacing.xl6,
+    cardPadding: Spacing.xl,
+    cardPaddingLarge: Spacing.xl2,
+    componentGap: Spacing.lg,
+    maxContentWidth: 760,
+  );
+
+  /// `840–1199`：过渡态「小桌面」——更宽的留白 + 两列网格，
+  /// 但还不是完整的双栏。
+  static const LayoutScale _smallDesktop = LayoutScale(
+    pageHorizontalPadding: Spacing.xl2,
+    sectionVerticalPadding: Spacing.xl5,
+    heroVerticalPadding: Spacing.xl6,
+    cardPadding: Spacing.xl,
+    cardPaddingLarge: Spacing.xl2,
+    componentGap: Spacing.lg,
+    maxContentWidth: 1040,
+  );
+
+  /// `≥ 1200`：桌面双栏。
+  ///
+  /// 超宽屏（≥ 1400）不再单列一档：留白已经由 `xl2` 收敛，
+  /// 内容宽度上限用 1600 兜住——再宽也只是两侧留白变多，
+  /// 多一档只会让「某宽度下究竟是哪个值」更难追。
+  static const LayoutScale _desktop = LayoutScale(
+    pageHorizontalPadding: Spacing.xl2,
+    sectionVerticalPadding: Spacing.xl6,
+    heroVerticalPadding: Spacing.xl8,
+    cardPadding: Spacing.xl,
+    cardPaddingLarge: Spacing.xl2,
+    componentGap: Spacing.xl,
+    maxContentWidth: 1600,
+  );
 }

@@ -34,7 +34,7 @@ class ResponsiveContentFrame extends StatelessWidget {
           // Constrain content from tablet onwards to prevent full-width
           // stretching on mid-tier screens (600–1200). Mobile (< 960) stays
           // unconstrained for natural edge-to-edge layouts.
-          maxWidth: width >= Breakpoints.tablet
+          maxWidth: width >= Breakpoints.expanded
               ? layout.maxContentWidth
               : double.infinity,
         ),

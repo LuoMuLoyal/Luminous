@@ -102,7 +102,7 @@ class _CustomizerPageState extends ConsumerState<CustomizerPage> {
 
     // 窄屏放不下两栏：主列表占满，可选组件走可拖高的底部面板。
     // 桌面/平板仍然并排——那里宽度足够，两栏能同时看见。
-    final isNarrow = MediaQuery.sizeOf(context).width < Breakpoints.tablet;
+    final isNarrow = MediaQuery.sizeOf(context).width < Breakpoints.expanded;
 
     final builder = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

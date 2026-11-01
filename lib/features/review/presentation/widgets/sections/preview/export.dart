@@ -31,7 +31,7 @@ class ReviewExportSection extends StatelessWidget {
   double _exportCardHeight(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     if (width >= Breakpoints.desktop) return 124;
-    if (width >= Breakpoints.tablet) return 112;
+    if (width >= Breakpoints.expanded) return 112;
     return 104;
   }
 

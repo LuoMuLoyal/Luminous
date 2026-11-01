@@ -151,6 +151,7 @@ dependencies:
   # 也依赖它；这里显式声明是因为组合根直接构造 `CatalogItem.dataSchema`。
   json_schema_builder: ^0.1.7
   graphview: ^1.5.1
+  fluid_adaptive: ^2.0.0
 
 dev_dependencies:
   flutter_test:

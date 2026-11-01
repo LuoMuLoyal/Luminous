@@ -577,6 +577,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  fluid_adaptive:
+    dependency: "direct main"
+    description:
+      name: fluid_adaptive
+      sha256: "5f741db522053d55e1f7833be551ba8f632aadc85114c38b13d7d730ea02e24f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   flutter:
     dependency: "direct main"
     description: flutter

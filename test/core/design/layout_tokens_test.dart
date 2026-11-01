@@ -9,13 +9,13 @@ void main() {
       expect(scale.maxContentWidth, equals(560));
     });
 
-    test('returns large-mobile scale for width 600-959', () {
+    test('returns large-mobile scale for width 600-839', () {
       final scale = LayoutScaleResolver.resolve(768);
       expect(scale.pageHorizontalPadding, equals(Spacing.xl));
       expect(scale.maxContentWidth, equals(760));
     });
 
-    test('returns tablet scale for width 960-1199', () {
+    test('returns small-desktop scale for width 840-1199', () {
       final scale = LayoutScaleResolver.resolve(1024);
       expect(scale.pageHorizontalPadding, equals(Spacing.xl2));
       expect(scale.maxContentWidth, equals(1040));
@@ -23,13 +23,13 @@ void main() {
 
     test('returns desktop scale for width >= 1200', () {
       final scale = LayoutScaleResolver.resolve(1440);
-      expect(scale.pageHorizontalPadding, equals(Spacing.xl3));
+      expect(scale.pageHorizontalPadding, equals(Spacing.xl2));
       expect(scale.maxContentWidth, equals(1600));
     });
 
     test('returns desktop scale for width exactly 1200', () {
       final scale = LayoutScaleResolver.resolve(1200);
-      expect(scale.maxContentWidth, equals(1400));
+      expect(scale.maxContentWidth, equals(1600));
     });
 
     test('returns mobile scale for width exactly 0', () {

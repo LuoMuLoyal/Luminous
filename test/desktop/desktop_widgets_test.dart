@@ -126,8 +126,8 @@ void main() {
       expect(Breakpoints.mobile, 600);
     });
 
-    test('tablet breakpoint is 960', () {
-      expect(Breakpoints.tablet, 960);
+    test('expanded breakpoint is 840', () {
+      expect(Breakpoints.expanded, 840);
     });
 
     test('smallDesktop breakpoint is 1080', () {

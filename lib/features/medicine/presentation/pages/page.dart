@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -117,9 +116,7 @@ class MedicinePage extends ConsumerWidget {
               : _MedicineMobileShell(child: dashboard);
         },
         readyBuilder: (workspace, isPreview) {
-          final onSignIn = isPreview
-              ? () => requestSignIn(context)
-              : null;
+          final onSignIn = isPreview ? () => requestSignIn(context) : null;
           final content = MedicineMobileDashboardView(workspace: workspace);
           final dashboardContent = isPreview
               ? Column(
@@ -208,7 +205,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final isNarrow = MediaQuery.sizeOf(context).width < Breakpoints.tablet;
+    final isNarrow = MediaQuery.sizeOf(context).width < Breakpoints.expanded;
 
     final shieldIcon = Icon(
       SemanticIcons.safetyGuard,
