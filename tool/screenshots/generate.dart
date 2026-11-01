@@ -1169,6 +1169,29 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
       await _toggleGraphView(tester, last: true);
     },
   ),
+
+  // ── 同步失败页：单条展开诊断信息 ─────────────────────────────
+  //
+  // 列表态是默认态，展开态才是排查时真正读的那一屏：诊断面板里的
+  // wire 字段、trace、原始异常只在这里出现，不专门截就没有证据。
+  _ExtraCapture(
+    fileName: '63_mine_sync-failures-diagnostics.png',
+    group: 'mine',
+    page: 'sync-failures-diagnostics',
+    route: '/mine/sync/failures',
+    note: '同步失败 · 首条展开诊断信息（wire 字段、trace、原始异常与复制入口）',
+    prepare: (tester) async {
+      final toggle = find
+          .byKey(const Key('sync-failed-entry-diagnostics'))
+          .first;
+      await tester.ensureVisible(toggle);
+      await _settle(tester);
+      await tester.tap(toggle);
+      await _settle(tester);
+      await tester.ensureVisible(toggle);
+      await _settle(tester);
+    },
+  ),
 ];
 
 /// 把关系图卡切到「图」视图，并滚到它进入视口。

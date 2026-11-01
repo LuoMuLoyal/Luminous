@@ -70,11 +70,16 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('同步失败详情'), findsOneWidget);
-    expect(find.text('待处理项（1）'), findsOneWidget);
-    expect(find.text('daily_record'), findsOneWidget);
-    expect(find.text('record-1'), findsOneWidget);
-    // User-facing message is shown; raw exception is hidden by default.
+    // The page summary: the count carries the page, the caption explains it.
+    expect(find.text('3'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
+    expect(find.text('项待同步'), findsOneWidget);
+    expect(find.text('恢复联网后可全部重试'), findsOneWidget);
+    // The card leads with the user-facing message and a human caption; wire
+    // identity stays behind the diagnostics disclosure.
     expect(find.text('网络请求失败，请检查连接'), findsOneWidget);
+    expect(find.text('日常记录 · 2026年8月2日 12:00'), findsOneWidget);
+    expect(find.text('daily_record'), findsNothing);
     expect(
       find.text('DioException [connectionError]: network unavailable'),
       findsNothing,
@@ -121,13 +126,15 @@ void main() {
     await tester.pumpWidget(_app(dao: dao, worker: worker));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('诊断信息'));
+    await tester.tap(find.byKey(const Key('sync-failed-entry-diagnostics')));
     await tester.pumpAndSettle();
 
     expect(
       find.text('DioException [connectionError]: network unavailable'),
       findsOneWidget,
     );
+    // The wire identity moves into the panel once it is open.
+    expect(find.text('daily_record'), findsOneWidget);
   });
 
   testWidgets('retry all resets every failed item before flushing', (
@@ -178,10 +185,10 @@ void main() {
     expect(find.text('无法开始重试'), findsOneWidget);
     verifyNever(() => worker.flush());
     // The entry stays on screen so the user can retry again.
-    expect(find.text('daily_record'), findsOneWidget);
+    expect(find.text('网络请求失败，请检查连接'), findsOneWidget);
   });
 
-  testWidgets('discard removes the entry only after the user confirms', (
+  testWidgets('discard removes the entry without further confirmation', (
     tester,
   ) async {
     final dao = _MockPendingSyncDao();
@@ -195,36 +202,10 @@ void main() {
     await tester.tap(find.byKey(const Key('sync-failed-entry-discard')));
     await tester.pumpAndSettle();
 
-    // The destructive confirmation is mandatory: nothing is deleted yet.
-    expect(find.text('丢弃这一项？'), findsOneWidget);
-    verifyNever(() => dao.remove(any()));
-
-    await tester.tap(find.text('丢弃').last);
-    await tester.pumpAndSettle();
-
     verify(() => dao.remove('pending-1')).called(1);
     // Discarding must not trigger the retry flush — the entry is gone, and
     // re-sending it is exactly what the user chose not to do.
     verifyNever(() => worker.flush());
-  });
-
-  testWidgets('cancelling the discard confirmation keeps the entry', (
-    tester,
-  ) async {
-    final dao = _MockPendingSyncDao();
-    final worker = _MockSyncWorker();
-
-    await tester.pumpWidget(_app(dao: dao, worker: worker));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(const Key('sync-failed-entry-discard')));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('取消'));
-    await tester.pumpAndSettle();
-
-    verifyNever(() => dao.remove(any()));
-    expect(find.text('daily_record'), findsOneWidget);
   });
 
   testWidgets('surfaces an error when the discard cannot be persisted', (
@@ -241,8 +222,6 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('sync-failed-entry-discard')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('丢弃').last);
     await tester.pumpAndSettle();
 
     expect(find.text('无法丢弃该项'), findsOneWidget);

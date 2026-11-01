@@ -245,21 +245,56 @@
   },
   "mineSyncFailedAction": "查看详情",
   "mineSyncFailedDetailsTitle": "同步失败详情",
-  "mineSyncFailedDetailsDescription": "以下本地变更未能同步，恢复联网后可重试",
+  "mineSyncFailedDetailsDescription": "恢复联网后可全部重试",
   "mineSyncFailedDetailsEmpty": "当前没有同步失败项",
-  "mineSyncFailedDetailsListTitle": "待处理项（{count}）",
-  "@mineSyncFailedDetailsListTitle": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "mineSyncFailedDetailsEntity": "数据类型",
   "mineSyncFailedDetailsOperation": "操作",
   "mineSyncFailedDetailsRecord": "记录 ID",
   "mineSyncFailedDetailsAttempts": "尝试次数",
   "mineSyncFailedDetailsQueuedAt": "加入时间",
+  "mineSyncFailedDetailsCount": "项待同步",
+    "mineSyncFailedDetailsRecordSummary": "{title} · {queuedAt}",
+  "@mineSyncFailedDetailsRecordSummary": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "queuedAt": {
+        "type": "String"
+      }
+    }
+  },
+  "mineSyncFailedDetailsAttemptsUsed": "已尝试 {count}/{max} 次",
+  "@mineSyncFailedDetailsAttemptsUsed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "mineSyncFailedDetailsReload": "重新加载列表",
+  "mineSyncFailedEntityDailyRecord": "日常记录",
+  "mineSyncFailedEntityMedicine": "药品",
+  "mineSyncFailedEntityMedicineReminder": "用药提醒",
+  "mineSyncFailedEntityMedicineDoseLog": "服药记录",
+  "mineSyncFailedEntityHealthAllergy": "过敏史",
+  "mineSyncFailedEntityHealthCondition": "病史",
+  "mineSyncFailedEntityHealthContext": "健康档案",
+  "mineSyncFailedEntityUserProfile": "个人资料",
+  "mineSyncFailedEntityOther": "其他数据",
+  "mineSyncFailedKindBloodPressure": "血压",
+  "mineSyncFailedKindSleep": "睡眠",
+  "mineSyncFailedKindWater": "饮水",
+  "mineSyncFailedKindMeal": "饮食",
+  "mineSyncFailedKindSymptom": "症状",
+  "mineSyncFailedKindMood": "情绪",
+  "mineSyncFailedKindWeight": "体重",
+  "mineSyncFailedKindActivity": "运动",
+  "mineSyncFailedKindNote": "备注",
+  "mineSyncFailedKindCaffeine": "咖啡因",
   "mineSyncFailedDetailsLastError": "最近错误",
   "mineSyncFailedDetailsRetryAll": "全部重试",
   "mineSyncFailedDetailsRetrying": "重试中…",
@@ -269,7 +304,7 @@
   "mineSyncFailedDetailsDiscardTitle": "丢弃这一项？",
   "mineSyncFailedDetailsDiscardDescription": "将永久删除，且不会发送到服务器",
   "mineSyncFailedDetailsDiscardConfirm": "丢弃",
-  "mineSyncFailedErrorDataInvalid": "数据校验失败，请检查内容后重试",
+    "mineSyncFailedErrorDataInvalid": "数据校验失败，请检查内容后重试",
   "mineSyncFailedErrorNetwork": "网络不稳定，请在网络恢复后重试",
   "mineSyncFailedErrorServer": "服务器暂不可用，请稍后重试",
   "mineSyncFailedErrorAuth": "登录已过期，请重新登录后重试",
@@ -334,3 +369,4 @@
   "mineHelpFeedbackTitle": "意见反馈",
   "mineHelpFeedbackSubtitle": "报告问题或提出建议"
 }
+

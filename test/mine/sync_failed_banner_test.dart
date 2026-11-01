@@ -90,7 +90,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(SyncFailuresPage), findsOneWidget);
-    expect(find.text('daily_record'), findsOneWidget);
-    expect(find.text('record-1'), findsOneWidget);
+    // The card leads with the human caption; wire identity stays collapsed.
+    expect(find.text('项待同步'), findsOneWidget);
+    expect(find.text('日常记录 · 2026年8月2日 12:00'), findsOneWidget);
   });
 }

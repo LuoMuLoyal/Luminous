@@ -245,21 +245,56 @@
   },
   "mineSyncFailedAction": "View details",
   "mineSyncFailedDetailsTitle": "Sync failures",
-  "mineSyncFailedDetailsDescription": "Couldn't sync these local changes. Retry when back online.",
+  "mineSyncFailedDetailsDescription": "Retry them all when you're back online.",
   "mineSyncFailedDetailsEmpty": "No failed sync items",
-  "mineSyncFailedDetailsListTitle": "Failed items ({count})",
-  "@mineSyncFailedDetailsListTitle": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "mineSyncFailedDetailsEntity": "Data type",
   "mineSyncFailedDetailsOperation": "Operation",
   "mineSyncFailedDetailsRecord": "Record ID",
   "mineSyncFailedDetailsAttempts": "Attempts",
   "mineSyncFailedDetailsQueuedAt": "Queued at",
+  "mineSyncFailedDetailsCount": "items pending sync",
+    "mineSyncFailedDetailsRecordSummary": "{title} · {queuedAt}",
+  "@mineSyncFailedDetailsRecordSummary": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "queuedAt": {
+        "type": "String"
+      }
+    }
+  },
+  "mineSyncFailedDetailsAttemptsUsed": "Tried {count}/{max} times",
+  "@mineSyncFailedDetailsAttemptsUsed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "mineSyncFailedDetailsReload": "Reload the list",
+  "mineSyncFailedEntityDailyRecord": "Daily record",
+  "mineSyncFailedEntityMedicine": "Medicine",
+  "mineSyncFailedEntityMedicineReminder": "Medicine reminder",
+  "mineSyncFailedEntityMedicineDoseLog": "Dose log",
+  "mineSyncFailedEntityHealthAllergy": "Allergy",
+  "mineSyncFailedEntityHealthCondition": "Condition",
+  "mineSyncFailedEntityHealthContext": "Health profile",
+  "mineSyncFailedEntityUserProfile": "Profile",
+  "mineSyncFailedEntityOther": "Other data",
+  "mineSyncFailedKindBloodPressure": "Blood pressure",
+  "mineSyncFailedKindSleep": "Sleep",
+  "mineSyncFailedKindWater": "Water",
+  "mineSyncFailedKindMeal": "Meal",
+  "mineSyncFailedKindSymptom": "Symptom",
+  "mineSyncFailedKindMood": "Mood",
+  "mineSyncFailedKindWeight": "Weight",
+  "mineSyncFailedKindActivity": "Activity",
+  "mineSyncFailedKindNote": "Note",
+  "mineSyncFailedKindCaffeine": "Caffeine",
   "mineSyncFailedDetailsLastError": "Last error",
   "mineSyncFailedDetailsRetryAll": "Retry all",
   "mineSyncFailedDetailsRetrying": "Retrying…",
@@ -269,7 +304,7 @@
   "mineSyncFailedDetailsDiscardTitle": "Discard this item?",
   "mineSyncFailedDetailsDiscardDescription": "Deleted permanently; this change never reaches the server.",
   "mineSyncFailedDetailsDiscardConfirm": "Discard",
-  "mineSyncFailedErrorDataInvalid": "Validation failed. Check your input and retry.",
+    "mineSyncFailedErrorDataInvalid": "Validation failed. Check your input and retry.",
   "mineSyncFailedErrorNetwork": "Connection is unstable. Retry when it's available.",
   "mineSyncFailedErrorServer": "Server unavailable. Try again later.",
   "mineSyncFailedErrorAuth": "Your session expired. Sign in again and retry.",
@@ -334,3 +369,4 @@
   "mineHelpFeedbackTitle": "Feedback",
   "mineHelpFeedbackSubtitle": "Report issues or suggest improvements"
 }
+

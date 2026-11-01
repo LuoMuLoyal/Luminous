@@ -3,15 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
+import 'package:luminous/features/mine/presentation/mappers/sync_entry_caption.dart';
 import 'package:luminous/features/mine/presentation/mappers/sync_error_user_message.dart';
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// One permanently failed sync item, rendered as a self-contained panel.
+/// One permanently failed sync item, rendered as a white card on the page
+/// canvas.
 ///
-/// The user-facing message is shown first; the raw exception and the
-/// structured trace fields stay behind the collapsed diagnostics section.
+/// The card is read in one pass, top to bottom: *why* it failed (the only
+/// thing the user can act on) leads, *what* it was follows as a quiet caption,
+/// and the terminal action sits at the end of the row without a confirmation
+/// dialog of its own. Everything the user cannot act on — entity type,
+/// operation, record id, attempt counts, trace id, raw exception — lives in
+/// the collapsed [_DiagnosticsPanel] and can be copied out in one tap.
 ///
 /// [onDiscard] removes the item from the local queue. It is offered because a
 /// permanent failure is not necessarily retryable: when the server keeps
@@ -23,8 +28,7 @@ class SyncFailedEntryCard extends StatefulWidget {
 
   final MineSyncEntry entry;
 
-  /// Called after the user confirms discarding this entry. When null, no
-  /// discard action is rendered.
+  /// Called to discard this entry. When null, no discard action is rendered.
   final Future<void> Function()? onDiscard;
 
   @override
@@ -71,21 +75,15 @@ class _SyncFailedEntryCardState extends State<SyncFailedEntryCard> {
     });
   }
 
-  /// Confirms and performs the discard. Discarding destroys the only copy of
-  /// an unsynced local change, so it is gated behind an explicit confirmation
-  /// and reports failures inline rather than pretending the entry is gone.
+  /// Discards the entry.
+  ///
+  /// Discarding destroys the only copy of an unsynced local change, so the
+  /// tap is not undoable. It is stated on the card's action row — next to the
+  /// button, where the decision is actually made — instead of behind a
+  /// confirmation dialog that every queue cleanup would have to clear.
   Future<void> _discard() async {
     final onDiscard = widget.onDiscard;
     if (onDiscard == null || _isDiscarding) return;
-
-    final l10n = AppLocalizations.of(context)!;
-    final confirmed = await showDangerConfirmationDialog(
-      context: context,
-      title: l10n.mineSyncFailedDetailsDiscardTitle,
-      message: l10n.mineSyncFailedDetailsDiscardDescription,
-      confirmLabel: l10n.mineSyncFailedDetailsDiscardConfirm,
-    );
-    if (!confirmed || !mounted) return;
 
     setState(() {
       _isDiscarding = true;
@@ -104,96 +102,104 @@ class _SyncFailedEntryCardState extends State<SyncFailedEntryCard> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    final queuedAt = DateFormat.yMMMd(
-      locale,
-    ).add_Hm().format(widget.entry.createdAt.toLocal());
-    final userMessage = mapSyncErrorToUserMessage(widget.entry, l10n);
-    final details = widget.entry.errorDetails;
+    final entry = widget.entry;
+    final typography = context.theme.typography;
+    final userMessage = mapSyncErrorToUserMessage(entry, l10n);
+    final caption = syncEntryCaption(
+      entry,
+      l10n,
+      Localizations.localeOf(context).toLanguageTag(),
+    );
+    final details = entry.errorDetails;
     final hasDiagnostics =
         details != null ||
-        (widget.entry.lastError != null && widget.entry.lastError!.isNotEmpty);
-    final typography = context.theme.typography;
+        (entry.lastError != null && entry.lastError!.isNotEmpty);
+    // Exhausted attempts are the reason nothing happens on its own anymore;
+    // before that, the card is a plain failure and a count would be noise.
+    final attemptsExhausted = entry.retryCount >= entry.maxRetry;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(Spacing.lg),
-      decoration: BoxDecoration(
-        color: colors.muted,
-        borderRadius: context.theme.style.borderRadius.sm,
-        border: Border.all(color: SemanticColor.neutral.border(context)),
+    return FCard(
+      builder: (context, _, child) => Padding(
+        padding: const EdgeInsets.fromLTRB(
+          Spacing.xl,
+          Spacing.lg,
+          Spacing.lg,
+          Spacing.sm,
+        ),
+        child: child,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _DetailRow(
-            label: l10n.mineSyncFailedDetailsEntity,
-            value: widget.entry.entityType,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                SemanticIcons.statusError,
+                size: IconSizeTokens.md,
+                color: SemanticColor.destructive.solid(context),
+              ),
+              const SizedBox(width: Spacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userMessage,
+                      style: typography.body.sm.copyWith(
+                        color: context.theme.colors.foreground,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: Spacing.xs),
+                    Text(
+                      l10n.mineSyncFailedDetailsRecordSummary(
+                        caption.title,
+                        caption.subtitle,
+                      ),
+                      style: typography.body.xs2.copyWith(
+                        color: context.theme.colors.mutedForeground,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          _DetailRow(
-            label: l10n.mineSyncFailedDetailsOperation,
-            value: widget.entry.operation,
-          ),
-          if (widget.entry.entityId != null)
-            _DetailRow(
-              label: l10n.mineSyncFailedDetailsRecord,
-              value: widget.entry.entityId!,
-            ),
-          _DetailRow(
-            label: l10n.mineSyncFailedDetailsAttempts,
-            value: '${widget.entry.retryCount}/${widget.entry.maxRetry}',
-          ),
-          _DetailRow(
-            label: l10n.mineSyncFailedDetailsQueuedAt,
-            value: queuedAt,
-          ),
-          const SizedBox(height: Spacing.sm),
-          Text(
-            l10n.mineSyncFailedDetailsLastError,
-            style: typography.body.xs2.copyWith(
-              color: SemanticColor.neutral.solid(context),
-            ),
-          ),
-          const SizedBox(height: Spacing.xs),
-          Text(
-            userMessage,
-            style: typography.body.xs.copyWith(
-              color: SemanticColor.destructive.solid(context),
-            ),
-          ),
-          if (hasDiagnostics) ...[
-            const SizedBox(height: Spacing.sm),
-            _DiagnosticsPanel(
-              expanded: _diagnosticsExpanded,
-              copied: _copied,
-              onToggle: () {
+          if (attemptsExhausted || hasDiagnostics || widget.onDiscard != null)
+            const SizedBox(height: Spacing.md),
+          if (attemptsExhausted || hasDiagnostics || widget.onDiscard != null)
+            _ActionRow(
+              attemptsExhausted: attemptsExhausted,
+              attemptLabel: l10n.mineSyncFailedDetailsAttemptsUsed(
+                entry.retryCount,
+                entry.maxRetry,
+              ),
+              hasDiagnostics: hasDiagnostics,
+              diagnosticsExpanded: _diagnosticsExpanded,
+              onToggleDiagnostics: () {
                 setState(() {
                   _diagnosticsExpanded = !_diagnosticsExpanded;
                 });
               },
+              onDiscard: widget.onDiscard == null ? null : _discard,
+              isDiscarding: _isDiscarding,
+              discardLabel: l10n.mineSyncFailedDetailsDiscard,
+            ),
+          if (hasDiagnostics && _diagnosticsExpanded) ...[
+            const SizedBox(height: Spacing.md),
+            _DiagnosticsPanel(
+              copied: _copied,
               onCopy: () => _copyDiagnostics(l10n),
               details: details,
-              raw: widget.entry.lastError,
-            ),
-          ],
-          if (widget.onDiscard != null) ...[
-            const SizedBox(height: Spacing.md),
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: FButton(
-                key: const Key('sync-failed-entry-discard'),
-                variant: FButtonVariant.outline,
-                size: FButtonSizeVariant.sm,
-                onPress: _isDiscarding ? null : _discard,
-                child: _isDiscarding
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: FCircularProgress(),
-                      )
-                    : Text(l10n.mineSyncFailedDetailsDiscard),
-              ),
+              raw: entry.lastError,
+              entityType: entry.entityType,
+              operation: entry.operation,
+              entityId: entry.entityId,
+              attempts: '${entry.retryCount}/${entry.maxRetry}',
+              queuedAt: DateFormat.yMMMd(
+                Localizations.localeOf(context).toLanguageTag(),
+              ).add_Hm().format(entry.createdAt.toLocal()),
             ),
           ],
         ],
@@ -202,20 +208,110 @@ class _SyncFailedEntryCardState extends State<SyncFailedEntryCard> {
   }
 }
 
+/// The card's footer: the quiet advisory on the left, the actions on the
+/// right.
+///
+/// Kept as one row so the two controls that act on a single entry sit at its
+/// end, and so the primary-looking affordance stays the page's "retry all" —
+/// neither per-entry action is a candidate for the strongest emphasis.
+class _ActionRow extends StatelessWidget {
+  const _ActionRow({
+    required this.attemptsExhausted,
+    required this.attemptLabel,
+    required this.hasDiagnostics,
+    required this.diagnosticsExpanded,
+    required this.onToggleDiagnostics,
+    required this.onDiscard,
+    required this.isDiscarding,
+    required this.discardLabel,
+  });
+
+  final bool attemptsExhausted;
+  final String attemptLabel;
+  final bool hasDiagnostics;
+  final bool diagnosticsExpanded;
+  final VoidCallback onToggleDiagnostics;
+  final Future<void> Function()? onDiscard;
+  final bool isDiscarding;
+  final String discardLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+    final muted = typography.body.xs2.copyWith(
+      color: context.theme.colors.mutedForeground,
+    );
+
+    return Row(
+      children: [
+        Expanded(
+          child: attemptsExhausted
+              ? Text(attemptLabel, style: muted)
+              : const SizedBox.shrink(),
+        ),
+        if (hasDiagnostics)
+          FButton.icon(
+            key: const Key('sync-failed-entry-diagnostics'),
+            variant: FButtonVariant.ghost,
+            size: FButtonSizeVariant.xs,
+            onPress: onToggleDiagnostics,
+            child: AnimatedRotation(
+              turns: diagnosticsExpanded ? 0.5 : 0,
+              duration: DurationTokens.widgetQuick,
+              curve: MotionTokens.standard,
+              child: const Icon(
+                SemanticIcons.actionExpand,
+                size: IconSizeTokens.sm,
+              ),
+            ),
+          ),
+        if (onDiscard != null) ...[
+          const SizedBox(width: Spacing.xs),
+          FButton(
+            key: const Key('sync-failed-entry-discard'),
+            variant: FButtonVariant.ghost,
+            size: FButtonSizeVariant.sm,
+            onPress: isDiscarding ? null : onDiscard,
+            child: isDiscarding
+                ? const SizedBox(
+                    width: IconSizeTokens.sm,
+                    height: IconSizeTokens.sm,
+                    child: FCircularProgress(),
+                  )
+                : Text(
+                    discardLabel,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Everything the user cannot act on, behind one disclosure: wire identity,
+/// attempt history, trace fields and the raw exception.
 class _DiagnosticsPanel extends StatelessWidget {
   const _DiagnosticsPanel({
-    required this.expanded,
     required this.copied,
-    required this.onToggle,
     required this.onCopy,
+    required this.entityType,
+    required this.operation,
+    required this.entityId,
+    required this.attempts,
+    required this.queuedAt,
     this.details,
     this.raw,
   });
 
-  final bool expanded;
   final bool copied;
-  final VoidCallback onToggle;
   final VoidCallback onCopy;
+  final String entityType;
+  final String operation;
+  final String? entityId;
+  final String attempts;
+  final String queuedAt;
   final MineSyncErrorDetails? details;
   final String? raw;
 
@@ -225,85 +321,84 @@ class _DiagnosticsPanel extends StatelessWidget {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: onToggle,
-          behavior: HitTestBehavior.opaque,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
-            child: Row(
-              children: [
-                Icon(
-                  expanded
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
-                  size: 18,
-                  color: SemanticColor.neutral.solid(context),
-                ),
-                const SizedBox(width: Spacing.xs),
-                Text(
-                  l10n.mineSyncFailedDetailsDiagnostics,
-                  style: typography.body.xs.copyWith(
-                    color: SemanticColor.neutral.solid(context),
-                  ),
-                ),
-              ],
-            ),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(Spacing.lg),
+      decoration: BoxDecoration(
+        color: colors.secondary,
+        borderRadius: context.theme.style.borderRadius.sm,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _DetailRow(
+            label: l10n.mineSyncFailedDetailsEntity,
+            value: entityType,
           ),
-        ),
-        if (expanded) ...[
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(Spacing.md),
-            decoration: BoxDecoration(
-              color: colors.background,
-              borderRadius: context.theme.style.borderRadius.xs,
-              border: Border.all(color: SemanticColor.neutral.border(context)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (details?.traceId != null &&
-                    details!.traceId!.isNotEmpty) ...[
-                  _DetailRow(
-                    label: l10n.mineSyncFailedDetailsTraceId,
-                    value: details!.traceId!,
-                  ),
-                ],
-                if (details?.code != null) ...[
-                  _DetailRow(
-                    label: l10n.mineSyncFailedDetailsErrorCode,
-                    value: details!.code!.toString(),
-                  ),
-                ],
-                if (details?.statusCode != null) ...[
-                  _DetailRow(
-                    label: l10n.mineSyncFailedDetailsHttpStatus,
-                    value: details!.statusCode!.toString(),
-                  ),
-                ],
-                if (raw != null && raw!.isNotEmpty) ...[
-                  const SizedBox(height: Spacing.sm),
-                  SelectableText(raw!, style: typography.body.xs2),
-                ],
-              ],
-            ),
+          _DetailRow(
+            label: l10n.mineSyncFailedDetailsOperation,
+            value: operation,
           ),
-          const SizedBox(height: Spacing.sm),
+          if (entityId != null)
+            _DetailRow(
+              label: l10n.mineSyncFailedDetailsRecord,
+              value: entityId!,
+            ),
+          _DetailRow(
+            label: l10n.mineSyncFailedDetailsAttempts,
+            value: attempts,
+          ),
+          _DetailRow(
+            label: l10n.mineSyncFailedDetailsQueuedAt,
+            value: queuedAt,
+          ),
+          if (details?.traceId != null && details!.traceId!.isNotEmpty) ...[
+            _DetailRow(
+              label: l10n.mineSyncFailedDetailsTraceId,
+              value: details!.traceId!,
+            ),
+          ],
+          if (details?.code != null) ...[
+            _DetailRow(
+              label: l10n.mineSyncFailedDetailsErrorCode,
+              value: details!.code!.toString(),
+            ),
+          ],
+          if (details?.statusCode != null) ...[
+            _DetailRow(
+              label: l10n.mineSyncFailedDetailsHttpStatus,
+              value: details!.statusCode!.toString(),
+            ),
+          ],
+          if (raw != null && raw!.isNotEmpty) ...[
+            const SizedBox(height: Spacing.sm),
+            SelectableText(
+              raw!,
+              style: typography.body.xs2.copyWith(
+                color: colors.mutedForeground,
+              ),
+            ),
+          ],
+          const SizedBox(height: Spacing.md),
           FButton(
-            variant: FButtonVariant.outline,
-            size: FButtonSizeVariant.sm,
+            variant: FButtonVariant.ghost,
+            size: FButtonSizeVariant.xs,
             onPress: onCopy,
-            child: Text(
-              copied
-                  ? l10n.mineSyncFailedDetailsDiagnosticsCopied
-                  : l10n.mineSyncFailedDetailsCopyDiagnostics,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(SemanticIcons.actionCopy, size: IconSizeTokens.sm),
+                const SizedBox(width: Spacing.sm),
+                Text(
+                  copied
+                      ? l10n.mineSyncFailedDetailsDiagnosticsCopied
+                      : l10n.mineSyncFailedDetailsCopyDiagnostics,
+                ),
+              ],
             ),
           ),
         ],
-      ],
+      ),
     );
   }
 }
@@ -323,11 +418,11 @@ class _DetailRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 92,
+            width: 88,
             child: Text(
               label,
               style: typography.body.xs2.copyWith(
-                color: SemanticColor.neutral.solid(context),
+                color: context.theme.colors.mutedForeground,
               ),
             ),
           ),
