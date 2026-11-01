@@ -33,8 +33,7 @@ outputs/screenshots/
 
 ## 桌面档
 
-除手机档（Pixel 8 Pro 448×998 @ dpr 3）外，同一份 catalog 还会为**五个 tab 根页**
-再生成一档桌面尺寸：
+除手机档（Pixel 8 Pro 448×998 @ dpr 3）外，同一份 catalog 还会再生成一档桌面尺寸：
 
 | 档位 | 逻辑尺寸 | dpr | 窗口 chrome | 输出 |
 | --- | --- | --- | --- | --- |
@@ -45,11 +44,17 @@ outputs/screenshots/
 `desktopChrome: true` 让窗口按钮与拖拽区一起入镜——那是桌面端自身的验收对象，
 用手机档的 `false` 截出来看不到。
 
+桌面档覆盖两级页面，与手机档一一对应：
+
+- **一级页**（五个 tab 根页，`shell` 组）→ `desktop/<tab>.png`，5 张；
+- **二级页**（其余全部分组）→ `desktop/<group>-<id>.png`，文件名带分组前缀，
+  避免与一级页在同一个目录里重名。
+
 只截首屏，不产出 `_scrolled` 与整页长截图（`longCapture: false`）：桌面内容区一次
 能容纳更多，而 1280×800 的整页图会是一张高度远超宽度的怪图。
 
 ```powershell
-# 只跑桌面档
+# 只跑桌面档（一级页 + 二级页抽样）
 flutter test tool/screenshots/generate.dart --update-goldens --plain-name "generate desktop/"
 ```
 

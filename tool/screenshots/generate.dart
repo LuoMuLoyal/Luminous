@@ -1629,6 +1629,40 @@ void main() {
     );
   }
 
+  // ── 桌面档：全部二级页 ──────────────────────────────────────────────
+  //
+  // 手机档里的每一个二级页，在桌面档都有对应的一张。文件名带分组前缀
+  // （`<group>-<id>`），避免与一级页在同一个 `desktop/` 目录里重名。
+  //
+  // 这一档的价值不在「和手机档长得一样」，而在它暴露的问题：内容列是否与
+  // 桌面壳对齐、长文行宽是否越过阅读上限、表单是否还在贴边。曾经的
+  // `maxContentWidth`（桌面档 1600，而窗口只有 1280）就是被这一档看出来的
+  // ——上限从未生效，二级页比一级页的内容宽出 200 余像素。
+  for (final target in catalog.screenshotCatalog.where(
+    (t) => t.group != _shellGroup,
+  )) {
+    final fileName = '${target.group}-${target.id}';
+    testWidgets(
+      'generate desktop/$fileName',
+      (tester) => capture(
+        tester,
+        desktop: true,
+        placement: (folder: 'desktop', prefix: ''),
+        name: fileName,
+        route: target.route,
+        prepare: target.prepare,
+        longCapture: false,
+        scrolledCapture: false,
+        record: (name, count) => manifest.writeln(
+          '| `$name` | ${target.group} | ${target.id} | '
+          '`${target.route}` | $count | desktop 1280x800（二级页）'
+          '${_frameKindLabel(name)} |',
+        ),
+      ),
+      timeout: const Timeout(Duration(seconds: 45)),
+    );
+  }
+
   for (var i = 0; i < catalog.screenshotCatalog.length; i += 1) {
     final target = catalog.screenshotCatalog[i];
     final placement = _placementFor(target.group, target.id);

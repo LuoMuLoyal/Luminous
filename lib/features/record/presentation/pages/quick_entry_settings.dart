@@ -33,15 +33,18 @@ class QuickEntrySettingsPage extends ConsumerWidget {
     final controller = ref.read(quickEntryPreferencesProvider.notifier);
     final typography = context.theme.typography;
 
+    // 滚动视图必须在 ResponsiveContentFrame **外面**：Frame 是 Center，套在
+    // 外面会给 SingleChildScrollView 松约束，滚动视图收缩到内容高度后被垂直
+    // 居中，设置项就落在屏幕中间而不是页头下方。
     return PageScaffold(
       title: l10n.recordQuickSettingsTitle,
-      child: ResponsiveContentFrame(
-        child: SingleChildScrollView(
-          key: const Key('record-quick-settings-page'),
-          padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.lg,
-            vertical: Spacing.lg,
-          ),
+      child: SingleChildScrollView(
+        key: const Key('record-quick-settings-page'),
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.lg,
+          vertical: Spacing.lg,
+        ),
+        child: ResponsiveContentFrame(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -95,8 +95,11 @@ class _MedicineDetailContentState extends ConsumerState<MedicineDetailContent> {
 
     final sections = MedicineDetailSections(detail, l10n).build();
 
-    return ResponsiveContentFrame(
-      child: SingleChildScrollView(
+    // 滚动视图必须在 ResponsiveContentFrame **外面**：Frame 是 Center，套在
+    // 外面会给 SingleChildScrollView 松约束，滚动视图收缩到内容高度后被垂直
+    // 居中，详情就落在屏幕中间而不是页头下方。桌面端尤其明显。
+    return SingleChildScrollView(
+      child: ResponsiveContentFrame(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
             Spacing.lg,
