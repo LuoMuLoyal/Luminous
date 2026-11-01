@@ -24,7 +24,58 @@ class GenerativeSurfaceRenderer extends StatelessWidget {
       return const _GenerativeEmpty();
     }
     return _GenerativeErrorBoundary(
-      child: genui.Surface(surfaceContext: surface),
+      child: _GenerativeMaterialScope(
+        child: genui.Surface(surfaceContext: surface),
+      ),
+    );
+  }
+}
+
+/// 给生成式内容套一层 Material 主题。
+///
+/// ## 为什么必须套
+///
+/// A2UI 的基础组件（`Card` / `Text` / `Divider`）是 **Material** 组件：
+/// `Card` 取 `Theme.of(context).colorScheme.surface`，`Text` 走
+/// `DefaultTextStyle` 里 Material 的 `bodyMedium`。本应用的界面主题是 Forui，
+/// `MaterialApp.theme` 只是 `foruiMaterialTheme()` 的桥接层，`colorScheme`
+/// 仍是 Material 3 的默认调色板——于是卡片会呈现 M3 的淡紫（`secondaryContainer`
+/// 一系），和周围的 Forui 卡片完全不像同一套设计。
+///
+/// 这里不改生成内容的**结构**，只把它们用到的 Material 语义色映射到本应用的
+/// 主题色：卡片用 `colors.card`、正文用 `colors.foreground`、分割线用
+/// `colors.border`。映射而不是另起一套主题，是为了让生成的内容和前后的手写
+/// 组件看起来是同一个产品里的东西。
+class _GenerativeMaterialScope extends StatelessWidget {
+  const _GenerativeMaterialScope({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final base = Theme.of(context);
+    final scheme = base.colorScheme.copyWith(
+      surface: colors.card,
+      onSurface: colors.foreground,
+      surfaceContainerLowest: colors.card,
+      surfaceContainerLow: colors.card,
+      surfaceContainer: colors.card,
+      outlineVariant: colors.border,
+      primary: colors.primary,
+      onPrimary: colors.primaryForeground,
+      secondaryContainer: colors.secondary,
+      onSecondaryContainer: colors.secondaryForeground,
+    );
+
+    return Theme(
+      data: base.copyWith(colorScheme: scheme),
+      child: DefaultTextStyle.merge(
+        style: context.theme.typography.body.sm.copyWith(
+          color: colors.foreground,
+        ),
+        child: child,
+      ),
     );
   }
 }
@@ -44,9 +95,6 @@ class _GenerativeEmpty extends StatelessWidget {
 /// 报告给 `FlutterError.onError`，`try/catch` 包不住子树的 `build`。真正兜底的
 /// 是 `genui` 自己的 `FallbackWidget`（它对每个组件单独 try/catch）。这个边界
 /// 负责的是**本组件自己的**渲染路径，以及之后 `reportError` 回调带来的异常。
-///
-/// 错误文案走 ARB：这里是 `core/`，不能 import feature 的 l10n，所以由调用方
-/// 通过 [errorBuilder] 注入；没有注入时不显示文字，只留一个可断言的占位。
 class _GenerativeErrorBoundary extends StatefulWidget {
   const _GenerativeErrorBoundary({required this.child});
 

@@ -30,6 +30,13 @@ final generativeSurfaceIdProvider = Provider<SurfaceId>(
 /// 每个 surface 一个），`keepAlive` 让切页面不丢已渲染的树。
 final generativeTransportProvider =
     Provider.family<GenerativeTransport, SurfaceId>((ref, surface) {
+      // 不加 `keepAlive`：provider 的生命周期应当跟随它所在的 `ProviderScope`
+      // （`_GenerativeSurfaceSlot` 为每个 surface 各开一个），而不是跟随进程。
+      // keepAlive 会让实例跨 scope 存活，某个 surface 先建的 transport 被另一个
+      // surface 读到，表现为「切 tab 后生成内容串位/消失」。
+      //
+      // 原先担心的「重放写入后被回收」不成立：渲染 widget 常驻监听这个
+      // provider，写入方 `_replay` 与读取方处在同一个 scope 内。
       final transport = GenerativeTransport(
         catalog: ref.watch(generativeCatalogProvider(surface)),
       );
