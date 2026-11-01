@@ -197,6 +197,11 @@ import 'package:lucent_api/src/model/login_with_wechat_mobile_request.dart';
 import 'package:lucent_api/src/model/login_with_wechat_web_request.dart';
 import 'package:lucent_api/src/model/logout_request.dart';
 import 'package:lucent_api/src/model/mark_request.dart';
+import 'package:lucent_api/src/model/medication_overview_response.dart';
+import 'package:lucent_api/src/model/medication_overview_response_duplicates.dart';
+import 'package:lucent_api/src/model/medication_overview_response_source_overlaps.dart';
+import 'package:lucent_api/src/model/medicine_cascade_paths_response.dart';
+import 'package:lucent_api/src/model/medicine_cascade_paths_response_cascades.dart';
 import 'package:lucent_api/src/model/medicine_detail_response.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_detail.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_detail_one_of.dart';
@@ -207,6 +212,12 @@ import 'package:lucent_api/src/model/medicine_detail_response_external_links.dar
 import 'package:lucent_api/src/model/medicine_detail_response_sequence_summary.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_structure.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_targets.dart';
+import 'package:lucent_api/src/model/medicine_drug_actions_response.dart';
+import 'package:lucent_api/src/model/medicine_drug_actions_response_actions.dart';
+import 'package:lucent_api/src/model/medicine_enzyme_duels_response.dart';
+import 'package:lucent_api/src/model/medicine_enzyme_duels_response_duels.dart';
+import 'package:lucent_api/src/model/medicine_mechanism_paths_response.dart';
+import 'package:lucent_api/src/model/medicine_mechanism_paths_response_paths.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job_result.dart';
 import 'package:lucent_api/src/model/medicine_recognition_response.dart';
@@ -242,6 +253,16 @@ import 'package:lucent_api/src/model/medicine_search_response_pagination.dart';
 import 'package:lucent_api/src/model/medicine_sequence_response.dart';
 import 'package:lucent_api/src/model/medicine_sequence_response_drug.dart';
 import 'package:lucent_api/src/model/medicine_sequence_response_targets.dart';
+import 'package:lucent_api/src/model/medicine_shared_targets_response.dart';
+import 'package:lucent_api/src/model/medicine_shared_targets_response_targets.dart';
+import 'package:lucent_api/src/model/medicine_shortest_routes_response.dart';
+import 'package:lucent_api/src/model/medicine_shortest_routes_response_routes.dart';
+import 'package:lucent_api/src/model/medicine_substitute_candidates_response.dart';
+import 'package:lucent_api/src/model/medicine_substitute_candidates_response_candidates.dart';
+import 'package:lucent_api/src/model/medicine_target_drugs_response.dart';
+import 'package:lucent_api/src/model/medicine_target_drugs_response_drugs.dart';
+import 'package:lucent_api/src/model/medicine_transport_routes_response.dart';
+import 'package:lucent_api/src/model/medicine_transport_routes_response_routes.dart';
 import 'package:lucent_api/src/model/notification_detail_response.dart';
 import 'package:lucent_api/src/model/notification_list_response.dart';
 import 'package:lucent_api/src/model/notification_list_response_items.dart';
@@ -1210,6 +1231,29 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MarkRequest':
       return MarkRequest.fromJson(value as Map<String, dynamic>) as ReturnType;
+    case 'MedicationOverviewResponse':
+      return MedicationOverviewResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicationOverviewResponseDuplicates':
+      return MedicationOverviewResponseDuplicates.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicationOverviewResponseSourceOverlaps':
+      return MedicationOverviewResponseSourceOverlaps.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineCascadePathsResponse':
+      return MedicineCascadePathsResponse.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineCascadePathsResponseCascades':
+      return MedicineCascadePathsResponseCascades.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'MedicineDetailResponse':
       return MedicineDetailResponse.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1255,6 +1299,32 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MedicineDetailResponseTargets':
       return MedicineDetailResponseTargets.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineDrugActionsResponse':
+      return MedicineDrugActionsResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineDrugActionsResponseActions':
+      return MedicineDrugActionsResponseActions.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineEnzymeDuelsResponse':
+      return MedicineEnzymeDuelsResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineEnzymeDuelsResponseDuels':
+      return MedicineEnzymeDuelsResponseDuels.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineMechanismPathsResponse':
+      return MedicineMechanismPathsResponse.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineMechanismPathsResponsePaths':
+      return MedicineMechanismPathsResponsePaths.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
@@ -1416,6 +1486,54 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MedicineSequenceResponseTargets':
       return MedicineSequenceResponseTargets.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineSharedTargetsResponse':
+      return MedicineSharedTargetsResponse.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineSharedTargetsResponseTargets':
+      return MedicineSharedTargetsResponseTargets.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineShortestRoutesResponse':
+      return MedicineShortestRoutesResponse.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineShortestRoutesResponseRoutes':
+      return MedicineShortestRoutesResponseRoutes.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineSubstituteCandidatesResponse':
+      return MedicineSubstituteCandidatesResponse.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineSubstituteCandidatesResponseCandidates':
+      return MedicineSubstituteCandidatesResponseCandidates.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineTargetDrugsResponse':
+      return MedicineTargetDrugsResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineTargetDrugsResponseDrugs':
+      return MedicineTargetDrugsResponseDrugs.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineTransportRoutesResponse':
+      return MedicineTransportRoutesResponse.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineTransportRoutesResponseRoutes':
+      return MedicineTransportRoutesResponseRoutes.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

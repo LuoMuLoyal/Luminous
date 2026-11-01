@@ -10,7 +10,12 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/enqueue_medicine_recognition_request.dart';
+import 'package:lucent_api/src/model/medication_overview_response.dart';
+import 'package:lucent_api/src/model/medicine_cascade_paths_response.dart';
 import 'package:lucent_api/src/model/medicine_detail_response.dart';
+import 'package:lucent_api/src/model/medicine_drug_actions_response.dart';
+import 'package:lucent_api/src/model/medicine_enzyme_duels_response.dart';
+import 'package:lucent_api/src/model/medicine_mechanism_paths_response.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job.dart';
 import 'package:lucent_api/src/model/medicine_recognition_response.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_response.dart';
@@ -18,6 +23,11 @@ import 'package:lucent_api/src/model/medicine_risk_check_records_response.dart';
 import 'package:lucent_api/src/model/medicine_safety_tip_item.dart';
 import 'package:lucent_api/src/model/medicine_search_response.dart';
 import 'package:lucent_api/src/model/medicine_sequence_response.dart';
+import 'package:lucent_api/src/model/medicine_shared_targets_response.dart';
+import 'package:lucent_api/src/model/medicine_shortest_routes_response.dart';
+import 'package:lucent_api/src/model/medicine_substitute_candidates_response.dart';
+import 'package:lucent_api/src/model/medicine_target_drugs_response.dart';
+import 'package:lucent_api/src/model/medicine_transport_routes_response.dart';
 import 'package:lucent_api/src/model/recognize_request.dart';
 import 'package:lucent_api/src/model/run_risk_check_request.dart';
 
@@ -214,9 +224,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [MedicationOverviewResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> getMedicationOverview({
+  Future<Response<MedicationOverviewResponse>> getMedicationOverview({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -240,7 +250,37 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    MedicationOverviewResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<MedicationOverviewResponse, MedicationOverviewResponse>(
+              rawData,
+              'MedicationOverviewResponse',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicationOverviewResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// Get latest medicine risk check records
@@ -490,9 +530,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [MedicineCascadePathsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> listCascadePaths({
+  Future<Response<MedicineCascadePathsResponse>> listCascadePaths({
     required String drugbankId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -520,7 +560,36 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    MedicineCascadePathsResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              MedicineCascadePathsResponse,
+              MedicineCascadePathsResponse
+            >(rawData, 'MedicineCascadePathsResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineCascadePathsResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// What targets one drug acts on
@@ -535,9 +604,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [MedicineDrugActionsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> listDrugActions({
+  Future<Response<MedicineDrugActionsResponse>> listDrugActions({
     required String drugbankId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -565,7 +634,36 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    MedicineDrugActionsResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              MedicineDrugActionsResponse,
+              MedicineDrugActionsResponse
+            >(rawData, 'MedicineDrugActionsResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineDrugActionsResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// Induction vs substrate pairs: opposite effect on exposure
@@ -580,9 +678,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [MedicineEnzymeDuelsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> listEnzymeDuels({
+  Future<Response<MedicineEnzymeDuelsResponse>> listEnzymeDuels({
     required String drugbankIds,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -610,7 +708,36 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    MedicineEnzymeDuelsResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              MedicineEnzymeDuelsResponse,
+              MedicineEnzymeDuelsResponse
+            >(rawData, 'MedicineEnzymeDuelsResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineEnzymeDuelsResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// Metabolic mechanism paths between drugs (INHIBITS/INDUCES x SUBSTRATE_OF)
@@ -625,9 +752,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [MedicineMechanismPathsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> listMechanismPaths({
+  Future<Response<MedicineMechanismPathsResponse>> listMechanismPaths({
     required String drugbankIds,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -655,7 +782,36 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    MedicineMechanismPathsResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              MedicineMechanismPathsResponse,
+              MedicineMechanismPathsResponse
+            >(rawData, 'MedicineMechanismPathsResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineMechanismPathsResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// Targets shared by a set of drugs
@@ -670,9 +826,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [MedicineSharedTargetsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> listSharedTargets({
+  Future<Response<MedicineSharedTargetsResponse>> listSharedTargets({
     required String drugbankIds,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -700,7 +856,36 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    MedicineSharedTargetsResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              MedicineSharedTargetsResponse,
+              MedicineSharedTargetsResponse
+            >(rawData, 'MedicineSharedTargetsResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineSharedTargetsResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// Shortest propagation route between two drugs
@@ -716,9 +901,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [MedicineShortestRoutesResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> listShortestRoutes({
+  Future<Response<MedicineShortestRoutesResponse>> listShortestRoutes({
     required String fromDrugbankId,
     required String toDrugbankId,
     CancelToken? cancelToken,
@@ -750,7 +935,36 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    MedicineShortestRoutesResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              MedicineShortestRoutesResponse,
+              MedicineShortestRoutesResponse
+            >(rawData, 'MedicineShortestRoutesResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineShortestRoutesResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// Structural candidates that do not use a given enzyme (not a prescription)
@@ -766,9 +980,10 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [MedicineSubstituteCandidatesResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> listSubstituteCandidates({
+  Future<Response<MedicineSubstituteCandidatesResponse>>
+  listSubstituteCandidates({
     required String drugbankId,
     required String enzymeGene,
     CancelToken? cancelToken,
@@ -800,7 +1015,36 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    MedicineSubstituteCandidatesResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              MedicineSubstituteCandidatesResponse,
+              MedicineSubstituteCandidatesResponse
+            >(rawData, 'MedicineSubstituteCandidatesResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineSubstituteCandidatesResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// All drugs acting on one target gene
@@ -815,9 +1059,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [MedicineTargetDrugsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> listTargetDrugs({
+  Future<Response<MedicineTargetDrugsResponse>> listTargetDrugs({
     required String geneName,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -845,7 +1089,36 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    MedicineTargetDrugsResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              MedicineTargetDrugsResponse,
+              MedicineTargetDrugsResponse
+            >(rawData, 'MedicineTargetDrugsResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineTargetDrugsResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// Transporter routes (efflux/uptake) for one drug
@@ -860,9 +1133,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future]
+  /// Returns a [Future] containing a [Response] with a [MedicineTransportRoutesResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<void>> listTransportRoutes({
+  Future<Response<MedicineTransportRoutesResponse>> listTransportRoutes({
     required String drugbankId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -890,7 +1163,36 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    return _response;
+    MedicineTransportRoutesResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              MedicineTransportRoutesResponse,
+              MedicineTransportRoutesResponse
+            >(rawData, 'MedicineTransportRoutesResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineTransportRoutesResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
   }
 
   /// AI recognize medicine box image and extract medicine info
