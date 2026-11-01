@@ -9,6 +9,17 @@
   "generativeSubmitAction": "Compose",
   "generativeFailedMessage": "Could not compose this section. Your previous layout is kept.",
   "generativeEmptyMessage": "Nothing composed yet",
+  "generativeSlotSheetTitle": "Custom AI section",
+  "generativeSlotSheetDescription": "Give this section a name and tell the assistant what it should show. Both are saved, so you will not have to type them again.",
+  "generativeSlotTitleLabel": "Section name",
+  "generativeSlotTitleHint": "Shown on the page and in this list",
+  "generativeSlotPromptLabel": "What should it show?",
+  "generativeSlotPromptHint": "For example: three small cards side by side for daily water",
+  "generativeSlotSaveAction": "Save",
+  "generativeSlotClearAction": "Clear",
+  "generativeSlotUnconfigured": "Not configured yet",
+  "generativeSlotEditAction": "Edit",
+  "generativeSlotNotGenerated": "Not composed yet. Use Edit in the layout editor to name it and describe what it should show.",
   "@generativeGenerateAction": {
     "description": "Entry point that opens the instruction sheet."
   },

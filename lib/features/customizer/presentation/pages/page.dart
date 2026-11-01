@@ -11,6 +11,10 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/customizer/domain/entities/edit.dart';
 import 'package:luminous/features/customizer/presentation/providers/draft.dart';
 import 'package:luminous/features/customizer/presentation/widgets/palette.dart';
+import 'package:luminous/features/generative/presentation/components/catalog.dart'
+    show generativeSurfaceComponentId;
+import 'package:luminous/features/generative/presentation/providers/slot_spec.dart';
+import 'package:luminous/features/generative/presentation/widgets/slot_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 编排页：编辑**一个** surface 的组件列表，并可把别的 surface 的组件加入。
@@ -431,6 +435,21 @@ class _Header extends StatelessWidget {
   }
 }
 
+/// 打开「自定义生成式区块」的编辑面板。
+///
+/// 与添加组件用的 sheet 同一套外观（半屏、可滚、跟随键盘），但内容是
+/// 两个文本框：区块名称与让 agent 渲染什么。保存后这一行的名字就变成
+/// 用户填的标题——编排页因此能直接看出这块地方放的是什么。
+Future<void> showGenerativeSlotSheet(BuildContext context, SurfaceId surface) {
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    backgroundColor: context.theme.scaffoldStyle.backgroundColor,
+    builder: (_) => GenerativeSlotSheet(surface: surface),
+  );
+}
+
 /// 列表里的一行：把手 + 名称 + 显隐 + 移除。
 class _PlacementTile extends ConsumerWidget {
   const _PlacementTile({
@@ -474,17 +493,29 @@ class _PlacementTile extends ConsumerWidget {
     // 尺寸档**不放在名称下方**：`FCard` 的高度由内容决定，多出一行胶囊会把
     // 卡片撑高，而卡片本身的底色/圆角是按「两行」的密度定的，视觉上就是
     // 「高度涨了、底色没跟上」。放到右侧与开关同属「对该项的属性操作」，
+    // 生成式组件是**用户配置过的区块**：它的名字来自用户自己填的标题，而不是
+    // 一个通用名。「未配置」是它唯一有意义的空态——因为配置入口就在这一行
+    // 的编辑按钮上，用户点开就知道要填什么。
+    final isGenerative = id == generativeSurfaceComponentId(surface);
+    final slotSpec = isGenerative
+        ? ref.watch(generativeSlotSpecProvider(surface))
+        : null;
+    final displayName = isGenerative
+        ? (slotSpec?.title ?? l10n.generativeSlotUnconfigured)
+        : componentDisplayName(l10n, id);
+
     // 卡片高度始终等于名称两行。
     final nameText = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          componentDisplayName(l10n, id),
+          displayName,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.sm.copyWith(
             color: known ? null : SemanticColor.neutral.solid(context),
+            fontWeight: isGenerative ? FontWeight.w600 : null,
           ),
         ),
         Text(
@@ -514,6 +545,23 @@ class _PlacementTile extends ConsumerWidget {
         child: const Icon(SemanticIcons.actionDelete),
       ),
     );
+    // 生成式区块的「配置」入口：标题与指示都在这里改。
+    //
+    // 放在编排页而不是页面上，是因为它配置的是**这块地方长期要显示什么**，
+    // 属于布局层面的决定，和排序、显隐是同一类操作。
+    final editSlotButton = isGenerative
+        ? FTooltip(
+            tipBuilder: (context, controller) =>
+                Text(l10n.generativeSlotEditAction),
+            child: FButton.icon(
+              variant: FButtonVariant.ghost,
+              size: FButtonSizeVariant.xs,
+              onPress: () => showGenerativeSlotSheet(context, surface),
+              semanticsLabel: l10n.generativeSlotEditAction,
+              child: const Icon(SemanticIcons.actionEdit),
+            ),
+          )
+        : null;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.sm),
@@ -536,6 +584,7 @@ class _PlacementTile extends ConsumerWidget {
               sizePicker,
               const SizedBox(width: Spacing.sm),
             ],
+            if (editSlotButton != null) editSlotButton,
             // 开关与删除是**固定宽度的尾部操作**：宽度由控件自身决定，
             // 不参与 flex 分配，所以每一行的两个按钮横向位置一致。
             // 行宽不够时由名称 `Expanded` 先让位（它已经带省略号）。

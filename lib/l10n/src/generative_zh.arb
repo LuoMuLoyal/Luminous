@@ -9,6 +9,17 @@
   "generativeSubmitAction": "开始编排",
   "generativeFailedMessage": "这次编排没有成功，保留了上一份结果。",
   "generativeEmptyMessage": "还没有编排过",
+  "generativeSlotSheetTitle": "自定义 AI 区块",
+  "generativeSlotSheetDescription": "给这块地方起个名字，并告诉助手它应该显示什么。两项都会保存下来，不必每次重新输入。",
+  "generativeSlotTitleLabel": "区块名称",
+  "generativeSlotTitleHint": "显示在页面上，也显示在这个列表里",
+  "generativeSlotPromptLabel": "要显示什么？",
+  "generativeSlotPromptHint": "例如：把每日饮水做成三张并排的小卡",
+  "generativeSlotSaveAction": "保存",
+  "generativeSlotClearAction": "清除",
+  "generativeSlotUnconfigured": "尚未配置",
+  "generativeSlotEditAction": "编辑",
+  "generativeSlotNotGenerated": "尚未生成。在编排页点「编辑」设置名称并描述它要显示什么。",
   "@generativeGenerateAction": {
     "description": "打开指示输入面板的入口。"
   },
