@@ -81,7 +81,12 @@ class _ReadinessPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final dashboard = ref.watch(reviewSurfaceStateProvider).dataOrNull;
     if (dashboard == null) return null;
     final l10n = AppLocalizations.of(context)!;
@@ -122,7 +127,12 @@ class _FindingsPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final dashboard = ref.watch(reviewSurfaceStateProvider).dataOrNull;
     if (dashboard == null) return null;
     return ReviewFindingsSection(
@@ -142,7 +152,12 @@ class _AiSummaryPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final dashboard = ref.watch(reviewSurfaceStateProvider).dataOrNull;
     if (dashboard == null) return null;
 
@@ -188,7 +203,12 @@ class _PatternsPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final dashboard = ref.watch(reviewSurfaceStateProvider).dataOrNull;
     if (dashboard == null) return null;
     return ReviewPatternsSection(
@@ -209,7 +229,12 @@ class _SuggestionHistoryComponent
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     if (!ref.watch(authSessionProvider).canAccessProtectedData) return null;
 
     final async = ref.watch(suggestionHistoryProvider);

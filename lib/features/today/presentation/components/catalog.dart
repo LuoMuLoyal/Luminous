@@ -99,7 +99,12 @@ class _PreviewBannerComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     if (!ref.watch(todaySurfacePreviewProvider)) return null;
     final l10n = AppLocalizations.of(context)!;
     return SignInHintBanner(
@@ -126,7 +131,12 @@ class _GreetingComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final l10n = AppLocalizations.of(context)!;
     final dashboard = ref.watch(todaySurfaceDashboardProvider).dataOrNull;
     // 无数据时（首帧加载或加载失败）问候语没有可用的时间段信息，
@@ -158,7 +168,12 @@ class _PrimarySuggestionComponent
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const TodayPrimarySuggestionSection();
   }
 }
@@ -181,7 +196,12 @@ class _SecondarySuggestionsComponent
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     // 这里判断的只是「这张卡是否值得占位」，不是「有没有数据」：
     //   data  → 真没有次要建议才移除该组件；
     //   loading / error → 保留占位，因为卡片内部已经自带骨架与错误态
@@ -217,7 +237,12 @@ class _SummaryComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const TodaySummarySection();
   }
 }
@@ -238,7 +263,12 @@ class _HealthEventComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     // Preview mode has no protected data, so the card would only render its
     // empty state; skipping it also removes its spacing.
     if (ref.watch(todaySurfacePreviewProvider)) return null;
@@ -263,7 +293,12 @@ class _ObservationComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const TodayObservationSection();
   }
 }
@@ -281,7 +316,12 @@ class _QuickActionsComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const TodayQuickActionsSection();
   }
 }

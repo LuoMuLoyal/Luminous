@@ -95,7 +95,12 @@ class _SyncBannerComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     // The banner already answers "nothing pending" with a shrink box, but the
     // host would still reserve its spacing; returning null removes both.
     // Loading and error both keep the banner, matching its previous behaviour.
@@ -115,7 +120,12 @@ class _AccountHeroComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const MineAccountHero(key: Key('mine-account-header'));
   }
 }
@@ -130,7 +140,12 @@ class _ProfileAlertsComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     // Hide the card only when the data is present and there are genuinely no
     // alerts. While loading or after a failed read the section stays, so a
     // failure is never mistaken for "your profile has no incomplete items".
@@ -150,7 +165,12 @@ class _ArchiveSummaryComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const MineArchiveSection();
   }
 }
@@ -165,7 +185,12 @@ class _PrivacyNoticeComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const MineAiPrivacySection();
   }
 }
@@ -181,7 +206,12 @@ class _ReminderSettingsComponent
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const MineNotificationsReminderSection();
   }
 }
@@ -196,7 +226,12 @@ class _AccountSecurityComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const MineAccountSecuritySection();
   }
 }

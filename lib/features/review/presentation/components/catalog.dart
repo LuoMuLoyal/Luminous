@@ -217,7 +217,12 @@ class _PeriodSwitchComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return ReviewPeriodSwitch(
       selectedRange: ref.watch(reviewSurfaceRangeProvider),
       onRangeChanged: (range) => ref
@@ -237,7 +242,12 @@ class _CoverageStripComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final metrics = ref.watch(reviewSurfaceStateProvider).dataOrNull?.metrics;
     if (metrics == null || metrics.isEmpty) return null;
     return ReviewCoverageStrip(
@@ -258,7 +268,12 @@ class _NoteworthyComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final dashboard = ref.watch(reviewSurfaceStateProvider).dataOrNull;
     if (dashboard == null) return null;
     return ReviewNoteworthySection(
@@ -281,7 +296,12 @@ class _RecordGuideComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final dashboard = ref.watch(reviewSurfaceStateProvider).dataOrNull;
     if (dashboard == null) return null;
     // 有进行中/最近事件时不出现。
@@ -313,7 +333,12 @@ class _EventHeaderComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return switch (_currentReview(ref)) {
       final EventReview review => EventHeaderSection(
         event: review.event,
@@ -335,7 +360,12 @@ class _WhatHappenedComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return switch (_currentReview(ref)) {
       final EventReview review => WhatHappenedSection(
         section: review.sections.whatHappened,
@@ -355,7 +385,12 @@ class _KeyChangesComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return switch (_currentReview(ref)) {
       final EventReview review => KeyChangesSection(
         section: review.sections.keyChanges,
@@ -376,7 +411,12 @@ class _CompletedActionsComponent
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return switch (_currentReview(ref)) {
       final EventReview review => CompletedActionsSection(
         section: review.sections.completedActions,
@@ -396,7 +436,12 @@ class _NextStepComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return switch (_currentReview(ref)) {
       final EventReview review => NextStepSection(
         section: review.sections.nextStep,
@@ -416,7 +461,12 @@ class _TrendComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final dashboard = ref.watch(reviewSurfaceStateProvider).dataOrNull;
     if (dashboard == null || dashboard.trends.isEmpty) return null;
     return ReviewTrendSection(
@@ -445,7 +495,12 @@ class _MultiTrendComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final dashboard = ref.watch(reviewSurfaceStateProvider).dataOrNull;
     // 少于两个维度就没有「多维度」可谈，交给单维趋势卡。
     if (dashboard == null || dashboard.trends.length < 2) return null;
@@ -467,7 +522,12 @@ class _MetricGridComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final metrics = ref.watch(reviewSurfaceStateProvider).dataOrNull?.metrics;
     if (metrics == null || metrics.isEmpty) return null;
     return ReviewMetricGridSection(
@@ -490,7 +550,12 @@ class _HistoryComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     final historyStatus = ref.watch(reviewHistoryStatusProvider);
     return ReviewHistorySection(
       history: ref.watch(reviewHistoryProvider),
@@ -522,7 +587,12 @@ class _AiSummaryComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     if (_currentReview(ref) == null) return null;
 
     final canAccessProtectedData = ref
@@ -566,7 +636,12 @@ class _PreviewOverviewComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     // 只在「无进行中事件」时出现，且有事件时不替代任何真实内容。
     if (_currentReview(ref) != null) return null;
     if (ref.watch(reviewSurfaceStateProvider).dataOrNull == null) return null;
@@ -611,7 +686,12 @@ class _NoEventExplanationComponent
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     // 只在「确认无事件、且数据不算过稀」时出现；过稀时由记录引导卡替代。
     if (ref.watch(reviewSurfaceHasEventProvider)) return null;
     final dashboard = ref.watch(reviewSurfaceStateProvider).dataOrNull;
@@ -655,7 +735,12 @@ class _StaleBannerComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     if (!ref.watch(reviewSurfaceStaleProvider)) return null;
     final l10n = AppLocalizations.of(context)!;
     return Container(

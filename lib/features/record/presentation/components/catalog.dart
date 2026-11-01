@@ -59,7 +59,12 @@ class _DateComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const RecordDateSection();
   }
 }
@@ -74,7 +79,12 @@ class _QuickEntryComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const RecordQuickActionSection();
   }
 }
@@ -89,7 +99,12 @@ class _FilterComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const RecordFilterSection();
   }
 }
@@ -104,7 +119,12 @@ class _TimelineComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const RecordTimelineSection();
   }
 }
