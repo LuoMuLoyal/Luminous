@@ -72,9 +72,8 @@ class MechanismPathsSection extends ConsumerWidget {
             )
           : null,
       viewMode: mode,
-      onToggleView: (next) => ref
-          .read(graphViewModesProvider.notifier)
-          .setMode(componentId, next),
+      onToggleView: (next) =>
+          ref.read(graphViewModesProvider.notifier).setMode(componentId, next),
       footer: GraphCoverageNote(
         covered: drugSet.drugbankIds.length,
         total: drugSet.totalMedicines,
@@ -221,8 +220,6 @@ class CascadePathsSection extends ConsumerWidget {
       }),
     );
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final drugSet = ref.watch(graphDrugSetProvider).asData?.value;
     if (drugSet == null || drugSet.drugbankIds.isEmpty) {
@@ -252,9 +249,8 @@ class CascadePathsSection extends ConsumerWidget {
             )
           : null,
       viewMode: mode,
-      onToggleView: (next) => ref
-          .read(graphViewModesProvider.notifier)
-          .setMode(componentId, next),
+      onToggleView: (next) =>
+          ref.read(graphViewModesProvider.notifier).setMode(componentId, next),
       footer: GraphCoverageNote(
         covered: drugSet.drugbankIds.length,
         total: drugSet.totalMedicines,
@@ -298,10 +294,7 @@ class CascadePathsSection extends ConsumerWidget {
                   ),
                 )
                 ..add(
-                  GraphEdgeSpec(
-                    from: cascade.endDrug,
-                    to: cascade.enzymeTwo,
-                  ),
+                  GraphEdgeSpec(from: cascade.endDrug, to: cascade.enzymeTwo),
                 );
             }
             return GraphViewCanvas(nodes: nodes, edges: edges, height: 260);
