@@ -2,32 +2,41 @@
 
 `StatefulShellRoute.indexedStack` 的 chrome 层:五 tab(today / record / medicine /
 review / mine)移动端渲染 `FBottomNavigationBar`、桌面端渲染 `FSidebar`,并统一提供
-桌面 tab 页壳、切换不卡帧的懒构建组件与 tab 切换的交叉淡化容器。
+桌面 tab 页壳、右侧详情面板、切换不卡帧的懒构建组件与 tab 切换的交叉淡化容器。
 
 ## 职责与边界
 - 管:`ShellTab` / `ShellBranch` 枚举与稳定 test key;`ShellPage`(FScaffold 双形态 +
-  ConnectivityBanner + 桌面窗口拖动标题栏/侧栏 footer);`DesktopTabShell`(FHeader +
-  内容 maxWidth 约束 + 可选下拉刷新/滚动位置保持);`ShellDeferredContent`;
+  ConnectivityBanner + 桌面窗口拖动标题栏/侧栏 footer);`DesktopTabShell`(玻璃顶栏 +
+  内容 maxWidth 约束 + 可选下拉刷新/滚动位置保持);`DesktopDetailPane` 与
+  `detail_pane_state.dart`(桌面右侧详情面板及其开关状态);`ShellDeferredContent`;
   `ShellTabBranchContainer`(替换默认 `IndexedStack` 的 branch 容器)。
 - 不管:路由表、redirect guard、branch 声明(在 `lib/app/router.dart`);tab 内容页
-  (各 feature presentation);登录鉴权(core/auth + app 层 redirect)。
+  (各 feature presentation);登录鉴权(core/auth + app 层 redirect);面板里渲染的
+  详情内容本身(归各自 feature,本目录只提供容器与状态)。
 
 ## 对外契约
 - 导出:`presentation/tab.dart`(`ShellTab`,review 保留 `shell-tab-report` key)、
   `presentation/branch.dart`(`ShellBranch` / `ShellTabBranchX`)、`presentation/page.dart`
   (`ShellPage`)、`presentation/desktop_tab_shell.dart`(`DesktopTabShell`)、
+  `presentation/detail_pane.dart`(`DesktopDetailPane`)、
+  `presentation/detail_pane_state.dart`(`detailPaneProvider` / `DetailPaneTarget`)、
   `presentation/deferred_content.dart`(`ShellDeferredContent`)、
   `presentation/tab_branch_container.dart`(`ShellTabBranchContainer`)。
 - 被依赖:`lib/app/router.dart`(挂 `ShellPage`,并把 `ShellTabBranchContainer` 作为
   `StatefulShellRoute` 的 navigator container;tab 根路由声明为 `NoTransitionPage`);
   五个 tab 页的 `pages/page.dart` 都用 `ShellDeferredContent` 包裹重内容,
-  today / record / medicine / mine 另用 `DesktopTabShell` 提供标题与刷新。
+  today / record / medicine / mine 另用 `DesktopTabShell` 提供标题与刷新;
+  medicine 的 `drug_box.dart` 在桌面宽度下改为 `detailPaneProvider.open(...)` 而非整页 push。
 
 ## 不变量
 - branch index == tab index,`goBranch` 直接使用枚举 index(test/shell/branch_test.dart)。
 - `ShellTab.review.testKey()` 固定为 `shell-tab-report`(改名兼容,test/shell/tab_test.dart)。
 - 桌面/移动形态仅由 `Breakpoints.desktop` 宽度决定;indexedStack 保证各 branch 导航栈
   独立保活(test/shell/shell_page_test.dart、test/app/router_test.dart)。
+- **桌面端是在产平台目标,不是冻结的遗留代码**(ADR-0008 2026-11-01 修订):可新增桌面
+  专属布局与交互,但任一改动需同时覆盖手机端;桌面改动不得阻塞手机端发布。
+- 详情面板关闭时不占位:内容区宽度与「没有面板」时完全一致,否则开关面板会引起文字
+  重新折行(test/shell/detail_pane_test.dart)。
 
 ## 依赖禁区
 - 不承载业务数据读写;新数据需求走对应 feature 的 domain/repository。

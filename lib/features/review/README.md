@@ -5,7 +5,7 @@
 ## 职责与边界
 - 管:纵向洞察主路径装配(`widgets/views/review_view.dart` + `presentation/pages/page.dart`),数据来自 `reviewDashboardProvider`(`presentation/providers/dashboard.dart`,metrics/trends/findings + observedMetric 覆盖率语义);event review 读模型与 provider(`domain/entities/review.dart`、`presentation/providers/review.dart`);周期切换状态(`reviewDashboardSelectedQueryProvider`)与单维趋势维度(`reviewTrendDimensionProvider`);冷启动记录引导(`widgets/sections/record_guide.dart`);event review 详情页 `/review/:eventId`(`pages/detail.dart`);就诊摘要预览/PDF/分享(`presentation/providers/clinic_summary.dart`、`utils/pdf_download.dart`)。
 - 不管:健康事件创建/check-in/结束动作归 `health_event` 与 Today(本页不再复用其 sheet 或 notifier);导出任务状态归 `settings`(`data_export.dart` provider);建议历史数据归 `today`(legacy `suggestionHistoryProvider`);每日记录本体归 `record`;AI 摘要(`ai_summary.dart` provider / `suggestion_history.dart` / `ai_summary.dart` section)主路径下线,仅 legacy 兼容页(AD)消费。
-- 桌面/Web 沿用移动端单列约束(ADR-0008 冻结),不新增桌面专属布局;骨架镜像新区块顺序。
+- 桌面端与手机端渲染同一份表面布局（`ComponentHostGridSliver`，`SurfaceId.review`）：桌面 ≥1200 走两列，单列条目按竖向流动分配（左列读完再读右列），卡片等宽、不出现占满整列的组件；骨架镜像新区块顺序。
 
 ## 对外契约
 - 路由:`Routes.review` = `/review`(第 4 shell branch,tab key 兼容保留 `shell-tab-report`,见 `features/shell/presentation/tab.dart`);`Routes.reviewClinicSummaryShared` = `/review/clinic-summary/:token`(免登录 deep link);`Routes.reviewLegacyDashboard` = `/review/legacy`;`Routes.reviewDetail` = `/review/review/:eventId`(均见 `lib/app/router.dart`)。
