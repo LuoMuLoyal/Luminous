@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/relations.dart';
+import 'package:luminous/features/medicine/domain/services/graph_drug_set.dart';
 import 'package:luminous/features/medicine/presentation/providers/relations/graph.dart';
 import 'package:luminous/features/medicine/presentation/widgets/sections/graph/graph_card.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -17,13 +18,16 @@ import 'package:luminous/l10n/app_localizations.dart';
 class _DrugPicker extends StatelessWidget {
   const _DrugPicker({
     required this.label,
-    required this.ids,
+    required this.drugSet,
     required this.selected,
     required this.onChanged,
   });
 
   final String label;
-  final List<String> ids;
+
+  /// 可分析药集：既提供可选 id，也提供每个 id 的可读药名。
+  final GraphDrugSet drugSet;
+
   final String selected;
   final ValueChanged<String> onChanged;
 
@@ -32,25 +36,38 @@ class _DrugPicker extends StatelessWidget {
     return _GraphPicker(
       label: label,
       value: selected,
-      options: ids,
+      options: drugSet.drugbankIds,
+      // 用 `drugSet.labelOf` 而不是字段本身：历史数据可能只有编号没有名字，
+      // 那种情况退回显示编号，而不是显示空白选项。
+      labelOf: drugSet.labelOf,
       onChanged: onChanged,
     );
   }
 }
 
 /// 通用下拉选择器，视觉走 Forui 的 `FSelect`。
+///
+/// 值的身份与显示文案是两件事：`options` 里放的是**值**（DrugBank id 等），
+/// 界面通过 `labelOf` 显示可读文案。此前直接把值当文案渲染，选择器里出现的
+/// 是 `DB00331`——对用户没有任何意义。
 class _GraphPicker extends StatelessWidget {
   const _GraphPicker({
     required this.label,
     required this.value,
     required this.options,
     required this.onChanged,
+    this.labelOf,
   });
 
   final String label;
   final String value;
   final List<String> options;
   final ValueChanged<String> onChanged;
+
+  /// 值 → 显示文案。为 null 时文案与值相同。
+  final String Function(String value)? labelOf;
+
+  String _textOf(String option) => labelOf?.call(option) ?? option;
 
   @override
   Widget build(BuildContext context) {
@@ -80,10 +97,10 @@ class _GraphPicker extends StatelessWidget {
                 },
               ),
               hint: label,
-              format: (item) => item,
+              format: _textOf,
               children: [
                 for (final option in options)
-                  FSelectItem.item(title: Text(option), value: option),
+                  FSelectItem.item(title: Text(_textOf(option)), value: option),
               ],
             ),
           ),
@@ -136,7 +153,7 @@ class _DrugActionsSectionState extends ConsumerState<DrugActionsSection> {
           if (!widget.compact && ids.length > 1)
             _DrugPicker(
               label: l10n.medicineGraphSelectDrug,
-              ids: ids,
+              drugSet: drugSet,
               selected: selected,
               onChanged: (value) => setState(() => _selected = value),
             ),
@@ -220,7 +237,7 @@ class _TransportRoutesSectionState
           if (!widget.compact && ids.length > 1)
             _DrugPicker(
               label: l10n.medicineGraphSelectDrug,
-              ids: ids,
+              drugSet: drugSet,
               selected: selected,
               onChanged: (value) => setState(() => _selected = value),
             ),
@@ -239,7 +256,8 @@ class _TransportRoutesSectionState
                   children: [
                     for (final route in shown)
                       GraphRelationRow(
-                        leading: selected,
+                        // 行首是发起查询的那味药——显示药名，不是 `DB00331`。
+                        leading: drugSet.labelOf(selected),
                         // 结构是「药 ─边→ 转运体」：箭头由 `inverted` 决定方向，
                         // 中间是边的标识（基因名），后面是转运体名。不再自己塞
                         // 箭头字符，否则会和渲染层的方向符叠成 `→ →`。
@@ -332,7 +350,7 @@ class _SubstitutesSectionState extends ConsumerState<SubstitutesSection> {
           if (!widget.compact) ...[
             _DrugPicker(
               label: l10n.medicineGraphSelectDrug,
-              ids: ids,
+              drugSet: drugSet,
               selected: drug,
               onChanged: (value) => setState(() => _drug = value),
             ),
@@ -492,11 +510,8 @@ class _TargetDrugsSectionState extends ConsumerState<TargetDrugsSection> {
       title: l10n.medicineGraphTitleTargetDrugs,
       trailing: result != null && result.isAnswerable
           ? GraphCountBadge(
-              label: l10n.medicineGraphCountDrugs(
-                result.safeItems.length,
-              ),
+              label: l10n.medicineGraphCountDrugs(result.safeItems.length),
             )
-
           : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -602,13 +617,13 @@ class _ShortestRoutesSectionState extends ConsumerState<ShortestRoutesSection> {
           if (!widget.compact) ...[
             _DrugPicker(
               label: l10n.medicineGraphSelectFromDrug,
-              ids: ids,
+              drugSet: drugSet,
               selected: from,
               onChanged: (value) => setState(() => _from = value),
             ),
             _DrugPicker(
               label: l10n.medicineGraphSelectToDrug,
-              ids: ids,
+              drugSet: drugSet,
               selected: to,
               onChanged: (value) => setState(() => _to = value),
             ),

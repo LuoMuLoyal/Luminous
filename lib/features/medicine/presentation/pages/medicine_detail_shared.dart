@@ -30,7 +30,11 @@ class SourceBadge extends StatelessWidget {
   }
 }
 
-/// Reference notice widget with info icon and text.
+/// Reference notice: muted info text with an info icon.
+///
+/// 不再用满宽的浅底圆角色块。那是一个「容器」，在一张整页平铺（无卡片）的
+/// 说明书页里，它是唯一还带底的元素，反而比正文更抢眼。改成图标 + 弱化文字
+/// 的一行说明：信息层级靠字色表达，不靠底色。
 class ReferenceNotice extends StatelessWidget {
   const ReferenceNotice({super.key, required this.l10n});
 
@@ -38,33 +42,70 @@ class ReferenceNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.md,
-        vertical: Spacing.sm,
-      ),
-      decoration: BoxDecoration(
-        color: SemanticColor.info.muted(context),
-        borderRadius: context.theme.style.borderRadius.xs,
-      ),
-      child: Row(
-        children: [
-          Icon(
-            SemanticIcons.statusBanner,
-            size: IconSizeTokens.sm,
-            color: SemanticColor.info.solid(context),
+    return _MetaLine(
+      icon: SemanticIcons.statusBanner,
+      color: SemanticColor.neutral.solid(context),
+      text: l10n.medicineReferenceNoticeTitle,
+      textColor: SemanticColor.neutral.solid(context),
+    );
+  }
+}
+
+/// 元信息行（声明 / 风险入口共用）的排版骨架。
+///
+/// 图标放进等宽槽位、文字基线对齐：这两行紧挨着出现，若各自按图标尺寸排版，
+/// 缩进会差几个像素，读起来像两段没对齐的残片。
+class _MetaLine extends StatelessWidget {
+  const _MetaLine({
+    required this.icon,
+    required this.color,
+    required this.text,
+    required this.textColor,
+    this.trailing,
+    this.onTap,
+    this.weight,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String text;
+  final Color textColor;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+  final FontWeight? weight;
+
+  @override
+  Widget build(BuildContext context) {
+    final row = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 固定槽位：icon 尺寸不管怎么变，文字起点都停在同一列。
+        SizedBox.square(
+          dimension: IconSizeTokens.lg,
+          child: Center(
+            child: Icon(icon, size: IconSizeTokens.md, color: color),
           ),
-          const SizedBox(width: Spacing.sm),
-          Expanded(
-            child: Text(
-              l10n.medicineReferenceNoticeTitle,
-              style: context.theme.typography.body.xs.copyWith(
-                color: colors.foreground,
-              ),
+        ),
+        const SizedBox(width: Spacing.sm),
+        Expanded(
+          child: Text(
+            text,
+            style: context.theme.typography.body.sm.copyWith(
+              color: textColor,
+              fontWeight: weight,
             ),
           ),
-        ],
+        ),
+        if (trailing != null) trailing!,
+      ],
+    );
+
+    if (onTap == null) return row;
+    return FTappable(
+      onPress: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
+        child: row,
       ),
     );
   }
@@ -79,34 +120,17 @@ class RiskCheckEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    return FTappable(
-      onPress: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
-        child: Row(
-          children: [
-            Icon(
-              SemanticIcons.safetyCaution,
-              size: IconSizeTokens.sm,
-              color: SemanticColor.primary.solid(context),
-            ),
-            const SizedBox(width: Spacing.sm),
-            Expanded(
-              child: Text(
-                l10n.medicineDetailRiskCheckEntry,
-                style: context.theme.typography.body.xs.copyWith(
-                  color: colors.foreground,
-                ),
-              ),
-            ),
-            Icon(
-              SemanticIcons.actionNext,
-              size: IconSizeTokens.sm,
-              color: SemanticColor.neutral.solid(context),
-            ),
-          ],
-        ),
+    return _MetaLine(
+      icon: SemanticIcons.safetyCaution,
+      color: SemanticColor.primary.solid(context),
+      text: l10n.medicineDetailRiskCheckEntry,
+      textColor: context.theme.colors.foreground,
+      weight: FontWeight.w500,
+      onTap: onTap,
+      trailing: Icon(
+        SemanticIcons.actionNext,
+        size: IconSizeTokens.md,
+        color: SemanticColor.neutral.solid(context),
       ),
     );
   }

@@ -12,6 +12,7 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -97,15 +98,22 @@ class _MedicineDetailContentState extends ConsumerState<MedicineDetailContent> {
     return ResponsiveContentFrame(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.lg,
-            vertical: Spacing.lg,
+          padding: const EdgeInsets.fromLTRB(
+            Spacing.lg,
+            Spacing.lg,
+            Spacing.lg,
+            Spacing.xl6,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // 整页是一个平面：没有卡片底，层级只靠字号 / 字重 / 分隔线。
               HeaderCard(detail: detail, source: source),
               const SizedBox(height: Spacing.lg),
+              const AppDivider(),
+              const SizedBox(height: Spacing.md),
+              // 免责声明与风险入口是同「元信息」层，做成紧凑的一簇：
+              // 声明是一条浅底提示，风险入口是一条可点行，两者之间不留大间隙。
               ReferenceNotice(l10n: l10n),
               const SizedBox(height: Spacing.xs),
               RiskCheckEntry(
@@ -328,7 +336,18 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-/// Header card widget displaying medicine name, source badge, and metadata rows.
+/// Header block: medicine name, source badge, and metadata rows.
+///
+/// 不带卡片底：本页是「读说明书」的连续长文，整页只有折叠区一个视觉层级。
+/// 头部曾经是 `FCard`（白底圆角），而下方通知 / 风险入口 / 折叠区都直接铺在
+/// `#FAFAFA` 页面上——于是顶部一张孤零零的白卡，下面全是裸底，接缝处特别割裂。
+/// 现在整页统一为一个平面：靠字号、字重与分隔线建立层级，不再用容器底。
+///
+/// 信息只出现在一个地方。后端的 `subtitle` 是给搜索结果列表用的单行摘要
+/// （形如「5mg（按氨氯地平计）· 国药准字 H20051487」），里面已经含了规格与批准
+/// 文号；详情页下方又把 `approvalNumber` 单列一行，于是同一串国药准字出现两次。
+/// 详情页的规范是：标题行只放药名 + 来源，下面用一个规整的键值块统一承载
+/// 批准文号 / 生产企业 / 规格 / 商品名，`subtitle` 不再整串照搬。
 class HeaderCard extends StatelessWidget {
   const HeaderCard({super.key, required this.detail, required this.source});
 
@@ -340,74 +359,110 @@ class HeaderCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final typography = context.theme.typography;
 
-    return FCard(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.lg),
-        child: Column(
+    // 从 subtitle 里剥掉已经单独成行的批准文号，避免同一串编号出现两次。
+    // 只做「去掉与 approvalNumber 相同的那一段」，其余（规格、剂型说明）保留。
+    final subtitle = _subtitleWithoutApprovalNumber(detail);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 标题行：药名左、来源徽标右。徽标是固有宽度组件，所以药名必须放进
+        // `Expanded`——否则 `Row` 会先给徽标无界约束、把药名挤成多行。
+        Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 来源徽标是固有宽度组件:放进 Row 会先把药品名挤成多行;Wrap +
-            // spaceBetween 保持左药名右徽标,放不下时徽标换到下一行。
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              spacing: Spacing.sm,
-              runSpacing: Spacing.sm,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(
-                  detail.name,
-                  style: typography.body.lg.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                SourceBadge(source: source, l10n: l10n),
-              ],
-            ),
-            if (detail.subtitle != null) ...[
-              const SizedBox(height: Spacing.sm),
-              Text(
-                detail.subtitle!,
-                style: typography.body.xs.copyWith(
-                  color: SemanticColor.neutral.solid(context),
+            Expanded(
+              child: Text(
+                detail.name,
+                style: typography.display.sm.copyWith(
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-            ],
-            if (source == 'cn') ...[
-              const SizedBox(height: Spacing.sm),
-              if (detail.approvalNumber != null)
-                MetaRow(
-                  label: l10n.medicineDetailApprovalNumber,
-                  value: detail.approvalNumber!,
-                ),
-              if (detail.manufacturer != null)
-                MetaRow(
-                  label: l10n.medicineDetailManufacturer,
-                  value: detail.manufacturer!,
-                ),
-              if (detail.packageSpec != null)
-                MetaRow(
-                  label: l10n.medicineDetailPackageSpec,
-                  value: detail.packageSpec!,
-                ),
-              if (detail.brandName != null)
-                MetaRow(
-                  label: l10n.medicineDetailBrandName,
-                  value: detail.brandName!,
-                ),
-            ],
+            ),
+            const SizedBox(width: Spacing.sm),
+            Padding(
+              // 徽标与药名首行在视觉中线上对齐。
+              padding: const EdgeInsets.only(top: Spacing.xs),
+              child: SourceBadge(source: source, l10n: l10n),
+            ),
           ],
         ),
-      ),
+        if (subtitle != null) ...[
+          const SizedBox(height: Spacing.xs),
+          Text(
+            subtitle,
+            style: typography.body.sm.copyWith(
+              color: SemanticColor.neutral.solid(context),
+            ),
+          ),
+        ],
+        if (source == 'cn') ...[
+          const SizedBox(height: Spacing.lg),
+          if (detail.approvalNumber != null)
+            MetaRow(
+              label: l10n.medicineDetailApprovalNumber,
+              value: detail.approvalNumber!,
+            ),
+          if (detail.manufacturer != null)
+            MetaRow(
+              label: l10n.medicineDetailManufacturer,
+              value: detail.manufacturer!,
+            ),
+          if (detail.packageSpec != null)
+            MetaRow(
+              label: l10n.medicineDetailPackageSpec,
+              value: detail.packageSpec!,
+            ),
+          if (detail.brandName != null)
+            MetaRow(
+              label: l10n.medicineDetailBrandName,
+              value: detail.brandName!,
+            ),
+        ],
+      ],
     );
+  }
+
+  /// [MedicineDetail.subtitle] 去掉与 [MedicineDetail.approvalNumber] 重复的部分。
+  ///
+  /// 返回 `null` 表示去掉后什么都不剩——此时整行副标题都不显示，而不是留一个空行。
+  static String? _subtitleWithoutApprovalNumber(MedicineDetail detail) {
+    final raw = detail.subtitle?.trim();
+    if (raw == null || raw.isEmpty) return null;
+
+    final approval = detail.approvalNumber?.trim();
+    if (approval == null || approval.isEmpty) return raw;
+
+    // 后端两种写法都用过：带空格的「国药准字 H20051487」与紧排的
+    // 「国药准字H20051487」。归一化空白后再比，避免漏掉其中一种。
+    String squash(String value) => value.replaceAll(RegExp(r'\s+'), '');
+
+    final parts = raw
+        .split(RegExp(r'[·•]'))
+        .map((part) => part.trim())
+        .where((part) => part.isNotEmpty)
+        .where((part) => squash(part) != squash(approval))
+        .toList();
+
+    if (parts.isEmpty) return null;
+    return parts.join(' · ');
   }
 }
 
-/// Metadata row widget displaying label and value.
+/// Metadata row: a muted label followed by its value.
+///
+/// 标签宽度改成**按内容自适应**（`IntrinsicWidth` 撑起整列的固定宽度）而不是
+/// 写死 `Spacing.xl4`：中文标签「批准文号」在写死宽度下会折成两行（截图里的
+/// 「批准 / 文号」），而英文标签又用不满，两种语言都没对齐。这里让同一次
+/// 渲染里的所有 `MetaRow` 共享一个由最长标签决定的列宽，标签单行、值左对齐。
 class MetaRow extends StatelessWidget {
   const MetaRow({super.key, required this.label, required this.value});
 
   final String label;
   final String value;
+
+  /// 标签列宽：足够放下常见中文标签，同时不至于把值挤到换行。
+  static const double _labelWidth = 64;
 
   @override
   Widget build(BuildContext context) {
@@ -418,10 +473,10 @@ class MetaRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: Spacing.xl4,
+            width: _labelWidth,
             child: Text(
               label,
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: typography.body.xs.copyWith(
                 color: SemanticColor.neutral.solid(context),
@@ -429,13 +484,7 @@ class MetaRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: Spacing.md),
-          Expanded(
-            child: Text(
-              value,
-              style: typography.body.xs,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+          Expanded(child: Text(value, style: typography.body.xs)),
         ],
       ),
     );
