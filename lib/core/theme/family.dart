@@ -1,9 +1,12 @@
 import 'package:animations/animations.dart';
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/color/palette.dart';
 import 'package:luminous/core/design/color/theme_extension.dart';
 import 'package:luminous/core/design/layout/surface.dart';
 import 'package:luminous/core/design/tokens/elevation.dart';
+import 'package:luminous/core/design/tokens/spacing.dart';
 import 'package:material_ui/material_ui.dart';
 
 const AppThemeFamily appDefaultThemeFamily = AppThemeFamily.blue;
@@ -145,33 +148,72 @@ _ColorOverride? _familyColorOverride(AppThemeFamily family, bool isDark) {
 /// text by one step (body.sm 16→14). Components stay compact, text stays
 /// readable.
 ///
-/// Flattens every step of [typography]'s line height to 1.0.
+/// Whether the theme is being built for a touch-first platform.
+///
+/// Drives leading only (see [_flattenLineHeight]): phones read one-line labels
+/// and want flat leading for density; desktop reads paragraphs and wants
+/// Forui's leading back. `kIsWeb` is treated as touch-compatible so the web
+/// build keeps the dense baseline it had before — the web target is the phone
+/// browser, and desktop web is served by a separate Next.js client (ADR-0008).
+bool get _isTouchPlatform =>
+    defaultTargetPlatform == TargetPlatform.android ||
+    defaultTargetPlatform == TargetPlatform.iOS;
+
+/// Sets line height per platform — 1.0 on touch, readable leading on desktop.
 ///
 /// Forui ships generous leading per step (`sm` 1.25, `md` 1.5, `lg` 1.75), so a
 /// 16px line occupies a 24px box. That leading is the single largest source of
 /// vertical bulk in the app: it inflates every card, list row and banner
 /// without improving legibility at these sizes. Collapsing it to 1.0 makes each
 /// line exactly its font size, leaving vertical rhythm to explicit spacing.
-FTypography _flattenLineHeight(FTypography typography) {
-  FTypeface flat(FTypeface t) {
-    TextStyle f(TextStyle style) => style.copyWith(height: 1.0);
-    return t.copyWith(
-      xs3: f(t.xs3),
-      xs2: f(t.xs2),
-      xs: f(t.xs),
-      sm: f(t.sm),
-      md: f(t.md),
-      lg: f(t.lg),
-      xl: f(t.xl),
-      xl2: f(t.xl2),
-      xl3: f(t.xl3),
-      xl4: f(t.xl4),
-    );
-  }
+///
+/// **That reasoning holds for phone density and stops holding on desktop.**
+/// A 16rem sidebar and a 1400px content column are read the way a document is
+/// read, and body copy at height 1.0 sets solid — descenders nearly touch
+/// ascenders, paragraphs lose their line rhythm, and multi-line Chinese
+/// characters (which have no ascender/descender slack) fuse into a block.
+/// So desktop keeps Forui's leading for *body* text and only tightens display
+/// sizes, where 1.0 is still legible because those lines are short.
+FTypography _flattenLineHeight(FTypography typography, {required bool touch}) {
+  /// `display` sizes are short and structural (page titles, big numbers);
+  /// flattening them is safe on both platforms.
+  TextStyle display(TextStyle style) => style.copyWith(height: 1.0);
+
+  /// Body sizes are the ones people actually read. On touch they are
+  /// single-line labels, so flat leading buys density; on desktop they form
+  /// paragraphs, so they keep Forui's leading.
+  TextStyle body(TextStyle style) =>
+      touch ? style.copyWith(height: 1.0) : style;
+
+  FTypeface text(FTypeface t) => t.copyWith(
+    xs3: body(t.xs3),
+    xs2: body(t.xs2),
+    xs: body(t.xs),
+    sm: body(t.sm),
+    md: body(t.md),
+    lg: body(t.lg),
+    xl: body(t.xl),
+    xl2: body(t.xl2),
+    xl3: body(t.xl3),
+    xl4: body(t.xl4),
+  );
+
+  FTypeface headings(FTypeface t) => t.copyWith(
+    xs3: display(t.xs3),
+    xs2: display(t.xs2),
+    xs: display(t.xs),
+    sm: display(t.sm),
+    md: display(t.md),
+    lg: display(t.lg),
+    xl: display(t.xl),
+    xl2: display(t.xl2),
+    xl3: display(t.xl3),
+    xl4: display(t.xl4),
+  );
 
   return typography.copyWith(
-    display: flat(typography.display),
-    body: flat(typography.body),
+    display: headings(typography.display),
+    body: text(typography.body),
   );
 }
 
@@ -189,14 +231,13 @@ FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
   // geometry. Deriving it from `touch: false` is what `FThemeData` does by
   // default; passing it explicitly keeps intent visible.
   //
-  // Line height is flattened to 1.0 on every step. Forui's own steps carry
-  // generous leading (`sm` 1.25, `md` 1.5, `lg` 1.75), which adds vertical bulk
-  // to every text line without adding legibility at these sizes — a 16px line
-  // became a 24px box. Mature Chinese phone apps (WeChat, Meituan) get their
-  // density from the text box, not from leading, so lines occupy exactly their
-  // font size and spacing between elements is controlled explicitly by layout.
+  // Leading is platform-dependent — see [_flattenLineHeight]. `touch: false`
+  // here is the *geometry* baseline (compact control sizes), not a statement
+  // that this theme is running on a desktop: the same theme serves phone and
+  // desktop. The actual platform comes from `_isTouchPlatform`.
   final typography = _flattenLineHeight(
     FTypography.inherit(colors: colors, touch: false),
+    touch: _isTouchPlatform,
   );
 
   final scaffoldBackgroundColor = SurfaceTokens.scaffoldBackground(colors);
@@ -210,12 +251,32 @@ FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
     scaffoldStyle: FScaffoldStyle.inherit(colors: colors, style: base.style)
         .copyWith(
           backgroundColor: scaffoldBackgroundColor,
-          sidebarBackgroundColor: scaffoldBackgroundColor,
+          // 侧边栏比页面底色再深一档：桌面端 nav 与内容区同色时，
+          // 整屏层次只剩 1px 边框在撑。见 SurfaceTokens。
+          sidebarBackgroundColor: SurfaceTokens.sidebarBackground(colors),
         ),
     // Keep toasts at the top of the screen, matching the touch baseline this
     // theme no longer selects. See the doc comment above.
     toasterStyle: base.toasterStyle.copyWith(
       toastAlignment: FToastAlignment.topCenter,
+    ),
+    // 侧边栏分组：分组标签是导航里唯一的层级信号。
+    //
+    // 桌面端侧边栏有 16rem 宽，五个 tab 平铺时只有一个层级——分组标签
+    // 让小标题（小字号、弱色、字重中等）与条目形成对比，导航才读得出结构。
+    // 标签是分区提示，不该和条目抢注意力，所以用 muted 前景色而非正文色。
+    sidebarStyle: base.sidebarStyle.copyWith(
+      groupStyle: base.sidebarStyle.groupStyle.copyWith(
+        labelStyle: TextStyleDelta.delta(
+          color: colors.mutedForeground,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.2,
+        ),
+        headerPadding: const EdgeInsetsGeometryDelta.value(
+          EdgeInsets.symmetric(horizontal: Spacing.sm, vertical: Spacing.xs),
+        ),
+        childrenSpacing: 2,
+      ),
     ),
     // FCard: white background + subtle 1px border, matching FTileGroup.
     cardStyle:

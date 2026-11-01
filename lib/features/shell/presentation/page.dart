@@ -143,17 +143,35 @@ class _DesktopSidebar extends ConsumerWidget {
 
     return FSidebar(
       style: FSidebarStyle(
-        decoration: BoxDecoration(color: theme.colors.background),
+        // 用主题下发的侧边栏底色，而不是 colors.background。
+        // 这里曾写死 colors.background（与页面底色同值），
+        // 让 scaffoldStyle.sidebarBackgroundColor 那一档失效——
+        // 结果是侧边栏与内容区同色，整屏层次只剩 1px 边框。
+        decoration: BoxDecoration(
+          color: theme.scaffoldStyle.sidebarBackgroundColor,
+        ),
         groupStyle: theme.sidebarStyle.groupStyle,
       ),
       header: _WindowTitleBar(session: session),
       footer: const _SidebarFooter(),
       children: [
-        tabItem(ShellTab.today),
-        tabItem(ShellTab.record),
-        tabItem(ShellTab.medicine),
-        tabItem(ShellTab.review),
-        tabItem(ShellTab.mine),
+        // 按「用户要做什么」分组，不按功能模块分组——后者会做成数据库
+        // 管理工具的目录树，不是工作台。
+        //
+        // 分组标签只在桌面侧边栏出现：它是 16rem 宽导航里唯一的层级信号。
+        // 手机端是底部 tab 栏，没有分组概念。
+        FSidebarGroup(
+          label: Text(l10n.desktopSidebarGroupToday),
+          children: [tabItem(ShellTab.today), tabItem(ShellTab.record)],
+        ),
+        FSidebarGroup(
+          label: Text(l10n.desktopSidebarGroupKnowledge),
+          children: [tabItem(ShellTab.medicine), tabItem(ShellTab.review)],
+        ),
+        FSidebarGroup(
+          label: Text(l10n.desktopSidebarGroupAccount),
+          children: [tabItem(ShellTab.mine)],
+        ),
       ],
     );
   }

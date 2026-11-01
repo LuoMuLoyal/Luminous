@@ -11,7 +11,9 @@ import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 /// Used by [ShellPage] on desktop, providing all tab pages with:
 /// - FHeader.nested (title + suffixes)
 /// - Content area max-width constraint (shared with header for horizontal alignment)
-/// - Content area background color (scaffold background, to distinguish from sidebar)
+/// - Content area rendered flat on the scaffold surface; the sidebar/canvas/card
+///   hierarchy comes from `SurfaceTokens` color steps, never from wrapping the
+///   page in another card
 /// - Unified padding
 /// - Optional pull-to-refresh (onRefresh) and scroll position preservation (scrollStorageKey)
 class DesktopTabShell extends StatelessWidget {
@@ -83,8 +85,15 @@ class DesktopTabShell extends StatelessWidget {
       ),
     );
 
-    // Content area background uses the scaffold's background color (light grey)
-    // to match the FScaffold — no need for a separate tint.
+    // 内容区平铺，不切成圆角白卡。
+    //
+    // 层次靠**色差**而不是容器：侧边栏（sidebarBackground，最深）
+    // 与内容区（scaffoldBackground，居中）本身就是两层；卡片再往上一层。
+    // 三层亮度差已经把结构说清楚了，内容区再包一层白底 + 圆角，
+    // 卡片就成了「卡片套卡片」——白卡上的白卡只能靠边框才看得见，
+    // 反而把层次加了回去。
+    //
+    // 这里只做两件事：铺内容区底色、给 header 与内容共享的水平约束。
     return DecoratedBox(
       decoration: BoxDecoration(
         color: context.theme.scaffoldStyle.backgroundColor,
