@@ -158,27 +158,33 @@ abstract final class LayoutScaleResolver {
 
   /// `840–1199`：过渡态「小桌面」——更宽的留白 + 两列网格，
   /// 但还不是完整的双栏。
+  ///
+  /// 留白与圆角必须同尺度：卡片圆角是 `borderRadius.lg`(14)，页边距与卡片
+  /// 内边距要**围绕**它排出一组递减，大圆角才不会显得廉价。桌面档的口径是
+  /// `页边距 24 > 卡内 20 > 圆角 14`（见 [_desktop] 的注释）。
   static const LayoutScale _smallDesktop = LayoutScale(
-    pageHorizontalPadding: Spacing.xl2,
+    pageHorizontalPadding: Spacing.xl3,
     sectionVerticalPadding: Spacing.xl5,
     heroVerticalPadding: Spacing.xl6,
-    cardPadding: Spacing.xl,
-    cardPaddingLarge: Spacing.xl2,
+    cardPadding: Spacing.xl2,
+    cardPaddingLarge: Spacing.xl3,
     componentGap: Spacing.lg,
     maxContentWidth: 1040,
   );
 
   /// `≥ 1200`：桌面双栏。
   ///
-  /// 超宽屏（≥ 1400）不再单列一档：留白已经由 `xl2` 收敛，
-  /// 内容宽度上限用 1600 兜住——再宽也只是两侧留白变多，
-  /// 多一档只会让「某宽度下究竟是哪个值」更难追。
+  /// 超宽屏（≥ 1400）不再单列一档：内容宽度上限用 1600 兜住——再宽也只是
+  /// 两侧留白变多，多一档只会让「某宽度下究竟是哪个值」更难追。
+  ///
+  /// `24 > 20 > 14`：页边距 / 卡内边距 / 圆角三者在同一递减序列里。改其中
+  /// 任何一个都要同时看另外两个，否则大圆角会重新变得廉价。
   static const LayoutScale _desktop = LayoutScale(
-    pageHorizontalPadding: Spacing.xl2,
+    pageHorizontalPadding: Spacing.xl3,
     sectionVerticalPadding: Spacing.xl6,
     heroVerticalPadding: Spacing.xl8,
-    cardPadding: Spacing.xl,
-    cardPaddingLarge: Spacing.xl2,
+    cardPadding: Spacing.xl2,
+    cardPaddingLarge: Spacing.xl3,
     componentGap: Spacing.xl,
     maxContentWidth: 1600,
   );

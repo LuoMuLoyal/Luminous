@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:flutter/material.dart';
 
 import 'package:forui/forui.dart';
@@ -72,13 +74,7 @@ class DesktopTabShell extends StatelessWidget {
       constraints: BoxConstraints(maxWidth: layout.maxContentWidth),
       child: Column(
         children: [
-          if (showHeader)
-            FHeader.nested(
-              title: titleSurface == null
-                  ? Text(title)
-                  : SurfaceTitleEntry(surface: titleSurface!, title: title),
-              suffixes: suffixes,
-            ),
+          if (showHeader) _GlassHeader(child: _buildHeader()),
           // 内容区
           Expanded(child: _buildContent(layout)),
         ],
@@ -106,6 +102,15 @@ class DesktopTabShell extends StatelessWidget {
     );
   }
 
+  Widget _buildHeader() {
+    return FHeader.nested(
+      title: titleSurface == null
+          ? Text(title)
+          : SurfaceTitleEntry(surface: titleSurface!, title: title),
+      suffixes: suffixes,
+    );
+  }
+
   Widget _buildContent(LayoutScale layout) {
     final padding = EdgeInsets.symmetric(
       horizontal: layout.pageHorizontalPadding,
@@ -129,5 +134,44 @@ class DesktopTabShell extends StatelessWidget {
     }
 
     return scrollView;
+  }
+}
+
+/// 顶栏的「玻璃」层：半透明底色 + 背景模糊 + 底部细分隔线。
+///
+/// 目的不是特效，而是**让滚动关系可见**：内容从顶栏下方经过时，若顶栏是一块
+/// 不透明的色块，用户看不出自己还能往上滚；半透明加模糊既压住文字保证了标题
+/// 可读，又留下「下面还有内容」的线索。
+///
+/// 为什么用 `BackdropFilter` 而不是简单给一层 `color.withOpacity`：二者都不
+/// 挡文字，但纯半透明会让下方文字以全饱和度透出来，标题与内容互相干扰；
+/// 模糊把穿过的内容压成一层灰面，标题才稳。
+///
+/// `ClipRect` 是必须的——`BackdropFilter` 若不被裁剪，模糊会溢出到顶栏之外
+/// （模糊半径以内的一切都会被采样并重绘）。
+class _GlassHeader extends StatelessWidget {
+  const _GlassHeader({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    // 背景色带 alpha 再模糊：alpha 太高会变成实心块，玻璃就失效了；
+    // 太低则下方内容透出过强。0.72 在亮暗两端都验证过可读。
+    final tint = colors.background.withValues(alpha: 0.72);
+
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: tint,
+            border: Border(bottom: BorderSide(color: colors.border, width: 1)),
+          ),
+          child: child,
+        ),
+      ),
+    );
   }
 }
