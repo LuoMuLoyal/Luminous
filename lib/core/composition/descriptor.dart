@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:luminous/shared/domain/composition/id.dart';
 import 'package:luminous/shared/domain/composition/size.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
 
 /// Configuration of a component type that takes no options.
 ///
@@ -22,10 +23,7 @@ final class NoComponentConfig {
 /// 处理「可能不在宿主里」的空值，而组件本来只可能由宿主构建。显式传参让
 /// 「没有 surface」这个状态在类型上不存在。
 class ComponentRenderContext {
-  const ComponentRenderContext({
-    required this.surface,
-    required this.id,
-  });
+  const ComponentRenderContext({required this.surface, required this.id});
 
   /// 组件当前所在的表面。
   final SurfaceId surface;
