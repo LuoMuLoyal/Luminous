@@ -307,8 +307,12 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.byKey(const Key('review-event-header')), findsOneWidget);
+      // 桌面端走 `DesktopTabShell`，滚动容器是它自己那层，不再复用移动端的
+      // `report-mobile-scroll`。断言「内容可滚动」而不是某个 key 名：
+      // 这里真正要守的是同一份 review 内容在桌面宽度下能渲染且能滚动，
+      // 滚动容器换实现不该让这条用例失败。
       expect(
-        find.byKey(const PageStorageKey<String>('report-mobile-scroll')),
+        find.byKey(const PageStorageKey<String>('review-desktop-scroll')),
         findsOneWidget,
       );
     },

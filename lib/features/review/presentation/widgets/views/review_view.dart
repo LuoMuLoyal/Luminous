@@ -72,6 +72,9 @@ class ReviewView extends ConsumerWidget {
     ref.watch(reviewSurfaceStateProvider);
     ref.watch(reviewSurfaceReviewProvider);
 
+    // `ComponentHostGrid` 是一个 box（`Column` of `Row`），自身不滚动；滚动由
+    // 各自的外壳负责（移动端 `_ReportMobileShell` 的 `ListView`、桌面端
+    // `DesktopTabShell(scrollable: false)` 外接的滚动容器）。
     return ComponentHostGrid(
       surface: SurfaceId.review,
       layout: ref.watch(surfaceLayoutProvider(SurfaceId.review)),

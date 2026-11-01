@@ -103,18 +103,37 @@ class ReviewPage extends ConsumerWidget {
     // 页面只负责外壳（顶栏 / 滚动 / 下拉刷新）；内容由 review 表面的
     // 组件按 reviewSurfaceDefinition 自取数据并装配。
     //
-    // 桌面端与其余四个 tab 一致走 `DesktopTabShell`：由它提供统一的标题栏、
-    // 内容区 maxWidth 约束与滚动容器。此前 review 是唯一一个仍用移动端外壳的
-    // tab，桌面端因此没有标题栏、也不会跟随 tab 外壳的内容宽度约束。
+    // 桌面端与其余四个 tab 一致走 `DesktopTabShell`：由它提供统一的标题栏与
+    // 内容区 maxWidth 约束。此前 review 是唯一一个仍用移动端外壳的 tab，
+    // 桌面端因此没有标题栏、也不会跟随 tab 外壳的内容宽度约束。
+    //
+    // `scrollable: false` 是必需的：这里用 `Column + Expanded` 把顶栏钉在顶部、
+    // 内容区吃满剩余高度。`DesktopTabShell` 默认会再套一层
+    // `SingleChildScrollView`，那个容器纵向无界，`Expanded` 在其中会直接抛
+    // 「RenderFlex children have non-zero flex but incoming height constraints are
+    // unbounded」。滚动改由下面那层 `ListView` 自己提供。
     final content = isDesktop
         ? DesktopTabShell(
             title: l10n.tabReview,
             showHeader: false,
+            scrollable: false,
             onRefresh: () => _refresh(ref),
             child: Column(
               children: [
                 header,
-                const Expanded(child: ReviewView()),
+                Expanded(
+                  child: ListView(
+                    key: const PageStorageKey<String>('review-desktop-scroll'),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(
+                      Spacing.lg,
+                      Spacing.lg,
+                      Spacing.lg,
+                      Spacing.xl6,
+                    ),
+                    children: const [ReviewView()],
+                  ),
+                ),
               ],
             ),
           )
