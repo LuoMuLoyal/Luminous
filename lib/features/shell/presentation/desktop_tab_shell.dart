@@ -7,6 +7,7 @@ import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/surface_title_button.dart';
 import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
+import 'package:luminous/features/shell/presentation/detail_pane.dart';
 
 /// Desktop tab page unified shell.
 ///
@@ -90,7 +91,7 @@ class DesktopTabShell extends StatelessWidget {
     // 反而把层次加了回去。
     //
     // 这里只做两件事：铺内容区底色、给 header 与内容共享的水平约束。
-    return DecoratedBox(
+    final surface = DecoratedBox(
       decoration: BoxDecoration(
         color: context.theme.scaffoldStyle.backgroundColor,
       ),
@@ -100,6 +101,9 @@ class DesktopTabShell extends StatelessWidget {
         child: Center(child: constrained),
       ),
     );
+
+    // 右侧详情面板：关闭时它直接把内容原样返回，宽度与没有面板时完全一致。
+    return DesktopDetailPane(child: surface);
   }
 
   Widget _buildHeader() {

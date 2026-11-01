@@ -14,6 +14,7 @@ import 'package:luminous/features/medicine/presentation/providers/surface.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medication_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
+import 'package:luminous/features/shell/presentation/detail_pane_state.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Maximum drugbox rows rendered before collapsing the rest into the
@@ -268,14 +269,14 @@ class _DrugBoxEmpty extends StatelessWidget {
   }
 }
 
-class _DrugBoxMedicationRow extends StatelessWidget {
+class _DrugBoxMedicationRow extends ConsumerWidget {
   const _DrugBoxMedicationRow({required this.item, required this.l10n});
 
   final MedicinePlanItem item;
   final AppLocalizations l10n;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final name = itemName(l10n, item);
     final dosage = itemDosage(l10n, item);
     final schedule = itemSchedule(l10n, item);
@@ -296,6 +297,14 @@ class _DrugBoxMedicationRow extends StatelessWidget {
         if (source != null &&
             sourceRefId != null &&
             (source == 'cn' || source == 'drugbank')) {
+          // 桌面端：在同一页右侧推开详情面板，列表与滚动位置留在原处。
+          // 手机端放不下并排，仍旧整页 push（行为不变）。
+          if (MediaQuery.sizeOf(context).width >= Breakpoints.desktop) {
+            ref
+                .read(detailPaneProvider.notifier)
+                .open(MedicineDetailTarget(source: source, id: sourceRefId));
+            return;
+          }
           unawaited(
             MedicineDetailRoute(source: source, id: sourceRefId).push(context),
           );
