@@ -118,10 +118,25 @@ import 'simulated_fakes_shell_b.dart';
 
 // ── Frame ───────────────────────────────────────────────────────────────────
 
+/// A capture frame: logical size + pixel density.
+typedef _Frame = ({double width, double height, double dpr});
+
 /// Pixel 8 Pro: 1344x2992 physical at density 480 (dpr 3).
-const double _frameWidth = 448;
-const double _frameHeight = 2992 / 3;
-const double _frameDpr = 3;
+const _Frame _phoneFrame = (width: 448, height: 2992 / 3, dpr: 3);
+
+/// Desktop window: 1280x800 logical at dpr 2 (2560x1600 physical).
+///
+/// 1280 落在 M3 `large` 档（≥1200），桌面布局的侧边栏、双栏、右侧面板都会出现。
+/// dpr 2 而不是 3：桌面屏幕的物理密度本来就低，dpr 3 只会得到一张
+/// 3840x2400 的巨型 PNG，评审时缩放看反而更糊。
+const _Frame _desktopFrame = (width: 1280, height: 800, dpr: 2);
+
+/// 当前用例使用的帧。由各 testWidgets 在开跑前设置。
+_Frame _frame = _phoneFrame;
+
+double get _frameWidth => _frame.width;
+double get _frameHeight => _frame.height;
+double get _frameDpr => _frame.dpr;
 
 /// Capture directory; the golden comparator resolves this against this file.
 const String _outputDir = '../../outputs/screenshots';
@@ -201,7 +216,7 @@ void _installPlatformStubs() {
       'isMaximized' || 'isFullScreen' || 'isPreventClose' => false,
       'isFocused' => true,
       'getPosition' => const <double>[0, 0],
-      'getSize' => const <double>[_frameWidth, _frameHeight],
+      'getSize' => <double>[_frameWidth, _frameHeight],
       _ => null,
     },
   );
@@ -546,6 +561,7 @@ Future<ProviderContainer> _pumpPage(
   WidgetTester tester, {
   AssistantConversation? assistantConversation,
   bool signedIn = true,
+  bool desktopChrome = false,
 }) async {
   // ignore: invalid_use_of_visible_for_testing_member -- this file is a test-run generator.
   KvTestStore.install(seed: const <String, Object>{});
@@ -694,7 +710,12 @@ Future<ProviderContainer> _pumpPage(
   container.read(appRouterProvider).go('/');
 
   await tester.pumpWidget(
-    UncontrolledProviderScope(container: container, child: const LuminousApp(desktopChrome: false)),
+    UncontrolledProviderScope(
+      container: container,
+      // 桌面档需要窗口 chrome 一起入镜（标题栏按钮、拖拽区），
+      // 手机档不渲染它，否则截图里会混进最小化/最大化/关闭。
+      child: LuminousApp(desktopChrome: desktopChrome),
+    ),
   );
 
   await _settle(tester);
@@ -769,10 +790,7 @@ String _frameKindLabel(String relativePath) {
 ///
 /// 没有可滚动内容时返回 false，调用方据此跳过第二帧：短页面不该产出
 /// 与首屏一模一样的重复图。
-Future<bool> _scrollPageToFraction(
-  WidgetTester tester,
-  double fraction,
-) async {
+Future<bool> _scrollPageToFraction(WidgetTester tester, double fraction) async {
   Element? primaryElement;
   var bestExtent = 0.0;
   for (final element in find.byType(Scrollable).evaluate()) {
@@ -1325,13 +1343,17 @@ void main() {
     Future<void> Function(WidgetTester tester)? prepare,
     bool signedOut = false,
     bool longCapture = true,
+    bool scrolledCapture = true,
+    // 桌面档：1280x800 + 窗口 chrome。默认手机档，行为与改动前一致。
+    bool desktop = false,
     required void Function(String relativePath, int textWidgetCount) record,
   }) async {
+    _frame = desktop ? _desktopFrame : _phoneFrame;
     final folder = placement.folder;
     final baseName = '${placement.prefix}$name';
     _ensureOutputDir(folder);
 
-    tester.view.physicalSize = const Size(
+    tester.view.physicalSize = Size(
       _frameWidth * _frameDpr,
       _frameHeight * _frameDpr,
     );
@@ -1342,6 +1364,7 @@ void main() {
       tester,
       assistantConversation: assistantConversation,
       signedIn: !signedOut,
+      desktopChrome: desktop,
     );
 
     // Navigate by route rather than tapping through the UI: the catalog is
@@ -1400,15 +1423,22 @@ void main() {
     //
     // 判据是主滚动视图的 `maxScrollExtent > 0`：短页面（表单、弹层）没有
     // 可滚动内容，就不产出多余的重复图。
-    final everScrolled = await _scrollPageToFraction(tester, 0.55);
-    if (everScrolled) {
-      final scrolledFrame = '$folder/${baseName}_scrolled.png';
-      dumpRendered(scrolledFrame);
-      await expectLater(
-        find.byType(LuminousApp),
-        matchesGoldenFile(_goldenPath(folder, '${baseName}_scrolled.png')),
-      );
-      captured.add(scrolledFrame);
+    //
+    // 桌面档不产出这一帧（`scrolledCapture`）：它证明的是「内容溢出一屏」，
+    // 而桌面上这个结论本身就是要看的信号——如果五个 tab 在 1280×800 下
+    // 仍然全部溢出，说明布局还没有利用宽屏，评审时应当直接看到「只有首屏
+    // 一张图」，而不是被同名的第二帧稀释掉这个信号。
+    if (scrolledCapture) {
+      final everScrolled = await _scrollPageToFraction(tester, 0.55);
+      if (everScrolled) {
+        final scrolledFrame = '$folder/${baseName}_scrolled.png';
+        dumpRendered(scrolledFrame);
+        await expectLater(
+          find.byType(LuminousApp),
+          matchesGoldenFile(_goldenPath(folder, '${baseName}_scrolled.png')),
+        );
+        captured.add(scrolledFrame);
+      }
     }
 
     // ── 整页长截图 ──────────────────────────────────────────────────
@@ -1438,14 +1468,12 @@ void main() {
       dumpRendered(longFile);
       await expectLater(
         find.byType(LuminousApp),
-        matchesGoldenFile(
-          _goldenPath(_longDir, _longName(folder, baseName)),
-        ),
+        matchesGoldenFile(_goldenPath(_longDir, _longName(folder, baseName))),
       );
       captured.add(longFile);
 
       // 还原常规帧，后面的 teardown 与其它断言都按原尺寸走。
-      tester.view.physicalSize = const Size(
+      tester.view.physicalSize = Size(
         _frameWidth * _frameDpr,
         _frameHeight * _frameDpr,
       );
@@ -1466,6 +1494,37 @@ void main() {
     await tester.pump(Duration.zero);
     await tester.pump(const Duration(seconds: 1));
     await tester.pump(const Duration(seconds: 5));
+  }
+
+  // ── 桌面档：五个 tab 根页 ────────────────────────────────────────────
+  //
+  // 1280x800 落在 M3 `large` 档，侧边栏、分组、三层底色与桌面密度全部出现。
+  // 输出到 `desktop/` 子目录，与手机档的 tab 目录分开——同一个页面在两个
+  // 尺寸下的表现差异，正是这一档要看的证据。
+  //
+  // 不产出 `_scrolled` 与长截图：桌面内容区一次能容纳更多，滚动帧的价值
+  // 低于手机档；而 1280x800 的整页长截图会得到一张高度远超宽度的怪图。
+  for (final target in catalog.screenshotCatalog.where(
+    (t) => t.group == _shellGroup,
+  )) {
+    testWidgets(
+      'generate desktop/${target.id}',
+      (tester) => capture(
+        tester,
+        desktop: true,
+        placement: (folder: 'desktop', prefix: ''),
+        name: target.id,
+        route: target.route,
+        prepare: target.prepare,
+        longCapture: false,
+        scrolledCapture: false,
+        record: (name, count) => manifest.writeln(
+          '| `$name` | ${target.group} | ${target.id} | '
+          '`${target.route}` | $count | desktop 1280x800${_frameKindLabel(name)} |',
+        ),
+      ),
+      timeout: const Timeout(Duration(seconds: 45)),
+    );
   }
 
   for (var i = 0; i < catalog.screenshotCatalog.length; i += 1) {

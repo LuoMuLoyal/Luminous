@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -148,6 +149,10 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       theme: foruiMaterialTheme(lightTheme),
       darkTheme: foruiMaterialTheme(darkTheme),
       themeMode: themeMode,
+      // 桌面端滚动条常驻且更宽：鼠标滚轮与拖动条是桌面阅读的主要方式，
+      // Flutter 默认的「窄条 + 悬停才显形」在桌面观感上像网页浮层。
+      // 触屏平台不受影响（Scrollbar 在移动端不绘制）。
+      scrollBehavior: const _DesktopScrollBehavior(),
       locale: locale?.flutterLocale,
       builder: (context, child) {
         final brightness = Theme.of(context).brightness;
@@ -311,4 +316,40 @@ FThemeData _applyHighContrast(FThemeData theme) {
           : HighContrastColors.lightBorder,
     ),
   );
+}
+
+/// 桌面端的滚动条行为：常驻、更宽、与主题色一致。
+///
+/// Flutter 默认在桌面端使用 `Scrollbar` 的「悬停才显形」窄条，鼠标用户
+/// 看不到自己在一篇长内容里的位置。桌面工作台的通行做法是常驻细条——
+/// 它同时是位置指示（拇指长度 = 可视比例），不是装饰。
+///
+/// 只在桌面平台生效：移动端 `Scrollbar` 本身不绘制，覆盖不会影响手机。
+class _DesktopScrollBehavior extends MaterialScrollBehavior {
+  const _DesktopScrollBehavior();
+
+  bool get _isDesktop =>
+      defaultTargetPlatform == TargetPlatform.windows ||
+      defaultTargetPlatform == TargetPlatform.macOS ||
+      defaultTargetPlatform == TargetPlatform.linux;
+
+  @override
+  Widget buildScrollbar(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
+    if (!_isDesktop) return child;
+    final colors = Theme.of(context).colorScheme;
+    return ScrollbarTheme(
+      data: ScrollbarThemeData(
+        thickness: const WidgetStatePropertyAll(10),
+        radius: const Radius.circular(999),
+        thumbVisibility: const WidgetStatePropertyAll(true),
+        thumbColor: WidgetStatePropertyAll(colors.outlineVariant),
+        crossAxisMargin: 2,
+      ),
+      child: Scrollbar(controller: details.controller, child: child),
+    );
+  }
 }

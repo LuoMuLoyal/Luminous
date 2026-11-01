@@ -26,9 +26,33 @@ outputs/screenshots/
   medicine/     1_medicine.png  2_search.png  ...
   review/  mine/  settings/  assistant/  scan/  customize/  ...
   long/         全部整页长截图
+  desktop/      五个 tab 根页的桌面档（1280x800）
   MANIFEST.md   文件 → 分组/页面/路由 → 渲染文本数 → 帧类别
   _rendered_text.txt   每个页面渲染出的全部字符串，用于对比两次运行
 ```
+
+## 桌面档
+
+除手机档（Pixel 8 Pro 448×998 @ dpr 3）外，同一份 catalog 还会为**五个 tab 根页**
+再生成一档桌面尺寸：
+
+| 档位 | 逻辑尺寸 | dpr | 窗口 chrome | 输出 |
+| --- | --- | --- | --- | --- |
+| phone | 448×998 | 3 | `false` | `<tab>/` 与 `long/` |
+| desktop | 1280×800 | 2 | `true` | `desktop/` |
+
+1280 落在 M3 `large` 档（≥1200），侧边栏、分组标签、三层底色与桌面密度都会出现。
+`desktopChrome: true` 让窗口按钮与拖拽区一起入镜——那是桌面端自身的验收对象，
+用手机档的 `false` 截出来看不到。
+
+只截首屏，不产出 `_scrolled` 与整页长截图（`longCapture: false`）：桌面内容区一次
+能容纳更多，而 1280×800 的整页图会是一张高度远超宽度的怪图。
+
+```powershell
+# 只跑桌面档
+flutter test tool/screenshots/generate.dart --update-goldens --plain-name "generate desktop/"
+```
+
 
 每种页面最多三帧：
 
