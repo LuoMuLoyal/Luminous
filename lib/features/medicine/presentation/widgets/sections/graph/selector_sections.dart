@@ -67,20 +67,25 @@ class _GraphPicker extends StatelessWidget {
             ),
           ),
           const SizedBox(width: Spacing.sm),
-          FSelect<String>.rich(
-            key: ValueKey('medicine-graph-picker-$label'),
-            control: FSelectControl.lifted(
-              value: value,
-              onChange: (selected) {
-                if (selected != null) onChanged(selected);
-              },
+          // Row 的非 flex 子节点在主轴上拿到的是**无界**约束。FSelect 内部的
+          // `InputDecorator` 断言 `constraints.maxWidth < infinity`，直接放进去
+          // 会在 layout 阶段抛断言（整个页面渲染失败）。Flexible 给它有界宽度。
+          Flexible(
+            child: FSelect<String>.rich(
+              key: ValueKey('medicine-graph-picker-$label'),
+              control: FSelectControl.lifted(
+                value: value,
+                onChange: (selected) {
+                  if (selected != null) onChanged(selected);
+                },
+              ),
+              hint: label,
+              format: (item) => item,
+              children: [
+                for (final option in options)
+                  FSelectItem.item(title: Text(option), value: option),
+              ],
             ),
-            hint: label,
-            format: (item) => item,
-            children: [
-              for (final option in options)
-                FSelectItem.item(title: Text(option), value: option),
-            ],
           ),
         ],
       ),
@@ -285,7 +290,20 @@ class _SubstitutesSectionState extends ConsumerState<SubstitutesSection> {
     }
     final ids = drugSet.drugbankIds;
     final drug = _drug ?? ids.first;
-    final enzyme = _enzyme;
+
+    // 酶的默认值取「这组药已知参与的酶」里第一个。
+    //
+    // 不给默认值时这张卡永远是空态：用户要先自己想一个基因名才有可能看到结果，
+    // 而这个端点恰恰是用来回答「我这组药里有没有替代选择」的。有了默认值，
+    // 打开就能看到这一组药里最相关的那条结论；用户仍可改成别的酶。
+    final mechanism = ref
+        .watch(graphMechanismPathsProvider(drugSetKey(ids)))
+        .asData
+        ?.value;
+    final suggestedEnzyme = (mechanism?.safeItems.isNotEmpty ?? false)
+        ? mechanism!.safeItems.first.enzymeGene
+        : null;
+    final enzyme = _enzyme ?? suggestedEnzyme;
 
     // 酶没选之前不发请求：端点要求 enzymeGene 必填，空串只会换来 400。
     final result = enzyme == null
@@ -423,7 +441,22 @@ class _TargetDrugsSectionState extends ConsumerState<TargetDrugsSection> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final gene = _gene;
+
+    // 靶点基因的默认值取「这组药共同命中的靶点」里第一个：与替代候选同理，
+    // 没有默认值时这张卡永远停在「输入一个基因名」，而共有的靶点正是这组药
+    // 最值得看的那个问题。
+    final drugSet = ref.watch(graphDrugSetProvider).asData?.value;
+    String? suggestedGene;
+    if (drugSet != null && drugSet.hasPair) {
+      final shared = ref
+          .watch(graphSharedTargetsProvider(drugSetKey(drugSet.drugbankIds)))
+          .asData
+          ?.value;
+      if (shared?.safeItems.isNotEmpty ?? false) {
+        suggestedGene = shared!.safeItems.first.targetGene;
+      }
+    }
+    final gene = _gene ?? suggestedGene;
     final result = gene == null
         ? null
         : ref.watch(graphTargetDrugsProvider(gene)).asData?.value;
@@ -513,9 +546,13 @@ class _ShortestRoutesSectionState extends ConsumerState<ShortestRoutesSection> {
       );
     }
     final ids = drugSet.drugbankIds;
-    final from = _from;
-    final to = _to;
-    final ready = from != null && to != null && from != to;
+    // 起点/终点用「已选值，否则第一个/最后一个可分析药」——与选择器里**显示的**
+    // 值保持同一来源。此前 `_from`/`_to` 为 null 时 picker 已显示默认值却不发
+    // 查询，用户看到两个已填好的下拉框和一句「选择起止药物后可查询」，
+    // 显示与生效不一致。
+    final from = _from ?? ids.first;
+    final to = _to ?? ids.last;
+    final ready = from != to;
 
     final result = !ready
         ? null
@@ -540,13 +577,13 @@ class _ShortestRoutesSectionState extends ConsumerState<ShortestRoutesSection> {
             _DrugPicker(
               label: l10n.medicineGraphSelectFromDrug,
               ids: ids,
-              selected: from ?? ids.first,
+              selected: from,
               onChanged: (value) => setState(() => _from = value),
             ),
             _DrugPicker(
               label: l10n.medicineGraphSelectToDrug,
               ids: ids,
-              selected: to ?? ids.last,
+              selected: to,
               onChanged: (value) => setState(() => _to = value),
             ),
           ],

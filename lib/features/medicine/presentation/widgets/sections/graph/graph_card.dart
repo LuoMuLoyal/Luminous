@@ -23,30 +23,39 @@ class GraphViewToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isGraph = mode is GraphMode;
+    // FButton 在宽度有界的父节点里会撑满整行。IntrinsicWidth 把它收回到
+    // 「图标 + 文字」的固有宽度，`Align` 再把它推到右上角——切换钮是次要动作，
+    // 占满一整行会读成一个主操作。
     return Align(
       alignment: Alignment.centerRight,
-      child: FButton(
-        key: const Key('medicine-graph-view-toggle'),
-        variant: .outline,
-        size: .sm,
-        onPress: () => onChanged(
-          isGraph ? const ListMode() : const GraphMode(),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isGraph ? SemanticIcons.recordClipboard : SemanticIcons.tabReview,
-              size: IconSizeTokens.sm,
-              color: SemanticColor.neutral.solid(context),
-            ),
-            const SizedBox(width: Spacing.xs),
-            Text(
-              isGraph ? l10n.medicineGraphViewList : l10n.medicineGraphViewGraph,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+      child: IntrinsicWidth(
+        child: FButton(
+          key: const Key('medicine-graph-view-toggle'),
+          variant: .outline,
+          size: .sm,
+          onPress: () => onChanged(
+            isGraph ? const ListMode() : const GraphMode(),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isGraph
+                    ? SemanticIcons.recordClipboard
+                    : SemanticIcons.tabReview,
+                size: IconSizeTokens.sm,
+                color: SemanticColor.neutral.solid(context),
+              ),
+              const SizedBox(width: Spacing.xs),
+              Text(
+                isGraph
+                    ? l10n.medicineGraphViewList
+                    : l10n.medicineGraphViewGraph,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
       ),
     );

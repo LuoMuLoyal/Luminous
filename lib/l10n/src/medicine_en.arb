@@ -857,5 +857,69 @@
   "medicineGraphViewGraph": "Graph",
   "medicineGraphViewList": "List",
   "medicineGraphViewGraphHint": "Show upstream and downstream as a layered graph",
-  "medicineGraphViewListHint": "List findings one row at a time"
+  "medicineGraphViewListHint": "List findings one row at a time",
+  "medicineGraphCountPaths": "{count} paths",
+  "@medicineGraphCountPaths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountTargets": "{count} targets",
+  "@medicineGraphCountTargets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountCascades": "{count} cascades",
+  "@medicineGraphCountCascades": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountDuels": "{count} pairs",
+  "@medicineGraphCountDuels": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountActions": "{count} actions",
+  "@medicineGraphCountActions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountRoutes": "{count} routes",
+  "@medicineGraphCountRoutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountDrugs": "{count} medicines",
+  "@medicineGraphCountDrugs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountSubstitutes": "{count} candidates",
+  "@medicineGraphCountSubstitutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

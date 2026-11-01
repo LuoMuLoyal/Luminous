@@ -66,9 +66,7 @@ class MechanismPathsSection extends ConsumerWidget {
       title: l10n.medicineGraphTitleMechanismPaths,
       trailing: result.isAnswerable
           ? GraphCountBadge(
-              label: l10n.medicineGraphSharedTargetDrugs(
-                result.safeItems.length,
-              ),
+              label: l10n.medicineGraphCountPaths(result.safeItems.length),
             )
           : null,
       viewMode: mode,
@@ -161,9 +159,7 @@ class SharedTargetsSection extends ConsumerWidget {
       title: l10n.medicineGraphTitleSharedTargets,
       trailing: result.isAnswerable
           ? GraphCountBadge(
-              label: l10n.medicineGraphSharedTargetDrugs(
-                result.safeItems.length,
-              ),
+              label: l10n.medicineGraphCountTargets(result.safeItems.length),
             )
           : null,
       footer: GraphCoverageNote(
@@ -243,9 +239,7 @@ class CascadePathsSection extends ConsumerWidget {
       title: l10n.medicineGraphTitleCascadePaths,
       trailing: result.isAnswerable
           ? GraphCountBadge(
-              label: l10n.medicineGraphSharedTargetDrugs(
-                result.safeItems.length,
-              ),
+              label: l10n.medicineGraphCountCascades(result.safeItems.length),
             )
           : null,
       viewMode: mode,
@@ -303,15 +297,74 @@ class CascadePathsSection extends ConsumerWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final cascade in shown)
-                GraphRelationRow(
-                  leading: cascade.startDrug,
-                  relation: '⊣ ${cascade.enzymeOne} ⊸ ${cascade.middleDrug}',
-                  target: '${cascade.enzymeTwo} ← ${cascade.endDrug}',
-                ),
+              for (final cascade in shown) _CascadeChain(cascade: cascade),
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+/// 级联链的列表形态：四跳逐行铺开。
+///
+/// 早先版本用 `⊣` / `⊸` 两个数学符号压缩成一行，但这两个码位不在 CJK 字体
+/// 覆盖面内，真机上渲染成豆腐块（截图里能看到两个方框）。这里改用
+/// 「箭头 + 关系词」，逐行串成链——读者按行的顺序就能读出传播方向，
+/// 不依赖任何特殊字形。
+class _CascadeChain extends StatelessWidget {
+  const _CascadeChain({required this.cascade});
+
+  final CascadePath cascade;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
+    final muted = SemanticColor.neutral.solid(context);
+
+    Widget step(String text, {bool arrow = true, String? note}) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: Spacing.xs),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (arrow)
+              Text(
+                '→ ',
+                style: typography.body.xs.copyWith(
+                  color: SemanticColor.primary.solid(context),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            Flexible(
+              child: Text(
+                note == null ? text : '$text（$note）',
+                style: typography.body.xs.copyWith(
+                  fontWeight: arrow ? FontWeight.w700 : FontWeight.w400,
+                  color: note == null ? null : muted,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          step(cascade.startDrug, arrow: false),
+          step(
+            cascade.enzymeOne,
+            note: l10n.medicineGraphRelationInhibits,
+          ),
+          step(cascade.middleDrug),
+          step(cascade.enzymeTwo, note: l10n.medicineGraphRelationInhibits),
+          step(cascade.endDrug, note: l10n.medicineGraphCascadeEnd),
+        ],
       ),
     );
   }
@@ -345,9 +398,7 @@ class EnzymeDuelsSection extends ConsumerWidget {
       title: l10n.medicineGraphTitleEnzymeDuels,
       trailing: result.isAnswerable
           ? GraphCountBadge(
-              label: l10n.medicineGraphSharedTargetDrugs(
-                result.safeItems.length,
-              ),
+              label: l10n.medicineGraphCountDuels(result.safeItems.length),
             )
           : null,
       footer: GraphCoverageNote(

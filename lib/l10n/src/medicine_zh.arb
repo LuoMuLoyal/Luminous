@@ -864,5 +864,69 @@
   "medicineGraphViewGraph": "图",
   "medicineGraphViewList": "列表",
   "medicineGraphViewGraphHint": "以分层图显示通路的上下游关系",
-  "medicineGraphViewListHint": "以文本行逐条列出"
+  "medicineGraphViewListHint": "以文本行逐条列出",
+  "medicineGraphCountPaths": "{count} 条通路",
+  "@medicineGraphCountPaths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountTargets": "{count} 个靶点",
+  "@medicineGraphCountTargets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountCascades": "{count} 条级联",
+  "@medicineGraphCountCascades": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountDuels": "{count} 对",
+  "@medicineGraphCountDuels": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountActions": "{count} 项作用",
+  "@medicineGraphCountActions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountRoutes": "{count} 条路径",
+  "@medicineGraphCountRoutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountDrugs": "{count} 种药",
+  "@medicineGraphCountDrugs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountSubstitutes": "{count} 个候选",
+  "@medicineGraphCountSubstitutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
