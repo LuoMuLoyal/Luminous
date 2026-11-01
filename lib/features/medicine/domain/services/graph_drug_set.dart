@@ -22,18 +22,33 @@ final RegExp _drugbankIdPattern = RegExp(r'^DB\d{5}$');
 
 /// 一条用药条目里与图查询相关的部分。
 final class GraphDrugEntry {
-  const GraphDrugEntry({required this.sourceRefId, required this.isCurrent});
+  const GraphDrugEntry({
+    required this.sourceRefId,
+    required this.isCurrent,
+    this.displayName,
+  });
 
   /// 来源编号；只有 DrugBank 来源会形如 `DB00682`。
   final String? sourceRefId;
 
   /// 是否在册（历史用药不构成当下的组合风险）。
   final bool isCurrent;
+
+  /// 用户可读的药名（如「阿司匹林肠溶片」）。
+  ///
+  /// `DB00331` 这种编号对用户没有意义：选择器里只能显示名字。药名与 id 一起
+  /// 从上游带下来，因为派生之后就拿不到 `CurrentMedicineItem` 了。
+  /// 允许为空——历史数据可能只有编号没有名字，此时退回显示 id。
+  final String? displayName;
 }
 
 /// 派生结果。
 final class GraphDrugSet {
-  const GraphDrugSet({required this.drugbankIds, required this.totalMedicines});
+  const GraphDrugSet({
+    required this.drugbankIds,
+    required this.totalMedicines,
+    this.names = const {},
+  });
 
   /// 去重后的 DrugBank id，按字典序稳定排序。
   ///
@@ -43,6 +58,15 @@ final class GraphDrugSet {
 
   /// 当前在册药品总数（含不可解析的）。
   final int totalMedicines;
+
+  /// DrugBank id → 药名。选择器显示用；缺项时调用方退回显示 id。
+  final Map<String, String> names;
+
+  /// [drugbankId] 的可读名字，没有名字时退回 id 本身。
+  String labelOf(String drugbankId) {
+    final name = names[drugbankId]?.trim();
+    return (name == null || name.isEmpty) ? drugbankId : name;
+  }
 
   /// 端点要求至少两个药才有「两两关系」。
   bool get hasPair => drugbankIds.length >= 2;
@@ -63,6 +87,7 @@ final class GraphDrugSet {
 GraphDrugSet deriveGraphDrugSet(Iterable<GraphDrugEntry> entries) {
   var total = 0;
   final ids = <String>{};
+  final names = <String, String>{};
   for (final entry in entries) {
     if (!entry.isCurrent) continue;
     total += 1;
@@ -72,13 +97,23 @@ GraphDrugSet deriveGraphDrugSet(Iterable<GraphDrugEntry> entries) {
     // 可能的，而 `DB\\d{5}` 本身已经足够唯一。
     if (!_drugbankIdPattern.hasMatch(ref)) continue;
     ids.add(ref);
+    final name = entry.displayName?.trim();
+    // 同一 id 可能对应多条记录（换过规格等）；先到先得，但空名字不覆盖已有名字。
+    if (name != null && name.isNotEmpty && !names.containsKey(ref)) {
+      names[ref] = name;
+    }
   }
 
   final sorted = ids.toList()..sort();
+  final kept = sorted.length > graphMaxDrugIds
+      ? sorted.sublist(0, graphMaxDrugIds)
+      : sorted;
   return GraphDrugSet(
-    drugbankIds: sorted.length > graphMaxDrugIds
-        ? sorted.sublist(0, graphMaxDrugIds)
-        : sorted,
+    drugbankIds: kept,
     totalMedicines: total,
+    names: {
+      for (final id in kept)
+        if (names[id] != null) id: names[id]!,
+    },
   );
 }

@@ -39,6 +39,9 @@ GraphDrugSet _derive(List<CurrentMedicineItem> medicines) {
       (item) => GraphDrugEntry(
         sourceRefId: item.sourceRefId,
         isCurrent: item.isCurrent,
+        // 药名一起带进派生结果：图组件要显示「阿司匹林肠溶片」而不是 `DB00945`，
+        // 而派生之后就拿不到 `CurrentMedicineItem` 了。
+        displayName: item.displayName,
       ),
     ),
   );

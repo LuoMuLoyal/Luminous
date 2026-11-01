@@ -98,5 +98,59 @@ void main() {
         'DB00682',
       ]);
     });
+
+    group('药名', () {
+      // 选择器里曾经显示 `DB00331`——对用户没有意义。药名必须随 id 一起带出来，
+      // 因为派生之后就拿不到 `CurrentMedicineItem` 了。
+      GraphDrugEntry named(String? ref, String? name) => GraphDrugEntry(
+        sourceRefId: ref,
+        isCurrent: true,
+        displayName: name,
+      );
+
+      test('id 能解析成药名', () {
+        final set = deriveGraphDrugSet([
+          named('DB00331', '盐酸二甲双胍片'),
+          named('DB00945', '阿司匹林肠溶片'),
+        ]);
+
+        expect(set.labelOf('DB00331'), '盐酸二甲双胍片');
+        expect(set.labelOf('DB00945'), '阿司匹林肠溶片');
+      });
+
+      test('没有药名时退回显示 id，而不是空白选项', () {
+        final set = deriveGraphDrugSet([named('DB00331', null)]);
+
+        expect(set.labelOf('DB00331'), 'DB00331');
+      });
+
+      test('空白药名不覆盖已有的名字', () {
+        final set = deriveGraphDrugSet([
+          named('DB00331', '盐酸二甲双胍片'),
+          named('DB00331', '   '),
+        ]);
+
+        expect(set.labelOf('DB00331'), '盐酸二甲双胍片');
+      });
+
+      test('名字只保留最终入选的 id', () {
+        // 超过上限被裁掉的药不该留下名字，否则 `names` 会无限增长。
+        final many = [
+          for (var i = 0; i < graphMaxDrugIds + 2; i += 1)
+            named('DB${i.toString().padLeft(5, '0')}', '药$i'),
+        ];
+        final set = deriveGraphDrugSet(many);
+
+        expect(set.drugbankIds, hasLength(graphMaxDrugIds));
+        expect(set.names.length, graphMaxDrugIds);
+        expect(set.names.keys, containsAll(set.drugbankIds));
+      });
+
+      test('未知 id 查询时退回 id 本身', () {
+        final set = deriveGraphDrugSet([named('DB00331', '盐酸二甲双胍片')]);
+
+        expect(set.labelOf('DB99999'), 'DB99999');
+      });
+    });
   });
 }
