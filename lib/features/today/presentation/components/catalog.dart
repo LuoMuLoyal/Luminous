@@ -53,12 +53,22 @@ const todaySurfaceDefinition = SurfaceDefinition(
   defaultLayout: SurfaceLayout(
     placements: [
       ComponentPlacement(id: todayPreviewBannerId, size: ComponentSize.wide),
-      ComponentPlacement(id: todayGreetingId),
-      ComponentPlacement(id: todayPrimarySuggestionId),
-      ComponentPlacement(id: todaySecondarySuggestionsId),
-      ComponentPlacement(id: todaySummaryId),
-      ComponentPlacement(id: todayHealthEventId),
-      ComponentPlacement(id: todayObservationId),
+      // Desktop lays the surface out in two columns, and `regular` spans both
+      // of them — so only `compact` cards actually sit side by side. Every card
+      // except the banner (a full-width notice) and the quick-actions strip
+      // (a full-width button row) is compact so the surface pairs them up.
+      ComponentPlacement(id: todayGreetingId, size: ComponentSize.compact),
+      ComponentPlacement(
+        id: todayPrimarySuggestionId,
+        size: ComponentSize.compact,
+      ),
+      ComponentPlacement(
+        id: todaySecondarySuggestionsId,
+        size: ComponentSize.compact,
+      ),
+      ComponentPlacement(id: todaySummaryId, size: ComponentSize.compact),
+      ComponentPlacement(id: todayHealthEventId, size: ComponentSize.compact),
+      ComponentPlacement(id: todayObservationId, size: ComponentSize.compact),
       ComponentPlacement(id: todayQuickActionsId, size: ComponentSize.wide),
     ],
   ),

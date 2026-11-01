@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/design/tokens/breakpoints.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/instrumentation.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
@@ -24,6 +25,7 @@ import 'package:luminous/features/review/presentation/widgets/sheets/more_action
 import 'package:luminous/features/review/presentation/widgets/sheets/share_management.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
+import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 第五 Tab 的 Review 页：以纵向洞察为主单位的洞察优先回顾首屏。
@@ -69,47 +71,61 @@ class ReviewPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ShellDeferredContent(
-      child: _ReviewOpenedTracker(
-        child: _ReportMobileShell(
-          onRefresh: () => _refresh(ref),
-          header: _ReviewTopBar(
-            onMore: () => unawaited(
-              showReviewMoreActionsSheet(
-                context,
-                // 就诊摘要走共享导出处理的 clinicShare 分支（含登录守卫），
-                // 与 PDF/打印保持一致，不另设副本。
-                onVisitSummary: () => handleReviewExportAction(
-                  context,
-                  ref,
-                  ReviewExportKind.clinicShare,
-                ),
-                onShareManagement: () async {
-                  if (!ref.read(authSessionProvider).canAccessProtectedData) {
-                    unawaited(pushAuthRequiredRoute(context, '/review'));
-                    return;
-                  }
-                  await showShareManagementSheet(context);
-                },
-                onPdf: () => handleReviewExportAction(
-                  context,
-                  ref,
-                  ReviewExportKind.monthly,
-                ),
-                onPrint: () => handleReviewExportAction(
-                  context,
-                  ref,
-                  ReviewExportKind.print,
-                ),
-              ),
-            ),
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= Breakpoints.desktop;
+    final l10n = AppLocalizations.of(context)!;
+
+    final header = _ReviewTopBar(
+      onMore: () => unawaited(
+        showReviewMoreActionsSheet(
+          context,
+          // 就诊摘要走共享导出处理的 clinicShare 分支（含登录守卫），
+          // 与 PDF/打印保持一致，不另设副本。
+          onVisitSummary: () => handleReviewExportAction(
+            context,
+            ref,
+            ReviewExportKind.clinicShare,
           ),
-          // 页面只负责外壳（顶栏 / 滚动 / 下拉刷新）；内容由 review 表面的
-          // 组件按 reviewSurfaceDefinition 自取数据并装配。
-          child: const ReviewView(),
+          onShareManagement: () async {
+            if (!ref.read(authSessionProvider).canAccessProtectedData) {
+              unawaited(pushAuthRequiredRoute(context, '/review'));
+              return;
+            }
+            await showShareManagementSheet(context);
+          },
+          onPdf: () =>
+              handleReviewExportAction(context, ref, ReviewExportKind.monthly),
+          onPrint: () =>
+              handleReviewExportAction(context, ref, ReviewExportKind.print),
         ),
       ),
     );
+
+    // 页面只负责外壳（顶栏 / 滚动 / 下拉刷新）；内容由 review 表面的
+    // 组件按 reviewSurfaceDefinition 自取数据并装配。
+    //
+    // 桌面端与其余四个 tab 一致走 `DesktopTabShell`：由它提供统一的标题栏、
+    // 内容区 maxWidth 约束与滚动容器。此前 review 是唯一一个仍用移动端外壳的
+    // tab，桌面端因此没有标题栏、也不会跟随 tab 外壳的内容宽度约束。
+    final content = isDesktop
+        ? DesktopTabShell(
+            title: l10n.tabReview,
+            showHeader: false,
+            onRefresh: () => _refresh(ref),
+            child: Column(
+              children: [
+                header,
+                const Expanded(child: ReviewView()),
+              ],
+            ),
+          )
+        : _ReportMobileShell(
+            onRefresh: () => _refresh(ref),
+            header: header,
+            child: const ReviewView(),
+          );
+
+    return ShellDeferredContent(child: _ReviewOpenedTracker(child: content));
   }
 }
 

@@ -74,10 +74,18 @@ const medicineSurfaceDefinition = SurfaceDefinition(
   ],
   defaultLayout: SurfaceLayout(
     placements: [
-      ComponentPlacement(id: medicineDrugBoxId),
-      ComponentPlacement(id: medicineRecordsId),
-      ComponentPlacement(id: medicineSafetyEngineId),
-      ComponentPlacement(id: medicineQuickOperationId),
+      ComponentPlacement(id: medicineDrugBoxId, size: ComponentSize.compact),
+      // Desktop renders two columns and `regular` spans both, so the medicine
+      // records list and the safety engine only sit side by side when compact.
+      ComponentPlacement(id: medicineRecordsId, size: ComponentSize.compact),
+      ComponentPlacement(
+        id: medicineSafetyEngineId,
+        size: ComponentSize.compact,
+      ),
+      ComponentPlacement(
+        id: medicineQuickOperationId,
+        size: ComponentSize.compact,
+      ),
     ],
   ),
 );

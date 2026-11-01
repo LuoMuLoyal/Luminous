@@ -28,18 +28,15 @@ const recordTimelineId = ComponentId('timeline.daily');
 /// 所以本次是纯重构：从不编辑布局的用户看到的页面与改动前一致。
 const recordSurfaceDefinition = SurfaceDefinition(
   surface: SurfaceId.record,
-  owned: [
-    recordDateId,
-    recordQuickEntryId,
-    recordFilterId,
-    recordTimelineId,
-  ],
+  owned: [recordDateId, recordQuickEntryId, recordFilterId, recordTimelineId],
   defaultLayout: SurfaceLayout(
     placements: [
-      ComponentPlacement(id: recordDateId),
-      ComponentPlacement(id: recordQuickEntryId),
-      ComponentPlacement(id: recordFilterId),
-      ComponentPlacement(id: recordTimelineId),
+      ComponentPlacement(id: recordDateId, size: ComponentSize.compact),
+      ComponentPlacement(id: recordQuickEntryId, size: ComponentSize.compact),
+      // Desktop renders two columns and `regular` spans both, so the filter
+      // chips and the entry timeline only sit side by side when compact.
+      ComponentPlacement(id: recordFilterId, size: ComponentSize.compact),
+      ComponentPlacement(id: recordTimelineId, size: ComponentSize.compact),
     ],
   ),
 );

@@ -122,9 +122,12 @@ const reviewSurfaceDefinition = SurfaceDefinition(
       // 自定义，避免用户在编排界面看到两个几乎一样的「登录提示」选项。
       ComponentPlacement(id: todayPreviewBannerId),
       // 覆盖率概览行：空列表时不渲染。
-      ComponentPlacement(id: reviewCoverageStripId),
+      ComponentPlacement(
+        id: reviewCoverageStripId,
+        size: ComponentSize.compact,
+      ),
       // 值得注意区：空 findings 时展示弃权占位（始终出现）。
-      ComponentPlacement(id: reviewNoteworthyId),
+      ComponentPlacement(id: reviewNoteworthyId, size: ComponentSize.compact),
       // 无进行中事件时：数据过稀 → 记录引导卡，否则由页面级解释卡承接。
       ComponentPlacement(id: reviewRecordGuideId),
       // 无事件时：轻量解释卡之后的「记录后可看到什么」预告卡；有事件时不出现。
@@ -133,14 +136,20 @@ const reviewSurfaceDefinition = SurfaceDefinition(
       ComponentPlacement(id: reviewStaleBannerId),
       // 有进行中/最近事件时：事件头部 + 四段。
       ComponentPlacement(id: reviewEventHeaderId),
-      ComponentPlacement(id: reviewWhatHappenedId),
-      ComponentPlacement(id: reviewKeyChangesId),
-      ComponentPlacement(id: reviewCompletedActionsId),
-      ComponentPlacement(id: reviewNextStepId),
+      // Desktop renders two columns and `regular` spans both, so these pairs
+      // only sit side by side when compact. The four event sections are
+      // short, parallel blocks meant to be scanned together.
+      ComponentPlacement(id: reviewWhatHappenedId, size: ComponentSize.compact),
+      ComponentPlacement(id: reviewKeyChangesId, size: ComponentSize.compact),
+      ComponentPlacement(
+        id: reviewCompletedActionsId,
+        size: ComponentSize.compact,
+      ),
+      ComponentPlacement(id: reviewNextStepId, size: ComponentSize.compact),
       // 纵向洞察折线图：空趋势时不渲染。
-      ComponentPlacement(id: reviewTrendId),
+      ComponentPlacement(id: reviewTrendId, size: ComponentSize.compact),
       // 多维度趋势：单维之后。空趋势时同样不渲染。
-      ComponentPlacement(id: reviewMultiTrendId),
+      ComponentPlacement(id: reviewMultiTrendId, size: ComponentSize.compact),
       ComponentPlacement(id: reviewHistoryId),
     ],
   ),
