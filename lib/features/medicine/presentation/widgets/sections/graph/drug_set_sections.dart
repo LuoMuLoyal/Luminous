@@ -508,7 +508,7 @@ class _GraphLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return const SizedBox(
       height: Spacing.xl4,
       child: Center(child: FCircularProgress.loader()),
     );
