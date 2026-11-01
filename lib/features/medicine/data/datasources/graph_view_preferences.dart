@@ -18,7 +18,9 @@ const String _kViewModePrefix = PrefKeys.medicineGraphViewModePrefix;
 
 /// 读取某个组件的变体；未设置时返回列表。
 GraphViewMode graphViewModeOf(String componentId) {
-  final raw = KvStore.instance.getOrNull<String>('$_kViewModePrefix$componentId');
+  final store = KvStore.tryInstance;
+  if (store == null) return const ListMode();
+  final raw = store.getOrNull<String>('$_kViewModePrefix$componentId');
   return GraphViewMode.fromWire(raw);
 }
 
@@ -36,7 +38,13 @@ final graphViewModesProvider =
 class GraphViewModesNotifier extends Notifier<Map<String, GraphViewMode>> {
   @override
   Map<String, GraphViewMode> build() {
-    final store = KvStore.instance;
+    // 读取的是**阅读偏好**，不是数据：`KvStore` 尚未打开时降级为「全部列表」，
+    // 而不是让 provider 进入 error 态。组件在 build 里 watch 本 provider，
+    // 一旦后者抛错，整张卡片会连同宿主一起挂掉——一个还没就绪的偏好值不该
+    // 有能力让界面渲染失败。
+    final store = KvStore.tryInstance;
+    if (store == null) return const {};
+
     final modes = <String, GraphViewMode>{};
     for (final entry in _knownComponentIds) {
       final raw = store.getOrNull<String>('$_kViewModePrefix$entry');
