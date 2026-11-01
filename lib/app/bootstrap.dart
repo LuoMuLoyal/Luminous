@@ -28,9 +28,16 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 class LuminousApp extends ConsumerStatefulWidget {
-  const LuminousApp({super.key, this.routerConfig});
+  const LuminousApp({super.key, this.routerConfig, this.desktopChrome = true});
 
   final RouterConfig<Object>? routerConfig;
+
+  /// 是否渲染桌面窗口条（最小化 / 最大化 / 关闭）。
+  ///
+  /// 默认开启，生产行为不变。截图生成器传 `false`：那是**移动端页面**的证据集，
+  /// 顶上一条 Windows 窗口控件既不属于任何屏幕尺寸下的真实 UI，也会让
+  /// 平台判断（`Platform.isWindows`）把「这台机器在跑测试」泄漏进产物。
+  final bool desktopChrome;
 
   @override
   ConsumerState<LuminousApp> createState() => _LuminousAppState();
@@ -155,6 +162,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
             child: FToaster(
               child: _withDesktopChrome(
                 AppShortcuts(child: child ?? const SizedBox.shrink()),
+                enabled: widget.desktopChrome,
               ),
             ),
           ),
@@ -259,8 +267,9 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
 
 /// Wraps [child] with [DesktopWindowChrome] on Windows/Linux desktop,
 /// adding a full-width drag area and window control buttons at the top.
-/// On other platforms, returns [child] unchanged.
-Widget _withDesktopChrome(Widget child) {
+/// On other platforms — or when [enabled] is false — returns [child] unchanged.
+Widget _withDesktopChrome(Widget child, {bool enabled = true}) {
+  if (!enabled) return child;
   if (kIsWeb) return child;
   if (!Platform.isWindows && !Platform.isLinux) return child;
   return Column(
