@@ -1069,7 +1069,49 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
       await _settle(tester);
     },
   ),
+
+  // ── 用药页：切到「图」视图后的样子 ───────────────────────────
+  //
+  // 列表/图是两个变体，但默认截出来只有列表。若不专门拍，`graphview` 的分层图
+  // 在整个产物集里没有任何证据——它坏了也不会有人发现。
+  _ExtraCapture(
+    fileName: '61_medicine_graph-view-mechanism.png',
+    group: 'medicine',
+    page: 'graph-view-mechanism',
+    route: '/medicine',
+    note: '用药 · 机制通路的图视图（Sugiyama 分层）',
+    prepare: (tester) async {
+      await _toggleGraphView(tester, last: false);
+    },
+  ),
+  _ExtraCapture(
+    fileName: '62_medicine_graph-view-cascade.png',
+    group: 'medicine',
+    page: 'graph-view-cascade',
+    route: '/medicine',
+    note: '用药 · 级联传播的图视图（四跳链）',
+    prepare: (tester) async {
+      await _toggleGraphView(tester, last: true);
+    },
+  ),
 ];
+
+/// 把关系图卡切到「图」视图，并滚到它进入视口。
+///
+/// [last] 为真时取最后一个切换钮（级联），否则取第一个（机制通路）。
+/// 切换钮是图标按钮，语义标签在 `Semantics` 上，所以按 Key 找更稳。
+Future<void> _toggleGraphView(WidgetTester tester, {required bool last}) async {
+  final toggles = find.byKey(const Key('medicine-graph-view-toggle'));
+  if (toggles.evaluate().isEmpty) return;
+  final target = last ? toggles.last : toggles.first;
+  await tester.ensureVisible(target);
+  await _settle(tester);
+  await tester.tap(target);
+  await _settle(tester);
+  // 图卡片比列表高，再滚一次让它整体进入视口。
+  await tester.ensureVisible(target);
+  await _settle(tester);
+}
 
 /// 滚到回顾页的「健康趋势」标题处，让趋势图进入视口。
 ///
