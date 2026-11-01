@@ -118,6 +118,14 @@ class _DrugBoxComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局要 `compact`；不覆写会落到基类的 `{regular}`，桌面下占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -143,6 +151,14 @@ class _RecordsComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -166,6 +182,14 @@ class _SafetyEngineComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -188,6 +212,14 @@ class _QuickOperationComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,

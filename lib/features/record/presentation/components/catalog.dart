@@ -55,7 +55,7 @@ const recordSurfaceDefinition = SurfaceDefinition(
       ComponentPlacement(id: recordFilterId, size: ComponentSize.compact),
       ComponentPlacement(id: recordNewEntryId, size: ComponentSize.compact),
       ComponentPlacement(id: recordFilterPanelId, size: ComponentSize.compact),
-      ComponentPlacement(id: recordTimelineId, size: ComponentSize.wide),
+      ComponentPlacement(id: recordTimelineId, size: ComponentSize.compact),
     ],
   ),
 );
@@ -160,6 +160,15 @@ class _DateComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局要 `compact`（与日历 / 快速录入并排）。不覆写会落到基类的
+    // `{regular}`，而 `regular` 在双列桌面网格里跨满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+
+  @override
   Widget build(
     BuildContext context,
     WidgetRef ref,
@@ -178,6 +187,15 @@ class _QuickEntryComponent extends ComponentDescriptor<NoComponentConfig> {
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
+
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局要 `compact`。不覆写会落到基类的 `{regular}`，
+    // 在双列桌面网格里跨满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
 
   @override
   Widget build(
@@ -200,6 +218,14 @@ class _FilterComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局要 `compact`；不覆写会落到基类的 `{regular}`，桌面下占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+
+  @override
   Widget build(
     BuildContext context,
     WidgetRef ref,
@@ -218,6 +244,16 @@ class _TimelineComponent extends ComponentDescriptor<NoComponentConfig> {
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
+
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局要 `wide`（时间线独占一行）。`regular` 在双列下同样跨满两列，
+    // 观感恰好一致——但那是巧合而不是声明，换到三列或改 `regular` 的语义就会
+    // 错位。声明成它实际想要的东西。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
 
   @override
   Widget build(

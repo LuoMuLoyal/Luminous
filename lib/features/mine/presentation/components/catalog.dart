@@ -61,8 +61,8 @@ const mineSurfaceDefinition = SurfaceDefinition(
   ],
   defaultLayout: SurfaceLayout(
     placements: [
-      ComponentPlacement(id: accountSyncBannerId),
-      ComponentPlacement(id: accountHeroId),
+      ComponentPlacement(id: accountSyncBannerId, size: ComponentSize.compact),
+      ComponentPlacement(id: accountHeroId, size: ComponentSize.compact),
       // Desktop renders two columns and `regular` spans both, so every card
       // below only sits side by side when compact.
       ComponentPlacement(id: profileAlertsId, size: ComponentSize.compact),
@@ -95,6 +95,13 @@ class _SyncBannerComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 桌面双列规则：所有卡片等宽，不出现占满整列的组件。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -120,6 +127,13 @@ class _AccountHeroComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 桌面双列规则：所有卡片等宽，不出现占满整列的组件。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -139,6 +153,14 @@ class _ProfileAlertsComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,
@@ -165,6 +187,14 @@ class _ArchiveSummaryComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -184,6 +214,14 @@ class _PrivacyNoticeComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,
@@ -206,6 +244,14 @@ class _ReminderSettingsComponent
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -225,6 +271,14 @@ class _AccountSecurityComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,

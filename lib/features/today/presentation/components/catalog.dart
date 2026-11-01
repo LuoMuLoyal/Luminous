@@ -52,7 +52,7 @@ const todaySurfaceDefinition = SurfaceDefinition(
   ],
   defaultLayout: SurfaceLayout(
     placements: [
-      ComponentPlacement(id: todayPreviewBannerId, size: ComponentSize.wide),
+      ComponentPlacement(id: todayPreviewBannerId, size: ComponentSize.compact),
       // Desktop lays the surface out in two columns, and `regular` spans both
       // of them — so only `compact` cards actually sit side by side. Every card
       // except the banner (a full-width notice) and the quick-actions strip
@@ -69,7 +69,7 @@ const todaySurfaceDefinition = SurfaceDefinition(
       ComponentPlacement(id: todaySummaryId, size: ComponentSize.compact),
       ComponentPlacement(id: todayHealthEventId, size: ComponentSize.compact),
       ComponentPlacement(id: todayObservationId, size: ComponentSize.compact),
-      ComponentPlacement(id: todayQuickActionsId, size: ComponentSize.wide),
+      ComponentPlacement(id: todayQuickActionsId, size: ComponentSize.compact),
     ],
   ),
 );
@@ -93,7 +93,14 @@ class _PreviewBannerComponent extends ComponentDescriptor<NoComponentConfig> {
   ComponentId get id => todayPreviewBannerId;
 
   @override
-  Set<ComponentSize> get supportedSizes => {ComponentSize.wide};
+  Set<ComponentSize> get supportedSizes => {
+    // 预览横幅是最长的一条文案，但它同样只在半列里渲染：桌面双列的规则是
+    // 「除整行结构性区域外，所有卡片等宽」。放开尺寸而不是锁死 `wide`，
+    // 否则默认布局索求 `compact` 时会被 `_spanOf` 回退成满宽。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
@@ -160,6 +167,11 @@ class _PrimarySuggestionComponent
 
   @override
   Set<ComponentSize> get supportedSizes => {
+    // `compact` 是 daily 默认布局索要的尺寸，也是这张卡在桌面上与
+    // `summary.metrics` 并排的前提。缺了它不会「保持原样」——`_spanOf` 会
+    // 回退到组件支持的**最小**尺寸，于是这张卡静默取 `regular`，
+    // 在双列网格里跨满两列、占掉整行。
+    ComponentSize.compact,
     ComponentSize.regular,
     ComponentSize.wide,
   };
@@ -229,6 +241,9 @@ class _SummaryComponent extends ComponentDescriptor<NoComponentConfig> {
 
   @override
   Set<ComponentSize> get supportedSizes => {
+    // 与 `suggestion.primary` 同一个问题：默认布局要 `compact`，
+    // 缺它会回退成 `regular`（双列下跨满整行）。
+    ComponentSize.compact,
     ComponentSize.regular,
     ComponentSize.wide,
   };
@@ -255,6 +270,8 @@ class _HealthEventComponent extends ComponentDescriptor<NoComponentConfig> {
 
   @override
   Set<ComponentSize> get supportedSizes => {
+    // 同 `suggestion.primary`：默认布局要 `compact`，缺则回退 `regular` 占满整行。
+    ComponentSize.compact,
     ComponentSize.regular,
     ComponentSize.wide,
   };
@@ -310,7 +327,13 @@ class _QuickActionsComponent extends ComponentDescriptor<NoComponentConfig> {
   ComponentId get id => todayQuickActionsId;
 
   @override
-  Set<ComponentSize> get supportedSizes => {ComponentSize.wide};
+  Set<ComponentSize> get supportedSizes => {
+    // 快捷操作是一列按钮，半列宽度下仍能完整排布（内部是纵向 `Column`），
+    // 不需要独占整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();

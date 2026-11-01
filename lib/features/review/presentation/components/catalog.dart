@@ -113,14 +113,18 @@ const reviewSurfaceDefinition = SurfaceDefinition(
   defaultLayout: SurfaceLayout(
     placements: [
       // P0-1 周期开关：顶栏下首行。
-      ComponentPlacement(id: reviewPeriodSwitchId),
+      ComponentPlacement(id: reviewPeriodSwitchId, size: ComponentSize.compact),
       // 登录提示由组件自行判断是否出现。
       // 未登录预览横幅是全局登录提示，不属于任何单一页面：today 与 review
       // 挂的是**同一个组件**（同 id），因此这里只引用今日目录导出的 id，不重复
       // 注册——否则注册表会因为重复 id 直接抛错。
       // 文案由 today 的组件统一提供（全局登录提示只说一句话），review 不再
       // 自定义，避免用户在编排界面看到两个几乎一样的「登录提示」选项。
-      ComponentPlacement(id: todayPreviewBannerId),
+      //
+      // 尺寸显式写成 `wide`：这是全程满宽的提示条，组件也只声明支持 `wide`。
+      // 省略 size 会用默认的 `regular`，再被 `_spanOf` 回退成组件支持的最小
+      // 尺寸——结果虽然正确，但依赖的是降级路径而不是声明。
+      ComponentPlacement(id: todayPreviewBannerId, size: ComponentSize.compact),
       // 覆盖率概览行：空列表时不渲染。
       ComponentPlacement(
         id: reviewCoverageStripId,
@@ -129,13 +133,19 @@ const reviewSurfaceDefinition = SurfaceDefinition(
       // 值得注意区：空 findings 时展示弃权占位（始终出现）。
       ComponentPlacement(id: reviewNoteworthyId, size: ComponentSize.compact),
       // 无进行中事件时：数据过稀 → 记录引导卡，否则由页面级解释卡承接。
-      ComponentPlacement(id: reviewRecordGuideId),
+      ComponentPlacement(id: reviewRecordGuideId, size: ComponentSize.compact),
       // 无事件时：轻量解释卡之后的「记录后可看到什么」预告卡；有事件时不出现。
-      ComponentPlacement(id: reviewNoEventExplanationId),
-      ComponentPlacement(id: reviewPreviewOverviewId),
-      ComponentPlacement(id: reviewStaleBannerId),
+      ComponentPlacement(
+        id: reviewNoEventExplanationId,
+        size: ComponentSize.compact,
+      ),
+      ComponentPlacement(
+        id: reviewPreviewOverviewId,
+        size: ComponentSize.compact,
+      ),
+      ComponentPlacement(id: reviewStaleBannerId, size: ComponentSize.compact),
       // 有进行中/最近事件时：事件头部 + 四段。
-      ComponentPlacement(id: reviewEventHeaderId),
+      ComponentPlacement(id: reviewEventHeaderId, size: ComponentSize.compact),
       // Desktop renders two columns and `regular` spans both, so these pairs
       // only sit side by side when compact. The four event sections are
       // short, parallel blocks meant to be scanned together.
@@ -150,7 +160,7 @@ const reviewSurfaceDefinition = SurfaceDefinition(
       ComponentPlacement(id: reviewTrendId, size: ComponentSize.compact),
       // 多维度趋势：单维之后。空趋势时同样不渲染。
       ComponentPlacement(id: reviewMultiTrendId, size: ComponentSize.compact),
-      ComponentPlacement(id: reviewHistoryId),
+      ComponentPlacement(id: reviewHistoryId, size: ComponentSize.compact),
     ],
   ),
 );
@@ -217,6 +227,13 @@ class _PeriodSwitchComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 桌面双列规则：所有卡片等宽，不出现占满整列的组件。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -241,6 +258,14 @@ class _CoverageStripComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,
@@ -267,6 +292,14 @@ class _NoteworthyComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,
@@ -295,6 +328,13 @@ class _RecordGuideComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 桌面双列规则：所有卡片等宽，不出现占满整列的组件。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,
@@ -333,6 +373,13 @@ class _EventHeaderComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 桌面双列规则：所有卡片等宽，不出现占满整列的组件。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -360,6 +407,14 @@ class _WhatHappenedComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -384,6 +439,14 @@ class _KeyChangesComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,
@@ -411,6 +474,14 @@ class _CompletedActionsComponent
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -436,6 +507,14 @@ class _NextStepComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -460,6 +539,14 @@ class _TrendComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,
@@ -494,6 +581,14 @@ class _MultiTrendComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 默认布局按双列写下 `compact`。不覆写会落到基类的 `{regular}`，
+    // 而 `regular` 在双列网格里跨满两列——卡片于是一直占满整行。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,
@@ -549,6 +644,13 @@ class _HistoryComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 桌面双列规则：所有卡片等宽，不出现占满整列的组件。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,
@@ -636,6 +738,13 @@ class _PreviewOverviewComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 桌面双列规则：所有卡片等宽，不出现占满整列的组件。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -686,6 +795,13 @@ class _NoEventExplanationComponent
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
+  Set<ComponentSize> get supportedSizes => {
+    // 桌面双列规则：所有卡片等宽，不出现占满整列的组件。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+  @override
   Widget? build(
     BuildContext context,
     WidgetRef ref,
@@ -734,6 +850,13 @@ class _StaleBannerComponent extends ComponentDescriptor<NoComponentConfig> {
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
+  @override
+  Set<ComponentSize> get supportedSizes => {
+    // 桌面双列规则：所有卡片等宽，不出现占满整列的组件。
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
   @override
   Widget? build(
     BuildContext context,
