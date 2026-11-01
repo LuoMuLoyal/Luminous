@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/design/tokens/breakpoints.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/instrumentation.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
