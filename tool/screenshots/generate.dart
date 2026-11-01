@@ -34,9 +34,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/bootstrap.dart';
+import 'package:luminous/app/composition/components/registry.dart'
+    show compositionProviderOverrides;
+import 'package:luminous/app/composition/customizer/layout_repository.dart'
+    show layoutRepositoryProvider;
 import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/health_event/health_event.dart'
+    show healthEventRepositoryProvider;
 import 'package:luminous/app/composition/health_sync/health_sync.dart'
     show healthSyncRepositoryProvider;
 import 'package:luminous/app/composition/medicine/workspace.dart'
@@ -59,6 +66,9 @@ import 'package:luminous/features/assistant/data/repositories/lucent.dart'
     show assistantRepositoryProvider;
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/customizer/domain/repositories/layout.dart';
+import 'package:luminous/features/medicine/data/repositories/relations.dart'
+    show medicineRelationsRepositoryProvider;
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart'
     show medicineRiskCheckRepositoryProvider;
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart'
@@ -90,11 +100,17 @@ import 'package:luminous/features/settings/data/repositories/lucent.dart'
 import 'package:luminous/features/support/data/repositories/lucent.dart'
     show supportRepositoryProvider;
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/shared/domain/composition/id.dart';
+import 'package:luminous/shared/domain/composition/layout.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../../integration_test/screenshots/page_catalog_screenshot_test.dart'
     as catalog;
 import '../../test/helpers/kv_test_store.dart';
 import 'simulated_fakes_assistant.dart';
+import 'simulated_fakes_graph.dart';
+import 'simulated_fakes_health_event.dart';
 import 'simulated_fakes_misc.dart';
 import 'simulated_fakes_review.dart';
 import 'simulated_fakes_shell_a.dart';
@@ -112,6 +128,62 @@ const String _outputDir = '../../outputs/screenshots';
 
 /// Project-relative form of [_outputDir], for the manifest write.
 const String _outputDirRelative = 'outputs/screenshots';
+
+/// 长截图单独一个目录：它们的高度和常规帧差一个数量级，混在页面目录里会
+/// 让「按页面浏览」失效。
+const String _longDir = 'long';
+
+/// 长截图的像素密度。
+///
+/// 常规帧是 dpr 3；整页截图动辄 4000+ 逻辑像素，按 dpr 3 会得到一万多像素
+/// 高、单张几 MB 的图。降到 2 后文字仍然清晰，体积减半以上。
+const double _longDpr = 2;
+
+/// 长截图的最大逻辑高度，超出则截断。
+///
+/// 这是防呆上限，不是设计目标：真出现这么高的页面说明布局有问题，值得
+/// 在评审时看到「被截断」而不是生成一张打不开的图。
+const double _longMaxHeight = 8000;
+
+/// 一级页（五个 tab 根页）所在的分组。
+const String _shellGroup = 'shell';
+
+/// 二级页所属的 tab 分组：这些页面归到各自 tab 目录，并以 `2_` 开头，
+/// 与一级页（`1_`）在同一目录里天然排序分开。
+const Set<String> _tabGroups = {
+  'today',
+  'record',
+  'medicine',
+  'review',
+  'mine',
+};
+
+/// 一条产物在输出目录中的落点。
+typedef _Placement = ({String folder, String prefix});
+
+/// 决定一条产物放哪个子目录、文件名加什么前缀。
+///
+/// 规则（对应用户要的「按 tab 分一级/二级页」）：
+/// - 五个 tab 根页（`shell` 组）→ 各自的 tab 目录，前缀 `1_`；
+/// - 某个 tab 的子页面 → 同目录，前缀 `2_`；
+/// - 其它分组（settings / auth / scan / …）→ 独立目录，不加前缀。
+_Placement _placementFor(String group, String id) {
+  if (group == _shellGroup) return (folder: id, prefix: '1_');
+  if (_tabGroups.contains(group)) return (folder: group, prefix: '2_');
+  return (folder: group, prefix: '');
+}
+
+/// golden 路径：比较器以本文件所在目录为基准解析。
+String _goldenPath(String folder, String name) => '$_outputDir/$folder/$name';
+
+/// 建目录用项目根相对路径：`flutter test` 的工作目录就是项目根。
+void _ensureOutputDir(String folder) {
+  Directory('$_outputDirRelative/$folder').createSync(recursive: true);
+}
+
+/// 长截图的文件名：`long/<folder>__<name>.png`。
+String _longName(String folder, String name) =>
+    '${folder.replaceAll('/', '_')}__$name.png';
 
 // ── Platform channel stubs ──────────────────────────────────────────────────
 //
@@ -143,6 +215,33 @@ void _installPlatformStubs() {
       'getApplicationSupportDirectory' ||
       'getLibraryDirectory' => cacheDir,
       _ => null,
+    },
+  );
+
+  // 本地库（drift + SQLCipher）的密钥来自安全存储。没有这个桩时
+  // `DatabaseKeyProvider` 抛 `MissingPluginException`，drift 打开失败，
+  // bootstrap 里的缓存清理把这个失败作为**未捕获异常**抛进测试，
+  // 整页截图虽然已经写出，用例仍然判失败。
+  //
+  // 这里给一个固定的密钥：截图不需要真实加密强度，只需要可重复、能开库。
+  //
+  // **必须按 key 名精确返回**：同一个通道也被会话存储用来读 token payload，
+  // 对所有 key 都返回数据库密钥会让会话反序列化报 FormatException 并把登录态
+  // 打回未登录——那样截出来的是登录页。
+  const dbKey = 'c2NyZWVuc2hvdC1nZW5lcmF0b3ItZGIta2V5LTMyYnl0ZXM=';
+  const dbKeyName = 'luminous.db.key';
+  messenger.setMockMethodCallHandler(
+    const MethodChannel('plugins.it_nomads.com/flutter_secure_storage'),
+    (call) async {
+      final args = call.arguments;
+      final key = args is Map ? args['key'] : null;
+      return switch (call.method) {
+        'read' => key == dbKeyName ? dbKey : null,
+        'readAll' => <String, String>{dbKeyName: dbKey},
+        'containsKey' => key == dbKeyName,
+        'write' || 'delete' || 'deleteAll' => null,
+        _ => null,
+      };
     },
   );
 
@@ -389,6 +488,54 @@ class _SimulatedAuthSessionNotifier extends AuthSessionNotifier {
 
 // ── Fixtures ────────────────────────────────────────────────────────────────
 
+/// 演示用的用药页布局：默认四张卡 + **全部十个关系图组件**。
+///
+/// 十个图组件在生产里默认不挂载（见 `medicine/presentation/components/catalog.dart`
+/// 的注释：五个需要入参、且都依赖 health_context 快照）。截图要展示它们，
+/// 所以这里给出一份"用户自己编排出来的用药安全工作台"，顺序即阅读顺序：
+/// 风险检查 → 组合概览 → 机制/靶点/级联 → 单药类 → 需要入参的那几个。
+///
+/// 这份布局同时是「组件化编排真实生效」的证据：截出来的页面不是手写页面，
+/// 而是 `ComponentHost` 按 `SurfaceLayout` 渲染的结果。
+const _medicineWorkbenchLayout = SurfaceLayout(
+  placements: [
+    ComponentPlacement(id: ComponentId('drug_box.inventory')),
+    ComponentPlacement(id: ComponentId('dose.records')),
+    ComponentPlacement(id: ComponentId('dose.safety_engine')),
+    ComponentPlacement(id: ComponentId('quick_action.medicine')),
+    ComponentPlacement(id: ComponentId('dose.medication_overview')),
+    ComponentPlacement(id: ComponentId('dose.mechanism_paths')),
+    ComponentPlacement(id: ComponentId('dose.shared_targets')),
+    ComponentPlacement(id: ComponentId('dose.cascade_paths')),
+    ComponentPlacement(id: ComponentId('dose.enzyme_duels')),
+    ComponentPlacement(id: ComponentId('dose.drug_actions')),
+    ComponentPlacement(id: ComponentId('dose.transport_routes')),
+    ComponentPlacement(id: ComponentId('dose.substitutes')),
+    ComponentPlacement(id: ComponentId('dose.shortest_routes')),
+    ComponentPlacement(id: ComponentId('dose.target_drugs')),
+  ],
+);
+
+/// 只读布局仓储：把上面那份演示布局交给 app。
+///
+/// 不读 KV 也不发网络：截图不需要"用户改布局"的能力，只需要一个确定的起点。
+class _SimulatedLayoutRepository implements LayoutRepository {
+  const _SimulatedLayoutRepository(this.layouts);
+
+  final Map<SurfaceId, SurfaceLayout> layouts;
+
+  @override
+  TaskEither<LucentFailure, Map<SurfaceId, SurfaceLayout>> readAll() =>
+      TaskEither.right(layouts);
+
+  @override
+  TaskEither<LucentFailure, SurfaceLayout> write(
+    SurfaceId surface,
+    SurfaceLayout layout, {
+    int? ifVersion,
+  }) => TaskEither.right(layout);
+}
+
 /// Boots the real app against the simulated dataset.
 ///
 /// `retry: (_, _) => null` disables Riverpod's automatic retry timer: any
@@ -411,6 +558,19 @@ Future<ProviderContainer> _pumpPage(
   final container = ProviderContainer(
     retry: (_, _) => null,
     overrides: [
+      // ── 组件化装配根 ──────────────────────────────────────────────
+      //
+      // **没有这一条，所有 tab 页的内容区都是空的。**
+      //
+      // tab 页的内容不再是手写 Column，而是 `ComponentHost` 按
+      // `surfaceLayoutProvider(SurfaceId.x)` 渲染。那个 provider 默认为
+      // "空 catalog ⇒ 空布局"，真实定义与注册表由组合根在
+      // `compositionProviderOverrides()` 里注入（`main.dart` 通过
+      // `buildRootContainer()` 做这件事）。本生成器自建容器，若不同样注入，
+      // 每个页面的内容区就渲染 0 个组件——截图看起来像"页面没内容"，
+      // 实际是装配缺失。
+      ...compositionProviderOverrides(),
+
       if (signedIn)
         authSessionProvider.overrideWith(_SimulatedAuthSessionNotifier.new),
 
@@ -464,6 +624,25 @@ Future<ProviderContainer> _pumpPage(
       medicineRiskCheckRepositoryProvider.overrideWithValue(
         SimulatedRiskCheckRepository(),
       ),
+
+      // 关系图十个端点 + 用药组合概览的模拟实现。
+      medicineRelationsRepositoryProvider.overrideWithValue(
+        const SimulatedMedicineRelationsRepository(),
+      ),
+
+      // 今日页「健康观察」：不接这个仓储时整块渲染成「暂不可用，请重试」。
+      healthEventRepositoryProvider.overrideWithValue(
+        const SimulatedHealthEventRepository(),
+      ),
+
+      // 布局仓储：给用药页一份挂了全部十个图组件的布局，这样截出来的
+      // 用药页就是"用户编排出来的安全工作台"，同时证明组件化真的在驱动渲染。
+      // 其余 surface 返回空 map ⇒ 走各自的 defaultLayout（与改造前一致）。
+      layoutRepositoryProvider.overrideWithValue(
+        const _SimulatedLayoutRepository({
+          SurfaceId.medicine: _medicineWorkbenchLayout,
+        }),
+      ),
       legalRepositoryProvider.overrideWithValue(SimulatedLegalRepository()),
       supportRepositoryProvider.overrideWithValue(SimulatedSupportRepository()),
       userSettingsRepositoryProvider.overrideWithValue(
@@ -515,7 +694,7 @@ Future<ProviderContainer> _pumpPage(
   container.read(appRouterProvider).go('/');
 
   await tester.pumpWidget(
-    UncontrolledProviderScope(container: container, child: const LuminousApp()),
+    UncontrolledProviderScope(container: container, child: const LuminousApp(desktopChrome: false)),
   );
 
   await _settle(tester);
@@ -565,8 +744,129 @@ Future<void> _primeRoute(
   }
 }
 
+/// 产物帧的类别标注，写进 manifest。
+String _frameKindLabel(String relativePath) {
+  if (relativePath.startsWith('$_longDir/')) return ' (长截图)';
+  if (relativePath.endsWith('_scrolled.png')) return ' (滚动后)';
+  return '';
+}
+
+/// 把主滚动视图挪到 [fraction] 处，返回是否真的滚动了。
+///
+/// ## 为什么自己找滚动视图
+///
+/// 页面形态不一：tab 页是 `CustomScrollView`，表单页是 `ListView`，
+/// 弹层里还有各自的 `Scrollable`。`find.byType(Scrollable).first` 经常命中
+/// 横向条或嵌套列表。这里取 `maxScrollExtent` 最大的那个——它就是**页面
+/// 主滚动方向**，也是「往下翻」这个动作在用户眼里的含义。
+///
+/// ## 为什么用 drag 而不是 `position.jumpTo`
+///
+/// `jumpTo` 直接改滚动位置，绕过了手势与滚动物理；在有嵌套 sliver 的页面上
+/// 会把已经进入销毁流程的 `RenderViewport` 再拉去 layout，触发
+/// 「RenderViewport DISPOSED」断言（记录页就是这么挂的）。`tester.drag` 走的是
+/// 真实手势链路，滚动由 `Scrollable` 自己应用，不会和 layout 抢时序。
+///
+/// 没有可滚动内容时返回 false，调用方据此跳过第二帧：短页面不该产出
+/// 与首屏一模一样的重复图。
+Future<bool> _scrollPageToFraction(
+  WidgetTester tester,
+  double fraction,
+) async {
+  Element? primaryElement;
+  var bestExtent = 0.0;
+  for (final element in find.byType(Scrollable).evaluate()) {
+    if (element is! StatefulElement) continue;
+    final state = element.state;
+    if (state is! ScrollableState) continue;
+    final position = state.position;
+    if (!position.hasContentDimensions) continue;
+    // **只认纵向滚动**。记录页顶部的横向日期条也可能有更大的
+    // `maxScrollExtent`，而「往下翻」对它没有意义：一旦选中它，
+    // 垂直拖拽会被横向手势识别器抢走并触发 `DragUpdateDetails` 断言。
+    if (position.axis != Axis.vertical) continue;
+    if (position.maxScrollExtent > bestExtent) {
+      bestExtent = position.maxScrollExtent;
+      primaryElement = element;
+    }
+  }
+  if (primaryElement == null || bestExtent <= 0) return false;
+
+  final distance = (bestExtent * fraction).clamp(0.0, bestExtent);
+  if (distance <= 0) return false;
+
+  final anchor = find.byElementPredicate((e) => identical(e, primaryElement));
+  if (anchor.evaluate().isEmpty) return false;
+
+  // 起手点取滚动区域的中下部，而不是默认的几何中心：记录页顶部有一条横向
+  // 日期条，从中心起手仍可能压到它上面，垂直拖拽的指针事件会被
+  // `DragUpdateDetails` 的一致性断言拦下（primaryDelta 与 delta 不匹配）。
+  // 往页面靠下的位置起手，能稳定落在页面主体的纵向列表上。
+  final rect = tester.getRect(anchor);
+  final startPoint = Offset(rect.center.dx, rect.top + rect.height * 0.7);
+
+  // 手势路径上的失败是**逐页的**，不该让整张截图判失败。这里临时接管
+  // `FlutterError.onError`，把滚动过程中的框架错误收集起来；只要发生了一条，
+  // 就放弃这一页的滚动帧——首屏截图已经成功，证据不受损。
+  final scrollErrors = <FlutterErrorDetails>[];
+  final previousOnError = FlutterError.onError;
+  FlutterError.onError = scrollErrors.add;
+  try {
+    await tester.dragFrom(startPoint, Offset(0, -distance));
+    await tester.pump();
+    await _settle(tester);
+  } catch (_) {
+    return false;
+  } finally {
+    FlutterError.onError = previousOnError;
+  }
+  if (scrollErrors.isNotEmpty) return false;
+  return true;
+}
+
+/// 主滚动视图的内容总高度（逻辑像素）；无纵向滚动时返回 null。
+///
+/// `maxScrollExtent + viewportDimension` 就是「整页」的高度：首屏之外那部分
+/// 加上已经显示的一屏。长截图把这个值当成帧高，一次性把整页画出来。
+double? _pageContentHeight(WidgetTester tester) {
+  var best = 0.0;
+  for (final element in find.byType(Scrollable).evaluate()) {
+    if (element is! StatefulElement) continue;
+    final state = element.state;
+    if (state is! ScrollableState) continue;
+    final position = state.position;
+    if (!position.hasContentDimensions) continue;
+    if (position.axis != Axis.vertical) continue;
+    final total = position.maxScrollExtent + position.viewportDimension;
+    if (total > best) best = total;
+  }
+  return best > 0 ? best : null;
+}
+
+/// 把主滚动视图拉回顶部。
+///
+/// 长截图必须从顶部开始，否则会把「当前滚动位置」以上那一段裁掉。
+/// 目标偏移 0 永远是合法值，所以这里可以直接 `jumpTo`，不存在
+/// [_scrollPageToFraction] 里「目标落在已销毁 viewport」的问题。
+void _scrollPageToTop(WidgetTester tester) {
+  ScrollableState? primary;
+  var best = 0.0;
+  for (final element in find.byType(Scrollable).evaluate()) {
+    if (element is! StatefulElement) continue;
+    final state = element.state;
+    if (state is! ScrollableState) continue;
+    final position = state.position;
+    if (!position.hasContentDimensions) continue;
+    if (position.axis != Axis.vertical) continue;
+    if (position.maxScrollExtent > best) {
+      best = position.maxScrollExtent;
+      primary = state;
+    }
+  }
+  primary?.position.jumpTo(0);
+}
+
 // ── Extra surfaces ──────────────────────────────────────────────────────────
-//
 // The catalog is one shot per route; several real capabilities only exist in a
 // state a single at-rest route cannot show (a confirmation card awaiting a tap,
 // an expanded source strip, a photo-recognition dialog). These extras reuse the
@@ -729,7 +1029,80 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     note: '找回密码页：邮箱验证码重置流程入口（未登录态）',
     signedOut: true,
   ),
+
+  // ── 回顾页：多维度趋势图的三个维度 ─────────────────────────────
+  //
+  // 「健康趋势」是同一张折线图按维度切换（用药完成率 / 饮水 / 睡眠）。
+  // 单张 at-rest 截图只能看到默认维度，另外两个必须点 tab 才出现；
+  // 三者一起才是「多维度」的证据。
+  _ExtraCapture(
+    fileName: '58_review_trend-medication.png',
+    group: 'review',
+    page: 'trend-medication',
+    route: '/review',
+    note: '回顾 · 健康趋势（用药完成率维度）',
+    prepare: (tester) async {
+      await _scrollToReviewTrend(tester);
+    },
+  ),
+  _ExtraCapture(
+    fileName: '59_review_trend-water.png',
+    group: 'review',
+    page: 'trend-water',
+    route: '/review',
+    note: '回顾 · 健康趋势（饮水维度）',
+    prepare: (tester) async {
+      await _scrollToReviewTrend(tester);
+      await tester.tap(find.text('饮水').last);
+      await _settle(tester);
+    },
+  ),
+  _ExtraCapture(
+    fileName: '60_review_trend-sleep.png',
+    group: 'review',
+    page: 'trend-sleep',
+    route: '/review',
+    note: '回顾 · 健康趋势（睡眠维度）',
+    prepare: (tester) async {
+      await _scrollToReviewTrend(tester);
+      await tester.tap(find.text('睡眠').last);
+      await _settle(tester);
+    },
+  ),
 ];
+
+/// 滚到回顾页的「健康趋势」标题处，让趋势图进入视口。
+///
+/// 趋势区块在回顾页很靠下，且切换维度的 tab 必须**可见**才能点中
+/// （tap 会对屏幕外的点报 warnIfMissed）。这里直接把主滚动视图滚到底：
+/// 趋势图是页面的最后一块。
+Future<void> _scrollToReviewTrend(WidgetTester tester) async {
+  final scrollables = find.byType(Scrollable).evaluate();
+  Element? deepest;
+  var best = 0.0;
+  for (final element in scrollables) {
+    if (element is! StatefulElement) continue;
+    final state = element.state;
+    if (state is! ScrollableState) continue;
+    final position = state.position;
+    if (!position.hasContentDimensions) continue;
+    if (position.axis != Axis.vertical) continue;
+    if (position.maxScrollExtent > best) {
+      best = position.maxScrollExtent;
+      deepest = element;
+    }
+  }
+  if (deepest == null || best <= 0) return;
+  final anchor = find.byElementPredicate((e) => identical(e, deepest));
+  if (anchor.evaluate().isEmpty) return;
+  final rect = tester.getRect(anchor);
+  await tester.dragFrom(
+    Offset(rect.center.dx, rect.top + rect.height * 0.7),
+    Offset(0, -best),
+  );
+  await tester.pump();
+  await _settle(tester);
+}
 
 /// A context below both `Localizations` and the app `Navigator`.
 ///
@@ -858,7 +1231,11 @@ Future<void> _showRecognizeDialog(
     showAppDialog<void>(
       context: _hostContext(tester),
       barrierDismissible: false,
+      // `DialogShell` 断言禁止「scrollable: false 且没有 maxHeight」：内容一旦
+      // 高于弹窗上限就会静默溢出底边。识别结果列表是可变长的，这里给有界高度；
+      // 保留 `scrollable: false` 是因为列表自己要滚，外层滚动层会和它抢手势。
       scrollable: false,
+      maxHeight: _frameHeight * 0.85,
       builder: (_) => MedicineRecognizeDialog(
         imagePath: _boxPhotoPath,
         method: method,
@@ -877,6 +1254,10 @@ void main() {
   final manifest = StringBuffer()
     ..writeln('# Luminous page-catalog screenshots (generated)')
     ..writeln()
+    ..writeln('目录结构：每个 tab 一个目录，`1_*` 是 tab 根页（一级），`2_*` 是')
+    ..writeln('该 tab 的子页面（二级）；`*_scrolled.png` 是滚到中段的第二帧；')
+    ..writeln('`long/` 放所有整页长截图。')
+    ..writeln()
     ..writeln('| File | Group | Page | Route | Text widgets | Note |')
     ..writeln('| --- | --- | --- | --- | --- | --- |');
 
@@ -888,15 +1269,26 @@ void main() {
 
   /// Shared capture body: frame, navigate, prime, prepare, dump text, shoot,
   /// record, then unmount and drain before the binding's invariant check.
+  ///
+  /// 每个页面最多产出三帧：
+  /// 1. `<folder>/<name>.png` — 首屏；
+  /// 2. `<folder>/<name>_scrolled.png` — 滚动到中段（仅当内容溢出）；
+  /// 3. `long/<folder>__<name>.png` — 整页长截图（仅当内容溢出）。
   Future<void> capture(
     WidgetTester tester, {
-    required String fileName,
+    required _Placement placement,
+    required String name,
     required String route,
     AssistantConversation? assistantConversation,
     Future<void> Function(WidgetTester tester)? prepare,
     bool signedOut = false,
-    required void Function(int textWidgetCount) record,
+    bool longCapture = true,
+    required void Function(String relativePath, int textWidgetCount) record,
   }) async {
+    final folder = placement.folder;
+    final baseName = '${placement.prefix}$name';
+    _ensureOutputDir(folder);
+
     tester.view.physicalSize = const Size(
       _frameWidth * _frameDpr,
       _frameHeight * _frameDpr,
@@ -930,28 +1322,94 @@ void main() {
     //
     // Text-field content lives in `EditableText`, not `Text`, so a form that
     // prefill correctly would otherwise look empty here.
-    final rendered = <String>[];
-    for (final element in find.byType(Text).evaluate()) {
-      final data = (element.widget as Text).data;
-      if (data != null && data.trim().isNotEmpty) {
-        rendered.add(data.trim());
+    void dumpRendered(String relativePath) {
+      final rendered = <String>[];
+      for (final element in find.byType(Text).evaluate()) {
+        final data = (element.widget as Text).data;
+        if (data != null && data.trim().isNotEmpty) {
+          rendered.add(data.trim());
+        }
       }
-    }
-    for (final element in find.byType(EditableText).evaluate()) {
-      final data = (element.widget as EditableText).controller.text;
-      if (data.trim().isNotEmpty) {
-        rendered.add(data.trim());
+      for (final element in find.byType(EditableText).evaluate()) {
+        final data = (element.widget as EditableText).controller.text;
+        if (data.trim().isNotEmpty) {
+          rendered.add(data.trim());
+        }
       }
+      renderedTexts[relativePath] = rendered;
+      record(relativePath, rendered.length);
     }
-    renderedTexts[fileName] = rendered;
-    record(rendered.length);
+
+    final firstFrame = '$folder/$baseName.png';
+    dumpRendered(firstFrame);
 
     await expectLater(
       find.byType(LuminousApp),
-      matchesGoldenFile('$_outputDir/$fileName'),
+      matchesGoldenFile(_goldenPath(folder, '$baseName.png')),
     );
 
-    captured.add(fileName);
+    captured.add(firstFrame);
+
+    // ── 滚动后的第二帧 ──────────────────────────────────────────────
+    //
+    // 此前每个页面只截首屏，标题以下的内容全部看不见：用药页新增的十个
+    // 关系图卡片、回顾页的趋势区块、我的页的下半部分都不在证据范围内。
+    // 这里对**内容确实溢出**的页面再截一帧中段画面。
+    //
+    // 判据是主滚动视图的 `maxScrollExtent > 0`：短页面（表单、弹层）没有
+    // 可滚动内容，就不产出多余的重复图。
+    final everScrolled = await _scrollPageToFraction(tester, 0.55);
+    if (everScrolled) {
+      final scrolledFrame = '$folder/${baseName}_scrolled.png';
+      dumpRendered(scrolledFrame);
+      await expectLater(
+        find.byType(LuminousApp),
+        matchesGoldenFile(_goldenPath(folder, '${baseName}_scrolled.png')),
+      );
+      captured.add(scrolledFrame);
+    }
+
+    // ── 整页长截图 ──────────────────────────────────────────────────
+    //
+    // 把帧高临时拉到「内容总高」，一次性画出整页：这是「这个页面到底有多长、
+    // 中段和尾部各是什么」最省事的证据，也避免滚动帧只能覆盖中段的偶然性。
+    //
+    // 只在内容确实溢出时产出；高度封顶 [_longMaxHeight]，防止异常布局
+    // 生成一张打不开的图。
+    final contentHeight = _pageContentHeight(tester);
+    if (longCapture &&
+        contentHeight != null &&
+        contentHeight > _frameHeight * 1.05) {
+      _scrollPageToTop(tester);
+      await tester.pump();
+      final longHeight = contentHeight.clamp(_frameHeight, _longMaxHeight);
+      tester.view.physicalSize = Size(
+        _frameWidth * _longDpr,
+        longHeight * _longDpr,
+      );
+      tester.view.devicePixelRatio = _longDpr;
+      await tester.pump();
+      await _settle(tester);
+
+      final longFile = '$_longDir/${_longName(folder, baseName)}';
+      _ensureOutputDir(_longDir);
+      dumpRendered(longFile);
+      await expectLater(
+        find.byType(LuminousApp),
+        matchesGoldenFile(
+          _goldenPath(_longDir, _longName(folder, baseName)),
+        ),
+      );
+      captured.add(longFile);
+
+      // 还原常规帧，后面的 teardown 与其它断言都按原尺寸走。
+      tester.view.physicalSize = const Size(
+        _frameWidth * _frameDpr,
+        _frameHeight * _frameDpr,
+      );
+      tester.view.devicePixelRatio = _frameDpr;
+      await tester.pump();
+    }
 
     // Unmount and drain before the binding's end-of-test invariant check.
     // `addTearDown(container.dispose)` runs *after* that check, so several
@@ -970,18 +1428,20 @@ void main() {
 
   for (var i = 0; i < catalog.screenshotCatalog.length; i += 1) {
     final target = catalog.screenshotCatalog[i];
-    final fileName = catalog.screenshotFileName(i, target);
+    final placement = _placementFor(target.group, target.id);
 
     testWidgets(
       'generate ${target.group}/${target.id}',
       (tester) => capture(
         tester,
-        fileName: fileName,
+        placement: placement,
+        name: target.id,
         route: target.route,
         prepare: target.prepare,
-        record: (count) => manifest.writeln(
-          '| `$fileName` | ${target.group} | ${target.id} | '
-          '`${target.route}` | $count | ${target.note ?? ''} |',
+        record: (name, count) => manifest.writeln(
+          '| `$name` | ${target.group} | ${target.id} | '
+          '`${target.route}` | $count | ${target.note ?? ''}'
+          '${_frameKindLabel(name)} |',
         ),
       ),
       timeout: const Timeout(Duration(seconds: 45)),
@@ -993,14 +1453,20 @@ void main() {
       'generate ${extra.group}/${extra.page}',
       (tester) => capture(
         tester,
-        fileName: extra.fileName,
+        placement: _placementFor(extra.group, extra.page),
+        name: extra.fileName.replaceAll('.png', ''),
         route: extra.route,
         assistantConversation: extra.assistantConversation,
         prepare: extra.prepare,
         signedOut: extra.signedOut,
-        record: (count) => manifest.writeln(
-          '| `${extra.fileName}` | ${extra.group} | ${extra.page} | '
-          '`${extra.route}` | $count | ${extra.note} |',
+        // extras 是「同一条路由的某个特定状态」，整页长截图会在同一路由上
+        // 重复产出内容几乎相同的图（趋势的三个维度就是这样）。它们的价值
+        // 在首屏那一帧，不产出长截图。
+        longCapture: false,
+        record: (name, count) => manifest.writeln(
+          '| `$name` | ${extra.group} | ${extra.page} | '
+          '`${extra.route}` | $count | ${extra.note}'
+          '${_frameKindLabel(name)} |',
         ),
       ),
       timeout: const Timeout(Duration(seconds: 45)),

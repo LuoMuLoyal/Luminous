@@ -466,8 +466,8 @@ HealthContextSnapshot simulatedHealthContextSnapshot() {
     currentMedicines: <CurrentMedicineItem>[
       CurrentMedicineItem(
         id: _simulatedMedicineId(0),
-        source: 'cn',
-        sourceRefId: 'cn-amlodipine-5mg',
+        source: 'drugbank',
+        sourceRefId: 'DB00381',
         displayName: _simulatedMedicineName(0),
         strengthText: '5mg',
         doseText: '每次 1 片，每日 2 次',
@@ -481,8 +481,8 @@ HealthContextSnapshot simulatedHealthContextSnapshot() {
       ),
       CurrentMedicineItem(
         id: _simulatedMedicineId(1),
-        source: 'cn',
-        sourceRefId: 'cn-aspirin-100mg',
+        source: 'drugbank',
+        sourceRefId: 'DB00945',
         displayName: _simulatedMedicineName(1),
         strengthText: '100mg',
         doseText: '每次 1 片，每日 1 次',
@@ -496,8 +496,8 @@ HealthContextSnapshot simulatedHealthContextSnapshot() {
       ),
       CurrentMedicineItem(
         id: _simulatedMedicineId(2),
-        source: 'cn',
-        sourceRefId: 'cn-metformin-500mg',
+        source: 'drugbank',
+        sourceRefId: 'DB00331',
         displayName: _simulatedMedicineName(2),
         strengthText: '0.5g',
         doseText: '每次 1 片，每日 1 次',

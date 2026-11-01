@@ -17,11 +17,33 @@ cd Luminous
 flutter test tool/screenshots/generate.dart --update-goldens
 ```
 
-Outputs land in `outputs/screenshots/` (gitignored):
+Outputs land in `outputs/screenshots/` (gitignored), 按 tab 分目录：
 
-- `NN_group_page.png` — one PNG per catalog page, then the extras numbered on
-- `MANIFEST.md` — file → group/page/route → rendered-text count
-- `_rendered_text.txt` — every string each page rendered, for diffing runs
+```text
+outputs/screenshots/
+  today/        1_today.png  ...             tab 根页（一级，`1_` 前缀）
+  record/       1_record.png  2_detail.png   本 tab 的子页面（二级，`2_` 前缀）
+  medicine/     1_medicine.png  2_search.png  ...
+  review/  mine/  settings/  assistant/  scan/  customize/  ...
+  long/         全部整页长截图
+  MANIFEST.md   文件 → 分组/页面/路由 → 渲染文本数 → 帧类别
+  _rendered_text.txt   每个页面渲染出的全部字符串，用于对比两次运行
+```
+
+每种页面最多三帧：
+
+| 帧 | 文件 | 何时产出 |
+| --- | --- | --- |
+| 首屏 | `<folder>/<name>.png` | 总是 |
+| 滚动后 | `<folder>/<name>_scrolled.png` | 内容溢出一屏时 |
+| 长截图 | `long/<folder>__<name>.png` | 内容溢出一屏时（整页，dpr 2） |
+
+长截图把帧高临时拉到内容总高一次画完，所以「这个页面到底多长、中段和尾部
+是什么」不需要靠多张滚动帧拼接。extras（同路由的特定状态）不产出长截图——
+它们与所属页面会得到内容相同的整页图。
+
+顶部不渲染桌面窗口条：生成器给 `LuminousApp` 传 `desktopChrome: false`，
+否则在 Windows 上跑测试会把「最小化/最大化/关闭」画进移动端页面截图。
 
 To iterate on a few pages, filter by test name:
 

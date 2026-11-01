@@ -206,6 +206,35 @@ const List<ScreenshotTarget> screenshotCatalog = <ScreenshotTarget>[
     note: 'Edit medicine reminder.',
   ),
 
+  // 组件化编排页：每个 tab 的标题点进去就是这张表自己的编排界面。
+  //
+  // 三个 surface 各截一张，因为面板内容随 surface 变化：用药页的候选池里
+  // 有十个关系图组件，今日页能看到跨 tab 复用，回顾页组件最多（20 个）。
+  ScreenshotTarget(
+    group: 'customize',
+    id: 'medicine',
+    route: '/customize/medicine',
+    note: '编排页（用药）：显隐/排序/尺寸 + 跨 tab 候选面板。',
+  ),
+  ScreenshotTarget(
+    group: 'customize',
+    id: 'today',
+    route: '/customize/today',
+    note: '编排页（今日）。',
+  ),
+  ScreenshotTarget(
+    group: 'customize',
+    id: 'review',
+    route: '/customize/review',
+    note: '编排页（回顾）：候选池最大，含 legacy 分区。',
+  ),
+  ScreenshotTarget(
+    group: 'customize',
+    id: 'mine',
+    route: '/customize/mine',
+    note: '编排页（我的）。',
+  ),
+
   // ------------------------------------------------------------------- mine
   ScreenshotTarget(
     group: 'mine',
