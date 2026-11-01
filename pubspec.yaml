@@ -151,6 +151,7 @@ dependencies:
   # 生成式 UI 的 catalog item schema（`S.object` / `S.string`）。`genui` 自己
   # 也依赖它；这里显式声明是因为组合根直接构造 `CatalogItem.dataSchema`。
   json_schema_builder: ^0.1.7
+  graphview: ^1.5.1
 
 dev_dependencies:
   flutter_test:

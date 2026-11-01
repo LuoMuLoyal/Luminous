@@ -42,9 +42,9 @@ final class ComponentRegistry {
         id: descriptor.id,
         supportedSizes: descriptor.supportedSizes,
         defaultConfig: descriptor.encode(descriptor.defaultConfig),
-        build: (context, ref, config) {
+        build: (context, ref, render, config) {
           final decoded = descriptor.decode(config) ?? descriptor.defaultConfig;
-          return descriptor.build(context, ref, decoded);
+          return descriptor.build(context, ref, render, decoded);
         },
       ),
     );

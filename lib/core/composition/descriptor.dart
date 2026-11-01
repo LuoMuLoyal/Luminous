@@ -12,6 +12,28 @@ final class NoComponentConfig {
   const NoComponentConfig();
 }
 
+/// 组件渲染时能拿到的上下文。
+///
+/// 组件的 `build` 收这个而不是裸 `(context, ref)`：组件有时需要知道
+/// **自己挂在哪张表上、是哪个 id**——典型场景是就地改自己的配置（列表/图
+/// 变体切换要写回 `SurfaceLayout`，而布局按 surface 存）。
+///
+/// 为什么不塞进 `BuildContext`：那要靠 `InheritedWidget` 转发，读的地方得
+/// 处理「可能不在宿主里」的空值，而组件本来只可能由宿主构建。显式传参让
+/// 「没有 surface」这个状态在类型上不存在。
+class ComponentRenderContext {
+  const ComponentRenderContext({
+    required this.surface,
+    required this.id,
+  });
+
+  /// 组件当前所在的表面。
+  final SurfaceId surface;
+
+  /// 组件自己的 id（配置写回时要用它定位 placement）。
+  final ComponentId id;
+}
+
 /// Erased render function stored by [ComponentRegistry].
 ///
 /// The typed `C` only exists inside a [ComponentDescriptor]; the registry and
@@ -26,6 +48,7 @@ typedef ComponentBuilder =
     Widget? Function(
       BuildContext context,
       WidgetRef ref,
+      ComponentRenderContext render,
       Map<String, Object?> config,
     );
 
@@ -54,7 +77,12 @@ abstract class ComponentDescriptor<C> {
   Map<String, Object?> encode(C config) => const {};
 
   /// Renders the component. Returning `null` skips it entirely (no spacing).
-  Widget? build(BuildContext context, WidgetRef ref, C config);
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    C config,
+  );
 }
 
 /// A descriptor after registration: config type erased, config pre-decoded per

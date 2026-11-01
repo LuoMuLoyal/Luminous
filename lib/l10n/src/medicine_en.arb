@@ -853,5 +853,9 @@
     }
   },
   "medicineGraphCollapse": "Collapse",
-  "medicineGraphUnavailableShort": "Unavailable"
+  "medicineGraphUnavailableShort": "Unavailable",
+  "medicineGraphViewGraph": "Graph",
+  "medicineGraphViewList": "List",
+  "medicineGraphViewGraphHint": "Show upstream and downstream as a layered graph",
+  "medicineGraphViewListHint": "List findings one row at a time"
 }

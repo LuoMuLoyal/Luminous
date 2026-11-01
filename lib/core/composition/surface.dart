@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:luminous/shared/domain/composition/id.dart';
 import 'package:luminous/shared/domain/composition/layout.dart';
 import 'package:luminous/shared/domain/composition/surface.dart';
 

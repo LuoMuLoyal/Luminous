@@ -1,8 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/medicine/domain/entities/graph_view_mode.dart';
 import 'package:luminous/features/medicine/domain/entities/relations.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+/// 列表 / 图视图切换器。
+///
+/// 两个小按钮而不是分段控件：卡片标题行已经有一枚计数徽章，再加一个宽控件
+/// 会把标题挤到换行。图标按钮在两种视图间来回切，语义自明。
+class GraphViewToggle extends StatelessWidget {
+  const GraphViewToggle({
+    super.key,
+    required this.mode,
+    required this.onChanged,
+  });
+
+  final GraphViewMode mode;
+  final void Function(GraphViewMode mode) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final isGraph = mode is GraphMode;
+    return Align(
+      alignment: Alignment.centerRight,
+      child: FButton(
+        key: const Key('medicine-graph-view-toggle'),
+        variant: .outline,
+        size: .sm,
+        onPress: () => onChanged(
+          isGraph ? const ListMode() : const GraphMode(),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isGraph ? SemanticIcons.recordClipboard : SemanticIcons.tabReview,
+              size: IconSizeTokens.sm,
+              color: SemanticColor.neutral.solid(context),
+            ),
+            const SizedBox(width: Spacing.xs),
+            Text(
+              isGraph ? l10n.medicineGraphViewList : l10n.medicineGraphViewGraph,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 /// 关系图组件的公共外壳与三态渲染。
 ///
@@ -23,6 +72,8 @@ class GraphCard extends StatelessWidget {
     required this.title,
     this.trailing,
     this.footer,
+    this.onToggleView,
+    this.viewMode,
     required this.child,
   });
 
@@ -37,6 +88,16 @@ class GraphCard extends StatelessWidget {
 
   /// 卡片底部补充说明（覆盖度、免责说明）。
   final Widget? footer;
+
+  /// 切换列表/图视图；为 null 时不显示切换钮（单药类组件不需要）。
+  ///
+  /// 切换钮长在卡片自己身上而不是编排页里：用户是在**阅读这一张卡**的时候
+  /// 才想「这条链画出来是什么样」，跑到编排页改配置会打断阅读。
+  /// 变更照样写进同一个 placement 配置，所以它是持久的。
+  final void Function(GraphViewMode mode)? onToggleView;
+
+  /// 当前视图，供 [onToggleView] 的切换钮显示「切到另一边」。
+  final GraphViewMode? viewMode;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +125,14 @@ class GraphCard extends StatelessWidget {
                 ],
               ],
             ),
+            if (onToggleView != null)
+              Padding(
+                padding: const EdgeInsets.only(top: Spacing.sm),
+                child: GraphViewToggle(
+                  mode: viewMode ?? const ListMode(),
+                  onChanged: onToggleView!,
+                ),
+              ),
             const SizedBox(height: Spacing.md),
             child,
             if (footer != null) ...[

@@ -110,7 +110,12 @@ class _DrugBoxComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     // 数据未就绪（首帧加载或加载失败）时不占位：页面级状态机负责骨架与错误态。
     // 区块在这里因 error 而消失会被误读成「没有药品」。
     if (ref.watch(medicineSurfaceStateProvider).dataOrNull == null) {
@@ -130,7 +135,12 @@ class _RecordsComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     if (ref.watch(medicineSurfaceStateProvider).dataOrNull == null) {
       return null;
     }
@@ -148,7 +158,12 @@ class _SafetyEngineComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     if (ref.watch(medicineSurfaceStateProvider).dataOrNull == null) {
       return null;
     }
@@ -166,7 +181,12 @@ class _QuickOperationComponent extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     // 快捷操作只是入口，不依赖工作区数据，加载中/失败时仍然可用。
     return const QuickOperationSection();
   }
@@ -180,6 +200,9 @@ class _QuickOperationComponent extends ComponentDescriptor<NoComponentConfig> {
 /// 关系图组件的基础：支持 compact / regular / wide 三档。
 ///
 /// 关系图是这页最需要跨列的内容（通路、靶点清单一行放不下），所以三档都声明支持。
+///
+/// 配置类型仍是 [NoComponentConfig]：列表/图变体是**组件偏好**（KV，按组件 id），
+/// 不是布局配置——它不该参与 `SurfaceLayout` 的版本与同步语义。
 abstract class _GraphComponent extends ComponentDescriptor<NoComponentConfig> {
   const _GraphComponent();
 
@@ -201,7 +224,12 @@ class _MedicationOverviewComponent extends _GraphComponent {
   ComponentId get id => medicineMedicationOverviewId;
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return MedicationOverviewSection(compact: _isCompact(context));
   }
 }
@@ -213,8 +241,16 @@ class _MechanismPathsComponent extends _GraphComponent {
   ComponentId get id => medicineMechanismPathsId;
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
-    return MechanismPathsSection(compact: _isCompact(context));
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
+    return MechanismPathsSection(
+      componentId: render.id.value,
+      compact: _isCompact(context),
+    );
   }
 }
 
@@ -225,7 +261,12 @@ class _SharedTargetsComponent extends _GraphComponent {
   ComponentId get id => medicineSharedTargetsId;
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const SharedTargetsSection();
   }
 }
@@ -237,8 +278,13 @@ class _CascadePathsComponent extends _GraphComponent {
   ComponentId get id => medicineCascadePathsId;
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
-    return const CascadePathsSection();
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
+    return CascadePathsSection(componentId: render.id.value);
   }
 }
 
@@ -249,7 +295,12 @@ class _EnzymeDuelsComponent extends _GraphComponent {
   ComponentId get id => medicineEnzymeDuelsId;
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const EnzymeDuelsSection();
   }
 }
@@ -261,7 +312,12 @@ class _DrugActionsComponent extends _GraphComponent {
   ComponentId get id => medicineDrugActionsId;
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const DrugActionsSection();
   }
 }
@@ -273,7 +329,12 @@ class _TransportRoutesComponent extends _GraphComponent {
   ComponentId get id => medicineTransportRoutesId;
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const TransportRoutesSection();
   }
 }
@@ -285,7 +346,12 @@ class _SubstitutesComponent extends _GraphComponent {
   ComponentId get id => medicineSubstitutesId;
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const SubstitutesSection();
   }
 }
@@ -297,7 +363,12 @@ class _ShortestRoutesComponent extends _GraphComponent {
   ComponentId get id => medicineShortestRoutesId;
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const ShortestRoutesSection();
   }
 }
@@ -309,7 +380,12 @@ class _TargetDrugsComponent extends _GraphComponent {
   ComponentId get id => medicineTargetDrugsId;
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     return const TargetDrugsSection();
   }
 }

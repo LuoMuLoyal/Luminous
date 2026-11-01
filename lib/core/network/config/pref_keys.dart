@@ -46,6 +46,11 @@ abstract final class PrefKeys {
       'medicine.reminder.scheduledNotificationIds';
   static const medicineSearchRecentKeywords = 'medicine.search.recentKeywords';
 
+  /// 关系图组件的显示变体前缀（`<prefix><componentId>` → `list` / `graph`）。
+  ///
+  /// 按组件 id 分别记住：用户可能想看「机制通路」的图，但「级联」保持列表。
+  static const medicineGraphViewModePrefix = 'medicine.graph.viewMode.';
+
   // ── Record ─────────────────────────────────────────────────────────────
 
   static const recordQuickEntryDynamicSort =

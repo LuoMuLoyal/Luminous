@@ -860,5 +860,9 @@
     }
   },
   "medicineGraphCollapse": "收起",
-  "medicineGraphUnavailableShort": "无法分析"
+  "medicineGraphUnavailableShort": "无法分析",
+  "medicineGraphViewGraph": "图",
+  "medicineGraphViewList": "列表",
+  "medicineGraphViewGraphHint": "以分层图显示通路的上下游关系",
+  "medicineGraphViewListHint": "以文本行逐条列出"
 }

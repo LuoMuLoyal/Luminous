@@ -34,7 +34,12 @@ List<GridEntry> _resolve({
       );
       continue;
     }
-    final child = component.build(context, ref, placement.config);
+    final child = component.build(
+      context,
+      ref,
+      ComponentRenderContext(surface: surface, id: placement.id),
+      placement.config,
+    );
     if (child == null) continue;
     children.add((widget: child, span: _spanOf(grid, placement, component)));
   }

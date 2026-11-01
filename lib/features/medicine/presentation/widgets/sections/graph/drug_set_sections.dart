@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/medicine/domain/entities/graph_view_mode.dart';
 import 'package:luminous/features/medicine/domain/entities/relations.dart';
+import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
 import 'package:luminous/features/medicine/presentation/providers/relations/graph.dart';
 import 'package:luminous/features/medicine/presentation/widgets/sections/graph/graph_card.dart';
+import 'package:luminous/features/medicine/presentation/widgets/sections/graph/graph_view_canvas.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 「这组药之间发生了什么」类组件：只依赖当前用药集合，无额外入参。
@@ -21,13 +24,26 @@ Widget _needsInputNote(String text) => Text(
 );
 
 /// 机制通路：`A ─INHIBITS→ 酶 ←SUBSTRATE_OF─ B`。
+///
+/// 支持**列表 / 图**两个变体（[mode]）：列表逐条读，图铺开拓扑。
 class MechanismPathsSection extends ConsumerWidget {
-  const MechanismPathsSection({super.key, this.compact = false});
+  const MechanismPathsSection({
+    super.key,
+    required this.componentId,
+    this.compact = false,
+  });
 
+  /// 组件自己的 id，用于读写它的变体偏好。
+  final String componentId;
   final bool compact;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final mode = ref.watch(
+      graphViewModesProvider.select((modes) {
+        return modes[componentId] ?? const ListMode();
+      }),
+    );
     final l10n = AppLocalizations.of(context)!;
     final drugSet = ref.watch(graphDrugSetProvider).asData?.value;
     if (drugSet == null || !drugSet.hasPair) {
@@ -55,6 +71,10 @@ class MechanismPathsSection extends ConsumerWidget {
               ),
             )
           : null,
+      viewMode: mode,
+      onToggleView: (next) => ref
+          .read(graphViewModesProvider.notifier)
+          .setMode(componentId, next),
       footer: GraphCoverageNote(
         covered: drugSet.drugbankIds.length,
         total: drugSet.totalMedicines,
@@ -67,6 +87,24 @@ class MechanismPathsSection extends ConsumerWidget {
           graphMechanismPathsProvider(drugSetKey(drugSet.drugbankIds)),
         ),
         builder: (context, items) {
+          // 图变体：药物 → 酶（每条通路的另一端药物是不可见的起点，
+          // 所以以「另一端药物 + 酶」成对铺开）。
+          if (mode.isGraph) {
+            final nodes = <String, String>{};
+            final edges = <GraphEdgeSpec>[];
+            for (final path in items) {
+              nodes[path.otherDrugName] = path.otherDrugName;
+              nodes[path.enzymeGene] = path.enzymeGene;
+              edges.add(
+                GraphEdgeSpec(
+                  from: path.otherDrugName,
+                  to: path.enzymeGene,
+                  label: _relationLabel(l10n, path.relation),
+                ),
+              );
+            }
+            return GraphViewCanvas(nodes: nodes, edges: edges);
+          }
           final shown = compact ? items.take(2).toList() : items;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,10 +200,26 @@ class SharedTargetsSection extends ConsumerWidget {
 }
 
 /// 级联传播：4 跳链，A 与 B 没有直接相互作用，但暴露量被间接改变。
+///
+/// 支持**列表 / 图**两个变体：这是图视图收益最大的组件。
 class CascadePathsSection extends ConsumerWidget {
-  const CascadePathsSection({super.key, this.compact = false});
+  const CascadePathsSection({
+    super.key,
+    required this.componentId,
+    this.compact = false,
+  });
 
+  /// 组件自己的 id，用于读写它的变体偏好。
+  final String componentId;
   final bool compact;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mode = ref.watch(
+      graphViewModesProvider.select((modes) {
+        return modes[componentId] ?? const ListMode();
+      }),
+    );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -197,6 +251,10 @@ class CascadePathsSection extends ConsumerWidget {
               ),
             )
           : null,
+      viewMode: mode,
+      onToggleView: (next) => ref
+          .read(graphViewModesProvider.notifier)
+          .setMode(componentId, next),
       footer: GraphCoverageNote(
         covered: drugSet.drugbankIds.length,
         total: drugSet.totalMedicines,
@@ -207,6 +265,47 @@ class CascadePathsSection extends ConsumerWidget {
         compact: compact,
         onRetry: () => ref.invalidate(graphCascadePathsProvider(start)),
         builder: (context, items) {
+          // 图变体：四跳链正是图视图最有价值的地方——文本行要读者自己
+          // 把「A ⊣ 酶1 ⊸ C ⊣ 酶2 ⊸ B」脑补成一条链。
+          if (mode.isGraph) {
+            final nodes = <String, String>{};
+            final edges = <GraphEdgeSpec>[];
+            for (final cascade in items) {
+              nodes[cascade.startDrug] = cascade.startDrug;
+              nodes[cascade.enzymeOne] = cascade.enzymeOne;
+              nodes[cascade.middleDrug] = cascade.middleDrug;
+              nodes[cascade.enzymeTwo] = cascade.enzymeTwo;
+              nodes[cascade.endDrug] = cascade.endDrug;
+              edges
+                ..add(
+                  GraphEdgeSpec(
+                    from: cascade.startDrug,
+                    to: cascade.enzymeOne,
+                    label: l10n.medicineGraphRelationInhibits,
+                  ),
+                )
+                ..add(
+                  GraphEdgeSpec(
+                    from: cascade.middleDrug,
+                    to: cascade.enzymeOne,
+                  ),
+                )
+                ..add(
+                  GraphEdgeSpec(
+                    from: cascade.middleDrug,
+                    to: cascade.enzymeTwo,
+                    label: l10n.medicineGraphRelationInhibits,
+                  ),
+                )
+                ..add(
+                  GraphEdgeSpec(
+                    from: cascade.endDrug,
+                    to: cascade.enzymeTwo,
+                  ),
+                );
+            }
+            return GraphViewCanvas(nodes: nodes, edges: edges, height: 260);
+          }
           final shown = compact ? items.take(1).toList() : items;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -416,7 +515,7 @@ class _GraphLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
+    return SizedBox(
       height: Spacing.xl4,
       child: Center(child: FCircularProgress.loader()),
     );
