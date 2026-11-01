@@ -18,7 +18,12 @@ class _Probe extends ComponentDescriptor<NoComponentConfig> {
   NoComponentConfig get defaultConfig => const NoComponentConfig();
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     renderLog.add(id);
     if (!shows) return null;
     return Text(label ?? id.value);
@@ -50,7 +55,11 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           [componentRegistryProvider.overrideWithValue(registry)],
-          const ComponentHost(surface: SurfaceId.today, layout: layout, spacing: 8),
+          const ComponentHost(
+            surface: SurfaceId.today,
+            layout: layout,
+            spacing: 8,
+          ),
         ),
       );
 
@@ -63,7 +72,9 @@ void main() {
 
     testWidgets('skips unknown component ids without throwing', (tester) async {
       final registry = ComponentRegistry()
-        ..registerDescriptor(_Probe(const ComponentId('a.known'), label: 'known'));
+        ..registerDescriptor(
+          _Probe(const ComponentId('a.known'), label: 'known'),
+        );
       const layout = SurfaceLayout(
         placements: [
           ComponentPlacement(id: ComponentId('missing.component')),
@@ -72,10 +83,9 @@ void main() {
       );
 
       await tester.pumpWidget(
-        _wrap(
-          [componentRegistryProvider.overrideWithValue(registry)],
-          const ComponentHost(surface: SurfaceId.today, layout: layout),
-        ),
+        _wrap([
+          componentRegistryProvider.overrideWithValue(registry),
+        ], const ComponentHost(surface: SurfaceId.today, layout: layout)),
       );
 
       expect(tester.takeException(), isNull);
@@ -86,11 +96,15 @@ void main() {
       tester,
     ) async {
       final registry = ComponentRegistry()
-        ..registerDescriptor(_Probe(const ComponentId('a.shown'), label: 'shown'))
+        ..registerDescriptor(
+          _Probe(const ComponentId('a.shown'), label: 'shown'),
+        )
         ..registerDescriptor(
           _Probe(const ComponentId('b.hidden'), shows: false),
         )
-        ..registerDescriptor(_Probe(const ComponentId('c.shown'), label: 'last'));
+        ..registerDescriptor(
+          _Probe(const ComponentId('c.shown'), label: 'last'),
+        );
       const layout = SurfaceLayout(
         placements: [
           ComponentPlacement(id: ComponentId('a.shown')),
@@ -102,7 +116,11 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           [componentRegistryProvider.overrideWithValue(registry)],
-          const ComponentHost(surface: SurfaceId.today, layout: layout, spacing: 16),
+          const ComponentHost(
+            surface: SurfaceId.today,
+            layout: layout,
+            spacing: 16,
+          ),
         ),
       );
 
@@ -122,10 +140,9 @@ void main() {
       );
 
       await tester.pumpWidget(
-        _wrap(
-          [componentRegistryProvider.overrideWithValue(registry)],
-          const ComponentHost(surface: SurfaceId.today, layout: layout),
-        ),
+        _wrap([
+          componentRegistryProvider.overrideWithValue(registry),
+        ], const ComponentHost(surface: SurfaceId.today, layout: layout)),
       );
 
       expect(probe.renderLog, isEmpty);

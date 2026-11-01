@@ -45,7 +45,12 @@ class _Probe extends ComponentDescriptor<NoComponentConfig> {
   Set<ComponentSize> get supportedSizes => _sizes;
 
   @override
-  Widget? build(BuildContext context, WidgetRef ref, NoComponentConfig config) {
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
     // 撑满格子：网格给每个子项分配的是精确矩形，探针量到的就是格子本身。
     return Align(
       key: Key(_key),

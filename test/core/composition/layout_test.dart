@@ -68,7 +68,9 @@ void main() {
           ComponentPlacement(
             id: ComponentId('summary.metrics'),
             size: ComponentSize.wide,
-            config: {'metrics': ['water', 'sleep']},
+            config: {
+              'metrics': ['water', 'sleep'],
+            },
           ),
           ComponentPlacement(
             id: ComponentId('quick_action.strip'),
@@ -129,5 +131,9 @@ void main() {
   });
 }
 
-Widget? _neverBuild(Object? context, Object? ref, Map<String, Object?> config) =>
-    null;
+Widget? _neverBuild(
+  Object? context,
+  Object? ref,
+  Object? render,
+  Map<String, Object?> config,
+) => null;
