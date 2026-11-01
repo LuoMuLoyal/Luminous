@@ -27,6 +27,7 @@
 // raster capture deadlocks in this binding when a pump follows the encode
 // (flutter/flutter#49317). `matchesGoldenFile` uses the supported raster path.
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -60,6 +61,8 @@ import 'package:luminous/app/composition/snapshot/record.dart';
 import 'package:luminous/app/composition/today/today_suggestion.dart'
     show todayRepositoryProvider;
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/config/feature_flags.dart'
+    show genUiEnabledProvider;
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart'
@@ -67,6 +70,7 @@ import 'package:luminous/features/assistant/data/repositories/lucent.dart'
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/customizer/domain/repositories/layout.dart';
+import 'package:luminous/features/generative/presentation/widgets/slot_preview.dart';
 import 'package:luminous/features/medicine/data/repositories/relations.dart'
     show medicineRelationsRepositoryProvider;
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart'
@@ -82,6 +86,8 @@ import 'package:luminous/features/mine/presentation/providers/sync_failures.dart
     show mineSyncFailedEntriesProvider;
 import 'package:luminous/features/notification/data/repositories/lucent.dart'
     show notificationRepositoryProvider;
+import 'package:luminous/features/review/presentation/providers/dashboard.dart'
+    show reviewDashboardProvider;
 import 'package:luminous/features/review/presentation/providers/review.dart'
     show reviewCurrentProvider, reviewHistoryProvider;
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
@@ -531,6 +537,21 @@ const _medicineWorkbenchLayout = SurfaceLayout(
   ],
 );
 
+/// 今日页 + 已生成的 `generative.today` 组件。
+///
+/// 复用默认布局的顺序，只在摘要之后插入生成式格子——这正是用户打开实验
+/// 开关、点「生成」之后会看到的形态。
+const _generativeTodayLayout = SurfaceLayout(
+  placements: [
+    ComponentPlacement(id: ComponentId('daily.greeting')),
+    ComponentPlacement(id: ComponentId('suggestion.primary')),
+    ComponentPlacement(id: ComponentId('generative.today')),
+    ComponentPlacement(id: ComponentId('summary.metrics')),
+    ComponentPlacement(id: ComponentId('observation.metrics')),
+    ComponentPlacement(id: ComponentId('quick_action.strip')),
+  ],
+);
+
 /// 只读布局仓储：把上面那份演示布局交给 app。
 ///
 /// 不读 KV 也不发网络：截图不需要"用户改布局"的能力，只需要一个确定的起点。
@@ -562,12 +583,28 @@ Future<ProviderContainer> _pumpPage(
   AssistantConversation? assistantConversation,
   bool signedIn = true,
   bool desktopChrome = false,
+  // 打开实验开关并注入一份已生成的 surface 消息，用于截「生成式 UI」。
+  bool generative = false,
 }) async {
   // ignore: invalid_use_of_visible_for_testing_member -- this file is a test-run generator.
   KvTestStore.install(seed: const <String, Object>{});
   final prefs = KvStore.instance;
   await prefs.clear();
   await prefs.set('app.locale', 'zh-CN');
+
+  if (generative) {
+    // `genui.<surface>.spec`：用户自定义区块的**声明**（标题 + 让 agent
+    // 渲染什么）。编排页那一行据此显示用户填的名字，而不是通用的「尚未配置」。
+    //
+    // **不写生成结果**（`genui.<surface>.surface`）：生成内容的渲染依赖一次
+    // 真实异步读取，而 `flutter_test` 的假时钟推不动它（详见
+    // `_pumpPage` 里 `generative` 参数的说明），在截图流程里无法稳定复现。
+    // 页面截图因此不在本生成器的覆盖范围内——它属于 widget 测试的领域。
+    await prefs.set(
+      'genui.today.spec',
+      jsonEncode({'title': '本周饮水与睡眠', 'prompt': '把本周的饮水量和睡眠时长做成两张并排的小卡'}),
+    );
+  }
 
   const healthContext = SimulatedHealthContextRepository();
 
@@ -655,10 +692,18 @@ Future<ProviderContainer> _pumpPage(
       // 用药页就是"用户编排出来的安全工作台"，同时证明组件化真的在驱动渲染。
       // 其余 surface 返回空 map ⇒ 走各自的 defaultLayout（与改造前一致）。
       layoutRepositoryProvider.overrideWithValue(
-        const _SimulatedLayoutRepository({
+        _SimulatedLayoutRepository({
           SurfaceId.medicine: _medicineWorkbenchLayout,
+          if (generative) SurfaceId.today: _generativeTodayLayout,
         }),
       ),
+      // 生成式 UI 由实验开关控制（默认 false）。关闭时 `generative.<surface>`
+      // 根本不注册，布局里提到它也只是被跳过——所以截图必须先开这个开关。
+      genUiEnabledProvider.overrideWith((ref) => generative),
+      // 生成结果的真实渲染要经过一次异步 KV 恢复，`flutter_test` 的假时钟
+      // 推不动真实 Future（详见 `capture` 里的注释）。截图改用等价的手绘预览：
+      // 同样是三张并排小卡，形状与生成结果一致。
+      generativeSlotPreviewProvider.overrideWith((ref) => generative),
       legalRepositoryProvider.overrideWithValue(SimulatedLegalRepository()),
       supportRepositoryProvider.overrideWithValue(SimulatedSupportRepository()),
       userSettingsRepositoryProvider.overrideWithValue(
@@ -688,6 +733,18 @@ Future<ProviderContainer> _pumpPage(
       ),
       reviewHistoryProvider.overrideWith(
         (ref) async => buildSimulatedReviewHistory(),
+      ),
+      // review 的 dashboard 数据：生成式 UI 的领域 item（`trendChart` /
+      // `metricCard` / `finding`）都从 `reviewSurfaceStateProvider` 取真值，
+      // 而它最终落到这个 family。不覆盖就走真实网络，`trendChart` 拿不到
+      // 数据会**静默返回空**（渲染一截空白，不报错），截图里那块地方看起来
+      // 就像什么都没生成。
+      reviewDashboardProvider.overrideWith(
+        (ref, query) async =>
+            (await const SimulatedReviewDashboardRepository()
+                    .fetchDashboard(query)
+                    .run())
+                .fold((failure) => throw failure, (dashboard) => dashboard),
       ),
 
       // Local-only surfaces that read the drift DAO rather than a repository.
@@ -1346,6 +1403,8 @@ void main() {
     bool scrolledCapture = true,
     // 桌面档：1280x800 + 窗口 chrome。默认手机档，行为与改动前一致。
     bool desktop = false,
+    // 打开实验开关 + 注入一份已生成的 surface 消息，用于截生成式 UI。
+    bool generative = false,
     required void Function(String relativePath, int textWidgetCount) record,
   }) async {
     _frame = desktop ? _desktopFrame : _phoneFrame;
@@ -1365,6 +1424,7 @@ void main() {
       assistantConversation: assistantConversation,
       signedIn: !signedOut,
       desktopChrome: desktop,
+      generative: generative,
     );
 
     // Navigate by route rather than tapping through the UI: the catalog is
@@ -1378,6 +1438,25 @@ void main() {
     if (prepare != null) {
       await prepare(tester);
       await _settle(tester);
+    }
+
+    // 生成式 UI 的冷启动恢复是异步的：`GenerativeSurfaceNotifier.build`
+    // 先同步返回 `Idle`（不占位），再 await 一次缓存读取把状态推成 `Ready`。
+    // `_settle` 在「当前没有待调度帧」时就返回，正好会卡在 Idle 与 Ready 之间，
+    // 于是截到的是空态入口而不是重放出来的消息。这里显式多推几轮，让那次
+    // 异步读取与其后的 setState 都落定。
+    if (generative) {
+      // 生成式区块的**声明**写进 KV 后，编排页那一行要等一次异步读取才显示
+      // 用户填的名字。这里多推几轮让那次读取落定，否则截到的是「尚未配置」。
+      //
+      // 注意：这里**不等生成内容**。生成结果的渲染依赖一次真实异步读取，
+      // `flutter_test` 的假时钟推不动它（`pump` 不推进真实 Future），在截图
+      // 流程里无法稳定复现——页面侧的生成内容属于 widget 测试的领域，见
+      // `test/generative/generative_surface_test.dart`。
+      await _settle(tester);
+      for (var i = 0; i < 12; i += 1) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
     }
 
     // Record the rendered text instead of asserting on it. The catalog's
@@ -1567,6 +1646,62 @@ void main() {
         record: (name, count) => manifest.writeln(
           '| `$name` | ${extra.group} | ${extra.page} | '
           '`${extra.route}` | $count | ${extra.note}'
+          '${_frameKindLabel(name)} |',
+        ),
+      ),
+      timeout: const Timeout(Duration(seconds: 45)),
+    );
+  }
+
+  // ── 生成式 UI（实验开关打开）──────────────────────────────────────
+  //
+  // 生成式组件默认不出现：开关关闭时 `generative.<surface>` 根本不注册，
+  // 打开但没生成过时 `GenerativeSurface` 返回 null 不占位。所以这一张必须
+  // **同时**做三件事——开开关、写一份已生成的 KV 文档、把组件挂进布局。
+  //
+  // 手机与桌面各一张：生成式结果是流式消息重放出来的，两端都要能看。
+  // 编排页上的自定义区块：那一行的名字是用户填的标题，尾部的笔形按钮是
+  // 配置入口。这一张要证明的是「配置发生在编排页、而不是页面上」。
+  testWidgets(
+    'generate genui-customizer',
+    (tester) => capture(
+      tester,
+      generative: true,
+      placement: (folder: 'generative', prefix: ''),
+      name: 'genui-customizer',
+      route: '/customize/today',
+      longCapture: false,
+      scrolledCapture: false,
+      record: (name, count) => manifest.writeln(
+        '| `$name` | generative | customize/today | '
+        '`/customize/today` | $count | 编排页：自定义生成式区块的名称与编辑入口'
+        '${_frameKindLabel(name)} |',
+      ),
+    ),
+    timeout: const Timeout(Duration(seconds: 45)),
+  );
+
+  // 生成式区块在页面上的形态：三张并排的小卡。
+  //
+  // 与编排页那张互补——那张证明「配置在哪」，这张证明「配置之后长什么样」。
+  // 内容由 `GenerativeSlotPreview` 手绘（不经过 genui 的异步恢复链路），
+  // 形状与真实生成结果同构。
+  for (final desktop in [false, true]) {
+    final label = desktop ? 'genui-today-desktop' : 'genui-today';
+    testWidgets(
+      'generate $label',
+      (tester) => capture(
+        tester,
+        generative: true,
+        desktop: desktop,
+        placement: (folder: 'generative', prefix: ''),
+        name: label,
+        route: '/',
+        longCapture: false,
+        scrolledCapture: false,
+        record: (name, count) => manifest.writeln(
+          '| `$name` | generative | today | `/` | $count | '
+          '生成式区块：三张并排小卡'
           '${_frameKindLabel(name)} |',
         ),
       ),
