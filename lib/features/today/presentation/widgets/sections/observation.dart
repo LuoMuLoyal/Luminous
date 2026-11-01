@@ -428,10 +428,20 @@ class _ConfidenceBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final variant = switch (confidence) {
       TodaySuggestionConfidence.high => FBadgeVariant.primary,
       TodaySuggestionConfidence.medium => FBadgeVariant.secondary,
       TodaySuggestionConfidence.low => FBadgeVariant.outline,
+    };
+    // 前景色随变体走，且必须**显式**给：这里为了调字重传了 `style:`，
+    // 它会取代 `FBadge` 放在 `DefaultTextStyle` 上的颜色（primary 变体
+    // 本该是 `primaryForeground` 近白），文字于是退回继承的深色——
+    // 表现就是「深色底 + 深色字」。
+    final foreground = switch (variant) {
+      FBadgeVariant.primary => colors.primaryForeground,
+      FBadgeVariant.secondary => colors.secondaryForeground,
+      _ => colors.foreground,
     };
 
     return FBadge(
@@ -441,6 +451,7 @@ class _ConfidenceBadge extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: context.theme.typography.body.xs.copyWith(
+          color: foreground,
           fontWeight: FontWeight.w700,
         ),
       ),

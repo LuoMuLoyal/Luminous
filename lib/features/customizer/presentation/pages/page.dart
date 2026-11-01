@@ -452,17 +452,16 @@ class _PlacementTile extends ConsumerWidget {
 
     // 尺寸档：只有支持多于一个档位的组件才给选择器。持久化的 size 可能来自
     // 旧版本、或超出该组件当前支持的档位，此时不高亮任何一项，用户点一下即可修正。
+    //
+    // 渲染在尾部操作区（开关左侧），不放在名称下方——见下方 `nameText` 的注释。
     final supportedSizes =
         registry.find(id)?.supportedSizes ?? const <ComponentSize>{};
     final sizePicker = supportedSizes.length > 1
-        ? Padding(
-            padding: const EdgeInsets.only(top: Spacing.xs),
-            child: _SizePicker(
-              selected: placement.size,
-              supported: supportedSizes,
-              onSelect: (size) => notifier.applyEdit(
-                LayoutEdit.resize(surface: surface, id: id, size: size),
-              ),
+        ? _SizePicker(
+            selected: placement.size,
+            supported: supportedSizes,
+            onSelect: (size) => notifier.applyEdit(
+              LayoutEdit.resize(surface: surface, id: id, size: size),
             ),
           )
         : null;
@@ -471,6 +470,11 @@ class _PlacementTile extends ConsumerWidget {
     // 时不会把名称挤成多行（luminous_lints 规则 non_shrinking_row_child）。
     // 主行是用户能读懂的名字，id 作为副行保留——id 才是持久化与下架的真正
     // 身份，出问题时用户报的就是它。
+    //
+    // 尺寸档**不放在名称下方**：`FCard` 的高度由内容决定，多出一行胶囊会把
+    // 卡片撑高，而卡片本身的底色/圆角是按「两行」的密度定的，视觉上就是
+    // 「高度涨了、底色没跟上」。放到右侧与开关同属「对该项的属性操作」，
+    // 卡片高度始终等于名称两行。
     final nameText = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -491,7 +495,6 @@ class _PlacementTile extends ConsumerWidget {
             color: SemanticColor.neutral.solid(context),
           ),
         ),
-        if (sizePicker != null) sizePicker,
       ],
     );
     final visibilitySwitch = FSwitch(
@@ -526,6 +529,13 @@ class _PlacementTile extends ConsumerWidget {
               ),
             ),
             Expanded(child: nameText),
+            if (sizePicker != null) ...[
+              // 尺寸胶囊与开关、删除同为「对这一项的属性操作」，横向排在同一
+              // 基线上。它排在名称与开关之间：名称用 `Expanded` 先让位，
+              // 行宽不足时被省略号收掉的是名字而不是操作按钮。
+              sizePicker,
+              const SizedBox(width: Spacing.sm),
+            ],
             // 开关与删除是**固定宽度的尾部操作**：宽度由控件自身决定，
             // 不参与 flex 分配，所以每一行的两个按钮横向位置一致。
             // 行宽不够时由名称 `Expanded` 先让位（它已经带省略号）。
@@ -620,6 +630,12 @@ class _SizeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    // 前景色必须显式给：`FBadge` 把它该用的颜色放在 `DefaultTextStyle` 上，
+    // 而这里为了调字重传了 `style:` —— 一旦传了 `style`，`Text` 就用它取代
+    // 默认样式，`primary` 变体本该的 `primaryForeground`（近白）随之丢失，
+    // 文字退回继承的深色，于是选中项成了「深蓝底 + 近黑字」。
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onPress,
@@ -630,6 +646,7 @@ class _SizeChip extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: context.theme.typography.body.xs2.copyWith(
+            color: selected ? colors.primaryForeground : colors.foreground,
             fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
           ),
         ),
