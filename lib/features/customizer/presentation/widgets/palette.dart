@@ -31,6 +31,18 @@ String componentDisplayName(AppLocalizations l10n, ComponentId id) {
     'dose.records' => l10n.componentNameDoseRecords,
     'dose.safety_engine' => l10n.componentNameDoseSafetyEngine,
     'quick_action.medicine' => l10n.componentNameQuickActionMedicine,
+    // 用药页的十个药理关系图组件。展示名直接复用卡片标题：两者是同一个概念
+    // （编排页里叫什么，页面上就印什么），没有理由维护两份文案。
+    'dose.medication_overview' => l10n.medicineGraphTitleMedicationOverview,
+    'dose.mechanism_paths' => l10n.medicineGraphTitleMechanismPaths,
+    'dose.shared_targets' => l10n.medicineGraphTitleSharedTargets,
+    'dose.cascade_paths' => l10n.medicineGraphTitleCascadePaths,
+    'dose.enzyme_duels' => l10n.medicineGraphTitleEnzymeDuels,
+    'dose.drug_actions' => l10n.medicineGraphTitleDrugActions,
+    'dose.transport_routes' => l10n.medicineGraphTitleTransportRoutes,
+    'dose.substitutes' => l10n.medicineGraphTitleSubstitutes,
+    'dose.shortest_routes' => l10n.medicineGraphTitleShortestRoutes,
+    'dose.target_drugs' => l10n.medicineGraphTitleTargetDrugs,
     'period.switch' => l10n.componentNamePeriodSwitch,
     'coverage.strip' => l10n.componentNameCoverageStrip,
     'overview.noteworthy' => l10n.componentNameOverviewNoteworthy,
