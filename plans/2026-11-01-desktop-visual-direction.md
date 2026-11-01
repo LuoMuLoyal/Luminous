@@ -210,12 +210,21 @@ Next.js + Tauri 桌面 MVP」**被取代**。修订理由：
 
 ## 三、执行阶段
 
+> **执行状态（2026-11-01）**：P-1、P0、P1、P3、P4 已完成并各自原子提交于
+> `feat/desktop-visual` 分支。P2 未开工（等待 §五 D2'）。
+
 **前置于所有阶段**：**P-1 手写替换裁决**（§2.3-1）。因为 P0 要改 `SurfaceTokens`
 与间距值、P3 要改 `LayoutScale` 桌面档，若之后又决定换布局包，同一批值要改两遍。
 所以第一步是先裁决现有响应式布局三件套的归属。
 
 依赖顺序：**P-1 → P0 → P1 → P3 → P4 → P2**。P-1 是裁决（可能零代码），
 P0–P3 只动 token 与 shell（不碰业务组件），风险低、见效快；P2 是结构改动。
+
+**P-1 裁决结论**：**整体替换**。`LayoutScaleResolver.resolve` 的 if 分档链换成了
+`fluid_adaptive` 的 `ResponsiveBreakpoints.standard.sizeClassFor(width).resolve<T>()`；
+阈值统一到 M3 标准值 600 / 840 / 1200。`LayoutScale` 的四档取值表**保留**——
+那是设计决策不是布局算法，包不提供也不该提供。`ResponsiveContentFrame` 暂留
+（它只是 `ConstrainedBox` + `Center`，替换它不减少任何判断，留待 P2 与右侧面板一起看）。
 
 ### P-1 — 手写替换裁决（前置，可能零代码）
 
