@@ -63,11 +63,13 @@ const mineSurfaceDefinition = SurfaceDefinition(
     placements: [
       ComponentPlacement(id: accountSyncBannerId),
       ComponentPlacement(id: accountHeroId),
-      ComponentPlacement(id: profileAlertsId),
-      ComponentPlacement(id: archiveSummaryId),
-      ComponentPlacement(id: privacyNoticeId),
-      ComponentPlacement(id: reminderSettingsId),
-      ComponentPlacement(id: accountSecurityId),
+      // Desktop renders two columns and `regular` spans both, so every card
+      // below only sits side by side when compact.
+      ComponentPlacement(id: profileAlertsId, size: ComponentSize.compact),
+      ComponentPlacement(id: archiveSummaryId, size: ComponentSize.compact),
+      ComponentPlacement(id: privacyNoticeId, size: ComponentSize.compact),
+      ComponentPlacement(id: reminderSettingsId, size: ComponentSize.compact),
+      ComponentPlacement(id: accountSecurityId, size: ComponentSize.compact),
     ],
   ),
 );
@@ -168,7 +170,8 @@ class _PrivacyNoticeComponent extends ComponentDescriptor<NoComponentConfig> {
   }
 }
 
-class _ReminderSettingsComponent extends ComponentDescriptor<NoComponentConfig> {
+class _ReminderSettingsComponent
+    extends ComponentDescriptor<NoComponentConfig> {
   const _ReminderSettingsComponent();
 
   @override
