@@ -34,9 +34,8 @@ class GraphViewToggle extends StatelessWidget {
         key: const Key('medicine-graph-view-toggle'),
         variant: .ghost,
         size: .sm,
-        onPress: () => onChanged(
-          isGraph ? const ListMode() : const GraphMode(),
-        ),
+        onPress: () =>
+            onChanged(isGraph ? const ListMode() : const GraphMode()),
         child: Icon(
           isGraph ? SemanticIcons.recordClipboard : SemanticIcons.tabReview,
           size: IconSizeTokens.md,

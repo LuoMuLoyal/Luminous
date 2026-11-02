@@ -59,11 +59,14 @@ TaskEither<LucentFailure, List<SurfaceId>> commitDraft(
 
     for (final entry in draft.surfaces.entries) {
       final result = await repository.write(entry.key, entry.value).run();
-      result.match((failure) {
-        firstFailure ??= failure;
-      }, (_) {
-        saved.add(entry.key);
-      });
+      result.match(
+        (failure) {
+          firstFailure ??= failure;
+        },
+        (_) {
+          saved.add(entry.key);
+        },
+      );
     }
 
     // 一个都没存成功才算失败；部分成功时调用方仍应看到"已保存 X 个"。

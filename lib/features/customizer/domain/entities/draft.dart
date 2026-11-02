@@ -29,7 +29,8 @@ final class LayoutDraft {
   SurfaceLayout layoutOf(SurfaceId surface) =>
       surfaces[surface] ?? SurfaceLayout.empty;
 
-  List<ComponentPlacement> poolOf(SurfaceId surface) => pool[surface] ?? const [];
+  List<ComponentPlacement> poolOf(SurfaceId surface) =>
+      pool[surface] ?? const [];
 
   LayoutDraft copyWith({
     Map<SurfaceId, SurfaceLayout>? surfaces,

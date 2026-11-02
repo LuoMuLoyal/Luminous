@@ -76,10 +76,7 @@ void main() {
 
       final catalog = container.read(surfaceCatalogProvider);
       expect(catalog.definitionOf(SurfaceId.record), isNotNull);
-      expect(
-        catalog.ownedBy(SurfaceId.record),
-        recordSurfaceDefinition.owned,
-      );
+      expect(catalog.ownedBy(SurfaceId.record), recordSurfaceDefinition.owned);
     });
   });
 }

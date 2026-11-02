@@ -19,10 +19,7 @@ import 'package:luminous/features/today/presentation/widgets/shared/section.dart
 import 'package:luminous/l10n/app_localizations.dart';
 
 class HealthEventSection extends ConsumerWidget {
-  const HealthEventSection({
-    super.key,
-  });
-
+  const HealthEventSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -85,9 +85,7 @@ final class LucentLayoutRemote implements LayoutRemote {
         );
         return Right<LucentFailure, int>(response.data?.version ?? 0);
       } catch (error) {
-        return Left<LucentFailure, int>(
-          LucentErrorMapper.fromObject(error),
-        );
+        return Left<LucentFailure, int>(LucentErrorMapper.fromObject(error));
       }
     });
   }

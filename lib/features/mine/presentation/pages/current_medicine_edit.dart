@@ -174,7 +174,9 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                       blockHeights: [56, 56, 56, 56, 56, 56],
                     )
                   : AuthRequiredDialogGate(
-                      onLogin: () => unawaited(context.push(loginRouteForCurrentLocation(context)))
+                      onLogin: () => unawaited(
+                        context.push(loginRouteForCurrentLocation(context)),
+                      ),
                     ),
             ],
           ),

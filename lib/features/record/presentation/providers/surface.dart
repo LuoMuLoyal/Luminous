@@ -16,12 +16,11 @@ import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 ///   六个 `DataChangeBus` 主题上，刷新才是这一页的常态。
 ///
 /// 区块与页面都只消费这一个 provider，状态处理因此收敛在一处。
-final recordSurfaceStateProvider = Provider<PageViewState<RecordDashboard>>(
-  (ref) {
-    return resolvePageViewState<RecordDashboard>(
-      session: ref.watch(authSessionProvider),
-      data: ref.watch(recordDashboardProvider),
-    );
-  },
-  name: 'recordSurfaceState',
-);
+final recordSurfaceStateProvider = Provider<PageViewState<RecordDashboard>>((
+  ref,
+) {
+  return resolvePageViewState<RecordDashboard>(
+    session: ref.watch(authSessionProvider),
+    data: ref.watch(recordDashboardProvider),
+  );
+}, name: 'recordSurfaceState');

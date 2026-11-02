@@ -356,31 +356,25 @@ void main() {
         },
       );
 
-      test(
-        'items not a list maps to a LucentFailure',
-        () async {
-          adapter.itemsBodyOverride = <String, Object?>{'items': 'not-a-list'};
+      test('items not a list maps to a LucentFailure', () async {
+        adapter.itemsBodyOverride = <String, Object?>{'items': 'not-a-list'};
 
-          final failure = await expectTaskLeft(dataSource.fetchActive());
+        final failure = await expectTaskLeft(dataSource.fetchActive());
 
-          expect(failure.kind, LucentFailureKind.network);
-          expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
-        },
-      );
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
+      });
 
-      test(
-        'item not a map maps to a LucentFailure',
-        () async {
-          adapter.itemsBodyOverride = <String, Object?>{
-            'items': <Object?>[42],
-          };
+      test('item not a map maps to a LucentFailure', () async {
+        adapter.itemsBodyOverride = <String, Object?>{
+          'items': <Object?>[42],
+        };
 
-          final failure = await expectTaskLeft(dataSource.fetchActive());
+        final failure = await expectTaskLeft(dataSource.fetchActive());
 
-          expect(failure.kind, LucentFailureKind.network);
-          expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
-        },
-      );
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
+      });
 
       test(
         'non-Problem Details error body propagates FormatException from run()',

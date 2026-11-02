@@ -39,7 +39,9 @@ class RecordDetailPage extends ConsumerWidget {
               session.isLoading
                   ? const RecordDetailLoading()
                   : AuthRequiredDialogGate(
-                      onLogin: () => unawaited(context.push(loginRouteForCurrentLocation(context)))
+                      onLogin: () => unawaited(
+                        context.push(loginRouteForCurrentLocation(context)),
+                      ),
                     ),
             ],
           ),

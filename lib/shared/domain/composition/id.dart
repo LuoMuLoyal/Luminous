@@ -22,7 +22,8 @@ final class ComponentId {
   bool get isValid => _format.hasMatch(value);
 
   @override
-  bool operator ==(Object other) => other is ComponentId && other.value == value;
+  bool operator ==(Object other) =>
+      other is ComponentId && other.value == value;
 
   @override
   int get hashCode => value.hashCode;

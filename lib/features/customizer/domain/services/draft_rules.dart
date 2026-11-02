@@ -10,18 +10,44 @@ import 'package:luminous/shared/domain/composition/surface.dart';
 /// 放在 domain 且无副作用，是因为跨 surface 移动这类操作最容易出错
 /// （源列表少了、目标列表多了、index 越界），需要能脱离 UI 单测。
 /// 非法编辑返回原草稿而不是抛异常——编排页不该因为一次误操作崩掉。
-LayoutDraft applyEdit(LayoutDraft draft, LayoutEdit edit, SurfaceCatalog catalog) {
+LayoutDraft applyEdit(
+  LayoutDraft draft,
+  LayoutEdit edit,
+  SurfaceCatalog catalog,
+) {
   return switch (edit) {
-    LayoutEditMove(:final from, :final to, :final id, :final toIndex) =>
-      _move(draft, catalog, from: from, to: to, id: id, toIndex: toIndex),
-    LayoutEditToggle(:final surface, :final id, :final visible) =>
-      _toggle(draft, surface: surface, id: id, visible: visible),
-    LayoutEditRemove(:final surface, :final id) =>
-      _remove(draft, surface: surface, id: id),
-    LayoutEditAdd(:final surface, :final id, :final toIndex) =>
-      _add(draft, catalog, surface: surface, id: id, toIndex: toIndex),
-    LayoutEditResize(:final surface, :final id, :final size) =>
-      _resize(draft, surface: surface, id: id, size: size),
+    LayoutEditMove(:final from, :final to, :final id, :final toIndex) => _move(
+      draft,
+      catalog,
+      from: from,
+      to: to,
+      id: id,
+      toIndex: toIndex,
+    ),
+    LayoutEditToggle(:final surface, :final id, :final visible) => _toggle(
+      draft,
+      surface: surface,
+      id: id,
+      visible: visible,
+    ),
+    LayoutEditRemove(:final surface, :final id) => _remove(
+      draft,
+      surface: surface,
+      id: id,
+    ),
+    LayoutEditAdd(:final surface, :final id, :final toIndex) => _add(
+      draft,
+      catalog,
+      surface: surface,
+      id: id,
+      toIndex: toIndex,
+    ),
+    LayoutEditResize(:final surface, :final id, :final size) => _resize(
+      draft,
+      surface: surface,
+      id: id,
+      size: size,
+    ),
   };
 }
 
@@ -72,7 +98,10 @@ LayoutDraft _toggle(
       if (p.id == id) p.copyWith(visible: visible) else p,
   ];
   return draft.copyWith(
-    surfaces: {...draft.surfaces, surface: layout.copyWith(placements: next)},
+    surfaces: {
+      ...draft.surfaces,
+      surface: layout.copyWith(placements: next),
+    },
   );
 }
 
@@ -93,7 +122,10 @@ LayoutDraft _remove(
   final pool = [...draft.poolOf(surface), placement];
 
   return draft.copyWith(
-    surfaces: {...draft.surfaces, surface: layout.copyWith(placements: next)},
+    surfaces: {
+      ...draft.surfaces,
+      surface: layout.copyWith(placements: next),
+    },
     pool: {...draft.pool, surface: pool},
   );
 }
@@ -114,14 +146,17 @@ LayoutDraft _add(
   final pool = draft.poolOf(surface);
   // 池里有就复用它（保留用户之前设过的尺寸/配置）；没有就是首次加入，
   // 按组件自身的默认配置新建一条。旧实现只认池，所以从面板加从未生效。
-  final placement = pool.where((p) => p.id == id).firstOrNull ??
-      ComponentPlacement(id: id);
+  final placement =
+      pool.where((p) => p.id == id).firstOrNull ?? ComponentPlacement(id: id);
 
   final next = [...layout.placements];
   next.insert(toIndex.clamp(0, next.length), placement);
 
   return draft.copyWith(
-    surfaces: {...draft.surfaces, surface: layout.copyWith(placements: next)},
+    surfaces: {
+      ...draft.surfaces,
+      surface: layout.copyWith(placements: next),
+    },
     pool: {
       ...draft.pool,
       surface: [
@@ -145,6 +180,9 @@ LayoutDraft _resize(
       if (p.id == id) p.copyWith(size: size) else p,
   ];
   return draft.copyWith(
-    surfaces: {...draft.surfaces, surface: layout.copyWith(placements: next)},
+    surfaces: {
+      ...draft.surfaces,
+      surface: layout.copyWith(placements: next),
+    },
   );
 }

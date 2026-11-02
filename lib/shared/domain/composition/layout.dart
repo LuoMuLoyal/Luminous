@@ -80,7 +80,9 @@ final class ComponentPlacement {
   static bool _mapEquals(Map<String, Object?> a, Map<String, Object?> b) {
     if (a.length != b.length) return false;
     for (final entry in a.entries) {
-      if (!b.containsKey(entry.key) || b[entry.key] != entry.value) return false;
+      if (!b.containsKey(entry.key) || b[entry.key] != entry.value) {
+        return false;
+      }
     }
     return true;
   }
@@ -93,7 +95,10 @@ final class ComponentPlacement {
 /// version is not understood is discarded as a whole — the caller falls back to
 /// the surface's default layout instead of guessing per-entry.
 final class SurfaceLayout {
-  const SurfaceLayout({required this.placements, this.schemaVersion = currentSchemaVersion});
+  const SurfaceLayout({
+    required this.placements,
+    this.schemaVersion = currentSchemaVersion,
+  });
 
   /// Shape version of the persisted layout document.
   static const int currentSchemaVersion = 1;
@@ -104,8 +109,9 @@ final class SurfaceLayout {
   /// An empty layout, used when a surface has no definition yet.
   static const SurfaceLayout empty = SurfaceLayout(placements: []);
 
-  List<ComponentPlacement> get visiblePlacements =>
-      placements.where((placement) => placement.visible).toList(growable: false);
+  List<ComponentPlacement> get visiblePlacements => placements
+      .where((placement) => placement.visible)
+      .toList(growable: false);
 
   Map<String, Object?> toJson() => {
     'schemaVersion': schemaVersion,

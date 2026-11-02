@@ -281,8 +281,8 @@ Widget _app(
     overrides: [
       ...compositionTestOverrides(),
       todaySurfaceDashboardProvider.overrideWithValue(
-          PageViewStateReady(TodayDashboard.signedOut()),
-        ),
+        PageViewStateReady(TodayDashboard.signedOut()),
+      ),
       authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
       healthEventRepositoryProvider.overrideWithValue(repository),
       healthContextSnapshotProvider.overrideWith((ref) async => snapshot),

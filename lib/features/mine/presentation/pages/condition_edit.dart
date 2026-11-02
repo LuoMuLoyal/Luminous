@@ -170,7 +170,9 @@ class ConditionEditPage extends HookConsumerWidget {
                       blockHeights: [56, 56, 56, 96, 56],
                     )
                   : AuthRequiredDialogGate(
-                      onLogin: () => unawaited(context.push(loginRouteForCurrentLocation(context)))
+                      onLogin: () => unawaited(
+                        context.push(loginRouteForCurrentLocation(context)),
+                      ),
                     ),
             ],
           ),

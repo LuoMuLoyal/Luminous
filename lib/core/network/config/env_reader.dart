@@ -62,7 +62,9 @@ abstract final class EnvReader {
       case EnvKey.e2eTestNickname:
         return const String.fromEnvironment('E2E_TEST_NICKNAME');
       case EnvKey.luminousExperimentalRuntimeEnabled:
-        return const String.fromEnvironment('LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED');
+        return const String.fromEnvironment(
+          'LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED',
+        );
       case EnvKey.luminousRuntimeProvider:
         return const String.fromEnvironment('LUMINOUS_RUNTIME_PROVIDER');
       case EnvKey.luminousEnableGenUi:

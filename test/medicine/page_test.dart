@@ -63,7 +63,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -134,7 +134,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           medicineWorkspaceProvider.overrideWith((ref) => pending.future),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
         ],
@@ -164,7 +164,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -198,7 +198,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -246,7 +246,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -286,7 +286,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-              ...compositionTestOverrides(),
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -327,7 +327,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-              ...compositionTestOverrides(),
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -373,7 +373,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -443,7 +443,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-              ...compositionTestOverrides(),
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -503,7 +503,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -538,7 +538,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -580,7 +580,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -638,7 +638,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -691,7 +691,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -732,7 +732,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-              ...compositionTestOverrides(),
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineRiskCheckRecordsProvider.overrideWith(
@@ -833,7 +833,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -890,7 +890,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -931,7 +931,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceProvider.overrideWith(
@@ -963,7 +963,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -998,7 +998,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-              ...compositionTestOverrides(),
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -1041,7 +1041,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-              ...compositionTestOverrides(),
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -1106,7 +1106,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-              ...compositionTestOverrides(),
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -1208,10 +1208,10 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.text(l10n.medicineDoseUndoAction), findsOneWidget);
-    await tester.tap(find.text(l10n.medicineDoseUndoAction), );
+    await tester.tap(find.text(l10n.medicineDoseUndoAction));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
-    
+
     expect(fake.markCalls, hasLength(2));
     expect(fake.markCalls[1].currentMedicineId, 'med-1');
     expect(fake.markCalls[1].reminderId, 'rem-1');
@@ -1619,7 +1619,7 @@ Future<_FakeCachedDoseLogDataSource> _pumpDoseMarkPage(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
-              ...compositionTestOverrides(),
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
         notificationUnreadCountProvider.overrideWith((ref) async => 0),
         medicineWorkspaceRepositoryProvider.overrideWithValue(

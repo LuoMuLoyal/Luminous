@@ -57,13 +57,16 @@ void main() {
       expect(a, isNot(equals(b)));
     });
 
-    test('reports a failure instead of a fallback when storage read fails', () async {
-      final provider = DatabaseKeyProvider(storage: _ThrowingSecureStorage());
+    test(
+      'reports a failure instead of a fallback when storage read fails',
+      () async {
+        final provider = DatabaseKeyProvider(storage: _ThrowingSecureStorage());
 
-      final result = await provider.key();
+        final result = await provider.key();
 
-      expect(result.isLeft(), isTrue);
-    });
+        expect(result.isLeft(), isTrue);
+      },
+    );
 
     test('spreads bytes across the range', () async {
       final provider = DatabaseKeyProvider(

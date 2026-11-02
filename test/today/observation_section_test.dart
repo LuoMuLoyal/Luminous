@@ -151,9 +151,7 @@ void main() {
         ),
       ],
       child: const TestForuiApp(
-        home: SingleChildScrollView(
-          child: TodayObservationSection(),
-        ),
+        home: SingleChildScrollView(child: TodayObservationSection()),
       ),
     );
   }

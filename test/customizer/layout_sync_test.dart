@@ -17,9 +17,8 @@ import 'package:luminous/shared/domain/failure.dart';
 import '../helpers/kv_test_store.dart';
 import '../helpers/layout_remote.dart';
 
-SurfaceLayout _layoutWith(String id) => SurfaceLayout(
-  placements: [ComponentPlacement(id: ComponentId(id))],
-);
+SurfaceLayout _layoutWith(String id) =>
+    SurfaceLayout(placements: [ComponentPlacement(id: ComponentId(id))]);
 
 /// `payload` 是客户端自己的 JSON，服务端原样存取——这里按同形构造。
 String _payloadOf(SurfaceLayout layout) => jsonEncode(layout.toJson());
@@ -54,17 +53,22 @@ void main() {
       final result = await repository.readAll().run();
       final layouts = result.getOrElse((_) => const {});
 
-      expect(layouts[SurfaceId.today]?.placements.single.id.value, 'water.trend');
+      expect(
+        layouts[SurfaceId.today]?.placements.single.id.value,
+        'water.trend',
+      );
       // 已落缓存：下一次直接读本地就有。
       final cached = await LayoutCache(KvStore.instance).readAll();
-      expect(cached[SurfaceId.today]?.placements.single.id.value, 'water.trend');
+      expect(
+        cached[SurfaceId.today]?.placements.single.id.value,
+        'water.trend',
+      );
     });
 
     test('远端失败但有缓存时沿用缓存，不把失败抛给页面', () async {
-      await LayoutCache(KvStore.instance).write(
-        SurfaceId.record,
-        _layoutWith('calendar.strip'),
-      );
+      await LayoutCache(
+        KvStore.instance,
+      ).write(SurfaceId.record, _layoutWith('calendar.strip'));
       final remote = FakeLayoutRemote()
         ..failure = LucentFailure.unknown(message: 'offline');
       final repository = CachedLayoutRepository(
@@ -76,7 +80,10 @@ void main() {
       final layouts = (await repository.readAll().run()).getOrElse(
         (_) => const {},
       );
-      expect(layouts[SurfaceId.record]?.placements.single.id.value, 'calendar.strip');
+      expect(
+        layouts[SurfaceId.record]?.placements.single.id.value,
+        'calendar.strip',
+      );
     });
 
     test('write 把 payload 推给远端并带上 schemaVersion', () async {
@@ -94,7 +101,9 @@ void main() {
         syncQueue: PendingLayoutSyncQueue(db.pendingSyncDao),
       );
 
-      await repository.write(SurfaceId.today, _layoutWith('summary.metrics')).run();
+      await repository
+          .write(SurfaceId.today, _layoutWith('summary.metrics'))
+          .run();
 
       expect(sentSchema, SurfaceLayout.currentSchemaVersion);
       expect(jsonDecode(sentPayload!), isA<Map<String, Object?>>());
@@ -203,7 +212,10 @@ void main() {
       overrides: [fakeLayoutRepositoryOverride()],
     );
     addTearDown(container.dispose);
-    expect(container.read(layoutRepositoryProvider), isA<CachedLayoutRepository>());
+    expect(
+      container.read(layoutRepositoryProvider),
+      isA<CachedLayoutRepository>(),
+    );
   });
 }
 

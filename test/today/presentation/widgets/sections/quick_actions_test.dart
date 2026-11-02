@@ -34,8 +34,8 @@ void main() {
         final container = ProviderContainer(
           overrides: [
             todaySurfaceDashboardProvider.overrideWithValue(
-          PageViewStateReady(_placeholderDashboard()),
-        ),
+              PageViewStateReady(_placeholderDashboard()),
+            ),
             ...compositionTestOverrides(),
             authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
             dailyRecordRepositoryProvider.overrideWithValue(repository),
@@ -109,8 +109,8 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           todaySurfaceDashboardProvider.overrideWithValue(
-          PageViewStateReady(_placeholderDashboard()),
-        ),
+            PageViewStateReady(_placeholderDashboard()),
+          ),
           ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           dailyRecordRepositoryProvider.overrideWithValue(repository),
@@ -153,8 +153,8 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           todaySurfaceDashboardProvider.overrideWithValue(
-          PageViewStateReady(_placeholderDashboard()),
-        ),
+            PageViewStateReady(_placeholderDashboard()),
+          ),
           ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
         ],

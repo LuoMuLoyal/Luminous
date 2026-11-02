@@ -157,10 +157,7 @@ void main() {
 
       final preferences = KvStore.instance;
       expect(
-        preferences.get<bool>(
-          'featureFlags.onDeviceRuntime',
-          fallback: false,
-        ),
+        preferences.get<bool>('featureFlags.onDeviceRuntime', fallback: false),
         isTrue,
       );
     });
@@ -303,14 +300,8 @@ void main() {
       expect(state.value?.reportExportPdf, isFalse);
 
       final preferences = KvStore.instance;
-      expect(
-        preferences.containsKey('featureFlags.onDeviceRuntime'),
-        isFalse,
-      );
-      expect(
-        preferences.containsKey('featureFlags.runtimeProvider'),
-        isFalse,
-      );
+      expect(preferences.containsKey('featureFlags.onDeviceRuntime'), isFalse);
+      expect(preferences.containsKey('featureFlags.runtimeProvider'), isFalse);
       expect(preferences.containsKey('featureFlags.genUiEnabled'), isFalse);
       expect(
         preferences.containsKey('featureFlags.assistantStreamMode'),

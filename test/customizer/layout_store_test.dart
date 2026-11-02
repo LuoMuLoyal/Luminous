@@ -69,36 +69,42 @@ void main() {
     expect(layout.visiblePlacements.map((p) => p.id), [_first]);
   });
 
-  test('a saved layout survives a restart (read back from the cache)', () async {
-    final first = createContainer();
-    await first.read(surfaceLayoutsProvider.future);
-    await first
-        .read(surfaceLayoutsProvider.notifier)
-        .commit(
-          LayoutDraft(
-            surfaces: {
-              _surface: const SurfaceLayout(
-                placements: [ComponentPlacement(id: _second)],
-              ),
-            },
-          ),
-        );
+  test(
+    'a saved layout survives a restart (read back from the cache)',
+    () async {
+      final first = createContainer();
+      await first.read(surfaceLayoutsProvider.future);
+      await first
+          .read(surfaceLayoutsProvider.notifier)
+          .commit(
+            LayoutDraft(
+              surfaces: {
+                _surface: const SurfaceLayout(
+                  placements: [ComponentPlacement(id: _second)],
+                ),
+              },
+            ),
+          );
 
-    // 新容器 = 冷启动：KvStore 里已有刚才写下的那一条。
-    final restarted = createContainer();
-    await restarted.read(surfaceLayoutsProvider.future);
+      // 新容器 = 冷启动：KvStore 里已有刚才写下的那一条。
+      final restarted = createContainer();
+      await restarted.read(surfaceLayoutsProvider.future);
 
-    final layout = restarted.read(storedSurfaceLayoutProvider(_surface));
-    expect(layout.placements.map((p) => p.id), [_second]);
-  });
+      final layout = restarted.read(storedSurfaceLayoutProvider(_surface));
+      expect(layout.placements.map((p) => p.id), [_second]);
+    },
+  );
 
-  test('a corrupt stored payload falls back to defaults instead of throwing', () async {
-    KvTestStore.install(seed: const {'layout.today': 'not json'});
-    final container = createContainer();
+  test(
+    'a corrupt stored payload falls back to defaults instead of throwing',
+    () async {
+      KvTestStore.install(seed: const {'layout.today': 'not json'});
+      final container = createContainer();
 
-    await container.read(surfaceLayoutsProvider.future);
+      await container.read(surfaceLayoutsProvider.future);
 
-    final layout = container.read(storedSurfaceLayoutProvider(_surface));
-    expect(layout.placements.map((p) => p.id), [_first, _second]);
-  });
+      final layout = container.read(storedSurfaceLayoutProvider(_surface));
+      expect(layout.placements.map((p) => p.id), [_first, _second]);
+    },
+  );
 }

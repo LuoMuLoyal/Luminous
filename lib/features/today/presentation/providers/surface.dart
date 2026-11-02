@@ -19,15 +19,14 @@ import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 ///
 /// Sections switch over the returned [PageViewState], so the state handling
 /// lives here once rather than in each of the eight components.
-final todaySurfaceDashboardProvider = Provider<PageViewState<TodayDashboard>>(
-  (ref) {
-    return resolvePageViewState<TodayDashboard>(
-      session: ref.watch(authSessionProvider),
-      data: ref.watch(todayDashboardProvider),
-    );
-  },
-  name: 'todaySurfaceDashboard',
-);
+final todaySurfaceDashboardProvider = Provider<PageViewState<TodayDashboard>>((
+  ref,
+) {
+  return resolvePageViewState<TodayDashboard>(
+    session: ref.watch(authSessionProvider),
+    data: ref.watch(todayDashboardProvider),
+  );
+}, name: 'todaySurfaceDashboard');
 
 /// Whether the surface is showing the signed-out preview.
 ///

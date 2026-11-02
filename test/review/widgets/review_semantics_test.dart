@@ -109,7 +109,9 @@ void main() {
 
     // `ReviewView` 无参、数据来自 provider：这里注入数据而不是构造参数。
     // 冷启动/覆盖率由 dashboard 决定，`isColdStart` 只在数据侧有意义。
-    final dashboard = isColdStart ? ReviewDashboard.signedOut() : reviewDashboardWithCoverage();
+    final dashboard = isColdStart
+        ? ReviewDashboard.signedOut()
+        : reviewDashboardWithCoverage();
 
     await tester.pumpWidget(
       ProviderScope(
@@ -119,7 +121,7 @@ void main() {
             (ref) async => current.asData?.value,
           ),
           reviewDashboardProvider(
-              const ReviewDashboardQuery(range: ReviewDashboardRange.last7Days),
+            const ReviewDashboardQuery(range: ReviewDashboardRange.last7Days),
           ).overrideWith((ref) async => dashboard),
           reviewHistoryProvider.overrideWith(
             (ref) async =>
@@ -133,9 +135,7 @@ void main() {
           ),
         ],
         child: const TestForuiApp(
-          home: Scaffold(
-            body: SingleChildScrollView(child: ReviewView()),
-          ),
+          home: Scaffold(body: SingleChildScrollView(child: ReviewView())),
         ),
       ),
     );

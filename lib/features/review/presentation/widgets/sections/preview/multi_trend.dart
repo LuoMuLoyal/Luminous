@@ -292,7 +292,10 @@ class _EmptyMultiTrend extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.reviewTrendEmptyTitle, style: context.theme.typography.body.md),
+            Text(
+              l10n.reviewTrendEmptyTitle,
+              style: context.theme.typography.body.md,
+            ),
             const SizedBox(height: Spacing.sm),
             Text(
               l10n.reviewTrendEmptyBody,

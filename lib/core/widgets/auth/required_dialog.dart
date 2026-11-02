@@ -152,10 +152,7 @@ Future<void> pushAuthRequiredRoute(BuildContext context, String route) async {
 /// jumping straight to `/login` on a tap is the one behaviour it replaces:
 /// a silent redirect leaves the user wondering why the screen changed, while
 /// the dialog names the requirement and offers a way out.
-Future<void> requestSignIn(
-  BuildContext context, {
-  String? returnTo,
-}) async {
+Future<void> requestSignIn(BuildContext context, {String? returnTo}) async {
   if (returnTo == null) {
     return _showSignInDialog(context);
   }

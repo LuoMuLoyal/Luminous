@@ -277,9 +277,7 @@ class PageStateSwitch<T> extends StatelessWidget {
     final refreshing = state as PageViewStateRefreshing<T>;
     final l10n = AppLocalizations.of(context)!;
     return _ContentWithNotice(
-      label: fromCache
-          ? l10n.commonStatusOffline
-          : l10n.commonStatusRefreshing,
+      label: fromCache ? l10n.commonStatusOffline : l10n.commonStatusRefreshing,
       tone: StateNoticeTone.neutral,
       busy: !fromCache,
       child: readyBuilder(refreshing.data, refreshing.isPreview),
@@ -293,9 +291,7 @@ class PageStateSwitch<T> extends StatelessWidget {
   Widget _withStaleHint(BuildContext context, PageViewStateStale<T> stale) {
     final l10n = AppLocalizations.of(context)!;
     return _ContentWithNotice(
-      label: stale.retrying
-          ? l10n.commonRetryingHint
-          : l10n.commonStaleHint,
+      label: stale.retrying ? l10n.commonRetryingHint : l10n.commonStaleHint,
       tone: StateNoticeTone.warning,
       busy: stale.retrying,
       child: readyBuilder(stale.data, stale.isPreview),
@@ -325,8 +321,10 @@ class PageStateSwitch<T> extends StatelessWidget {
               onAction: empty.onAction,
               icon: empty.icon,
             ),
-      final PageViewStateRefreshing<T> refreshing =>
-        _withRefreshHint(context, refreshing.fromCache),
+      final PageViewStateRefreshing<T> refreshing => _withRefreshHint(
+        context,
+        refreshing.fromCache,
+      ),
       final PageViewStateStale<T> stale => _withStaleHint(context, stale),
       PageViewStateReady<T>(:final data, :final isPreview) => readyBuilder(
         data,

@@ -71,20 +71,19 @@ final reviewSurfaceStateProvider = Provider<PageViewState<ReviewDashboard>>(
 /// instead of dropping the whole section. [dataOrNull] answers `null` for
 /// loading and for a first-load failure alike, which is exactly the
 /// "component renders nothing, the page owns the state" contract the host wants.
-final reviewSurfaceReviewProvider = Provider<PageViewState<EventReview?>>(
-  (ref) {
-    final async = ref.watch(reviewCurrentProvider);
-    final cached = ref.watch(reviewLastCurrentProvider);
-    final effective = !async.hasValue && cached != null
-        ? AsyncValue<EventReview?>.data(cached)
-        : async;
-    return resolvePageViewState<EventReview?>(
-      session: ref.watch(authSessionProvider),
-      data: effective,
-    );
-  },
-  name: 'reviewSurfaceReview',
-);
+final reviewSurfaceReviewProvider = Provider<PageViewState<EventReview?>>((
+  ref,
+) {
+  final async = ref.watch(reviewCurrentProvider);
+  final cached = ref.watch(reviewLastCurrentProvider);
+  final effective = !async.hasValue && cached != null
+      ? AsyncValue<EventReview?>.data(cached)
+      : async;
+  return resolvePageViewState<EventReview?>(
+    session: ref.watch(authSessionProvider),
+    data: effective,
+  );
+}, name: 'reviewSurfaceReview');
 
 /// Whether the surface is showing the signed-out preview.
 ///
@@ -103,6 +102,7 @@ final reviewSurfaceRangeProvider = Provider<ReviewDashboardRange>(
   (ref) => ref.watch(reviewDashboardSelectedQueryProvider).range,
   name: 'reviewSurfaceRange',
 );
+
 /// Whether the event review is showing stale content (a refresh failed but the
 /// last success is still on screen).
 ///

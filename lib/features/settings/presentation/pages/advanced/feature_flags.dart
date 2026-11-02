@@ -75,9 +75,8 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                         value: flags.onDeviceRuntime,
                         onChange: (v) => controller.setOnDeviceRuntime(v),
                       ),
-                      onPress: () => controller.setOnDeviceRuntime(
-                        !flags.onDeviceRuntime,
-                      ),
+                      onPress: () =>
+                          controller.setOnDeviceRuntime(!flags.onDeviceRuntime),
                     ),
                     FTile(
                       title: Text(l10n.settingsFeatureFlagsAiProvider),

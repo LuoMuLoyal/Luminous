@@ -147,9 +147,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (isPreview) ...[
-            SignInHintBanner(
-              onSignIn: () => requestSignIn(context),
-            ),
+            SignInHintBanner(onSignIn: () => requestSignIn(context)),
             const SizedBox(height: Spacing.lg),
           ],
           RecordDashboardView(

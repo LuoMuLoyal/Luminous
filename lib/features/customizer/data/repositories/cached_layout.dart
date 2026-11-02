@@ -84,31 +84,32 @@ final class CachedLayoutRepository implements LayoutRepository {
             ifVersion: ifVersion,
           )
           .run();
-      return result.match(
-        (failure) {
-          // 409：另一台设备先写了。服务端在 `errors.current` 带回当前文档，
-          // 采纳它并写回缓存——不重试、不合并、不入队。
-          final adopted = _adoptConflict(surface, failure);
-          if (adopted != null) {
-            appLog.warning(
-              'CachedLayoutRepository.write(${surface.wireValue}): '
-              'version conflict, adopted server layout',
-            );
-            return Right<LucentFailure, SurfaceLayout>(adopted);
-          }
-          // 其余失败：本地已生效，远端等联网后重放。只保留最后一次编辑
-          // （同 entityType + entityId 的队列项由 SyncWorker 合并）。
-          unawaited(
-            _syncQueue.enqueue(surface: surface, layout: layout, ifVersion: ifVersion),
-          );
+      return result.match((failure) {
+        // 409：另一台设备先写了。服务端在 `errors.current` 带回当前文档，
+        // 采纳它并写回缓存——不重试、不合并、不入队。
+        final adopted = _adoptConflict(surface, failure);
+        if (adopted != null) {
           appLog.warning(
             'CachedLayoutRepository.write(${surface.wireValue}): '
-            'queued for retry, remote failed: ${failure.message}',
+            'version conflict, adopted server layout',
           );
-          return Right<LucentFailure, SurfaceLayout>(layout);
-        },
-        (_) => Right<LucentFailure, SurfaceLayout>(layout),
-      );
+          return Right<LucentFailure, SurfaceLayout>(adopted);
+        }
+        // 其余失败：本地已生效，远端等联网后重放。只保留最后一次编辑
+        // （同 entityType + entityId 的队列项由 SyncWorker 合并）。
+        unawaited(
+          _syncQueue.enqueue(
+            surface: surface,
+            layout: layout,
+            ifVersion: ifVersion,
+          ),
+        );
+        appLog.warning(
+          'CachedLayoutRepository.write(${surface.wireValue}): '
+          'queued for retry, remote failed: ${failure.message}',
+        );
+        return Right<LucentFailure, SurfaceLayout>(layout);
+      }, (_) => Right<LucentFailure, SurfaceLayout>(layout));
     });
   }
 

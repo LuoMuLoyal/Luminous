@@ -143,10 +143,7 @@ class GraphViewCanvas extends StatelessWidget {
 ///
 /// 有环保护：真实数据里理论上不会成环（药物 → 酶是单向语义），但上游数据
 /// 一旦出现环，这里不能死循环——用「已访问集合」截断。
-int _graphDepth(
-  Iterable<String> allNodes,
-  Map<String, List<String>> outgoing,
-) {
+int _graphDepth(Iterable<String> allNodes, Map<String, List<String>> outgoing) {
   final memo = <String, int>{};
   int depthOf(String node, Set<String> visiting) {
     final cached = memo[node];
@@ -173,11 +170,7 @@ int _graphDepth(
 
 /// 一条有向边。方向是语义，不能画反。
 final class GraphEdgeSpec {
-  const GraphEdgeSpec({
-    required this.from,
-    required this.to,
-    this.label,
-  });
+  const GraphEdgeSpec({required this.from, required this.to, this.label});
 
   final String from;
   final String to;

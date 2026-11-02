@@ -194,7 +194,9 @@ class RecordEditPage extends HookConsumerWidget {
               session.isLoading
                   ? const RecordEditLoading()
                   : AuthRequiredDialogGate(
-                      onLogin: () => unawaited(context.push(loginRouteForCurrentLocation(context)))
+                      onLogin: () => unawaited(
+                        context.push(loginRouteForCurrentLocation(context)),
+                      ),
                     ),
             ],
           ),

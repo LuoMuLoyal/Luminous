@@ -37,9 +37,7 @@ void main() {
     // `ReviewView` 无参，数据从 provider 取；因此这里注入的是数据而不是构造参数。
     final overrides = [
       ...compositionTestOverrides(),
-      reviewCurrentProvider.overrideWith(
-        (ref) async => current.asData?.value,
-      ),
+      reviewCurrentProvider.overrideWith((ref) async => current.asData?.value),
       // no-event 解释卡的判定要求「不是冷启动」，因此给一份有覆盖率的看板；
       // 其它状态不受影响（有事件时该卡片自行隐藏）。
       reviewDashboardProvider(
@@ -47,9 +45,12 @@ void main() {
       ).overrideWith((ref) async => reviewDashboardWithCoverage()),
       reviewHistoryProvider.overrideWith(
         (ref) async =>
-            (history ?? const AsyncValue<ReviewEventPage>.data(
-              ReviewEventPage(items: [], total: 0),
-            )).asData?.value ??
+            (history ??
+                    const AsyncValue<ReviewEventPage>.data(
+                      ReviewEventPage(items: [], total: 0),
+                    ))
+                .asData
+                ?.value ??
             const ReviewEventPage(items: [], total: 0),
       ),
     ];
@@ -62,7 +63,9 @@ void main() {
           locale: locale,
           home: MediaQuery(
             data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
-            child: const Scaffold(body: SingleChildScrollView(child: ReviewView())),
+            child: const Scaffold(
+              body: SingleChildScrollView(child: ReviewView()),
+            ),
           ),
         ),
       ),

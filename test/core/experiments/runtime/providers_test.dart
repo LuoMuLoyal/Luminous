@@ -15,21 +15,12 @@ void main() {
         RuntimeProviderKindX.parse('ai_toolkit'),
         RuntimeProviderKind.aiToolkit,
       );
-      expect(
-        RuntimeProviderKindX.parse('gen_ui'),
-        RuntimeProviderKind.genUi,
-      );
-      expect(
-        RuntimeProviderKindX.parse('custom'),
-        RuntimeProviderKind.custom,
-      );
+      expect(RuntimeProviderKindX.parse('gen_ui'), RuntimeProviderKind.genUi);
+      expect(RuntimeProviderKindX.parse('custom'), RuntimeProviderKind.custom);
     });
 
     test('falls back to none for unknown values', () {
-      expect(
-        RuntimeProviderKindX.parse('lucent'),
-        RuntimeProviderKind.none,
-      );
+      expect(RuntimeProviderKindX.parse('lucent'), RuntimeProviderKind.none);
     });
   });
 

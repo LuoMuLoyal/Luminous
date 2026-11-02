@@ -214,9 +214,7 @@ class _SharedTargetRow extends StatelessWidget {
             children: [
               Text(
                 target.targetGene,
-                style: typography.body.xs.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: typography.body.xs.copyWith(fontWeight: FontWeight.w700),
               ),
               Text(
                 l10n.medicineGraphSharedTargetDrugs(target.drugCount),
@@ -225,10 +223,7 @@ class _SharedTargetRow extends StatelessWidget {
             ],
           ),
           const SizedBox(height: Spacing.xs),
-          Text(
-            target.drugNames.join(' · '),
-            style: typography.body.xs,
-          ),
+          Text(target.drugNames.join(' · '), style: typography.body.xs),
           if (!compact && target.targetName.isNotEmpty) ...[
             const SizedBox(height: Spacing.xs),
             Text(
@@ -405,10 +400,7 @@ class _CascadeChain extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           step(cascade.startDrug, arrow: false),
-          step(
-            cascade.enzymeOne,
-            note: l10n.medicineGraphRelationInhibits,
-          ),
+          step(cascade.enzymeOne, note: l10n.medicineGraphRelationInhibits),
           step(cascade.middleDrug),
           step(cascade.enzymeTwo, note: l10n.medicineGraphRelationInhibits),
           step(cascade.endDrug, note: l10n.medicineGraphCascadeEnd),
@@ -462,9 +454,7 @@ class EnzymeDuelsSection extends ConsumerWidget {
           final shown = compact ? items.take(2).toList() : items;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final duel in shown) _EnzymeDuelRow(duel: duel),
-            ],
+            children: [for (final duel in shown) _EnzymeDuelRow(duel: duel)],
           );
         },
       ),

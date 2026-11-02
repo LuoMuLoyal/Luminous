@@ -82,7 +82,10 @@ class HiveKvStore implements KvStore {
   /// lives in the application documents directory, so the box is pointed at a
   /// path derived from the same root instead of adding a second storage root.
   static Future<KvStore> open() async {
-    final box = await Hive.openBox<dynamic>(boxName, path: await _storagePath());
+    final box = await Hive.openBox<dynamic>(
+      boxName,
+      path: await _storagePath(),
+    );
     return KvStore.installForTesting(HiveKvStore(box));
   }
 

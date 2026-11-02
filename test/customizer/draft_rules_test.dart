@@ -41,10 +41,10 @@ void main() {
       catalog,
     );
 
-    expect(
-      next.layoutOf(surface).placements.map((p) => p.id),
-      [existing, fresh],
-    );
+    expect(next.layoutOf(surface).placements.map((p) => p.id), [
+      existing,
+      fresh,
+    ]);
   });
 
   test('adding an already mounted component is a no-op, not a duplicate', () {
@@ -54,10 +54,7 @@ void main() {
       catalog,
     );
 
-    expect(
-      next.layoutOf(surface).placements.map((p) => p.id),
-      [existing],
-    );
+    expect(next.layoutOf(surface).placements.map((p) => p.id), [existing]);
   });
 
   test('a component owned by another surface can be added here', () {

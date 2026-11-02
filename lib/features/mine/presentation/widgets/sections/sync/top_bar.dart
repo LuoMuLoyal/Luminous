@@ -30,10 +30,7 @@ class MineTopBar extends ConsumerWidget {
         unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
 
     return FHeader.nested(
-      title: SurfaceTitleEntry(
-        surface: SurfaceId.mine,
-        title: l10n.tabMine,
-      ),
+      title: SurfaceTitleEntry(surface: SurfaceId.mine, title: l10n.tabMine),
       suffixes: [
         FTooltip(
           tipBuilder: (context, controller) =>

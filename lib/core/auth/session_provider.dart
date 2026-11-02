@@ -158,16 +158,16 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
   void _flushPendingSync() {
     try {
       unawaited(
-        ref
-            .read(syncWorkerProvider)
-            .flush()
-            .catchError((Object error, StackTrace stackTrace) {
-              // 重放失败不能把登录流程带崩，记日志后交给 worker 的退避策略。
-              appLog.warning(
-                'AuthSessionNotifier: pending sync flush failed: $error',
-              );
-              return const SyncFlushResult();
-            }),
+        ref.read(syncWorkerProvider).flush().catchError((
+          Object error,
+          StackTrace stackTrace,
+        ) {
+          // 重放失败不能把登录流程带崩，记日志后交给 worker 的退避策略。
+          appLog.warning(
+            'AuthSessionNotifier: pending sync flush failed: $error',
+          );
+          return const SyncFlushResult();
+        }),
       );
     } catch (error) {
       // worker 本身构造失败（测试容器没接本地库、或启动早期依赖未就绪）时，

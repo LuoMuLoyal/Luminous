@@ -35,31 +35,19 @@ void main() {
     });
 
     test('parses "gen_ui" as genUi', () {
-      expect(
-        RuntimeProviderKindX.parse('gen_ui'),
-        RuntimeProviderKind.genUi,
-      );
+      expect(RuntimeProviderKindX.parse('gen_ui'), RuntimeProviderKind.genUi);
     });
 
     test('parses "genui" as genUi', () {
-      expect(
-        RuntimeProviderKindX.parse('genui'),
-        RuntimeProviderKind.genUi,
-      );
+      expect(RuntimeProviderKindX.parse('genui'), RuntimeProviderKind.genUi);
     });
 
     test('parses "custom" as custom', () {
-      expect(
-        RuntimeProviderKindX.parse('custom'),
-        RuntimeProviderKind.custom,
-      );
+      expect(RuntimeProviderKindX.parse('custom'), RuntimeProviderKind.custom);
     });
 
     test('parses unknown value as none', () {
-      expect(
-        RuntimeProviderKindX.parse('unknown'),
-        RuntimeProviderKind.none,
-      );
+      expect(RuntimeProviderKindX.parse('unknown'), RuntimeProviderKind.none);
     });
 
     test('parses empty string as none', () {

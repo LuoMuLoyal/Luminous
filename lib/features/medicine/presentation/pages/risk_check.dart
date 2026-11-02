@@ -125,9 +125,7 @@ class _MedicineRiskCheckPageState extends ConsumerState<MedicineRiskCheckPage> {
     if (!session.canAccessProtectedData) {
       bodyContent = session.isLoading
           ? const MedicineRiskCheckLoading()
-          : AuthRequiredDialogGate(
-              onLogin: () => requestSignIn(context),
-            );
+          : AuthRequiredDialogGate(onLogin: () => requestSignIn(context));
     } else {
       final recordsAsync = ref.watch(medicineRiskCheckRecordsProvider);
       bodyContent = recordsAsync.when(

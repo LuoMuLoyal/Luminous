@@ -20,12 +20,9 @@ import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 /// Sections read this provider and render nothing when `dataOrNull` is null;
 /// the page-level `PageStateSwitch` owns the skeleton and the fatal-error view,
 /// so a failure stays a visible failure instead of degrading to empty content.
-final mineSurfaceStateProvider = Provider<PageViewState<MineDashboard>>(
-  (ref) {
-    return resolvePageViewState<MineDashboard>(
-      session: ref.watch(authSessionProvider),
-      data: ref.watch(mineDashboardProvider),
-    );
-  },
-  name: 'mineSurfaceState',
-);
+final mineSurfaceStateProvider = Provider<PageViewState<MineDashboard>>((ref) {
+  return resolvePageViewState<MineDashboard>(
+    session: ref.watch(authSessionProvider),
+    data: ref.watch(mineDashboardProvider),
+  );
+}, name: 'mineSurfaceState');
