@@ -86,6 +86,50 @@ Then tile the results into contact sheets:
 python tool/screenshots/contact_sheet.py outputs/screenshots build/contact
 ```
 
+## Component crops
+
+`crop_components.py` cuts **meaningful blocks** out of the captures — a section
+title together with its card/list (``健康档案`` + five rows), a labelled form
+field, a chip row, a dialog — so they can be reused as a component library.
+Output lands in `outputs/components/<group>/` plus a `MANIFEST.md` mapping every
+crop back to its source capture and pixel box.
+
+```powershell
+# first run: OCR labels the crops and drops skeleton/placeholder blocks
+python -m pip install --target %TEMP%\ocr-libs rapidocr-onnxruntime
+python tool/screenshots/crop_components.py --ocr-libs %TEMP%\ocr-libs
+
+# later runs reuse outputs/.ocr-cache (per-capture OCR result keyed by hash)
+python tool/screenshots/crop_components.py --ocr-libs %TEMP%\ocr-libs
+```
+
+Without `--ocr-libs` the script still runs (`--no-ocr` explicitly), but names
+fall back to `<capture>__<index>.png` and flat skeleton bars cannot be dropped.
+
+How it decides what a component is:
+
+1. the page canvas colour is the mode of the capture's border ring;
+2. foreground = pixels that differ from that canvas;
+3. connected components over that mask (row run-lengths + union-find, no
+   scipy/cv2 dependency); a near-full-screen sheet (chat/dialog) is segmented a
+   second time from its own fill colour, so bubbles on it are found;
+4. keep only surface-like blobs: high fill ratio (text lines and blurred
+   ghosts fail), minimum size, and **clear of the frame edges** — a block the
+   viewport cuts off is the "incomplete" case;
+5. dialog captures (dimmed scrim) keep only the bright panel;
+6. blocks are grouped into meaningful units: a section title plus the list it
+   heads is one block (rows continue while gaps stay small), and rows of
+   neighbouring chips/tabs/segmented controls are joined into one block; a
+   list the viewport cuts off falls back to its fully visible rows;
+7. blocks with no OCR text and no saturated accent colour are skeleton bars and
+   are dropped;
+8. crops are deduplicated by content hash (identical captures and repeated
+   widgets are written once).
+
+Only phone captures (portrait) are processed: `desktop/` and landscape frames
+are a different viewport class, and `long/` duplicates the same pages at
+another scale.
+
 ## How it works
 
 `generate.dart` imports only the **catalog constants** from
