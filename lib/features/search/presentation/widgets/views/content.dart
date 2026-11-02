@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +18,11 @@ import 'package:luminous/features/search/presentation/widgets/sections/quick_act
 import 'package:luminous/features/search/presentation/widgets/sections/recent_searches.dart';
 import 'package:luminous/features/search/presentation/widgets/sections/source_switch.dart';
 import 'package:luminous/features/search/presentation/widgets/shared/results.dart';
+// shell 的详情面板是**共享外壳基础设施**（`lib/features/shell/presentation/` 在
+// `cross_feature_import` 里对 presentation 例外开放）：桌面上同一份详情要能并排
+// 展开，而不是每个列表页各自造一个「预览」面板。用药页药盒已经在用它。
+import 'package:luminous/features/shell/presentation/detail_pane.dart';
+import 'package:luminous/features/shell/presentation/detail_pane_state.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -289,7 +295,20 @@ class _MobileSearchLayout extends StatelessWidget {
   }
 }
 
-class _DesktopSearchLayout extends StatelessWidget {
+/// 桌面端搜索：列表 + 右侧详情，**主从两栏**。
+///
+/// ## 为什么复用 shell 的详情面板
+///
+/// 手机上一个结果点开就整页 push；桌面上有横向空间，同一份详情应当并排展开，
+/// 列表的滚动位置和搜索上下文都还在。这正是 `DesktopDetailPane` 的语义——它
+/// 渲染的就是**药品详情页本身**（`MedicineDetailContent`，同一个
+/// `medicineDetailProvider` family），不是另造的精简预览卡。用药页药盒的桌面
+/// 列表已经用它打开详情，搜索页只是把同一套主从关系接上。
+///
+/// 之前右栏是一张「选中项预览」卡：只显示药名，因为 F-11 去掉了把 subtitle
+/// 拆成假临床提示的映射。结果就是桌面端搜到药品后右边几乎空白——详情本该在
+/// 这里。
+class _DesktopSearchLayout extends ConsumerStatefulWidget {
   const _DesktopSearchLayout({
     required this.state,
     required this.l10n,
@@ -317,41 +336,76 @@ class _DesktopSearchLayout extends StatelessWidget {
   final Set<String> addedMedicineIds;
 
   @override
+  ConsumerState<_DesktopSearchLayout> createState() =>
+      _DesktopSearchLayoutState();
+}
+
+class _DesktopSearchLayoutState extends ConsumerState<_DesktopSearchLayout> {
+  @override
+  void initState() {
+    super.initState();
+    // 首次构建时结果可能已经在了（滚动恢复、返回本页），listener 不会补发。
+    WidgetsBinding.instance.addPostFrameCallback((_) => _syncDetailPane());
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // 搜索提交后 notifier 会把第一条结果设为选中；选中必须在右栏有可见结果，
+    // 否则「选中」就只是个没有下文的状态。
+    ref.listen(medicineSearchNotifierProvider, (_, __) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _syncDetailPane());
+    });
+
+    final state = widget.state;
     if (state.isSearching && state.results.isEmpty) {
       return const MedicineSearchLoadingView();
     }
-
     if (state.errorMessage != null && state.results.isEmpty) {
-      return MedicineSearchErrorView(onRetry: onRetry);
+      return MedicineSearchErrorView(onRetry: widget.onRetry);
     }
 
-    return Row(
-      children: [
-        Expanded(
-          flex: 7,
-          child: _DesktopSearchPanel(
-            state: state,
-            l10n: l10n,
-            recentKeywords: recentKeywords,
-            onClearRecentSearches: onClearRecentSearches,
-            onQueryChanged: onQueryChanged,
-            onQuerySubmitted: onQuerySubmitted,
-            onSourceSwitched: onSourceSwitched,
-            onResultSelected: onResultSelected,
-            onAddToCurrentMedicines: onAddToCurrentMedicines,
-            addedMedicineIds: addedMedicineIds,
-          ),
-        ),
-        const SizedBox(width: Spacing.xl),
-        Expanded(
-          flex: 3,
-          child: PreviewPanel(state: state, l10n: l10n),
-        ),
-      ],
+    return DesktopDetailPane(
+      child: _DesktopSearchPanel(
+        state: state,
+        l10n: widget.l10n,
+        recentKeywords: widget.recentKeywords,
+        onClearRecentSearches: widget.onClearRecentSearches,
+        onQueryChanged: widget.onQueryChanged,
+        onQuerySubmitted: widget.onQuerySubmitted,
+        onSourceSwitched: widget.onSourceSwitched,
+        onResultSelected: widget.onResultSelected,
+        onAddToCurrentMedicines: widget.onAddToCurrentMedicines,
+        addedMedicineIds: widget.addedMedicineIds,
+      ),
+    );
+  }
+
+  /// 把「当前选中的搜索结果」同步到右侧详情面板。
+  ///
+  /// 用 `widget.state`（父级每次 provider 变化都会把新 state 传下来）而不是
+  /// 重新 `ref.read` provider：布局是受控的，state 只有一个来源。
+  /// `open` 对同一目标是幂等的，所以 post-frame 里重复调用不会造成重建循环。
+  void _syncDetailPane() {
+    if (!mounted) return;
+    final state = widget.state;
+    final selectedId = state.selectedResultId;
+    final result = selectedId == null
+        ? null
+        : state.results.firstWhereOrNull((item) => item.id == selectedId);
+    final pane = ref.read(detailPaneProvider.notifier);
+    if (result == null) {
+      pane.close();
+      return;
+    }
+    pane.open(
+      MedicineDetailTarget(source: _detailSource(result.source), id: result.id),
     );
   }
 }
+
+/// 搜索来源 → 详情链路的 `source` 参数（`cn` | `drugbank`）。
+String _detailSource(MedicineSearchSource source) =>
+    source == MedicineSearchSource.drugbank ? 'drugbank' : 'cn';
 
 class _DesktopSearchPanel extends StatelessWidget {
   const _DesktopSearchPanel({

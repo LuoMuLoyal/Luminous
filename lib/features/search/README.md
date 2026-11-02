@@ -3,7 +3,7 @@
 一句话:药品库搜索(cn/drugbank 双源)+ "加入药箱"预检闭环;页面路由注册在 medicine 下,加箱闭环被 scan 复用。
 
 ## 职责与边界
-- 管:关键词搜索(提交式:搜索按钮或键盘 search 键/回车触发,5s 超时)、来源切换、最近搜索持久化(SharedPreferences,cap 10)、桌面结果预览面板、`addMedicineToBoxWithPrecheck` 闭环。
+- 管:关键词搜索(提交式:搜索按钮或键盘 search 键/回车触发,5s 超时)、来源切换、最近搜索持久化(SharedPreferences,cap 10)、桌面主从(结果列表 + shell 详情面板并排打开所选药品详情)、`addMedicineToBoxWithPrecheck` 闭环。
 - 不管:药品详情页与提醒创建(medicine)、扫码/拍照 UI(scan)、药箱数据本身(health_context)。
 
 ## 对外契约
@@ -16,9 +16,10 @@
 - 搜索失败与详情预览失败都不外抛;最近搜索写入失败只记日志,不得使搜索失败(F-12)。
 - 搜索请求带 generation 守卫:每次 `_doSearch` 递增 `_searchGeneration`,响应(含失败与 detail preview 后的二次 await)提交前必须复核 generation,过期响应整体丢弃,不得覆盖新查询的 results / selectedResultId / detailPreview,也不得写最近搜索。清空查询同样递增 generation 并就地清 `isSearching`(被丢弃的搜索会提前 return,不会自己复位该标志)。
 - `MedicineSearchCategory` / `MedicineSearchSafetyPreview` 保留但未接主路径(F-12/F-11);移动端不得用 SafetyPreview 展示临床信息,真实内容走药品详情页。
+- 桌面端右栏是 **shell 的详情面板**(`detailPaneProvider` + `DesktopDetailPane`),渲染的是药品详情页本身(`MedicineDetailContent`,同一个 `medicineDetailProvider` family);选中结果 → 打开面板,无选中 → 关闭。不要为桌面再造「精简预览卡」:F-11 去掉假映射后它只剩一个药名,等于右栏空白。
 
 ## 依赖禁区
-- repository 装配 provider 在 data/repositories/lucent.dart,状态 provider 在 presentation/providers/(无 data/providers 层);跨 feature 引用仅限 add_to_box 现有面(health_context repository + write_inputs、medicine risk_check + typed route、medicine 的 `widgets/shared/copy.dart`)、`page.dart` 的 health_context provider,以及 scan 的 `box_scan.dart`(`widgets/sections/quick_actions.dart`),不得扩大。
+- repository 装配 provider 在 data/repositories/lucent.dart,状态 provider 在 presentation/providers/(无 data/providers 层);跨 feature 引用仅限 add_to_box 现有面(health_context repository + write_inputs、medicine risk_check + typed route、medicine 的 `widgets/shared/copy.dart`)、`page.dart` 的 health_context provider、scan 的 `box_scan.dart`(`widgets/sections/quick_actions.dart`),以及 **shell 的详情面板** (`features/shell/presentation/detail_pane*.dart` —— `cross_feature_import` 对 shell 基础设施例外,与用药页药盒同一形态),不得扩大。
 
 ## 陷阱与决策
 - 搜索是**提交式**,不是输入即搜:请求只由 `submitQuery` 发出(输入框下方搜索按钮,或键盘 search 键/回车)。`updateQuery` 只记录输入;文本一旦与已提交查询不一致(含清空)就清 `submittedQuery`、清 results/selectedResultId/detailPreview 并递增 generation,使在途搜索作废。`switchSource` **不触发搜索**:只切来源并清结果,由用户再次显式提交;`retry` 保持立即重搜。

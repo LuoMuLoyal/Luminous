@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
-import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/search/presentation/widgets/sections/source_switch.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -307,72 +306,12 @@ class _TagPill extends StatelessWidget {
   }
 }
 
-/// 桌面端搜索右侧预览面板（桌面冻结能力，F-11）。
+/// 桌面端搜索右侧的详情由 shell 的 `DesktopDetailPane` 承载。
 ///
-/// 旧实现把后端单行「规格 / 厂商」subtitle 按 `\n` split 后渲染在「临床提示」
-/// 标题下，并以恒空 checklist 暗示存在「安全确认」区块——包装信息伪装成临床
-/// 提示。F-11 已移除该造假映射与恒空清单暗示：本面板仅展示所选药品标题与
-/// 空态。本面板**不接入主路径**，避免造假模式被复制到移动端；移动端真实
-/// 临床/安全内容走药品详情页（`/medicine/detail/:source/:id`）。
-class PreviewPanel extends StatelessWidget {
-  const PreviewPanel({super.key, required this.state, required this.l10n});
-
-  final MedicineSearchState state;
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    final preview = state.detailPreview;
-    final typography = context.theme.typography;
-
-    return FCard(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.xl2),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.medicineSearchPreviewTitle,
-                style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
-              ),
-              if (preview != null) ...[
-                const SizedBox(height: Spacing.xl),
-                Text(
-                  preview.title,
-                  style: typography.body.md.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-              if (preview == null)
-                Padding(
-                  padding: const EdgeInsets.only(top: Spacing.xl2),
-                  child: Column(
-                    children: [
-                      Icon(
-                        SemanticIcons.actionSearch,
-                        size: IconSizeTokens.xl3,
-                        color: SemanticColor.neutral.solid(context),
-                      ),
-                      const SizedBox(height: Spacing.lg),
-                      Text(
-                        l10n.medicineSearchPreviewEmpty,
-                        style: typography.body.md.copyWith(
-                          color: SemanticColor.neutral.solid(context),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+/// 这里原来有一张「选中项预览」卡：F-11 去掉了把后端 subtitle 拆成假临床提示的
+/// 映射之后，它只剩一个药名，桌面端选中结果后右栏几乎空白。桌面端的详情呈现
+/// 应当是**详情页本身并排展开**（与用药页药盒一致），而不是一份精简预览，
+/// 所以该面板已删除，改由 `_DesktopSearchLayout` 打开 `detailPaneProvider`。
 
 class NoResultTools extends StatelessWidget {
   const NoResultTools({
