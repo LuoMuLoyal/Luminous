@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Decides whether an HTTP failure may be retried by the transport layer.
 ///

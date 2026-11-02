@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/risk_check.dart';
-import 'package:luminous/features/medicine/presentation/widgets/risk/check_loading.dart';
-import 'package:luminous/features/medicine/presentation/widgets/risk/check_tab_content.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/shared/check_loading.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/shared/check_tab_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 class MedicineRiskCheckPage extends ConsumerStatefulWidget {
   const MedicineRiskCheckPage({super.key});
@@ -126,10 +125,7 @@ class _MedicineRiskCheckPageState extends ConsumerState<MedicineRiskCheckPage> {
     if (!session.canAccessProtectedData) {
       bodyContent = session.isLoading
           ? const MedicineRiskCheckLoading()
-          : AuthRequiredDialogGate(
-              onLogin: () =>
-                  context.push(loginRouteForCurrentLocation(context)),
-            );
+          : AuthRequiredDialogGate(onLogin: () => requestSignIn(context));
     } else {
       final recordsAsync = ref.watch(medicineRiskCheckRecordsProvider);
       bodyContent = recordsAsync.when(

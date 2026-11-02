@@ -1,0 +1,47 @@
+{
+  "generativeGenerateAction": "让 AI 编排",
+  "generativeRegenerateAction": "重新编排",
+  "generativeComposeTitle": "编排这一块",
+  "generativePromptLabel": "这里要显示什么？",
+  "generativePromptHint": "例如：把每日饮水做成三张并排的小卡",
+  "generativePromptEmpty": "请先输入一句指示",
+  "generativeCancelAction": "取消",
+  "generativeSubmitAction": "开始编排",
+  "generativeFailedMessage": "这次编排没有成功，保留了上一份结果。",
+  "generativeEmptyMessage": "还没有编排过",
+  "generativeSlotSheetTitle": "自定义 AI 区块",
+  "generativeSlotSheetDescription": "给这块地方起个名字，并告诉助手它应该显示什么。两项都会保存下来，不必每次重新输入。",
+  "generativeSlotTitleLabel": "区块名称",
+  "generativeSlotTitleHint": "显示在页面上，也显示在这个列表里",
+  "generativeSlotPromptLabel": "要显示什么？",
+  "generativeSlotPromptHint": "例如：把每日饮水做成三张并排的小卡",
+  "generativeSlotSaveAction": "保存",
+  "generativeSlotClearAction": "清除",
+  "generativeSlotUnconfigured": "尚未配置",
+  "generativeSlotEditAction": "编辑",
+  "generativeSlotNotGenerated": "尚未生成。在编排页点「编辑」设置名称并描述它要显示什么。",
+  "@generativeGenerateAction": {
+    "description": "打开指示输入面板的入口。"
+  },
+  "@generativeRegenerateAction": {
+    "description": "已编排过的区块，再次打开指示输入面板。"
+  },
+  "@generativeComposeTitle": {
+    "description": "面板标题。短，因为它是控件标签不是说明文字。"
+  },
+  "@generativePromptLabel": {
+    "description": "自然语言指示的字段标签。"
+  },
+  "@generativePromptHint": {
+    "description": "占位提示，示范什么样的指示有效。"
+  },
+  "@generativePromptEmpty": {
+    "description": "指示为空时的行内错误。"
+  },
+  "@generativeFailedMessage": {
+    "description": "编排失败但仍在展示上一份结果时显示。"
+  },
+  "@generativeEmptyMessage": {
+    "description": "该 surface 从未编排过时显示。"
+  }
+}

@@ -26,6 +26,36 @@ fluwx:
   ios:
     scene_delegate: true
 
+# 本地库加密：`sqlite3` v3 由 native-assets hook 选 SQLite 源，默认是**普通**
+# SQLite（没有加密、也不认 `PRAGMA key`）。`sqlcipher_flutter_libs` 从 0.7.0
+# 起是空壳包，留着它不会让 SQLCipher 出现。
+#
+# 选 SQLite3MultipleCiphers：`PRAGMA key` 语法与 SQLCipher 兼容
+# （`lib/core/database/key.dart` 的 `x'...'` 原始密钥形式两边都能用），
+# 而 SQLCipher 构建会在 Windows/Linux/Android 上链接 OpenSSL 并牵进
+# Zetetic 的许可证。
+hooks:
+  user_defines:
+    sqlite3:
+      source: sqlite3mc
+      # 默认从 GitHub Releases 下载预编译库，sha256 由 hook 校验。
+      #
+      # 当构建环境无法直连 GitHub（离线机、内网 CI、DNS 受限）时，可把
+      # `url_pattern` 指向自建镜像。它只接受 http(s)：`file://` 会报
+      # "No host specified in URI"。
+      #
+      #   url_pattern: "https://artifacts.example.org/$RELEASE_TAG/$FILENAME"
+      #
+      # 镜像里放与 sqlite3 版本对应的预编译库（`sqlite3mc.<arch>.<os>.<ext>`），
+      # 最小可用的自建镜像就是静态 HTTP 目录服务。`$RELEASE_TAG` 替换为
+      # sqlite3 版本（如 `sqlite3-3.7.0`），`$FILENAME` 替换为库文件名。
+      #
+      # 不确定下载是否成功时，跑一次应用看 `connection_io` 的加密引擎断言：
+      # 它会在启动时直接指出当前加载的是不是加密构建。
+      #
+      # 当前用官方源（未设置 url_pattern）。若构建环境又解析不到 github.com，
+      # 按上面注释加一行 url_pattern 指向自建镜像即可。
+
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
@@ -39,13 +69,13 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^3.4.3
   fpdart: ^1.2.0
+  # domain 层只用 @immutable 标注，不引入 Flutter 依赖
+  meta: ^1.19.0
   flutter_hooks: ^0.21.3
   hooks_riverpod: ^3.4.3
   go_router: ^17.2.3
-  shared_preferences: ^2.5.6
   dio: ^5.11.1
   drift: ^2.34.4
-  sqlite3_flutter_libs: ^0.6.0+eol
   connectivity_plus: ^6.1.0
   intl: ^0.20.2
   units_converter: ^3.3.2
@@ -69,7 +99,7 @@ dependencies:
   url_launcher: ^6.3.3
   fluwx: ^6.0.6 # 6.x required: UISceneDelegate + Android Kotlin build fix (3.47 升级)
   flutter_markdown_plus: ^1.0.12
-  email_validator: ^2.1.17
+  email_validator: ^3.0.0
   mobile_scanner: ^7.4.2
   paddle_ocr_native: ^0.1.1
   health: ^13.3.2
@@ -113,6 +143,15 @@ dependencies:
   sqlite3: 3.7.0
   flutter_gen_ai_chat_ui: ^2.20.0
   workmanager: ^0.10.10
+  hive_ce: ^2.22.0
+  genui: ^0.10.4
+  flutter_reorderable_grid_view: ^5.7.0
+  a2ui_core: ^0.1.1
+  # 生成式 UI 的 catalog item schema（`S.object` / `S.string`）。`genui` 自己
+  # 也依赖它；这里显式声明是因为组合根直接构造 `CatalogItem.dataSchema`。
+  json_schema_builder: ^0.1.7
+  graphview: ^1.5.1
+  fluid_adaptive: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -140,6 +179,10 @@ dev_dependencies:
   # 固定 3.0.12 而非最新 3.2.0：3.0.13 起把 `pana` 写进运行时依赖，
   # pana 连带 `lints ^6.0.0`，与本项目 `flutter_lints ^5.0.0` 无法共存。
   dart_pubspec_licenses: 3.0.12
+  # 循环依赖本地检查（arch_guard）。分层权威仍是
+  # tool/luminous_lints --clean-layers；这里只补它没覆盖的循环依赖。
+  # 用法：dart run scripts/arch/guard.dart
+  arch_guard: ^1.10.0
 
 dependency_overrides:
   # health ^13.x pulls device_info_plus ^12.x which depends on win32 ^5.x,
@@ -201,6 +244,5 @@ flutter:
     - assets/
     - assets/icon/app_icon.png
     - assets/icon/oauth/
-    - assets/icon/iconmind/
     - assets/legal/
     - assets/faq/

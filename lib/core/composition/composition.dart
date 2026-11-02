@@ -1,0 +1,24 @@
+/// Composition seams that let a page be assembled from a **layout data** instead
+/// of a hand-written widget list.
+///
+/// Three orthogonal concepts, deliberately kept apart:
+///
+/// - **catalog**: which component types exist (`ComponentRegistry`, global)
+/// - **mount**: which ids a surface may host (`SurfaceCatalog`, per surface)
+/// - **layout**: which ids the user actually mounted, in which order
+///   (`SurfaceLayout`, per surface, user-owned)
+///
+/// Component ids are `<domain>.<view>` and never contain a surface name, so one
+/// component can be mounted on several surfaces.
+library;
+
+export 'package:luminous/shared/domain/composition/id.dart';
+export 'package:luminous/shared/domain/composition/layout.dart';
+export 'package:luminous/shared/domain/composition/size.dart';
+
+export 'descriptor.dart';
+export 'host.dart';
+export 'registry.dart';
+export 'responsive/grid.dart';
+export 'responsive/viewport.dart';
+export 'surface.dart';

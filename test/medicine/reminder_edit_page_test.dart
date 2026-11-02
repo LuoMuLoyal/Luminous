@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/edit.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/loading.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/loading.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
   setUpAll(() {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
   });
 
   Future<void> pumpPage(

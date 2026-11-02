@@ -7,13 +7,13 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/features/shell/presentation/page.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
   setUpAll(() {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     // Mock window_manager MethodChannel so tests are stable across platforms.
     // ShellPage → _WindowTitleBar → windowManager.isMaximized() calls into

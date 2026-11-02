@@ -3,15 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/providers/sensitive_action_password.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/core/providers/session/sensitive_action_password.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/pages/security_center.dart';
+import 'package:luminous/features/auth/presentation/pages/account/security_center.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Security center page renders when signed in', (tester) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     await tester.pumpWidget(

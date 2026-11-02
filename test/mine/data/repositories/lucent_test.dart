@@ -1,11 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/mine/mine.dart';
+import 'package:luminous/app/composition/snapshot/health_context.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/mine/mine_dashboard.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/mine/data/providers/mine.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/task_either.dart';
 
 const _snapshot = HealthContextSnapshot(
@@ -36,12 +39,17 @@ const _snapshot = HealthContextSnapshot(
 );
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('LucentMineRepository.fetchDashboard', () {
     test(
       'returns a Right dashboard when the health-context snapshot loads',
       () async {
         final container = ProviderContainer(
           overrides: [
+            mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
             healthContextSnapshotProvider.overrideWith(
               (ref) => Future.value(_snapshot),
             ),
@@ -74,6 +82,7 @@ void main() {
         final container = ProviderContainer(
           retry: (count, error) => null,
           overrides: [
+            mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
             healthContextSnapshotProvider.overrideWith(
               (ref) => Future<HealthContextSnapshot>.error(
                 LucentFailure.network(
@@ -100,6 +109,7 @@ void main() {
       final container = ProviderContainer(
         retry: (count, error) => null,
         overrides: [
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           healthContextSnapshotProvider.overrideWith(
             (ref) => Future<HealthContextSnapshot>.error(
               const LucentFailure(
@@ -137,4 +147,22 @@ void main() {
       expect(dashboard.completion.progress, 0);
     });
   });
+}
+
+/// Always a cache miss, so the repository exercises the snapshot path.
+class _FakeMineDashboardDao implements MineDashboardDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

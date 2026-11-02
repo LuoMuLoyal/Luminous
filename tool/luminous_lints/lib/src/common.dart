@@ -37,6 +37,22 @@ bool isPresentationLayerPath(String libRelativePath) =>
 bool isCorePath(String libRelativePath) =>
     libRelativePath.startsWith('lib/core/');
 
+/// Returns [dirPath] relative to the enclosing package's `lib` directory
+/// (for example `lib/features/record/data`), or `null` when the directory is
+/// not inside a `lib` directory.
+String? libRelativeDir(String dirPath) {
+  final normalized = normalizePath(dirPath);
+  final index = normalized.lastIndexOf('/lib/');
+  if (index < 0) {
+    return normalized.endsWith('/lib') ? 'lib' : null;
+  }
+  var relative = normalized.substring(index + 1);
+  if (relative.endsWith('/')) {
+    relative = relative.substring(0, relative.length - 1);
+  }
+  return relative;
+}
+
 /// Returns the feature name of a `lib/features/<feature>/...` path, or `null`
 /// when the path is not inside a feature.
 String? featureNameOf(String libRelativePath) {

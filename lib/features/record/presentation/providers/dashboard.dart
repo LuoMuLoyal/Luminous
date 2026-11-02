@@ -2,12 +2,13 @@ import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/app/composition/snapshot/record.dart';
+import 'package:luminous/core/providers/channel.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dashboard.g.dart';
@@ -53,19 +54,21 @@ Future<RecordDashboard> recordDashboard(Ref ref) async {
   // unexpected error and is projected to AsyncValue.error.
   return authGuarded(
     ref: ref,
-    fetch: () async {
-      final result = await ref
+    fetch: () {
+      final result = ref
           .watch(recordRepositoryProvider)
-          .fetchDashboard(selectedDate, filterType: selectedFilter)
-          .run()
-          .timeout(
-            const Duration(seconds: 5),
-            onTimeout: () => throw LucentFailure.network(
+          .fetchDashboard(selectedDate, filterType: selectedFilter);
+      return unwrapFailure(
+        result.run().timeout(
+          const Duration(seconds: 5),
+          onTimeout: () => Either.left(
+            timeoutFailure(
+              code: NetworkErrorCode.receiveTimeout,
               message: NetworkErrorCode.receiveTimeout.name,
-              networkErrorCode: NetworkErrorCode.receiveTimeout,
             ),
-          );
-      return result.fold((failure) => throw failure, (dashboard) => dashboard);
+          ),
+        ),
+      );
     },
     signedOutFallback: () => ref
         .watch(recordRepositoryProvider)

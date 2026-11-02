@@ -461,7 +461,7 @@ class _TrendEmptyState extends StatelessWidget {
             children: [
               Icon(
                 SemanticIcons.reportChart,
-                size: Spacing.xl4,
+                size: IconSizeTokens.xl2,
                 color: SemanticColor.neutral.solid(context),
               ),
               const SizedBox(height: Spacing.md),

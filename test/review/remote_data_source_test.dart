@@ -4,10 +4,9 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/review/data/datasources/dashboard_remote.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 void main() {
   group('ReviewDashboardRemoteDataSource', () {
@@ -102,6 +101,7 @@ class _FakeReportAdapter implements HttpClientAdapter {
     ],
     'findings': <Object?>[
       <String, Object?>{
+        'id': 'hydration_low',
         'kind': 'hydration',
         'title': '饮水改善',
         'body': '最近 7 天饮水量较前期更稳定。',

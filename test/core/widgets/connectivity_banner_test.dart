@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/widgets/common/feedback/connectivity_banner.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 /// A fake [AuthSessionNotifier] that starts in a non-timeout state.
@@ -43,6 +44,10 @@ Widget _appShell(Widget child, List<Override> overrides) {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('ConnectivityBanner', () {
     testWidgets('renders SizedBox.shrink when session is not timed out', (
       tester,

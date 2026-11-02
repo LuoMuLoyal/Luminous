@@ -7,8 +7,8 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
-import 'package:luminous/features/settings/data/providers/data_storage.dart';
-import 'package:luminous/features/settings/presentation/providers/notification.dart';
+import 'package:luminous/features/settings/presentation/providers/data_access.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 import 'package:luminous/features/settings/presentation/widgets/navigation_tile.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -42,21 +42,21 @@ class GeneralSection extends ConsumerWidget {
           children: [
             SettingsNavigationTile(
               tileKey: const Key('settings-row-theme'),
-              icon: SemanticIcons.actionSettings,
+              icon: SemanticIcons.settingsTheme,
               title: l10n.mineSettingsThemeTitle,
               value: _themeSummaryLabel(l10n, currentTheme, currentFamily),
               onTap: () => context.push(Routes.settingsTheme),
             ),
             SettingsNavigationTile(
               tileKey: const Key('settings-row-language'),
-              icon: SemanticIcons.actionExternalLink,
+              icon: SemanticIcons.settingsLanguage,
               title: l10n.mineSettingsLanguageTitle,
               value: _languageLabel(l10n, currentLocale),
               onTap: () => context.push(Routes.settingsLanguage),
             ),
             SettingsNavigationTile(
               tileKey: const Key('settings-row-data-storage'),
-              icon: SemanticIcons.actionSettings,
+              icon: SemanticIcons.settingsDataStorage,
               title: l10n.settingsDataStorageTitle,
               subtitle: l10n.settingsDataStorageSubtitle,
               value: _retentionLabel(l10n, dataStorage.retentionPeriod),
@@ -64,13 +64,13 @@ class GeneralSection extends ConsumerWidget {
             ),
             SettingsNavigationTile(
               tileKey: const Key('settings-row-advanced'),
-              icon: SemanticIcons.actionSettings,
+              icon: SemanticIcons.settingsAdvanced,
               title: l10n.mineSettingsAdvancedTitle,
               onTap: () => context.push(Routes.settingsMore),
             ),
             SettingsNavigationTile(
               tileKey: const Key('settings-row-accessibility'),
-              icon: SemanticIcons.actionSettings,
+              icon: SemanticIcons.settingsAccessibility,
               title: l10n.settingsAccessibilityTitle,
               subtitle: l10n.settingsAccessibilitySubtitle,
               onTap: () => context.push(Routes.settingsAccessibility),

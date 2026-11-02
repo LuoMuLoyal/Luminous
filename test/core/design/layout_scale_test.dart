@@ -34,4 +34,55 @@ void main() {
       expect(LayoutScaleResolver.effectiveTextScale(320, 0.85), 0.85);
     });
   });
+
+  /// `resolve` 的分档由 `WindowSizeClass` 决定（`fluid_adaptive`），因此这里
+  /// 固定的是**档位边界**而不是具体取值：边界挪动会让所有页面的留白整体换档，
+  /// 而这在人工截图上不一定看得出来。
+  ///
+  /// 阈值取 `ResponsiveBreakpoints.standard`：600 / 840 / 1200。
+  group('LayoutScaleResolver.resolve boundary', () {
+    LayoutScale resolve(double w) => LayoutScaleResolver.resolve(w);
+
+    test('below 600 uses the phone tier', () {
+      expect(resolve(0).maxContentWidth, 560);
+      expect(resolve(599).maxContentWidth, 560);
+    });
+
+    test('600 switches to the tablet tier (M3 medium)', () {
+      expect(resolve(600).maxContentWidth, 760);
+      expect(resolve(839).maxContentWidth, 760);
+    });
+
+    test('840 switches to the small-desktop tier (M3 expanded)', () {
+      expect(resolve(840).maxContentWidth, 1040);
+      expect(resolve(1199).maxContentWidth, 1040);
+    });
+
+    test('1200 switches to the desktop tier (M3 large)', () {
+      expect(resolve(1200).maxContentWidth, 1600);
+      expect(resolve(2560).maxContentWidth, 1600);
+    });
+
+    test('padding follows the tier, not the raw width', () {
+      // 相邻档位的留白必须不同，否则这条链等于没分档。
+      expect(
+        resolve(599).pageHorizontalPadding,
+        isNot(resolve(600).pageHorizontalPadding),
+      );
+      expect(
+        resolve(839).pageHorizontalPadding,
+        isNot(resolve(840).pageHorizontalPadding),
+      );
+      // 小桌面与桌面共用同一水平留白（都是 Spacing.xl2 = 20），
+      // 两者只靠纵向节奏区分。
+      expect(
+        resolve(1199).pageHorizontalPadding,
+        resolve(1200).pageHorizontalPadding,
+      );
+      expect(
+        resolve(1199).sectionVerticalPadding,
+        isNot(resolve(1200).sectionVerticalPadding),
+      );
+    });
+  });
 }

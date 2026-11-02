@@ -1,7 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Repository interface for user health events.
 ///

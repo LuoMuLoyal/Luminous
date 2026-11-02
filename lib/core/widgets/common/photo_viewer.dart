@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
@@ -135,12 +136,15 @@ class PhotoViewer extends StatelessWidget {
           if (onClose != null)
             Padding(
               padding: const EdgeInsets.all(Spacing.sm),
-              child: IconButton(
-                tooltip: l10n.commonClose,
-                onPressed: onClose,
-                icon: const Icon(
-                  SemanticIcons.actionClose,
-                  color: Colors.white,
+              child: FTooltip(
+                tipBuilder: (_, __) => Text(l10n.commonClose),
+                child: FButton.icon(
+                  variant: FButtonVariant.ghost,
+                  onPress: onClose,
+                  child: const Icon(
+                    SemanticIcons.actionClose,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

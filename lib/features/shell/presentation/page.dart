@@ -7,14 +7,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/control/brand_icon.dart';
 import 'package:luminous/core/widgets/common/feedback/connectivity_banner.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:window_manager/window_manager.dart';
@@ -142,17 +143,35 @@ class _DesktopSidebar extends ConsumerWidget {
 
     return FSidebar(
       style: FSidebarStyle(
-        decoration: BoxDecoration(color: theme.colors.background),
+        // 用主题下发的侧边栏底色，而不是 colors.background。
+        // 这里曾写死 colors.background（与页面底色同值），
+        // 让 scaffoldStyle.sidebarBackgroundColor 那一档失效——
+        // 结果是侧边栏与内容区同色，整屏层次只剩 1px 边框。
+        decoration: BoxDecoration(
+          color: theme.scaffoldStyle.sidebarBackgroundColor,
+        ),
         groupStyle: theme.sidebarStyle.groupStyle,
       ),
       header: _WindowTitleBar(session: session),
       footer: const _SidebarFooter(),
       children: [
-        tabItem(ShellTab.today),
-        tabItem(ShellTab.record),
-        tabItem(ShellTab.medicine),
-        tabItem(ShellTab.review),
-        tabItem(ShellTab.mine),
+        // 按「用户要做什么」分组，不按功能模块分组——后者会做成数据库
+        // 管理工具的目录树，不是工作台。
+        //
+        // 分组标签只在桌面侧边栏出现：它是 16rem 宽导航里唯一的层级信号。
+        // 手机端是底部 tab 栏，没有分组概念。
+        FSidebarGroup(
+          label: Text(l10n.desktopSidebarGroupToday),
+          children: [tabItem(ShellTab.today), tabItem(ShellTab.record)],
+        ),
+        FSidebarGroup(
+          label: Text(l10n.desktopSidebarGroupKnowledge),
+          children: [tabItem(ShellTab.medicine), tabItem(ShellTab.review)],
+        ),
+        FSidebarGroup(
+          label: Text(l10n.desktopSidebarGroupAccount),
+          children: [tabItem(ShellTab.mine)],
+        ),
       ],
     );
   }
@@ -199,8 +218,8 @@ class _SidebarHeaderContent extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     // User info row if authenticated, otherwise logo + app title.
-    if (session.isAuthenticated && session.user != null) {
-      final user = session.user!;
+    if (session.isAuthenticated && session.user is AuthUser) {
+      final user = session.user as AuthUser;
       final displayName = user.nickname ?? user.email ?? '';
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -277,7 +296,7 @@ class _SidebarFooter extends ConsumerWidget {
     final themeIcon = switch (themePref.mode) {
       AppThemeModePreference.system => SemanticIcons.actionExternalLink,
       AppThemeModePreference.light => SemanticIcons.actionThemeLight,
-      AppThemeModePreference.dark => SemanticIcons.recordMoon,
+      AppThemeModePreference.dark => SemanticIcons.actionThemeDark,
     };
 
     return Column(

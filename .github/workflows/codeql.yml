@@ -1,0 +1,74 @@
+name: CodeQL
+
+# 代码安全分析：用 GitHub 官方语义分析引擎扫认证缺陷、敏感信息泄露、
+# 不安全的数据流等问题。
+#
+# ## 对客户端仓库的意义
+#
+# Flutter 端持有 token、健康档案与后端地址配置。典型风险不是 SQL 注入，
+# 而是**凭证/密钥被硬编码、日志里打印敏感字段、WebView 与深链接的参数
+# 未校验**——这类问题 lint 规则覆盖不到，CodeQL 的数据流分析可以。
+#
+# ## security-extended 而非默认
+#
+# 默认查询集只覆盖高置信度问题；security-extended 增加更多低置信度但真实存在的
+# 检查。客户端误报只需一条 `// codeql[...]` 注释抑制，代价可接受。
+#
+# ## 为什么单独定时跑
+#
+# 漏洞规则库每周更新。只在 push 时扫，会让「代码没动但新披露了模式」的情况漏掉。
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # 每周一 03:17 UTC，避开整点高峰
+    - cron: '17 3 * * 1'
+
+concurrency:
+  group: luminous-codeql-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Dart 不在 CodeQL 支持的语言矩阵里（官方支持 C/C++、C#、Go、
+          # Java/Kotlin、JS/TS、Python、Ruby、Swift）。
+          # 因此这里只能扫构建/工具链那部分 TS 与 JS：
+          # 生成的 lucent_api 客户端、tool/luminous_lints、scripts/。
+          # Dart 业务代码由 analyze + 自研 lint 规则兜底，见 AGENTS.md。
+          - language: javascript-typescript
+            build-mode: none
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          queries: security-extended
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: '/language:${{ matrix.language }}'

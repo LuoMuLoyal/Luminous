@@ -2,7 +2,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:health/health.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
 import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
 
@@ -101,7 +101,7 @@ class HealthPlatformDataSource {
           ? HealthPermissionStatus.granted
           : HealthPermissionStatus.denied;
     } catch (e) {
-      appTalker.error('HealthPlatform: requestAuthorization failed: $e');
+      appLog.error('HealthPlatform: requestAuthorization failed: $e');
       return HealthPermissionStatus.denied;
     }
   }
@@ -128,7 +128,7 @@ class HealthPlatformDataSource {
           authorized.add(type);
         }
       } catch (e) {
-        appTalker.error('HealthPlatform: hasPermissions failed for $type: $e');
+        appLog.error('HealthPlatform: hasPermissions failed for $type: $e');
         // skip types that fail permission check
       }
     }
@@ -165,7 +165,7 @@ class HealthPlatformDataSource {
       );
       return _health.removeDuplicates(points);
     } catch (e) {
-      appTalker.error('HealthPlatform: getHealthDataFromTypes failed: $e');
+      appLog.error('HealthPlatform: getHealthDataFromTypes failed: $e');
       return [];
     }
   }
@@ -182,7 +182,7 @@ class HealthPlatformDataSource {
     try {
       return await _health.getTotalStepsInInterval(start, end);
     } catch (e) {
-      appTalker.error('HealthPlatform: getTotalStepsInInterval failed: $e');
+      appLog.error('HealthPlatform: getTotalStepsInInterval failed: $e');
       return null;
     }
   }

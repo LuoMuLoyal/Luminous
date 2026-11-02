@@ -3,17 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/presentation/pages/create.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 
 class _FakeRepo extends DailyRecordRepository {
   @override
@@ -53,7 +53,7 @@ class _FakeRepo extends DailyRecordRepository {
 
 void main() {
   testWidgets('RecordCreatePage renders when authenticated', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       ProviderScope(

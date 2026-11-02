@@ -5,6 +5,7 @@ import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/metrics.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Responsive 3-column grid of quick-entry tiles (non-reorder mode).
@@ -118,16 +119,12 @@ class QuickRecordTile extends StatelessWidget {
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    FAvatar.raw(
-                      size: metrics.avatarSize,
-                      style: .delta(
-                        backgroundColor: action.softColor.subtle(context),
-                      ),
-                      child: Icon(
-                        isLocked ? SemanticIcons.statusBlocked : action.icon,
-                        color: action.accent.solid(context),
-                        size: Spacing.xl,
-                      ),
+                    Icon(
+                      isLocked
+                          ? SemanticIcons.statusBlocked
+                          : recordIcon(action),
+                      color: action.accent.solid(context),
+                      size: IconSizeTokens.lg,
                     ),
                     if (badge != null)
                       Positioned(
@@ -226,16 +223,10 @@ class QuickRecordNoteButton extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FAvatar.raw(
-                  size: metrics.avatarSize,
-                  style: .delta(
-                    backgroundColor: action.softColor.subtle(context),
-                  ),
-                  child: Icon(
-                    isLocked ? SemanticIcons.statusBlocked : action.icon,
-                    color: action.accent.solid(context),
-                    size: Spacing.xl,
-                  ),
+                Icon(
+                  isLocked ? SemanticIcons.statusBlocked : recordIcon(action),
+                  color: action.accent.solid(context),
+                  size: IconSizeTokens.lg,
                 ),
                 const SizedBox(width: Spacing.md),
                 Text(

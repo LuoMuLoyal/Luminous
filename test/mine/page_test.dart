@@ -6,28 +6,36 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/mine/mine.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/mine/mine_dashboard.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/widgets/common/control/soft_icon.dart';
+import 'package:luminous/core/design/tokens/icon_size.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/mine/data/providers/mine.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:luminous/features/mine/presentation/pages/page.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
-import 'package:luminous/features/settings/presentation/providers/notification.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Mine page renders mobile north-star sections', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(393, 852);
@@ -88,6 +96,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -147,20 +157,24 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final icons = tester
-        .widgetList<SoftIcon>(
+    final iconWidgets = tester
+        .widgetList<Icon>(
           find.descendant(
             of: find.byKey(const Key('mine-notifications-reminder-section')),
-            matching: find.byType(SoftIcon),
+            matching: find.byType(Icon),
           ),
         )
+        .where((icon) => icon.size == IconSizeTokens.lg)
         .toList();
 
-    expect(icons, hasLength(3));
+    expect(iconWidgets, hasLength(3));
     // Each tile uses a distinct semantic color to convey its category.
-    expect(icons[0].color, SemanticColor.primary);
-    expect(icons[1].color, SemanticColor.info);
-    expect(icons[2].color, SemanticColor.neutral);
+    final colors = tester.element(
+      find.byKey(const Key('mine-notifications-reminder-section')),
+    );
+    expect(iconWidgets[0].color, SemanticColor.primary.solid(colors));
+    expect(iconWidgets[1].color, SemanticColor.info.solid(colors));
+    expect(iconWidgets[2].color, SemanticColor.neutral.solid(colors));
   });
 
   testWidgets('Mine notifications section routes to settings, dnd, and inbox', (
@@ -174,6 +188,8 @@ void main() {
     });
     final container = ProviderContainer(
       overrides: [
+        ...compositionTestOverrides(),
+        mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
         authSessionProvider.overrideWith(
           () => _EmailSignedInAuthSessionNotifier(),
         ),
@@ -268,6 +284,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(
             () => _SignedOutAuthSessionNotifier(),
           ),
@@ -317,6 +335,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(
             () => _EmailSignedInAuthSessionNotifier(),
           ),
@@ -341,6 +361,8 @@ void main() {
   testWidgets('Mine settings action routes to settings page', (tester) async {
     final container = ProviderContainer(
       overrides: [
+        ...compositionTestOverrides(),
+        mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
         authSessionProvider.overrideWith(
           () => _EmailSignedInAuthSessionNotifier(),
         ),
@@ -391,6 +413,8 @@ void main() {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final container = ProviderContainer(
       overrides: [
+        ...compositionTestOverrides(),
+        mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
         authSessionProvider.overrideWith(
           () => _EmailSignedInAuthSessionNotifier(),
         ),
@@ -445,6 +469,8 @@ void main() {
     });
     final container = ProviderContainer(
       overrides: [
+        ...compositionTestOverrides(),
+        mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
         authSessionProvider.overrideWith(
           () => _EmailSignedInAuthSessionNotifier(),
         ),
@@ -499,6 +525,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(
             () => _SignedOutAuthSessionNotifier(),
           ),
@@ -553,6 +581,8 @@ void main() {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final container = ProviderContainer(
       overrides: [
+        ...compositionTestOverrides(),
+        mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
         authSessionProvider.overrideWith(
           () => _EmailSignedInAuthSessionNotifier(),
         ),
@@ -609,6 +639,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(
             () => _EmailSignedInAuthSessionNotifier(),
           ),
@@ -647,6 +679,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(
             () => _EmailSignedInAuthSessionNotifier(),
           ),
@@ -685,6 +719,8 @@ void main() {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final container = ProviderContainer(
       overrides: [
+        ...compositionTestOverrides(),
+        mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
         authSessionProvider.overrideWith(() => _SignedOutAuthSessionNotifier()),
         healthContextSnapshotProvider.overrideWith(
           (ref) async => throw Exception('should not fetch when signed out'),
@@ -769,6 +805,8 @@ void main() {
   test('Mine dashboard uses auth and health-context data', () async {
     final container = ProviderContainer(
       overrides: [
+        ...compositionTestOverrides(),
+        mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
         authSessionProvider.overrideWith(
           () => _EmailSignedInAuthSessionNotifier(),
         ),
@@ -854,6 +892,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(
             () => _EmailSignedInAuthSessionNotifier(),
           ),
@@ -888,6 +928,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(
             () => _SignedOutAuthSessionNotifier(),
           ),
@@ -912,6 +954,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(
             () => _EmailSignedInAuthSessionNotifier(),
           ),
@@ -944,6 +988,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           mineDashboardProvider.overrideWith(
             (ref) => Future<MineDashboard>.error(Exception('test error')),
@@ -975,6 +1021,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(
             () => _EmailSignedInAuthSessionNotifier(),
           ),
@@ -1047,6 +1095,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
+          mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
           authSessionProvider.overrideWith(
             () => _EmailSignedInAuthSessionNotifier(),
           ),
@@ -1133,6 +1183,8 @@ Future<void> _pumpMinePage(WidgetTester tester) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
+        mineDashboardDaoProvider.overrideWithValue(_FakeMineDashboardDao()),
         authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(_mockSnapshot),
@@ -1414,3 +1466,21 @@ const _noAlertsSnapshot = HealthContextSnapshot(
   conditions: [],
   currentMedicines: [],
 );
+
+/// Always a cache miss, so page tests render from the live provider graph.
+class _FakeMineDashboardDao implements MineDashboardDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}

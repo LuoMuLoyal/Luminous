@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/pages/account_identity.dart';
+import 'package:luminous/features/auth/presentation/pages/account/account_identity.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/branding.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('AuthBrandLogo renders', (tester) async {
     await tester.pumpWidget(const TestForuiApp(home: AuthBrandLogo()));
     expect(find.byType(AuthBrandLogo), findsOneWidget);

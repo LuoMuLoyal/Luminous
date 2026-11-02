@@ -7,22 +7,24 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/features/scan/data/repositories/scan.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
-import 'package:luminous/features/scan/domain/services/ocr_model_manager.dart';
-import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
 import 'package:luminous/features/scan/presentation/pages/box_scan.dart';
+import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/mocks/scan.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late MockPaddleOcrEngine mockOcr;
   late FakeImagePickerPlatform fakePicker;
   late MockScanRepository mockRepo;

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
+import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 
 /// Hero avatar for the record detail header.
@@ -50,9 +50,9 @@ IconData kindIconFallback(DailyRecordKind kind) {
     DailyRecordKind.meal => SemanticIcons.recordMeal,
     DailyRecordKind.vital => SemanticIcons.profileCondition,
     DailyRecordKind.mood => SemanticIcons.recordMood,
-    DailyRecordKind.symptom => SemanticIcons.safetyDanger,
+    DailyRecordKind.symptom => SemanticIcons.recordSymptom,
     DailyRecordKind.activity => SemanticIcons.recordActivity,
-    DailyRecordKind.note => SemanticIcons.tabRecord,
+    DailyRecordKind.note => SemanticIcons.recordNote,
     DailyRecordKind.sleep => SemanticIcons.recordSleep,
   };
 }

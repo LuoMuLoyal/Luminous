@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-09-11
+updated: 2026-10-29
 ---
 
 # Data Layer
@@ -161,7 +161,7 @@ Domain interfaces exposed for cross-feature consumption:
   `MedicineReminderRemoteDataSource`). Consumed by `today/data/repositories/lucent.dart`.
 
 ```dart
-// today/data/providers/today_suggestion.dart — provider assembly
+// lib/app/composition/snapshot/today_suggestion.dart — provider assembly
 @riverpod
 TodayRepository todayRepository(Ref ref) {
   return LucentTodayRepository(
@@ -174,21 +174,26 @@ TodayRepository todayRepository(Ref ref) {
 ```
 
 This ensures `today/data/` never imports `medicine/data/` — the dependency direction is
-`today/data → medicine/domain` (interface) + `today/data/providers → medicine/data/providers`
-(wiring), not `today/data → medicine/data` (implementation).
+`today/data → medicine/domain` (interface) + `app/composition → medicine/data/*` (wiring),
+not `today/data → medicine/data` (implementation).
+
+Concrete wiring lives in the composition root (`lib/app/composition/**`), not in
+`features/<f>/data/providers/` — that directory is retired and forbidden by the
+`forbidden_directory` rule. `presentation/` reads through
+`presentation/providers/data_access.dart`; it must never import `data/` directly.
 
 ### Cross-Feature Data Access
 
 Features must not directly import another feature's presentation-layer providers. Two mechanisms
 keep features decoupled while sharing data:
 
-1. **Invalidation Bus** (`lib/core/providers/data_change_bus.dart`) — a version-counter event bus for
+1. **Invalidation Bus** (`lib/core/providers/instrumentation/data_change_bus.dart`) — a version-counter event bus for
    cross-feature write-path refresh. When a feature mutates shared data, it emits a topic
    (`DataChangeTopic.dailyRecords`, `healthContext`, etc.); dashboard providers that `ref.watch` the
    topic's version automatically rebuild. See [State Management](state-management.md#cross-feature-data-refresh-invalidation-bus).
 
 2. **Shared Read-Only Snapshot Hub** — `healthContextSnapshotProvider`
-   (`health_context/data/providers/health_context.dart`) is the single keepAlive, `authGuarded`
+   (`lib/app/composition/snapshot/health_context.dart`) is the single keepAlive, `authGuarded`
    entry point for the user's health context. Any feature needing allergies, conditions, or current
    medicines reads from this provider rather than fetching independently. It watches the
    invalidation bus for `healthContext` and `currentMedicines` topics, so consumers always get

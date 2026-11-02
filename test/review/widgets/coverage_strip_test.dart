@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/coverage_strip.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/overview/coverage_strip.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Future<void> pumpStrip(
     WidgetTester tester, {
     required List<ReviewMetric> metrics,
@@ -41,7 +46,7 @@ void main() {
   }) {
     return ReviewMetric(
       kind: kind,
-      icon: SemanticIcons.recordWater,
+      iconName: 'droplets',
       color: SemanticColor.primary,
       value: function,
       unit: unit,

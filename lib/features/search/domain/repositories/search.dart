@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Repository for medicine search operations.
 abstract interface class MedicineSearchRepository {

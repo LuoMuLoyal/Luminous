@@ -1,61 +1,60 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'user_settings.freezed.dart';
+part 'user_settings.g.dart';
+
 /// Assistant context permission settings (read model).
-class AssistantContextSettings {
-  const AssistantContextSettings({
-    required this.healthProfile,
-    required this.dailyRecords,
-    required this.sleepRecords,
-    required this.currentMedicines,
-  });
+@freezed
+abstract class AssistantContextSettings with _$AssistantContextSettings {
+  const factory AssistantContextSettings({
+    /// Whether the assistant may read stored health profile, allergies, and conditions.
+    required bool healthProfile,
 
-  /// Whether the assistant may read stored health profile, allergies, and conditions.
-  final bool healthProfile;
+    /// Whether the assistant may read recent daily records.
+    required bool dailyRecords,
 
-  /// Whether the assistant may read recent daily records.
-  final bool dailyRecords;
+    /// Whether the assistant may read sleep records and summaries.
+    required bool sleepRecords,
 
-  /// Whether the assistant may read sleep records and summaries.
-  final bool sleepRecords;
+    /// Whether the assistant may read current medicines and medicine-box data.
+    required bool currentMedicines,
+  }) = _AssistantContextSettings;
 
-  /// Whether the assistant may read current medicines and medicine-box data.
-  final bool currentMedicines;
+  factory AssistantContextSettings.fromJson(Map<String, dynamic> json) =>
+      _$AssistantContextSettingsFromJson(json);
 }
 
 /// User privacy/AI settings (read model).
-class UserSettings {
-  const UserSettings({
-    required this.aiSummariesEnabled,
-    required this.dataSharingConsent,
-    required this.assistantEnabled,
-    required this.assistantMemoryEnabled,
-    required this.waterTargetCount,
-    required this.assistantContext,
-    this.updatedAt,
-    this.passwordReauthenticationRequired = true,
-  });
+@freezed
+abstract class UserSettings with _$UserSettings {
+  const factory UserSettings({
+    /// Allow AI-generated summaries and advice.
+    required bool aiSummariesEnabled,
 
-  /// Allow AI-generated summaries and advice.
-  final bool aiSummariesEnabled;
+    /// Consent to share anonymized data for research.
+    required bool dataSharingConsent,
 
-  /// Consent to share anonymized data for research.
-  final bool dataSharingConsent;
+    /// Allow the authenticated user to use the assistant feature.
+    required bool assistantEnabled,
 
-  /// Allow the authenticated user to use the assistant feature.
-  final bool assistantEnabled;
+    /// Allow the assistant to reuse persisted conversation history as cross-conversation memory.
+    required bool assistantMemoryEnabled,
 
-  /// Allow the assistant to reuse persisted conversation history as cross-conversation memory.
-  final bool assistantMemoryEnabled;
+    /// Daily water intake target (number of glasses).
+    required int waterTargetCount,
 
-  /// Daily water intake target (number of glasses).
-  final int waterTargetCount;
+    /// Fine-grained assistant context permissions.
+    required AssistantContextSettings assistantContext,
 
-  /// Fine-grained assistant context permissions.
-  final AssistantContextSettings assistantContext;
+    /// ISO-8601 timestamp of last update.
+    String? updatedAt,
 
-  /// ISO-8601 timestamp of last update.
-  final String? updatedAt;
+    /// Whether sensitive operations require account password re-authentication.
+    @Default(true) bool passwordReauthenticationRequired,
+  }) = _UserSettings;
 
-  /// Whether sensitive operations require account password re-authentication.
-  final bool passwordReauthenticationRequired;
+  factory UserSettings.fromJson(Map<String, dynamic> json) =>
+      _$UserSettingsFromJson(json);
 }
 
 /// Partial update for assistant context permissions.

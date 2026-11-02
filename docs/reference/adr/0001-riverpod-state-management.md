@@ -32,5 +32,5 @@ state, `Provider` for DI, and `FutureProvider`/`StreamProvider` for async data.
 - Provider scoping (`ProviderScope`) allows per-test override of dependencies.
 - `autoDispose` prevents memory leaks from stale providers.
 - Cross-feature provider invalidation is handled by `DataChangeBus`
-  (`lib/core/providers/data_change_bus.dart`) so features do not directly call
+  (`lib/core/providers/instrumentation/data_change_bus.dart`) so features do not directly call
   `ref.invalidate()` on each other's providers.

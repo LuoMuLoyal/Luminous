@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 Widget _appShell(Widget child) {
@@ -14,6 +15,10 @@ Widget _sectionLabel(String title) {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('FBadge.raw — 图标徽章', () {
     testWidgets('FBadge.raw 渲染图标', (tester) async {
       await tester.pumpWidget(

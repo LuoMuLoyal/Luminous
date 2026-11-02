@@ -5,34 +5,40 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/app/composition/review/review.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
-import 'package:luminous/features/review/data/providers/review.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/legacy/readiness.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/period_switch.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/history/period_switch.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/period/readiness.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/export.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/composition.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../review/widgets/review_fixtures.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets(
     'Review top bar shows the assistant entry for both signed-in and signed-out',
     (tester) async {
@@ -301,8 +307,12 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.byKey(const Key('review-event-header')), findsOneWidget);
+      // 桌面端走 `DesktopTabShell`，滚动容器是它自己那层，不再复用移动端的
+      // `report-mobile-scroll`。断言「内容可滚动」而不是某个 key 名：
+      // 这里真正要守的是同一份 review 内容在桌面宽度下能渲染且能滚动，
+      // 滚动容器换实现不该让这条用例失败。
       expect(
-        find.byKey(const PageStorageKey<String>('report-mobile-scroll')),
+        find.byKey(const PageStorageKey<String>('review-desktop-scroll')),
         findsOneWidget,
       );
     },
@@ -324,6 +334,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           reviewRepositoryProvider.overrideWithValue(
             _FakeReviewRepository(
@@ -369,6 +380,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             reviewRepositoryProvider.overrideWithValue(
               _FakeReviewRepository(
@@ -385,7 +397,7 @@ void main() {
                 metrics: const [
                   ReviewMetric(
                     kind: ReviewDataKind.water,
-                    icon: SemanticIcons.recordWater,
+                    iconName: 'droplets',
                     color: SemanticColor.primary,
                     value: '1.2',
                     unit: 'L',
@@ -421,7 +433,6 @@ void main() {
 
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
-
       // 默认周视角，且周 tab 渲染。
       expect(find.byType(ReviewPeriodSwitch), findsOneWidget);
       expect(find.text(l10n.reviewPeriodWeek), findsOneWidget);
@@ -460,6 +471,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           reviewRepositoryProvider.overrideWithValue(
             _FakeReviewRepository(
@@ -490,7 +502,7 @@ void main() {
               metrics: const [
                 ReviewMetric(
                   kind: ReviewDataKind.water,
-                  icon: SemanticIcons.recordWater,
+                  iconName: 'droplets',
                   color: SemanticColor.primary,
                   value: '1.2',
                   unit: 'L',
@@ -501,7 +513,7 @@ void main() {
                 ),
                 ReviewMetric(
                   kind: ReviewDataKind.sleep,
-                  icon: SemanticIcons.recordSleep,
+                  iconName: 'moon-star',
                   color: SemanticColor.info,
                   value: '6.5',
                   unit: 'h',
@@ -571,6 +583,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             reviewRepositoryProvider.overrideWithValue(
               _FakeReviewRepository(
@@ -668,6 +681,7 @@ void main() {
     );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump(const Duration(milliseconds: 400));
 
     expect(reviewRepository.lastHistoryStatus, isNull);
     expect(find.text('已结束的观察'), findsOneWidget);
@@ -704,6 +718,10 @@ void main() {
 
     expect(reviewRepository.historyCalls, 3);
     expect(reviewRepository.lastHistoryStatus, isNull);
+    // 切回「全部」后列表在长页下方，先滚回顶部再断言，避免断言落在视口外。
+    await tester.drag(find.byType(ListView).first, const Offset(0, 800));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
     expect(find.text('已结束的观察'), findsOneWidget);
     expect(find.text('进行中的观察'), findsNothing);
   });
@@ -798,6 +816,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             reviewRepositoryProvider.overrideWithValue(repo),
             reviewDashboardProvider.overrideWith(
@@ -947,6 +966,7 @@ Widget _buildApp({
 }) {
   return ProviderScope(
     overrides: [
+      ...compositionTestOverrides(),
       authSessionProvider.overrideWith(
         signedIn
             ? _SignedInAuthSessionNotifier.new

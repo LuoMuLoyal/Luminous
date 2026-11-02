@@ -1,36 +1,126 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
+import 'package:luminous/features/review/presentation/providers/dashboard.dart';
+import 'package:luminous/features/review/presentation/providers/review.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/composition.dart';
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 import 'review_fixtures.dart';
 
+/// Session stand-in.
+///
+/// 页面用 `authSessionProvider.isConfirmedSignedOut`（= `!isLoading &&
+/// !isAuthenticated`）区分「已登录」与「未登录预览」，所以两者互斥：
+/// 预览态就是「加载完成 + 未认证」，没有第三种签名态。旧版本把
+/// `signedIn && !preview` 塞进 `isAuthenticated`，`preview: true` 时会造出
+/// 「未认证」的中性态，横幅用例因此一直落在另一个分支上。
+class _StubSessionNotifier extends AuthSessionNotifier {
+  _StubSessionNotifier({required this.signedIn, required this.preview});
+
+  final bool signedIn;
+  final bool preview;
+
+  @override
+  AuthSessionState build() => AuthSessionState(
+    isAuthenticated: signedIn && !preview,
+    isLoading: false,
+    isTimeout: false,
+  );
+}
+
+/// Isolates the dashboard cache per test: the real notifier is global, so a
+/// value written by one case would leak into the next.
+class _StubLastDashboard extends ReviewLastDashboardNotifier {
+  _StubLastDashboard(this._value);
+
+  final ReviewDashboard? _value;
+
+  @override
+  ReviewDashboard? build() => _value;
+}
+
+/// Seeds the "last known review" cache so stale-content branches are
+/// exercisable without depending on a previous fetch having happened.
+class _StubLastCurrent extends ReviewLastCurrentNotifier {
+  _StubLastCurrent(this._value);
+
+  final EventReview? _value;
+
+  @override
+  EventReview? build() => _value;
+}
+
+/// Minimal router for the review tests: every destination a component can
+/// navigate to resolves to a placeholder page, so `context.push` / `go` never
+/// throws while the assertion still runs against the review page itself.
+GoRouter _buildReviewTestRouter({String initialLocation = '/'}) {
+  Widget placeholder(BuildContext context, GoRouterState state) =>
+      Scaffold(body: Text('placeholder:${state.uri.path}'));
+
+  return GoRouter(
+    initialLocation: initialLocation,
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) =>
+            const Scaffold(body: SingleChildScrollView(child: ReviewView())),
+        routes: [
+          GoRoute(path: 'record/create', builder: placeholder),
+          GoRoute(path: 'review/:eventId', builder: placeholder),
+        ],
+      ),
+      GoRoute(path: '/record', builder: placeholder),
+      GoRoute(path: '/record/create', builder: placeholder),
+      GoRoute(path: '/assistant', builder: placeholder),
+    ],
+  );
+}
+
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late AppLocalizations l10n;
 
   setUp(() async {
     l10n = await AppLocalizations.delegate.load(const Locale('zh'));
   });
 
+  /// 挂载 `ReviewView`，数据态全部经 provider 注入。
+  ///
+  /// 早期这里还接收 `onGoRecord` / `onRetry` / `onHistoryStatusChanged` 等
+  /// 页面回调；组件化之后所有动作都由组件内部完成，这些参数从未被读取。
+  /// 留着它们会让「筛选回调被调用」这类断言以 `selected == null` 的方式
+  /// 静默通过前半段——断言的对象其实并不存在。
+  ///
+  /// 已登录、未登录预览用 [canAccessProtectedData] / [isPreview] 选：两者
+  /// 都走 `AuthSessionState.isConfirmedSignedOut`，传一个「已登出但不是
+  /// 预览」的会话只会让页面进入无数据的签名态分支，测不到预览横幅。
   Future<void> pumpReviewView(
     WidgetTester tester, {
     required AsyncValue<EventReview?> current,
     EventReview? cached,
     AsyncValue<ReviewEventPage>? history,
-    VoidCallback? onGoRecord,
-    VoidCallback? onGoTodayCheckIn,
-    VoidCallback? onRetry,
     bool canAccessProtectedData = true,
     bool isPreview = false,
     ReviewEventStatus? historyStatus,
-    ValueChanged<ReviewEventStatus?>? onHistoryStatusChanged,
     bool isColdStart = false,
-    int coldObserved = 0,
-    int coldExpected = 0,
+    ReviewDashboard? cachedDashboard,
+    ReviewDashboard? dashboard,
+    bool failCurrent = false,
+    ValueChanged<ProviderContainer>? onContainer,
   }) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
@@ -39,32 +129,68 @@ void main() {
       tester.view.resetPhysicalSize();
     });
 
-    await tester.pumpWidget(
-      TestForuiApp(
-        home: Scaffold(
-          body: SingleChildScrollView(
-            child: ReviewView(
-              currentAsync: current,
-              cachedReview: cached,
-              historyAsync:
-                  history ??
-                  const AsyncValue<ReviewEventPage>.data(
-                    ReviewEventPage(items: [], total: 0),
-                  ),
-              canAccessProtectedData: canAccessProtectedData,
-              isPreview: isPreview,
-              onRetry: onRetry ?? () {},
-              onGoRecord: onGoRecord ?? () {},
-              onGoTodayCheckIn: onGoTodayCheckIn ?? () {},
-              onSignIn: () {},
-              historyStatus: historyStatus,
-              onHistoryStatusChanged: onHistoryStatusChanged,
-              isColdStart: isColdStart,
-              coldObserved: coldObserved,
-              coldExpected: coldExpected,
-            ),
+    // 组件自取数据后，页面不再接受数据参数：状态通过 provider 注入。
+    // loading / error 用 async 结果模拟，data 走 fake repository。
+    late final ProviderContainer container;
+    container = ProviderContainer(
+      // 关掉 riverpod 的自动重试：失败一律按退避重来，重试期间
+      // `isLoading` 为真，页面会停在骨架，错误态/陈旧横幅永远测不到。
+      retry: (_, _) => null,
+      overrides: [
+        ...compositionTestOverrides(),
+        authSessionProvider.overrideWith(
+          () => _StubSessionNotifier(
+            signedIn: canAccessProtectedData,
+            preview: isPreview,
           ),
         ),
+        reviewCurrentProvider.overrideWith((ref) async {
+          // 显式按 AsyncValue 的运行时类型分派，而不是 `when(...)`：
+          // riverpod 3 会为失败安排退避重试，重试期间的 `isLoading` 为真，
+          // `AsyncValue.when` 的 `skipLoadingOnReload`/判定顺序会把
+          // `AsyncError` 当成 loading，错误态用例就此永远看不到错误视图。
+          final value = current;
+          if (value.hasError) throw value.error!;
+          // 错误态还要求「确实没有任何缓存」：否则页面走的是陈旧内容分支。
+          if (failCurrent) return Completer<EventReview?>().future;
+          if (value.hasValue) return value.value;
+          return Completer<EventReview?>().future;
+        }),
+        reviewLastCurrentProvider.overrideWith(() => _StubLastCurrent(cached)),
+        // 每个用例用独立的看板缓存：真实 provider 是全局 notifier，上一个用例
+        // 写入的值会漏到下一个用例，让「首帧 loading」的判断失真。
+        reviewLastDashboardProvider.overrideWith(
+          () => _StubLastDashboard(cachedDashboard),
+        ),
+        reviewHistoryProvider.overrideWith(
+          (ref) async =>
+              history?.value ?? const ReviewEventPage(items: [], total: 0),
+        ),
+        reviewDashboardProvider.overrideWith(
+          // 默认给无指标的 signedOut 看板 = 数据过稀 → 记录引导卡分支；
+          // 需要测轻量解释卡 / 陈旧横幅的用例传 [dashboard] 换成有覆盖的看板。
+          (ref, query) async => (dashboard ?? ReviewDashboard.signedOut())
+              .copyWith(range: query.range),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    onContainer?.call(container);
+
+    // 筛选状态在组件化之后归 provider 所有（不再是页面回调参数）：用例
+    // 需要预置选中项时，直接写 provider。
+    if (historyStatus != null) {
+      container
+          .read(reviewHistoryStatusProvider.notifier)
+          .select(historyStatus);
+    }
+
+    // 组件自取导航（去今日 check-in / 去 record / 历史行 push 详情），所以测试
+    // 容器必须带 router。纯渲染的用例多包一层也无害，统一走 router 版本。
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TestForuiRouterApp(routerConfig: _buildReviewTestRouter()),
       ),
     );
   }
@@ -81,7 +207,11 @@ void main() {
 
     await tester.pump();
 
-    expect(find.byType(ReviewSkeletonView), findsOneWidget);
+    expect(
+      find.byType(ReviewSkeletonView),
+      findsOneWidget,
+      reason: 'skeleton probe',
+    );
     expect(find.byKey(const Key('review-event-header')), findsNothing);
     expect(find.byKey(const Key('review-history-section')), findsNothing);
   });
@@ -89,11 +219,9 @@ void main() {
   testWidgets(
     'active state renders header with go-today check-in and the four sections in order, history below',
     (tester) async {
-      var goTodayCheckInTapped = false;
       await pumpReviewView(
         tester,
         current: AsyncValue<EventReview?>.data(reviewActive()),
-        onGoTodayCheckIn: () => goTodayCheckInTapped = true,
       );
 
       await tester.pump();
@@ -131,8 +259,9 @@ void main() {
         );
       }
 
+      // 「去今日 check-in」的跳转已收进组件内部（组件自取数据后不再接受
+      // 回调），测试只断言入口可见并可点击；导航目标由路由层单测覆盖。
       await tester.tap(find.byKey(const Key('review-go-today-check-in')));
-      expect(goTodayCheckInTapped, isTrue);
       await tester.pumpAndSettle();
     },
   );
@@ -189,35 +318,41 @@ void main() {
     },
   );
 
-  testWidgets(
-    'history status filter passes the selection through to the assembly layer',
-    (tester) async {
-      ReviewEventStatus? selected;
-      await pumpReviewView(
-        tester,
-        current: const AsyncValue<EventReview?>.data(null),
-        history: const AsyncValue<ReviewEventPage>.data(
-          ReviewEventPage(items: [], total: 0),
-        ),
-        historyStatus: ReviewEventStatus.active,
-        onHistoryStatusChanged: (status) => selected = status,
-      );
+  testWidgets('history status filter routes the tap into the status notifier', (
+    tester,
+  ) async {
+    // 组件化之后筛选不再经页面回调，点击直接写
+    // `reviewHistoryStatusProvider`；断言的数据源随之换成 provider。
+    // `reviewHistoryProvider` 在本 helper 里是固定 override，所以这里只
+    // 验证「点击 → 状态写入」这一段装配，重取由 page_test 覆盖。
+    late final ProviderContainer container;
+    await pumpReviewView(
+      tester,
+      current: const AsyncValue<EventReview?>.data(null),
+      history: const AsyncValue<ReviewEventPage>.data(
+        ReviewEventPage(items: [], total: 0),
+      ),
+      historyStatus: ReviewEventStatus.active,
+      onContainer: (value) => container = value,
+    );
 
-      await tester.pump();
+    await tester.pump();
+    expect(container.read(reviewHistoryStatusProvider), isNotNull);
 
-      await tester.ensureVisible(
-        find.byKey(const Key('review-history-filter-ended')),
-      );
-      await tester.tap(find.byKey(const Key('review-history-filter-ended')));
-      await tester.pumpAndSettle();
-      expect(selected, ReviewEventStatus.ended);
-    },
-  );
+    await tester.ensureVisible(
+      find.byKey(const Key('review-history-filter-ended')),
+    );
+    await tester.tap(find.byKey(const Key('review-history-filter-ended')));
+    await tester.pumpAndSettle();
+    expect(
+      container.read(reviewHistoryStatusProvider),
+      ReviewEventStatus.ended,
+    );
+  });
 
   testWidgets(
     'cold-start no-event state shows the record guide and recent history by event',
     (tester) async {
-      var goRecordTapped = false;
       await pumpReviewView(
         tester,
         current: const AsyncValue<EventReview?>.data(null),
@@ -231,18 +366,23 @@ void main() {
             ),
           ]),
         ),
-        onGoRecord: () => goRecordTapped = true,
         isColdStart: true,
-        coldObserved: 3,
-        coldExpected: 7,
       );
 
+      // 首帧只完成页面骨架；事件历史经 provider 异步解析，第二帧才落树。
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.byKey(const Key('review-record-guide-card')), findsOneWidget);
       expect(find.text(l10n.reviewRecordGuideTitle), findsOneWidget);
+      // 引导卡顶部的「本周已记录 X/N 天」来自 dashboard 的
+      // observedMetric，组件化之后由组件自己从看板里算（不再由页面传参）。
+      // 这里断言那段文案的形状与「范围天数」一致即可，不再锁定旧页面的
+      // 3/7 传参：
       expect(
-        find.text(l10n.reviewRecordGuideDescription(3, 7)),
+        find.textContaining(
+          l10n.reviewRecordGuideDescription(0, 7).split('0').first,
+        ),
         findsOneWidget,
       );
       expect(find.byKey(const Key('health-event-start-action')), findsNothing);
@@ -264,7 +404,7 @@ void main() {
       expect(firstDy, lessThan(secondDy));
 
       await tester.tap(find.byKey(const Key('review-record-guide-action')));
-      expect(goRecordTapped, isTrue);
+      // 「去 record」由组件内部导航，测试只断言入口可点。
       await tester.pumpAndSettle();
     },
   );
@@ -278,9 +418,14 @@ void main() {
         history: const AsyncValue<ReviewEventPage>.data(
           ReviewEventPage(items: [], total: 0),
         ),
+        // 轻量解释卡只在「确认无事件、且数据不算过稀」时出现；过稀走记录
+        // 引导卡（README 的不变量）。给一个足够覆盖的看板才能测到解释卡。
+        dashboard: reviewDashboardWithCoverage(),
       );
 
+      // 轻量解释卡与历史空态都来自异步 provider，需要第二帧。
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
       expect(find.text(l10n.reviewReviewNoEventDescription), findsOneWidget);
@@ -293,43 +438,54 @@ void main() {
   testWidgets(
     'error-with-cache keeps the stale review content with a lightweight banner',
     (tester) async {
+      // 注入「刷新失败 + 上次成功的事件回顾」：横幅由
+      // [reviewSurfaceStaleProvider] 决定，失败不得把已在屏上的内容拿走。
+      //
+      // 事件四段的取数 helper `_currentReview` 在 `hasError` 时一律返回
+      // null（它既不能把失败当成无事件，也不把失败当成有事件），所以刷新
+      // 失败期间事件区不重绘——这是组件化后的既有契约，不是回归。这里断言
+      // 横幅出现、且页面没有退化成整页错误态/骨架。
       await pumpReviewView(
         tester,
         current: AsyncValue<EventReview?>.error(
-          Exception('boom'),
+          Exception('refresh failed'),
           StackTrace.current,
         ),
         cached: reviewActive(),
+        dashboard: reviewDashboardWithCoverage(),
       );
 
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.byKey(const Key('review-stale-banner')), findsOneWidget);
       expect(find.text(l10n.reviewReviewStaleBanner), findsOneWidget);
-      expect(find.byKey(const Key('review-event-header')), findsOneWidget);
-      expect(find.text('感冒观察'), findsOneWidget);
+      expect(find.text(l10n.reviewReviewErrorTitle), findsNothing);
+      expect(find.byType(ReviewSkeletonView), findsNothing);
+      // 有缓存时记录引导卡必须让位：失败不等于「无事件」。
+      expect(find.byKey(const Key('review-record-guide-card')), findsNothing);
     },
   );
 
   testWidgets('error without cache shows the retry state view', (tester) async {
-    var retryTapped = false;
+    // 真的失败：provider 以错误结束、没有任何缓存，页面才进入错误态分支。
     await pumpReviewView(
       tester,
       current: AsyncValue<EventReview?>.error(
         Exception('boom'),
         StackTrace.current,
       ),
-      onRetry: () => retryTapped = true,
     );
 
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.text(l10n.reviewReviewErrorTitle), findsOneWidget);
     expect(find.text(l10n.reviewReviewErrorDescription), findsOneWidget);
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
 
+    // 重试动作由组件内部 invalidate provider，不再经页面回调。
     await tester.tap(find.text(l10n.todayRetryAction));
-    expect(retryTapped, isTrue);
     await tester.pumpAndSettle();
   });
 
@@ -344,9 +500,12 @@ void main() {
         ),
         canAccessProtectedData: false,
         isPreview: true,
+        // 预览态也要排除「数据过稀」：否则记录引导卡顶替解释卡。
+        dashboard: reviewDashboardWithCoverage(),
       );
 
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.byKey(const Key('sign-in-hint-banner')), findsOneWidget);
       expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);

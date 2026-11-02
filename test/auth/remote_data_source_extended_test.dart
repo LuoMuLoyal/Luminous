@@ -5,12 +5,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 class _MockAdapter implements HttpClientAdapter {
   _MockAdapter();
@@ -832,25 +832,6 @@ void main() {
 
         await _right(dataSource.forgotPassword(email: '  test@example.com  '));
         expect(adapter.lastBody?['email'], 'test@example.com');
-      });
-    });
-
-    // ─── verifyEmail ─────────────────────────────────────────────────
-    group('verifyEmail', () {
-      test('completes without error on success', () async {
-        adapter.body = <String, dynamic>{'emailVerified': true};
-
-        await _right(dataSource.verifyEmail(token: 'verify-token-1'));
-
-        expect(adapter.lastBody?['token'], 'verify-token-1');
-      });
-
-      test('trims token', () async {
-        adapter.body = <String, dynamic>{'emailVerified': true};
-
-        await _right(dataSource.verifyEmail(token: '  verify-token-1  '));
-
-        expect(adapter.lastBody?['token'], 'verify-token-1');
       });
     });
 

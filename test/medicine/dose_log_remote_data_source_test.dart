@@ -4,9 +4,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineDoseLogsApi;
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 void main() {
   group('DoseLogRemoteDataSource', () {
@@ -90,19 +89,19 @@ void main() {
     });
 
     test(
-      'fetchForDate throws FormatException when items is not a list',
+      'fetchForDate reports a LucentFailure when items is not a list',
       () async {
         adapter.getBodyOverride = <String, Object?>{'items': 'not-a-list'};
 
         await expectLater(
           dataSource.fetchForDate('2026-07-10'),
-          throwsA(isA<FormatException>()),
+          throwsA(isA<LucentFailure>()),
         );
       },
     );
 
     test(
-      'fetchForDate throws FormatException when an item is not a map',
+      'fetchForDate reports a LucentFailure when an item is not a map',
       () async {
         adapter.getBodyOverride = <String, Object?>{
           'items': <Object?>[42],
@@ -110,7 +109,7 @@ void main() {
 
         await expectLater(
           dataSource.fetchForDate('2026-07-10'),
-          throwsA(isA<FormatException>()),
+          throwsA(isA<LucentFailure>()),
         );
       },
     );

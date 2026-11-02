@@ -85,19 +85,13 @@ is the machine projection; the interpretive contract lives in
 | `masterDetailSwitch` | `` | `Duration(milliseconds: 220)` | Settings desktop master-detail pane switch: fade the incoming pane and |
 | `pageStateSwitch` | `` | `Duration(milliseconds: 240)` | Page state switch (skeleton → content → error …) fade-through. |
 
-### tokens/semantic_icon_svg.dart
-
-| Name | Type | Value | Docs |
-| --- | --- | --- | --- |
-| `_base` | `String` | `'assets/icon/iconmind'` |  |
-
 ### tokens/semantic_icons.dart
 
 | Name | Type | Value | Docs |
 | --- | --- | --- | --- |
 | `tabToday` | `` | `FLucideIcons.house` |  |
 | `tabRecord` | `` | `FLucideIcons.notebookPen` |  |
-| `tabMedicine` | `` | `FLucideIcons.pillBottle` |  |
+| `tabMedicine` | `` | `FLucideIcons.pill` |  |
 | `tabReview` | `` | `FLucideIcons.chartColumn` |  |
 | `tabMine` | `` | `FLucideIcons.userRound` |  |
 | `aiEntry` | `` | `FLucideIcons.sparkles` |  |
@@ -105,7 +99,16 @@ is the machine projection; the interpretive contract lives in
 | `aiGenerated` | `` | `FLucideIcons.bot` |  |
 | `aiSuggestion` | `` | `FLucideIcons.brain` |  |
 | `aiTip` | `` | `FLucideIcons.lightbulb` |  |
-| `recordMedicine` | `` | `FLucideIcons.pill` |  |
+| `aiMemory` | `` | `FLucideIcons.memoryStick` | 持久化记忆(能力面板摘要行)。 |
+| `aiKnowledge` | `` | `FLucideIcons.database` | 知识库 / RAG 检索(能力面板摘要行)。 |
+| `aiToolCalling` | `` | `FLucideIcons.wrench` | 工具调用(能力面板工具列表行前缀)。 |
+| `aiPermissionHint` | `` | `FLucideIcons.lockKeyhole` | 未授权访问 AI 摘要的提示。 |
+| `aiEmptyAnalysis` | `` | `FLucideIcons.circleDashed` | AI 分析结果为空。 |
+| `aiEmptySuggestion` | `` | `FLucideIcons.orbit` | AI 建议列表空态。 |
+| `aiFallbackIcon` | `` | `FLucideIcons.wandSparkles` | 后端图标字符串无法识别时的兜底图标。 |
+| `aiGenerate` | `` | `FLucideIcons.wand2` | 触发 AI 生成报告 / 总结。 |
+| `aiScanMethod` | `` | `FLucideIcons.scanText` | 扫码「AI 识别」方式入口。 |
+| `recordMedicine` | `` | `FLucideIcons.tablets` |  |
 | `recordWater` | `` | `FLucideIcons.droplets` |  |
 | `recordMeal` | `` | `FLucideIcons.utensils` |  |
 | `recordSleep` | `` | `FLucideIcons.moonStar` |  |
@@ -115,21 +118,39 @@ is the machine projection; the interpretive contract lives in
 | `recordNote` | `` | `FLucideIcons.fileText` |  |
 | `recordActivity` | `` | `FLucideIcons.activity` |  |
 | `recordWeight` | `` | `FLucideIcons.scale` |  |
-| `recordMoon` | `` | `FLucideIcons.moon` |  |
 | `recordClipboard` | `` | `FLucideIcons.clipboardList` |  |
 | `statusError` | `` | `FLucideIcons.circleAlert` |  |
 | `statusWarning` | `` | `FLucideIcons.triangleAlert` |  |
 | `statusSuccess` | `` | `FLucideIcons.circleCheck` |  |
 | `statusInfo` | `` | `FLucideIcons.info` |  |
-| `statusInfoCircle` | `` | `FPhosphorIcons.info` |  |
 | `statusPending` | `` | `FLucideIcons.clock3` |  |
 | `statusSkipped` | `` | `FLucideIcons.ban` |  |
+| `statusMissed` | `` | `FLucideIcons.calendarX` | 漏服 / 未服用。 |
 | `statusDone` | `` | `FLucideIcons.check` |  |
 | `statusAllDone` | `` | `FLucideIcons.checkCheck` |  |
 | `statusBlocked` | `` | `FLucideIcons.lock` |  |
 | `statusUnavailable` | `` | `FLucideIcons.circleSlash` |  |
 | `statusUnknown` | `` | `FLucideIcons.fileQuestion` |  |
 | `statusPaused` | `` | `FLucideIcons.circlePause` |  |
+| `statusComplete` | `` | `FLucideIcons.badgePlus` | 记录条目「已完成 / 已就绪」完成态。 |
+| `statusAnalyzed` | `` | `FLucideIcons.sparkle` | 餐食「分析已完成」。 |
+| `statusBanner` | `` | `FLucideIcons.megaphone` | 详情页信息横幅。 |
+| `statusNoContent` | `` | `FLucideIcons.fileX` | 详情页「暂无内容」空态。 |
+| `statusCoverageGap` | `` | `FLucideIcons.scanEye` | 风险检查「数据覆盖不足」。 |
+| `statusConfirmedRisk` | `` | `FLucideIcons.octagonAlert` | 风险检查「已发现风险」。 |
+| `severityHigh` | `` | `FLucideIcons.alertTriangle` | 风险严重度「高」。 |
+| `severityMedium` | `` | `FLucideIcons.alertCircle` | 风险严重度「中」。 |
+| `severityInfo` | `` | `FLucideIcons.badgeAlert` | 风险严重度「提示」。 |
+| `doseStartDate` | `` | `FLucideIcons.calendarFold` | 提醒「开始日期」。 |
+| `actionAddToCalendar` | `` | `FLucideIcons.calendarPlus` | 提醒「加入系统日历」动作。 |
+| `medicineNoneSelected` | `` | `FLucideIcons.packageOpen` | 提醒编辑页「未选择药品」空态。 |
+| `doseSound` | `` | `FLucideIcons.volumeOff` | 提醒「提示音」设置项。 |
+| `medicineReminderRow` | `` | `FLucideIcons.packageSearch` | 提醒合并展示的药品行。 |
+| `statusPermissionDenied` | `` | `FLucideIcons.cameraOff` | 扫码「相机权限被拒」空态。 |
+| `safetyFinding` | `` | `FLucideIcons.hardHat` | 风险发现条目前缀。 |
+| `safetyRedFlag` | `` | `FLucideIcons.octagonX` | 用药禁忌「红牌警告」。 |
+| `statusRuleBased` | `` | `FLucideIcons.listTodo` | 规则引擎（非 AI）生成的建议来源标签。 |
+| `statusRetryExhausted` | `` | `FLucideIcons.refreshCwOff` | AI 解释重试次数耗尽的提示。 |
 | `safetySafe` | `` | `FLucideIcons.shieldCheck` |  |
 | `safetyNeutral` | `` | `FLucideIcons.shield` |  |
 | `safetyCaution` | `` | `FLucideIcons.shieldAlert` |  |
@@ -138,56 +159,68 @@ is the machine projection; the interpretive contract lives in
 | `safetyInteraction` | `` | `FLucideIcons.arrowLeftRight` |  |
 | `safetyAllergy` | `` | `FLucideIcons.zap` |  |
 | `safetyCoverage` | `` | `FLucideIcons.searchX` |  |
-| `safetyLongTerm` | `` | `FLucideIcons.hourglass` |  |
+| `safetyLongTerm` | `` | `FLucideIcons.calendarRange` |  |
 | `safetySpecialGroup` | `` | `FLucideIcons.baby` |  |
 | `safetySchedulingConflict` | `` | `FLucideIcons.calendarX2` |  |
-| `safetyDuplicate` | `` | `FPhosphorIcons.copySimple` |  |
+| `safetyDuplicate` | `` | `FLucideIcons.layers` |  |
 | `safetyFoodInteraction` | `` | `FPhosphorIcons.bowlSteam` |  |
 | `safetyAlcohol` | `` | `FLucideIcons.wine` |  |
 | `safetyAllergyShot` | `` | `FLucideIcons.syringe` |  |
 | `safetyDriving` | `` | `FLucideIcons.car` |  |
-| `safetyPregnancy` | `` | `FLucideIcons.heartPulse` |  |
 | `safetyStorage` | `` | `FPhosphorIcons.warehouse` |  |
-| `safetyTiming` | `` | `FLucideIcons.calendarClock` |  |
-| `safetyCaffeine` | `` | `FLucideIcons.coffee` |  |
+| `safetyTiming` | `` | `FLucideIcons.clockAlert` |  |
 | `safetyFood` | `` | `FPhosphorIcons.bowlFood` |  |
-| `reportReady` | `` | `FLucideIcons.circleCheck` |  |
-| `reportInsufficient` | `` | `FLucideIcons.fileQuestion` |  |
+| `safetyVerified` | `` | `FLucideIcons.shieldPlus` | 风险检查「已确认安全」结论（区别于 [safetySafe] 的通用安全等级）。 |
+| `safetyAllClear` | `` | `FLucideIcons.listChecks` | 风险检查「未发现问题 / 全部正常」结论。 |
+| `safetyLongTermUse` | `` | `FLucideIcons.hourglass` | 长期用药风险发现。 |
+| `safetyTipTiming` | `` | `FLucideIcons.clockFading` | 安全贴士「服用时机」分类。 |
+| `safetySpecialPopulation` | `` | `FLucideIcons.shieldQuestion` | 风险发现「特殊人群」。 |
+| `safetyPanelEmpty` | `` | `FLucideIcons.shieldOff` | 安全面板空态（尚未建立安全信息）。 |
+| `safetyGuard` | `` | `FLucideIcons.shieldHalf` | 药品页安全守护入口。 |
 | `reportTrend` | `` | `FLucideIcons.trendingUp` |  |
 | `reportAdherence` | `` | `FLucideIcons.badgeCheck` |  |
-| `reportInsight` | `` | `FLucideIcons.lightbulb` |  |
-| `reportExport` | `` | `FLucideIcons.arrowDownToLine` |  |
+| `reportInsight` | `` | `FLucideIcons.telescope` |  |
 | `reportHistory` | `` | `FLucideIcons.history` |  |
 | `reportChart` | `` | `FLucideIcons.chartLine` |  |
+| `reportMonthlyExport` | `` | `FLucideIcons.calendarDays` | 月度报告导出动作。 |
+| `reportInsightAdherence` | `` | `FLucideIcons.circleGauge` | 报告洞察条目「用药依从」分类（区别于 [reportAdherence] 的依从率指标）。 |
+| `reportCoverage` | `` | `FLucideIcons.packageCheck` | 报告「覆盖率 / 数据完备度」。 |
 | `medicineDose` | `` | `FPhosphorIcons.prescription` |  |
 | `medicineBottle` | `` | `FLucideIcons.pillBottle` |  |
 | `medicineKit` | `` | `FLucideIcons.briefcaseMedical` |  |
 | `doseSchedule` | `` | `FLucideIcons.alarmClockCheck` |  |
 | `doseSlot` | `` | `FPhosphorIcons.timer` |  |
-| `doseTaken` | `` | `FPhosphorIcons.checkCircle` |  |
-| `doseSkipped` | `` | `FLucideIcons.ban` |  |
-| `dosePending` | `` | `FLucideIcons.clock3` |  |
+| `doseTaken` | `` | `FLucideIcons.circleCheckBig` |  |
 | `dosePlanned` | `` | `FLucideIcons.calendarClock` |  |
 | `doseLog` | `` | `FLucideIcons.receiptText` |  |
 | `doseVolume` | `` | `FLucideIcons.volume2` |  |
 | `dosePower` | `` | `FLucideIcons.power` |  |
 | `doseRepeat` | `` | `FLucideIcons.repeat2` |  |
 | `doseCalendarCheck` | `` | `FLucideIcons.calendarCheck` |  |
+| `doseFrequency` | `` | `FLucideIcons.timerReset` | 提醒「每日服药次数」。 |
+| `doseTime` | `` | `FLucideIcons.clockArrowDown` | 提醒「服药时间点」。 |
+| `doseCheckedAt` | `` | `FLucideIcons.calendarSync` | 风险检查「上次检查时间」。 |
+| `doseNext` | `` | `FLucideIcons.clockArrowUp` | 药箱「下一次服药」指标。 |
 | `notificationBell` | `` | `FLucideIcons.bell` |  |
 | `notificationBellRing` | `` | `FLucideIcons.bellRing` |  |
 | `notificationRead` | `` | `FLucideIcons.mailMinus` |  |
 | `notificationWarning` | `` | `FLucideIcons.mailWarning` |  |
-| `notificationDelivered` | `` | `FPhosphorIcons.bellRinging` |  |
+| `notificationDelivered` | `` | `FLucideIcons.bellCheck` |  |
 | `notificationFailed` | `` | `FLucideIcons.circleX` |  |
 | `notificationPending` | `` | `FPhosphorIcons.hourglassMedium` |  |
+| `notificationSent` | `` | `FLucideIcons.sendHorizontal` | 提醒推送「已送达」。 |
+| `notificationSettings` | `` | `FLucideIcons.bellDot` | 通知设置项 / 提醒开关入口。 |
 | `actionAdd` | `` | `FLucideIcons.plus` |  |
 | `actionAddCard` | `` | `FLucideIcons.squarePlus` |  |
 | `actionEdit` | `` | `FLucideIcons.pencil` |  |
+| `actionDone` | `` | `FLucideIcons.check` | 编排页「完成」：结束本次编辑并提交。 |
+| `actionDragHandle` | `` | `FLucideIcons.gripVertical` | 拖动把手：编排页里组件的重排入口。 |
 | `actionEditCard` | `` | `FLucideIcons.squarePen` |  |
 | `actionDelete` | `` | `FLucideIcons.trash2` |  |
 | `actionSearch` | `` | `FLucideIcons.search` |  |
 | `actionClose` | `` | `FLucideIcons.x` |  |
 | `actionMore` | `` | `FLucideIcons.ellipsis` |  |
+| `actionMenu` | `` | `FLucideIcons.menu` |  |
 | `actionNext` | `` | `FLucideIcons.chevronRight` |  |
 | `actionPrev` | `` | `FLucideIcons.chevronLeft` |  |
 | `actionExpand` | `` | `FLucideIcons.chevronDown` |  |
@@ -201,6 +234,8 @@ is the machine projection; the interpretive contract lives in
 | `actionSettings` | `` | `FLucideIcons.settings` |  |
 | `actionHelp` | `` | `FLucideIcons.circleHelp` |  |
 | `actionScan` | `` | `FLucideIcons.scanLine` |  |
+| `actionTorchOn` | `` | `FLucideIcons.flashlight` |  |
+| `actionTorchOff` | `` | `FLucideIcons.flashlightOff` |  |
 | `actionCamera` | `` | `FLucideIcons.camera` |  |
 | `actionMic` | `` | `FLucideIcons.mic` |  |
 | `actionImage` | `` | `FLucideIcons.image` |  |
@@ -209,14 +244,29 @@ is the machine projection; the interpretive contract lives in
 | `actionMail` | `` | `FLucideIcons.mail` |  |
 | `actionSend` | `` | `FLucideIcons.send` |  |
 | `actionMinus` | `` | `FLucideIcons.minus` |  |
+| `actionAddImage` | `` | `FLucideIcons.imagePlus` | 表单「添加图片」。 |
+| `actionRemoveDish` | `` | `FLucideIcons.utensilsCrossed` | 删除菜品条目。 |
 | `actionThemeLight` | `` | `FLucideIcons.sun` |  |
+| `actionThemeDark` | `` | `FLucideIcons.moon` | 深色主题。 |
+| `settingsTheme` | `` | `FLucideIcons.palette` | 设置页入口：主题。 |
+| `settingsDataStorage` | `` | `FLucideIcons.hardDrive` | 设置页入口：数据与存储。 |
+| `settingsAdvanced` | `` | `FLucideIcons.flaskConical` | 设置页入口：高级设置。 |
+| `settingsAccessibility` | `` | `FLucideIcons.accessibility` | 设置页入口：无障碍。 |
+| `settingsLanguage` | `` | `FLucideIcons.languages` | 设置页入口：语言。 |
+| `settingsQuickEntry` | `` | `FLucideIcons.clipboardPen` | 设置页分组：快速记录。 |
+| `settingsPrivacy` | `` | `FLucideIcons.eyeOff` | 设置页分组：隐私。 |
+| `settingsAbout` | `` | `FLucideIcons.badgeInfo` | 设置页分组：关于。 |
 | `actionTimeSlot` | `` | `FLucideIcons.clock4` |  |
+| `actionSecurity` | `` | `FLucideIcons.shieldBan` | 账号安全入口。 |
 | `profileUser` | `` | `FLucideIcons.userCheck` |  |
-| `profileAllergy` | `` | `FLucideIcons.zap` |  |
 | `profileCondition` | `` | `FLucideIcons.heartPulse` |  |
-| `profileMedicine` | `` | `FLucideIcons.briefcaseMedical` |  |
 | `profileEmergency` | `` | `FLucideIcons.phone` |  |
 | `profileContact` | `` | `FLucideIcons.contact` |  |
+| `profileArchiveBasic` | `` | `FLucideIcons.clipboardCheck` | 「我的」档案卡片：基本档案。 |
+| `authEmailVerified` | `` | `FLucideIcons.mailCheck` | 邮箱已验证标记。 |
+| `actionSettingsTopBar` | `` | `FLucideIcons.cog` | `actionSettings` 的页面区分版本（top_bar.dart）。 |
+| `aiEntryTopBar` | `` | `FLucideIcons.cpu` | `aiEntry` 的页面区分版本（top_bar.dart）。 |
+| `notificationBellTopBar` | `` | `FLucideIcons.bellElectric` | `notificationBell` 的页面区分版本（top_bar.dart）。 |
 
 ### tokens/spacing.dart
 

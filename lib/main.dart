@@ -1,20 +1,26 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/window_manager_setup.dart';
-import 'package:luminous/core/config/env_keys.dart';
-import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/database/sync/background.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/config/env_keys.dart';
+import 'package:luminous/core/network/config/env_reader.dart';
 import 'package:luminous/core/push/jpush_gateway.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
   // Keep binding initialization in the root zone so that a synchronous
   // failure during init crashes visibly instead of being silently swallowed.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Open the preference store before any widget reads a preference.
+  await HiveKvStore.open();
 
   // Persist the background callback handle before the app starts scheduling.
   await initializeBackgroundSync();
@@ -45,7 +51,12 @@ Future<void> main() async {
     return true;
   };
 
-  runApp(const ProviderScope(child: LuminousApp()));
+  // Composition root: bind feature implementations to the feature-free core
+  // seams (core cannot import features; app/ can import both).
+  final root = buildRootContainer();
+  runApp(
+    UncontrolledProviderScope(container: root, child: const LuminousApp()),
+  );
 }
 
 /// Initializes Sentry if a DSN is configured.

@@ -7,13 +7,14 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 /// 回顾页右上角「更多」sheet。
 ///
-/// 五项入口（Task 8：导出与就诊摘要迁入 More；Task 8 字段级隐私：分享管理）：
+/// 四项入口（Task 8：导出与就诊摘要迁入 More；Task 8 字段级隐私：分享管理）：
 /// 1. 就诊摘要（Visit summary）—— 打开诊所摘要预览弹窗，文案口径为
 ///    「就诊时按需使用」，不暗示医生一定查看；
 /// 2. 分享管理（Share management）—— 查看与撤销分享链接；
 /// 3. PDF —— 月度 PDF 导出（旧「月度报告」导出卡同款 API 调用）；
-/// 4. 打印/下载 —— 打印 PDF 导出（旧「打印预览」导出卡同款 API 调用）；
-/// 5. 历史报告 —— 打开 legacy dashboard 兼容视图（`/review/legacy`）。
+/// 4. 打印/下载 —— 打印 PDF 导出（旧「打印预览」导出卡同款 API 调用）。
+///
+/// 历史报告入口（旧 legacy dashboard）已移除；周期视图改为默认不上屏的可编排组件。
 ///
 /// 本 sheet 只负责呈现与触发回调，导出/分享的 API 行为由调用方装配的
 /// `handleReviewExportAction` 保持与旧 dashboard 完全一致。
@@ -23,7 +24,6 @@ Future<void> showReviewMoreActionsSheet(
   required Future<void> Function() onShareManagement,
   required Future<void> Function() onPdf,
   required Future<void> Function() onPrint,
-  required Future<void> Function() onLegacyReport,
 }) {
   final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
 
@@ -37,38 +37,33 @@ Future<void> showReviewMoreActionsSheet(
           onShareManagement: onShareManagement,
           onPdf: onPdf,
           onPrint: onPrint,
-          onLegacyReport: onLegacyReport,
         ),
       ),
     );
   }
 
-  return showModalBottomSheet<void>(
+  return showFSheet<void>(
     context: context,
-    isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: context.theme.style.borderRadius.md.topLeft,
-      ),
-    ),
-    builder: (_) => SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.viewInsetsOf(context).bottom,
-        ),
-        child: ReviewMoreActionsSheet(
-          onVisitSummary: onVisitSummary,
-          onShareManagement: onShareManagement,
-          onPdf: onPdf,
-          onPrint: onPrint,
-          onLegacyReport: onLegacyReport,
+    side: FLayout.btt,
+    builder: (_) => SheetSurface(
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.viewInsetsOf(context).bottom,
+          ),
+          child: ReviewMoreActionsSheet(
+            onVisitSummary: onVisitSummary,
+            onShareManagement: onShareManagement,
+            onPdf: onPdf,
+            onPrint: onPrint,
+          ),
         ),
       ),
     ),
   );
 }
 
-/// 五入口内容区；可直接渲染（测试）或经 [showReviewMoreActionsSheet] 弹出。
+/// 四入口内容区；可直接渲染（测试）或经 [showReviewMoreActionsSheet] 弹出。
 class ReviewMoreActionsSheet extends StatelessWidget {
   const ReviewMoreActionsSheet({
     super.key,
@@ -76,14 +71,12 @@ class ReviewMoreActionsSheet extends StatelessWidget {
     required this.onShareManagement,
     required this.onPdf,
     required this.onPrint,
-    required this.onLegacyReport,
   });
 
   final Future<void> Function() onVisitSummary;
   final Future<void> Function() onShareManagement;
   final Future<void> Function() onPdf;
   final Future<void> Function() onPrint;
-  final Future<void> Function() onLegacyReport;
 
   @override
   Widget build(BuildContext context) {
@@ -133,21 +126,13 @@ class ReviewMoreActionsSheet extends StatelessWidget {
           const SizedBox(height: Spacing.sm),
           _MoreActionTile(
             key: const Key('more-print'),
-            icon: SemanticIcons.reportExport,
+            icon: SemanticIcons.actionExport,
             color: SemanticColor.success,
             title: l10n.reviewMorePrintTitle,
             subtitle: l10n.reviewMorePrintSubtitle,
             onTap: () => _run(context, onPrint),
           ),
           const SizedBox(height: Spacing.sm),
-          _MoreActionTile(
-            key: const Key('more-legacy-report'),
-            icon: SemanticIcons.reportHistory,
-            color: SemanticColor.neutral,
-            title: l10n.reviewMoreLegacyTitle,
-            subtitle: l10n.reviewMoreLegacySubtitle,
-            onTap: () => _run(context, onLegacyReport),
-          ),
         ],
       ),
     );
@@ -193,14 +178,7 @@ class _MoreActionTile extends StatelessWidget {
           padding: const EdgeInsets.all(Spacing.lg),
           child: Row(
             children: [
-              FAvatar.raw(
-                size: IconSizeTokens.xl2,
-                child: Icon(
-                  icon,
-                  color: color.solid(context),
-                  size: IconSizeTokens.md,
-                ),
-              ),
+              Icon(icon, color: color.solid(context), size: IconSizeTokens.md),
               const SizedBox(width: Spacing.lg),
               Expanded(
                 child: Column(

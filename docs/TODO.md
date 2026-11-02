@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-10-16
+updated: 2026-10-30
 ---
 
 # Luminous TODO
 
-Last updated: 2026-10-16
+Last updated: 2026-10-30
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -17,7 +17,7 @@ Product Loop Program 的延后项如下。
 
 ### 平台与验证
 
-- 手机端继续承担当前首发与用户验证；0.1.0 后启动独立 Next.js + Tauri 桌面工作台 MVP，不承诺与手机端功能对等
+- 桌面端为与手机端平等的一等平台，共用 Flutter + KMP 客户端与 Lucent 后端（ADR-0008 2026-11-02 修订）；两端同步演进，差异只在布局与密度
 
 - 原始健康数据可移植性导出
   - 当前仅能导出就诊报告 PDF；原始 JSON/CSV 导出另行立项，不能继续用 PDF 宣称数据可移植性
@@ -38,16 +38,16 @@ Product Loop Program 的延后项如下。
 - Review 洞察的预置上下文入口（agentic 计划承接）
   - 现状：顶栏 [问助手] 为通用 `/assistant` 入口（与 today 同语义），不携带
     「看这个趋势 / 就此回顾问助手」的预置上下文
-  - 待 agentic 计划 P1-1/P1-3 预置上下文能力就绪后升级入口，并复核 `ai_summary` /
-    `suggestion_history` 组件（P0-7 deferred 标注）是否归档或改在主路径重新启用
+  - 待 agentic 计划 P1-1/P1-3 预置上下文能力就绪后升级入口，并复核这些默认不上屏的组件
+    （`ai_summary.*` / `history.suggestion` 等）是否保留或归档
 - Lucent observed-metric 域迁移（target 2026 Q4）后的 Wave 2 客户端适配
   - 现状：dashboard 维度仅 medication/water/sleep/general；趋势逐日 values 是
-    legacy scalar 投影，客户端无法区分「空档=无记录」与「0」；findings/patterns
+    旧版标量（deprecated） 投影，客户端无法区分「空档=无记录」与「0」；findings/patterns
     无证据引用（record id/日期）与反馈通道
   - 期望：维度扩展（mood/symptom/meal/activity）、逐日 presence（recorded: bool）、
     findings 证据引用与反馈字段；Lucent 侧 contract 变化后 `pnpm export:openapi`
     （Lucent）→ `dart run scripts/contract/bootstrap.dart`（Luminous）→ 按新实体改
-    mapper 与 UI（替换 legacy scalar 趋势渲染、趋势空档可视化、证据展开、反馈）
+    mapper 与 UI（替换 旧版标量（deprecated） 趋势渲染、趋势空档可视化、证据展开、反馈）
 
 ## 2026-10-16 客户端能力补齐的遗留项（深链 / 日历 / 许可）
 
@@ -146,14 +146,11 @@ Product Loop Program 的延后项如下。
 
 ## 延后（有明确原因）
 
-- Review 建议历史与 AI 摘要主路径下线（Review Page Restructure P0-7）
-  - `sections/suggestion_history.dart`（`ReviewSuggestionHistorySection` /
-    `dedupeTodaySuggestions`）、`sections/ai_summary.dart`
-    （`ReviewAiSummarySection`）、`dialogs/suggestion_history_detail_sheet.dart`
-    仍被 legacy dashboard 兼容页消费（`legacy_dashboard_compat.dart` /
-    `dashboard_view.dart`），有保留价值故不删除；`aiSummariesEnabled` 设置语义
-    不变（Today 摘要仍受其门控）
-  - 待 agentic 计划统一 AI 数据层（P0-3）后复核是否归档或改在主路径重新启用
+- Review 的 AI 摘要与建议历史组件默认不上屏（Review Page Restructure P0-7）
+  - legacy 兼容页已移除；`ai_summary.event`、`ai_summary.period`、
+    `history.suggestion` 及相关 `sections/` 组件改为组件系统里的默认不上屏组件，
+    用户可在编排页自行添加；`aiSummariesEnabled` 设置语义不变（Today 摘要仍受其门控）
+  - 待 agentic 计划统一 AI 数据层（P0-3）后复核这些组件是否需要归档
 
 - 药箱项「停用/归档」语义（F-2，0.1.0 后）
   - 现状：药箱项只能软删除，短期事件结束后「停药」会丢可见性
@@ -182,9 +179,26 @@ Product Loop Program 的延后项如下。
   - 方案：为 regenerate/confirm 路径加 per-thread 互斥
 
 - `lucent_dashboard.dart` 的 `// ignore_for_file: deprecated_member_use` 与 Q4 observed-metric 迁移强绑定
-  - 现状：dashboard 维度仅 medication/water/sleep/general；趋势逐日 values 是 legacy scalar 投影，客户端无法区分「空档=无记录」与「0」；`coverage_strip.dart` 使用 `ReviewObservedMetricCoverage` 枚举消费该投影
+  - 现状：dashboard 维度仅 medication/water/sleep/general；趋势逐日 values 是 旧版标量（deprecated） 投影，客户端无法区分「空档=无记录」与「0」；`coverage_strip.dart` 使用 `ReviewObservedMetricCoverage` 枚举消费该投影
   - 目标：2026 Q4 Lucent observed-metric 域迁移后删除 ignore，`coverage_strip.dart` 调用点同步调整
   - 跟踪：`// tracked-by-TODO-ignore-deprecated-metric-migration`
+
+## 2026-10-29 组件自带骨架/降级卡（组件化阶段留待决定）
+
+- 现状：今日页移动端已改为「页面渲染表面布局」，`ComponentHostSliver` 只在
+  `PageStateSwitch` 的 ready 分支内挂载，因此 4 个 section 现在遇到
+  `PageViewStateLoading` / `PageViewStateFatalError` 时返回 `SizedBox.shrink()`，
+  骨架与降级卡由页面级统一承担。
+- 待决定的问题：一旦某个组件被单独挂到另一个表面（跨表面挂载），或某表面不走
+  `PageStateSwitch`，这些 section 就没有自己的骨架/降级卡，会出现「整块空白」而不是
+  「暂时无法获取」。
+- 两条路线（互斥，选一条）：
+  1. **维持页面级统一**：约束 `ComponentHost*` 只能挂在已过状态分流的页面内，
+     在组件契约测试里加上这条断言；
+  2. **组件自带**：每个 descriptor 声明 `loadingBuilder` / `errorBuilder`，
+     `ComponentHost` 按 `PageViewState` 分发。代价是状态 UI 从一处变成两处，
+     需要先统一文案与视觉（`commonStatusStale` / `commonStaleHint` 已存在）。
+- 触发条件：做到「跨表面挂载」或任一表面绕过 `PageStateSwitch` 之前必须定案。
 
 ## 2026-08-20 Mine settings P2-1 deferred follow-up
 
@@ -264,7 +278,7 @@ Product Loop Program 的延后项如下。
 
 - trend 图表零值与无数据的视觉区分（08-30 审查 W-1）
   - 现状：unknown 天不再补零后，用户主动记录的合法零值贴 X 轴，与「无数据」视觉难区分；
-    `ReviewTrendSection` 仅由 legacy preview/dashboard_view 装配；若把
+    `ReviewTrendSection` 由周期/预览组件装配；若把
     `observedMetric == null` 纳入空态判定，会在旧后端 scalar 兼容路径（observedMetric
     可空）误伤有数据的曲线
   - 方案：先确认 backend 对 zero-value 与 no-observation 的表达口径，再决定空态判定与
@@ -283,7 +297,7 @@ Product Loop Program 的延后项如下。
 - Women-health / period management
 - Sports recovery
 - Specialist health packs
-- Smart devices
+- Other smart devices (watch already shipped; speakers/hardware not planned)
 - Family profiles
 - Skin recognition
 - Desktop-first workflows
@@ -312,3 +326,22 @@ Product Loop Program 的延后项如下。
 - 七规则观察期收敛（`tool/luminous_lints`，warn 观察基线 27 处，全部为 `layered_import`）：`layered_import` 清零后按计划逐条转 error（`--fatal` 门禁接入 pre-push）
 - `layered_import` 剩余 27 处真实违规待重构：presentation→presentation 跨 feature 页面/widget 17 处（settings/shared widget、medicine/routes、health_event/sheets 等）、data→data 10 处
 - 七规则 IDE 插件集成：主包依赖图 freezed 钉 analyzer 12.x，而 analysis server 要求插件与其内置 analyzer 一致（14.1.0）；主包升级兼容 analyzer 14 后在 `analysis_options.yaml` 的 `plugins:` 接入 `luminous_lints`（当前仅 CLI 观察）
+
+## 2026-10-30 arch_guard 剩余循环依赖
+
+`arch_guard`（`dart run scripts/arch/guard.dart`，本地运行，不接 pre-push/CI）已从 7 组循环依赖降到 2 组，剩余两组暂按已知债务冻结在 `arch_guard_baseline.json`（只拦新增/扩大，不拦存量）：
+
+- 259 文件主环（hub 是 `lib/app/router.dart`）：根因是 `core/widgets/**`（`back_button`、`required_dialog`、`connectivity_banner`、`page_state`）反向 import `lib/app` 的 router 与 session adapter，叠加 `app/composition` 内部 token↔装配互指。拆解要反转这两类接缝，工作量大于已修部分总和；`Routes` 常量表已下沉到 `lib/core/router/app_routes.dart`，那一步已消除 `core → app/router` 的一部分边
+- `lib/core/database/database.dart` ↔ `daos/**`（15 文件）：DAO 反向 import 拿 `AppDatabase` 类型。
+  **注意：把类型下沉到 `dao_owner.dart` 一类文件的思路已验证不可行**，别重复尝试。硬约束是
+  drift 把 `AppDatabase`、生成的 `_$AppDatabase` 基类、全部 `$XxxTable` 表类型和 DAO mixin
+  绑在 `database.dart` 这**一个库**里（`database.g.dart` 是 `part of 'database.dart'`），而
+  `*.g.dart` 不得手改。于是「DAO 要 `AppDatabase`」与「`database.dart` 要 `@DriftDatabase(daos:)`
+  列全 DAO」互为充要条件，不参与生成物就切不断。已实测失败的方案：① `part` 引入
+  `AppDatabase`（表类型不在作用域）；② DAO 泛型改抽象基类 `implements GeneratedDatabase`
+  （class，需重实现全部成员）；③ `typedef` 别名文件（别名仍须 import `database.dart`，
+  环原样）；④ 把 `@DriftDatabase` 搬去新库（生成基类绑定注解所在库，搬走后生成物失效）；
+  ⑤ drift_dev 的 `databases:` 选项（仅 CLI 迁移工具用，无独立库输出能力）。真要解开只能
+  放宽「不得改生成物」并调整 drift 生成布局。
+- 新引入循环由 `scripts/arch/guard.dart` 直接拦截；修完一组后 `dart run arch_guard --update-baseline` 收窄冻结清单
+

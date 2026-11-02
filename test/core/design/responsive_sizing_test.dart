@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
+import '../../helpers/kv_test_store.dart';
 
 /// A minimal BuildContext stand-in for responsive sizing tests.
 ///
@@ -21,6 +22,10 @@ Widget _pump(double width, Widget Function(BuildContext) builder) {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('ResponsiveSizing.cardWidth', () {
     test('clamps to minWidth on very small screen', () {
       final widget = _pump(200, (ctx) {

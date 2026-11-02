@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 
 void main() {
@@ -53,7 +52,6 @@ void main() {
     test('creates a dashboard with privacy notice', () {
       final dashboard = MineDashboard.signedOut();
 
-      expect(dashboard.privacyNotice.icon, SemanticIcons.safetyNeutral);
       expect(dashboard.privacyNotice.titleKey, MineCopyKey.privacyNoticeTitle);
       expect(
         dashboard.privacyNotice.actionKey,
@@ -94,8 +92,6 @@ void main() {
   group('MineStatusCard', () {
     test('key-only construction defaults structured data', () {
       const card = MineStatusCard(
-        icon: SemanticIcons.statusWarning,
-        accent: SemanticColor.primary,
         titleKey: MineCopyKey.alertPrivacyTitle,
         kind: MineStatusCardKind.privacy,
         subtitleKey: MineCopyKey.alertPrivacySubtitle,
@@ -110,8 +106,6 @@ void main() {
 
     test('structured data construction leaves keys null', () {
       const card = MineStatusCard(
-        icon: SemanticIcons.statusWarning,
-        accent: SemanticColor.destructive,
         titleKey: MineCopyKey.alertAllergyTitle,
         kind: MineStatusCardKind.allergy,
         items: ['花粉', '青霉素'],

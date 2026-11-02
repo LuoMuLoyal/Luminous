@@ -8,7 +8,7 @@
 library;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
 
 /// Returns the user's IANA timezone, or `null` when the snapshot is
 /// unavailable (e.g. network failure).

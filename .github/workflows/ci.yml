@@ -28,17 +28,17 @@ jobs:
       FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.23.0
         with:
           channel: stable
-          flutter-version: 3.47.1
+          flutter-version: 3.47.7
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
@@ -47,7 +47,7 @@ jobs:
       # native/ 是独立 Gradle build（KMP 共享模块）：缓存 Gradle 用户目录，
       # 加速下面的 host 测试；deploy-* 的 flutter build 内复合构建同样复用。
       - name: Cache Gradle (native build)
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.gradle
           key: gradle-native-${{ runner.os }}-${{ hashFiles('native/**/*.kts', 'native/**/*.toml', 'native/gradle/wrapper/*', 'native/gradlew', 'native/gradlew.bat') }}
@@ -72,8 +72,33 @@ jobs:
       - name: Verify generated docs
         run: dart run scripts/docs/generate.dart --check
 
+      # 根 `pub get` 不会为 path 依赖的子 package 各自解析依赖，而 `flutter analyze`
+      # 会分析到 pkgs/ 下的源码。`pkgs/luminous_native_bridge/pigeon/steps.dart`
+      # 引用了只在其 dev_dependencies 里的 pigeon，缺解析就会以
+      # `Target of URI doesn't exist: 'package:pigeon/pigeon.dart'` 失败。
+      # 全新 clone 上没有子包的 .dart_tool，本地能过是之前手动跑过 pub get。
+      - name: Resolve sub-package dependencies
+        run: |
+          for pkg in pkgs/luminous_native_bridge pkgs/paddle_ocr_native-0.1.1; do
+            echo "::group::pub get $pkg"
+            (cd "$pkg" && flutter pub get)
+            echo "::endgroup::"
+          done
+
       - name: Analyze
         run: flutter analyze
+
+      # 严格 Clean 分层门禁（R1–R9，无白名单）。
+      # 架构清理期间（plans/2026-10-21-ddd-refactor-frontend.md）本条预期为红：
+      # 用 continue-on-error 让 CI 可见违规数但不阻断合并；pre-push 与
+      # scripts/workflows/daily.dart 跑同一条命令且不带 continue-on-error，
+      # 本地推送与日常检查是真门禁。
+      - name: Clean Architecture violations
+        continue-on-error: true
+        run: |
+          cd tool/luminous_lints
+          dart pub get
+          dart run bin/luminous_lints.dart --clean-layers --quiet
 
       - name: Run tests
         run: flutter test --coverage --reporter=github
@@ -81,7 +106,9 @@ jobs:
       # KMP 共享模块（native/luminous-native）的 commonTest 跑在 JVM 上，
       # 与 flutter test 是两条工具链；androidLibrary 目标随项目配置，
       # ubuntu runner 自带 Android SDK（ANDROID_HOME）。
+      # 用 `bash gradlew` 而非 `./gradlew`：wrapper 脚本的可执行位在 Windows 上
+      # 提交时（core.fileMode=false）会丢成 100644，Linux 上直接执行报 exit 126。
       - name: Run KMP host tests
         run: |
           cd native
-          ./gradlew :luminous-native:testAndroidHostTest
+          bash gradlew :luminous-native:testAndroidHostTest

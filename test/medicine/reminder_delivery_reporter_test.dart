@@ -6,13 +6,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineRemindersApi;
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/app/composition/medicine/workspace.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_delivery_reporter.dart';
+import 'package:luminous/shared/domain/failure.dart';
+
+import '../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   const payload =
       '{"reminderId":"reminder-1","date":"2026-06-10","time":"21:30"}';
 

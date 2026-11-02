@@ -23,7 +23,7 @@ class ReviewReferenceNotice extends StatelessWidget {
             Icon(
               SemanticIcons.statusWarning,
               color: SemanticColor.primary.solid(context),
-              size: Spacing.xl,
+              size: IconSizeTokens.sm,
             ),
             const SizedBox(width: Spacing.md),
             Expanded(

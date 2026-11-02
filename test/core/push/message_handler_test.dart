@@ -6,14 +6,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jpush_flutter/jpush_interface.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/core/push/jpush_gateway.dart';
 import 'package:luminous/core/push/message_handler.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../../helpers/kv_test_store.dart';
 
 class _FakeJPush extends JPushFlutterInterface {
   EventHandler? receiveHandler;
@@ -53,6 +55,32 @@ class _FakeLocalNotificationGateway extends LocalNotificationGateway {
 
 class _MockGoRouter extends Mock implements GoRouter {}
 
+/// Counts handler callbacks without pulling feature providers into core tests.
+/// Mirrors lib/app/push_handlers.dart's invalidation behaviour.
+class _AppLikePushHandlers implements PushEventHandlers {
+  _AppLikePushHandlers({this.onOpenEvent});
+
+  final void Function()? onOpenEvent;
+
+  @override
+  void onReceive(Map<String, dynamic> event) {}
+
+  @override
+  void onOpen(Map<String, dynamic> event) => onOpenEvent?.call();
+}
+
+class _CountingPushHandlers implements PushEventHandlers {
+  _CountingPushHandlers({this.onEvent});
+
+  final void Function()? onEvent;
+
+  @override
+  void onReceive(Map<String, dynamic> event) => onEvent?.call();
+
+  @override
+  void onOpen(Map<String, dynamic> event) => onEvent?.call();
+}
+
 class _FakeTodayAiAnalysisNotifier extends TodayAiAnalysisNotifier {
   static int disposeCount = 0;
 
@@ -64,6 +92,10 @@ class _FakeTodayAiAnalysisNotifier extends TodayAiAnalysisNotifier {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('routeForPushEvent', () {
     test('uses the notifications route by default', () {
       expect(routeForPushEvent(<String, dynamic>{}), Routes.notifications);
@@ -99,9 +131,9 @@ void main() {
     final routes = <String>[];
     final handler = PushMessageHandler(
       gateway: gateway,
-      invalidateUnread: () => invalidationCount++,
+      handlers: _CountingPushHandlers(onEvent: () => invalidationCount++),
+      emitAiSummary: (_) {},
       navigate: routes.add,
-      invalidateTodayAnalysis: () {},
     );
 
     handler.start();
@@ -124,9 +156,9 @@ void main() {
     var invalidationCount = 0;
     final handler = PushMessageHandler(
       gateway: gateway,
-      invalidateUnread: () => invalidationCount++,
+      handlers: _CountingPushHandlers(onEvent: () => invalidationCount++),
+      emitAiSummary: (_) {},
       navigate: (_) {},
-      invalidateTodayAnalysis: () {},
     );
 
     handler.start();
@@ -150,10 +182,19 @@ void main() {
         final router = _MockGoRouter();
         var unreadBuildCount = 0;
 
-        final container = ProviderContainer(
+        late final ProviderContainer container;
+        container = ProviderContainer(
           overrides: [
             localNotificationGatewayProvider.overrideWithValue(gateway),
             appRouterProvider.overrideWithValue(router),
+            pushEventHandlersProvider.overrideWithValue(
+              _AppLikePushHandlers(
+                onOpenEvent: () {
+                  container.invalidate(notificationUnreadCountProvider);
+                  container.invalidate(todayAiAnalysisControllerProvider);
+                },
+              ),
+            ),
             notificationUnreadCountProvider.overrideWith((ref) async {
               unreadBuildCount++;
               return 0;

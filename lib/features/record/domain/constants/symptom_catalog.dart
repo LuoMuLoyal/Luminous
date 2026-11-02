@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:meta/meta.dart';
 
 /// 症状目录码 —— 与每日记录 payload `symptom` 的线上取值一一对应。
 ///

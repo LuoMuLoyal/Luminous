@@ -1,7 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -9,6 +7,8 @@ import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:luminous/features/record/presentation/mappers/dashboard_assembler.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 // ── Fake DailyRecordRepository ──────────────────────────────────
 
@@ -129,7 +129,10 @@ void main() {
 
   setUp(() {
     dailyRepo = _FakeDailyRecordRepository();
-    repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+    repo = LucentRecordRepository(
+      dailyRecordRepo: dailyRepo,
+      viewAssembler: const RecordDashboardAssembler(),
+    );
   });
 
   /// Runs the repository's dashboard task, failing the test on Left.
@@ -302,7 +305,7 @@ void main() {
       expect(water.value, '550');
       expect(water.unitKey, RecordCopyKey.summaryMlUnit);
       expect(water.titleKey, RecordCopyKey.summaryWaterTitle);
-      expect(water.icon, SemanticIcons.recordWater);
+      expect(water.iconName, 'droplets');
 
       final meal = dashboard.summary.items.firstWhere(
         (item) => item.type == RecordEntryType.meal,
@@ -361,7 +364,7 @@ void main() {
       expect(vital.value, '72 bpm');
       expect(vital.unitKey, isNull);
       expect(vital.titleKey, RecordCopyKey.summaryLatestVitalTitle);
-      expect(vital.icon, SemanticIcons.profileCondition);
+      expect(vital.iconName, 'heart-pulse');
     });
 
     test(
@@ -450,12 +453,12 @@ void main() {
     // vital and activity are active record entry types; their icons are
     // asserted separately below.
     final cases = [
-      (DailyRecordKind.water, SemanticIcons.recordWater),
-      (DailyRecordKind.meal, SemanticIcons.recordMeal),
-      (DailyRecordKind.mood, SemanticIcons.recordMood),
-      (DailyRecordKind.symptom, SemanticIcons.safetyDanger),
-      (DailyRecordKind.note, SemanticIcons.tabRecord),
-      (DailyRecordKind.sleep, SemanticIcons.recordMoon),
+      (DailyRecordKind.water, 'droplets'),
+      (DailyRecordKind.meal, 'utensils'),
+      (DailyRecordKind.mood, 'smile'),
+      (DailyRecordKind.symptom, 'thermometer'),
+      (DailyRecordKind.note, 'file-text'),
+      (DailyRecordKind.sleep, 'moon-star'),
     ];
 
     for (final (kind, expectedIcon) in cases) {
@@ -467,7 +470,7 @@ void main() {
 
         final dashboard = await fetchDashboard(DateTime(2026, 7, 14));
 
-        expect(dashboard.timeline.first.icon, expectedIcon);
+        expect(dashboard.timeline.first.iconName, expectedIcon);
       });
     }
   });

@@ -732,5 +732,206 @@
   "medicineDetailExpandLongText": "展开全文",
   "medicineDetailCollapseLongText": "收起",
   "medicineDetailRiskCheckEntry": "查看我的用药风险检查",
-  "medicineDetailOpenReminderAction": "查看提醒详情"
+  "medicineDetailOpenReminderAction": "查看提醒详情",
+  "medicineGraphTitleMechanismPaths": "机制通路",
+  "medicineGraphTitleSharedTargets": "共同靶点",
+  "medicineGraphTitleCascadePaths": "级联传播",
+  "medicineGraphTitleSubstitutes": "替代候选",
+  "medicineGraphTitleShortestRoutes": "最短路径",
+  "medicineGraphTitleDrugActions": "药物作用谱",
+  "medicineGraphTitleTargetDrugs": "靶点用药",
+  "medicineGraphTitleTransportRoutes": "转运体路径",
+  "medicineGraphTitleEnzymeDuels": "酶诱导 × 底物",
+  "medicineGraphTitleMedicationOverview": "我的用药组合",
+  "medicineGraphUnavailable": "暂时无法给出机理分析",
+  "medicineGraphUnavailableBody": "这不是「没有相互作用」。知识库此刻无法回答这个问题。",
+  "medicineGraphUnavailableNotConfiguredBody": "知识库尚未接入，无法给出机理分析。这不是「没有相互作用」。",
+  "medicineGraphRetry": "重试",
+  "medicineGraphEmpty": "没有发现相关关系",
+  "medicineGraphNeedsTwoDrugs": "至少需要 2 种可识别的药才能分析",
+  "medicineGraphNeedsEnzyme": "选择一个要避开的酶后进行查询",
+  "medicineGraphNeedsTwoDrugsForRoute": "选择起止药物后可查询最短路径",
+  "medicineGraphCoverageNote": "{covered} / {total} 种药参与分析",
+  "@medicineGraphCoverageNote": {
+    "placeholders": {
+      "covered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCoverageNoteWithRest": "{covered} / {total} 种药参与分析，其余 {rest} 种无可识别编号",
+  "@medicineGraphCoverageNoteWithRest": {
+    "placeholders": {
+      "covered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "rest": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphRelationInhibits": "抑制",
+  "medicineGraphRelationInduces": "诱导",
+  "medicineGraphRelationOtherDrug": "与 {drug}",
+  "@medicineGraphRelationOtherDrug": {
+    "placeholders": {
+      "drug": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineGraphSharedTargetDrugs": "{count} 种药",
+  "@medicineGraphSharedTargetDrugs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCascadeStart": "起始",
+  "medicineGraphCascadeEnd": "受影响",
+  "medicineGraphSubstituteSharedTarget": "共同靶点 {target}",
+  "@medicineGraphSubstituteSharedTarget": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineGraphTransportInverted": "逆向（药物为终点）",
+  "medicineGraphEnzymeDuelExposureDown": "{substrate} 暴露量下降",
+  "@medicineGraphEnzymeDuelExposureDown": {
+    "placeholders": {
+      "substrate": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineGraphStepCount": "{count} 跳",
+  "@medicineGraphStepCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphOverviewDuplicates": "成分重复 {count} 组",
+  "@medicineGraphOverviewDuplicates": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphOverviewNoDuplicates": "未发现成分重复",
+  "medicineGraphOverviewSources": "来源分组",
+  "medicineGraphOverviewUnattributed": "未关联事件",
+  "medicineGraphOverviewResolvable": "{resolvable} / {total} 种可解析成分",
+  "@medicineGraphOverviewResolvable": {
+    "placeholders": {
+      "resolvable": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphOverviewDuplicateHigh": "高",
+  "medicineGraphOverviewDuplicateMedium": "中",
+  "medicineGraphOverviewEmpty": "还没有在册用药",
+  "medicineGraphSelectEnzyme": "要避开的酶",
+  "medicineGraphSelectFromDrug": "起始药物",
+  "medicineGraphSelectToDrug": "目标药物",
+  "medicineGraphSelectGene": "靶点基因",
+  "medicineGraphSelectDrug": "药物",
+  "medicineGraphShowAll": "展开全部（共 {count} 条）",
+  "@medicineGraphShowAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCollapse": "收起",
+  "medicineGraphUnavailableShort": "无法分析",
+  "medicineGraphViewGraph": "图",
+  "medicineGraphViewList": "列表",
+  "medicineGraphViewGraphHint": "以分层图显示通路的上下游关系",
+  "medicineGraphViewListHint": "以文本行逐条列出",
+  "medicineGraphCountPaths": "{count} 条通路",
+  "@medicineGraphCountPaths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountTargets": "{count} 个靶点",
+  "@medicineGraphCountTargets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountCascades": "{count} 条级联",
+  "@medicineGraphCountCascades": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountDuels": "{count} 对",
+  "@medicineGraphCountDuels": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountActions": "{count} 项作用",
+  "@medicineGraphCountActions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountRoutes": "{count} 条路径",
+  "@medicineGraphCountRoutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountDrugs": "{count} 种药",
+  "@medicineGraphCountDrugs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountSubstitutes": "{count} 个候选",
+  "@medicineGraphCountSubstitutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphRelationActsOn": "作用于",
+  "medicineGraphRelationSubstrateOf": "为其底物",
+  "medicineGraphRelationUnknown": "相关",
+  "medicineGraphSelectEnzymeHint": "如 CYP2C9",
+  "medicineGraphSelectGeneHint": "如 CYP2C9"
 }

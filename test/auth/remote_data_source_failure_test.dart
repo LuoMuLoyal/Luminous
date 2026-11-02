@@ -5,12 +5,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/client/session_store.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Configurable adapter for repository failure branches.
 class _Adapter implements HttpClientAdapter {
@@ -278,21 +277,6 @@ void main() {
 
         expect(failure.code, 'AUTH_LOGIN_RATE_LIMITED');
         expect(failure.statusCode, 429);
-      });
-    });
-
-    group('verifyEmail', () {
-      test('invalid verification token keeps its code', () async {
-        adapter.statusCode = 400;
-        adapter.contentType = 'application/problem+json';
-        adapter.body = _problemBody('AUTH_VERIFY_TOKEN_INVALID', '验证链接无效或已过期');
-
-        final failure = await _left(
-          dataSource.verifyEmail(token: 'invalid-token'),
-        );
-
-        expect(failure.code, 'AUTH_VERIFY_TOKEN_INVALID');
-        expect(failure.statusCode, 400);
       });
     });
 

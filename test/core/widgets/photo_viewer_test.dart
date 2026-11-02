@@ -5,9 +5,14 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/photo_viewer.dart';
 import 'package:photo_view/photo_view.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Future<void> pump(WidgetTester tester, Widget child) {
     return tester.pumpWidget(TestForuiApp(home: Scaffold(body: child)));
   }

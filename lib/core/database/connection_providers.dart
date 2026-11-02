@@ -1,11 +1,17 @@
-import 'package:luminous/core/database/daos/current_medicine.dart';
-import 'package:luminous/core/database/daos/daily_record.dart';
-import 'package:luminous/core/database/daos/health_context.dart';
-import 'package:luminous/core/database/daos/medicine_dose_log.dart';
-import 'package:luminous/core/database/daos/pending_sync.dart';
-import 'package:luminous/core/database/daos/review.dart';
-import 'package:luminous/core/database/daos/review_dashboard.dart';
-import 'package:luminous/core/database/daos/today_suggestion.dart';
+import 'package:luminous/core/database/daos/health/health_context.dart';
+import 'package:luminous/core/database/daos/medicine/current_medicine.dart';
+import 'package:luminous/core/database/daos/medicine/medicine_dose_log.dart';
+import 'package:luminous/core/database/daos/medicine/medicine_workspace.dart';
+import 'package:luminous/core/database/daos/medicine/search_result.dart';
+import 'package:luminous/core/database/daos/mine/mine_dashboard.dart';
+import 'package:luminous/core/database/daos/notification/notification_page.dart';
+import 'package:luminous/core/database/daos/records/daily_record.dart';
+import 'package:luminous/core/database/daos/records/daily_record_summary.dart';
+import 'package:luminous/core/database/daos/review/review.dart';
+import 'package:luminous/core/database/daos/review/review_dashboard.dart';
+import 'package:luminous/core/database/daos/review/today_suggestion.dart';
+import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
+import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -31,8 +37,38 @@ DailyRecordDao dailyRecordDao(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+DailyRecordSummaryDao dailyRecordSummaryDao(Ref ref) {
+  return ref.read(appDatabaseProvider).dailyRecordSummaryDao;
+}
+
+@Riverpod(keepAlive: true)
 MedicineDoseLogDao medicineDoseLogDao(Ref ref) {
   return ref.read(appDatabaseProvider).medicineDoseLogDao;
+}
+
+@Riverpod(keepAlive: true)
+NotificationPageDao notificationPageDao(Ref ref) {
+  return ref.read(appDatabaseProvider).notificationPageDao;
+}
+
+@Riverpod(keepAlive: true)
+MineDashboardDao mineDashboardDao(Ref ref) {
+  return ref.read(appDatabaseProvider).mineDashboardDao;
+}
+
+@Riverpod(keepAlive: true)
+MedicineWorkspaceDao medicineWorkspaceDao(Ref ref) {
+  return ref.read(appDatabaseProvider).medicineWorkspaceDao;
+}
+
+@Riverpod(keepAlive: true)
+SearchResultDao searchResultDao(Ref ref) {
+  return ref.read(appDatabaseProvider).searchResultDao;
+}
+
+@Riverpod(keepAlive: true)
+UserSettingsDao userSettingsDao(Ref ref) {
+  return ref.read(appDatabaseProvider).userSettingsDao;
 }
 
 @Riverpod(keepAlive: true)

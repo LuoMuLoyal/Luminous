@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/routes.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
@@ -15,8 +15,8 @@ import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 late ProviderContainer _testContainer;
@@ -111,10 +111,10 @@ class _FixedAuthSessionNotifier extends AuthSessionNotifier {
   Future<void> restore() async {}
 
   @override
-  Future<void> applySession(AuthSession session) async {}
+  Future<void> applySession(SessionSnapshot session, {Object? user}) async {}
 
   @override
-  void applyUser(AuthUser user) {}
+  void applyUser(SessionUserSnapshot user, {Object? entity}) {}
 
   @override
   void clearLocalSession() {}
@@ -132,7 +132,7 @@ Future<ProviderContainer> _pumpRealRouter(
   required AuthSessionState session,
   required String initialLocation,
 }) async {
-  SharedPreferences.setMockInitialValues(const <String, Object>{});
+  KvTestStore.install(seed: const <String, Object>{});
   final container = ProviderContainer(
     overrides: [
       authSessionProvider.overrideWith(
@@ -189,7 +189,7 @@ Widget _testableRouter({
   required String initialLocation,
   required WidgetTester tester,
 }) {
-  SharedPreferences.setMockInitialValues(const <String, Object>{});
+  KvTestStore.install(seed: const <String, Object>{});
   final testRouter = GoRouter(
     initialLocation: initialLocation,
     routes: _testRouter.configuration.routes,

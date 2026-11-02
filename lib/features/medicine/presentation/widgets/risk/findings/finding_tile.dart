@@ -1,0 +1,242 @@
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+/// A single risk finding item — replaces the old [FCard]-wrapped tile.
+///
+/// Layout: left severity colour bar → icon circle → title/description/evidence
+/// → severity pill. LLM findings with a `recommendation` show an extra line
+/// below the description. Items are separated by [AppDivider] when [isLast]
+/// is false.
+class RiskFindingItem extends StatelessWidget {
+  const RiskFindingItem({
+    super.key,
+    required this.finding,
+    required this.isLast,
+    required this.l10n,
+  });
+
+  final MedicineRiskFinding finding;
+  final bool isLast;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = medicineRiskSeverityColor(finding.severity);
+    final contextLabel = medicineRiskContextLabel(l10n, finding.context);
+    final recommendation = finding.recommendation?.trim();
+    final typography = context.theme.typography;
+
+    final tile = Padding(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.md),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left severity colour bar (4px wide).
+          Container(
+            width: 4,
+            decoration: ShapeDecoration(
+              color: color.solid(context),
+              shape: RoundedSuperellipseBorder(
+                borderRadius: context.theme.style.borderRadius.pill,
+              ),
+            ),
+          ),
+          const SizedBox(width: Spacing.md),
+          // Icon circle.
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: color.muted(context),
+              shape: BoxShape.circle,
+            ),
+            child: SizedBox.square(
+              dimension: Spacing.xl5,
+              child: Icon(
+                medicineRiskFindingIcon(finding),
+                color: color.solid(context),
+                size: IconSizeTokens.md,
+              ),
+            ),
+          ),
+          const SizedBox(width: Spacing.md),
+          // Title + body + evidence + recommendation.
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  medicineRiskFindingTitle(l10n, finding),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: Spacing.xs),
+                Text(
+                  medicineRiskFindingBody(l10n, finding),
+                  style: typography.body.xs.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                ),
+                const SizedBox(height: Spacing.xs),
+                Text(
+                  medicineRiskFindingEvidence(l10n, finding),
+                  style: typography.body.xs.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                ),
+                if (recommendation != null && recommendation.isNotEmpty) ...[
+                  const SizedBox(height: Spacing.sm),
+                  _RecommendationLine(text: recommendation, color: color),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(width: Spacing.md),
+          // Severity + context pills.
+          // 徽标列是固有宽度:限宽后才不会先占满固有宽度、把左侧 Expanded
+          // 文本挤成多行;右对齐位置不变。
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 140),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                _SeverityPill(
+                  color: color,
+                  icon: medicineRiskSeverityIcon(finding.severity),
+                  label: medicineRiskSeverityLabel(l10n, finding.severity),
+                ),
+                if (contextLabel.isNotEmpty) ...[
+                  const SizedBox(height: Spacing.xs),
+                  _ContextPill(label: contextLabel),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (isLast) return tile;
+    return Column(children: [tile, const AppDivider()]);
+  }
+}
+
+class _SeverityPill extends StatelessWidget {
+  const _SeverityPill({
+    required this.color,
+    required this.icon,
+    required this.label,
+  });
+
+  final SemanticColor color;
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final resolvedColor = color.solid(context);
+    return DecoratedBox(
+      decoration: ShapeDecoration(
+        color: color.muted(context),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: context.theme.style.borderRadius.pill,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.sm,
+          vertical: Spacing.xs,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: IconSizeTokens.xs, color: resolvedColor),
+            const SizedBox(width: Spacing.xs),
+            Text(
+              label,
+              style: context.theme.typography.body.xs.copyWith(
+                color: resolvedColor,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ContextPill extends StatelessWidget {
+  const _ContextPill({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final resolvedColor = SemanticColor.neutral.solid(context);
+    return DecoratedBox(
+      decoration: ShapeDecoration(
+        color: SemanticColor.neutral.muted(context),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: context.theme.style.borderRadius.pill,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.sm,
+          vertical: Spacing.xs,
+        ),
+        child: Text(
+          label,
+          style: context.theme.typography.body.xs.copyWith(
+            color: resolvedColor,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    );
+  }
+}
+
+class _RecommendationLine extends StatelessWidget {
+  const _RecommendationLine({required this.text, required this.color});
+
+  final String text;
+  final SemanticColor color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          SemanticIcons.safetyFinding,
+          size: IconSizeTokens.sm,
+          color: color.solid(context),
+        ),
+        const SizedBox(width: Spacing.sm),
+        Expanded(
+          child: Text(
+            text,
+            style: context.theme.typography.body.xs.copyWith(
+              color: color.solid(context),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

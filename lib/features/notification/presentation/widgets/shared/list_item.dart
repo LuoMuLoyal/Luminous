@@ -283,18 +283,13 @@ class _HoverActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: SizedBox(
-        width: 32,
-        height: 32,
-        child: IconButton(
-          icon: Icon(icon, size: IconSizeTokens.sm),
-          color: color,
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-          onPressed: onPressed,
-        ),
+    return FTooltip(
+      tipBuilder: (_, __) => Text(tooltip),
+      child: FButton.icon(
+        variant: FButtonVariant.ghost,
+        size: FButtonSizeVariant.sm,
+        onPress: onPressed,
+        child: Icon(icon, size: IconSizeTokens.sm, color: color),
       ),
     );
   }

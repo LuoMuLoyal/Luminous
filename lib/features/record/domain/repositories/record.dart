@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Domain interface for the record dashboard surface.
 ///

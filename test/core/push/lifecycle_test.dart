@@ -3,7 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:luminous/core/push/jpush_gateway.dart';
 import 'package:luminous/core/push/lifecycle.dart';
-import 'package:luminous/features/settings/domain/services/notification_permission.dart';
+import 'package:luminous/features/settings/data/datasources/notification_permission.dart';
+import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
 
 class _FakeJPush extends JPushFlutterInterface {
   final calls = <String>[];
@@ -63,6 +64,26 @@ class _FakeJPush extends JPushFlutterInterface {
   }
 }
 
+/// Adapts the feature-shaped permission fake to core's probe contract.
+class _PermissionProbe implements PushPermissionProbe {
+  _PermissionProbe(this._service);
+
+  final _FakeNotificationPermissionService _service;
+
+  @override
+  Future<PushPermissionStatus> readStatus() async {
+    final state = await _service.getPermissionState();
+    return switch (state) {
+      NotificationPermissionState.granted => PushPermissionStatus.granted,
+      NotificationPermissionState.denied => PushPermissionStatus.denied,
+      NotificationPermissionState.permanentlyDenied =>
+        PushPermissionStatus.permanentlyDenied,
+      NotificationPermissionState.unsupported =>
+        PushPermissionStatus.unsupported,
+    };
+  }
+}
+
 class _FakeNotificationPermissionService extends NotificationPermissionService {
   _FakeNotificationPermissionService(this.state) : super(plugin: null);
 
@@ -93,7 +114,7 @@ void main() {
     final coordinator = PushCoordinator(
       gateway: buildGateway(fake),
       sink: (_) {},
-      permissionService: permission,
+      permissionProbe: _PermissionProbe(permission),
     );
 
     await coordinator.onAuthChanged(userId: 'user-123');
@@ -114,7 +135,7 @@ void main() {
     final coordinator = PushCoordinator(
       gateway: buildGateway(fake),
       sink: (_) {},
-      permissionService: permission,
+      permissionProbe: _PermissionProbe(permission),
     );
 
     await coordinator.onAuthChanged(userId: 'user-123');
@@ -131,8 +152,8 @@ void main() {
     final coordinator = PushCoordinator(
       gateway: buildGateway(fake),
       sink: (_) {},
-      permissionService: _FakeNotificationPermissionService(
-        NotificationPermissionState.denied,
+      permissionProbe: _PermissionProbe(
+        _FakeNotificationPermissionService(NotificationPermissionState.denied),
       ),
     );
 
@@ -154,7 +175,7 @@ void main() {
     final coordinator = PushCoordinator(
       gateway: buildGateway(fake, appKey: ''),
       sink: (_) {},
-      permissionService: permission,
+      permissionProbe: _PermissionProbe(permission),
     );
 
     await coordinator.onAuthChanged(userId: 'user-123');
@@ -172,8 +193,10 @@ void main() {
       final coordinator = PushCoordinator(
         gateway: buildGateway(fake),
         sink: events.add,
-        permissionService: _FakeNotificationPermissionService(
-          NotificationPermissionState.denied,
+        permissionProbe: _PermissionProbe(
+          _FakeNotificationPermissionService(
+            NotificationPermissionState.denied,
+          ),
         ),
       );
 

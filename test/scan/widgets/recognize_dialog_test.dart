@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
@@ -19,10 +19,15 @@ import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_di
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../auth/test_helpers.dart';
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/mocks/health_context.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late String tempImagePath;
 
   setUpAll(() {

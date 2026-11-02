@@ -3,24 +3,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
+import 'package:luminous/app/composition/today/today_suggestion.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/repositories/ai.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 import 'test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets(
     'Today summary shows preview hint and hides refresh action when signed out',
     (tester) async {
@@ -29,6 +35,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
             todayRepositoryProvider.overrideWithValue(
               const MockTodayRepository(),
@@ -61,6 +68,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
             todayRepositoryProvider.overrideWithValue(
               const MockTodayRepository(),
@@ -96,6 +104,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -146,6 +155,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -196,6 +206,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -242,6 +253,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
             todayRepositoryProvider.overrideWithValue(
               const MockTodayRepository(),
@@ -294,6 +306,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -339,6 +352,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),

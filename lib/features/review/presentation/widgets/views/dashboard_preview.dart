@@ -3,8 +3,8 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/export.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/preview/preview_locked.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/preview_locked.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -56,22 +56,22 @@ class ReviewDashboardPreview extends StatelessWidget {
   static const _previewExportActions = <ReviewExportAction>[
     ReviewExportAction(
       kind: ReviewExportKind.hospital,
-      icon: SemanticIcons.medicineKit,
+      iconName: 'briefcase-medical',
       color: SemanticColor.primary,
     ),
     ReviewExportAction(
       kind: ReviewExportKind.monthly,
-      icon: SemanticIcons.tabReview,
+      iconName: 'calendar-days',
       color: SemanticColor.primary,
     ),
     ReviewExportAction(
       kind: ReviewExportKind.print,
-      icon: SemanticIcons.actionExport,
+      iconName: 'arrow-down-to-line',
       color: SemanticColor.primary,
     ),
     ReviewExportAction(
       kind: ReviewExportKind.clinicShare,
-      icon: SemanticIcons.actionShare,
+      iconName: 'share-2',
       color: SemanticColor.primary,
     ),
   ];

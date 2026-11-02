@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
-import 'package:luminous/features/record/presentation/quick_entry/meal_flow.dart';
+import 'package:luminous/features/record/presentation/quick_entry/flows/meal_quick_entry.dart';
 
 void main() {
   group('MealQuickEntryFlow', () {

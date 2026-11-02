@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Domain interface for reading and writing medicine dose logs.
 ///

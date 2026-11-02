@@ -4,15 +4,18 @@ import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/auth/sensitive_action_password_resolver.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/providers/sensitive_action_password.dart';
+import 'package:luminous/app/settings_adapters.dart';
+import 'package:luminous/core/providers/session/sensitive_action_password.dart';
+import 'package:luminous/core/providers/session/sensitive_action_resolver.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:material_ui/material_ui.dart'
     show MaterialApp, Scaffold, ElevatedButton, GlobalMaterialLocalizations;
+
+import '../../helpers/kv_test_store.dart';
 
 UserSettings _testSettings({required bool passwordReauthenticationRequired}) {
   return UserSettings(
@@ -55,6 +58,10 @@ Widget _toastShell(Widget child) {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('resolveSensitiveActionPassword', () {
     testWidgets(
       'returns empty string when passwordReauthenticationRequired is false',
@@ -66,6 +73,11 @@ void main() {
           overrides: [
             userSettingsControllerProvider.overrideWith(
               () => _FakeSettings(settings),
+            ),
+            sensitiveActionPolicyProvider.overrideWithValue(
+              FeatureSensitiveActionPolicy(
+                () => Future<UserSettings>.value(settings),
+              ),
             ),
             sensitiveActionPasswordPromptProvider.overrideWithValue((
               _, {
@@ -120,6 +132,11 @@ void main() {
           overrides: [
             userSettingsControllerProvider.overrideWith(
               () => _FakeSettings(settings),
+            ),
+            sensitiveActionPolicyProvider.overrideWithValue(
+              FeatureSensitiveActionPolicy(
+                () => Future<UserSettings>.value(settings),
+              ),
             ),
             sensitiveActionPasswordPromptProvider.overrideWithValue((
               _, {

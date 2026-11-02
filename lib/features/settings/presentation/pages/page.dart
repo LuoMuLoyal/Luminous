@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -62,7 +62,7 @@ class SettingsPage extends ConsumerWidget {
       children: [
         SettingsNavigationTile(
           tileKey: const Key('settings-row-account-security'),
-          icon: SemanticIcons.safetySafe,
+          icon: SemanticIcons.actionSecurity,
           title: l10n.mineSettingsAccountTitle,
           onTap: () => pushAuthRequiredRoute(context, Routes.account),
         ),
@@ -103,7 +103,7 @@ class SettingsPage extends ConsumerWidget {
           groups: [
             SettingsGroup(
               label: l10n.settingsAccountSecuritySectionTitle,
-              icon: SemanticIcons.safetySafe,
+              icon: SemanticIcons.actionSecurity,
               body: buildAccountSecurityGroup(),
             ),
             SettingsGroup(
@@ -113,17 +113,17 @@ class SettingsPage extends ConsumerWidget {
             ),
             SettingsGroup(
               label: l10n.settingsQuickEntrySection,
-              icon: SemanticIcons.safetyAllergy,
+              icon: SemanticIcons.settingsQuickEntry,
               body: const QuickEntrySection(),
             ),
             SettingsGroup(
               label: l10n.settingsPrivacySectionTitle,
-              icon: SemanticIcons.statusBlocked,
+              icon: SemanticIcons.settingsPrivacy,
               body: PrivacySection(signedIn: signedIn),
             ),
             SettingsGroup(
               label: l10n.settingsAboutSectionTitle,
-              icon: SemanticIcons.statusInfo,
+              icon: SemanticIcons.settingsAbout,
               body: AboutSection(signedIn: signedIn),
             ),
           ],

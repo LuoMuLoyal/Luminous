@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/settings/cache_cleanup.dart';
+import 'package:luminous/app/composition/settings/sleep_reminder_sync.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/accessibility/settings.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/sync/background.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -18,19 +22,23 @@ import 'package:luminous/core/push/message_handler.dart';
 import 'package:luminous/core/shortcuts/bindings.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
-import 'package:luminous/core/widgets/common/control/desktop_window_chrome.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/core/widgets/common/control/desktop/window_chrome.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_delivery_reporter.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
-import 'package:luminous/features/settings/application/sleep_reminder_notification_coordinator.dart';
-import 'package:luminous/features/settings/data/providers/cache_cleanup.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 class LuminousApp extends ConsumerStatefulWidget {
-  const LuminousApp({super.key, this.routerConfig});
+  const LuminousApp({super.key, this.routerConfig, this.desktopChrome = true});
 
   final RouterConfig<Object>? routerConfig;
+
+  /// 是否渲染桌面窗口条（最小化 / 最大化 / 关闭）。
+  ///
+  /// 默认开启，生产行为不变。截图生成器传 `false`：那是**移动端页面**的证据集，
+  /// 顶上一条 Windows 窗口控件既不属于任何屏幕尺寸下的真实 UI，也会让
+  /// 平台判断（`Platform.isWindows`）把「这台机器在跑测试」泄漏进产物。
+  final bool desktopChrome;
 
   @override
   ConsumerState<LuminousApp> createState() => _LuminousAppState();
@@ -54,8 +62,8 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       // Re-evaluate the router redirect whenever auth state changes.
       ref.read(appRouterProvider).refresh();
 
-      final previousUserId = previous?.user?.id;
-      final nextUserId = next.user?.id;
+      final previousUserId = previous?.userId;
+      final nextUserId = next.userId;
 
       // Logout: invalidate health context + sync push alias to null, then return.
       if (previous?.isAuthenticated == true && !next.isAuthenticated) {
@@ -67,7 +75,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
 
       // Login / session restore / user switch: sync push alias.
       if (!next.isLoading) {
-        unawaited(_syncPushAuth(next.isAuthenticated ? next.user?.id : null));
+        unawaited(_syncPushAuth(next.isAuthenticated ? next.userId : null));
       }
 
       if (!next.isAuthenticated || next.isLoading) return;
@@ -141,6 +149,10 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       theme: foruiMaterialTheme(lightTheme),
       darkTheme: foruiMaterialTheme(darkTheme),
       themeMode: themeMode,
+      // 桌面端滚动条常驻且更宽：鼠标滚轮与拖动条是桌面阅读的主要方式，
+      // Flutter 默认的「窄条 + 悬停才显形」在桌面观感上像网页浮层。
+      // 触屏平台不受影响（Scrollbar 在移动端不绘制）。
+      scrollBehavior: const _DesktopScrollBehavior(),
       locale: locale?.flutterLocale,
       builder: (context, child) {
         final brightness = Theme.of(context).brightness;
@@ -155,6 +167,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
             child: FToaster(
               child: _withDesktopChrome(
                 AppShortcuts(child: child ?? const SizedBox.shrink()),
+                enabled: widget.desktopChrome,
               ),
             ),
           ),
@@ -191,7 +204,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       await coordinator.start();
       final session = ref.read(authSessionProvider);
       await coordinator.onAuthChanged(
-        userId: session.isAuthenticated ? session.user?.id : null,
+        userId: session.isAuthenticated ? session.userId : null,
       );
     } catch (error) {
       ref.read(talkerProvider).error('Push startup failed: $error');
@@ -259,8 +272,9 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
 
 /// Wraps [child] with [DesktopWindowChrome] on Windows/Linux desktop,
 /// adding a full-width drag area and window control buttons at the top.
-/// On other platforms, returns [child] unchanged.
-Widget _withDesktopChrome(Widget child) {
+/// On other platforms — or when [enabled] is false — returns [child] unchanged.
+Widget _withDesktopChrome(Widget child, {bool enabled = true}) {
+  if (!enabled) return child;
   if (kIsWeb) return child;
   if (!Platform.isWindows && !Platform.isLinux) return child;
   return Column(
@@ -302,4 +316,40 @@ FThemeData _applyHighContrast(FThemeData theme) {
           : HighContrastColors.lightBorder,
     ),
   );
+}
+
+/// 桌面端的滚动条行为：常驻、更宽、与主题色一致。
+///
+/// Flutter 默认在桌面端使用 `Scrollbar` 的「悬停才显形」窄条，鼠标用户
+/// 看不到自己在一篇长内容里的位置。桌面工作台的通行做法是常驻细条——
+/// 它同时是位置指示（拇指长度 = 可视比例），不是装饰。
+///
+/// 只在桌面平台生效：移动端 `Scrollbar` 本身不绘制，覆盖不会影响手机。
+class _DesktopScrollBehavior extends MaterialScrollBehavior {
+  const _DesktopScrollBehavior();
+
+  bool get _isDesktop =>
+      defaultTargetPlatform == TargetPlatform.windows ||
+      defaultTargetPlatform == TargetPlatform.macOS ||
+      defaultTargetPlatform == TargetPlatform.linux;
+
+  @override
+  Widget buildScrollbar(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
+    if (!_isDesktop) return child;
+    final colors = Theme.of(context).colorScheme;
+    return ScrollbarTheme(
+      data: ScrollbarThemeData(
+        thickness: const WidgetStatePropertyAll(10),
+        radius: const Radius.circular(999),
+        thumbVisibility: const WidgetStatePropertyAll(true),
+        thumbColor: WidgetStatePropertyAll(colors.outlineVariant),
+        crossAxisMargin: 2,
+      ),
+      child: Scrollbar(controller: details.controller, child: child),
+    );
+  }
 }

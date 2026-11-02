@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/retry_policy.dart';
+import 'package:luminous/core/network/contract/lucent_failure_from_wire.dart';
 import 'package:luminous/core/network/contract/problem_details.dart';
 
 void main() {
@@ -70,7 +70,7 @@ void main() {
       'code': 'RATE_LIMITED',
       'retryable': false,
     });
-    final lucentFailure = LucentFailure.fromProblemDetails(
+    final lucentFailure = LucentFailureFromWire.fromProblemDetails(
       problem,
       statusCode: 503,
     );
@@ -94,7 +94,7 @@ void main() {
         'code': 'RECORD_ALREADY_EXISTS',
         'retryable': true,
       });
-      final lucentFailure = LucentFailure.fromProblemDetails(
+      final lucentFailure = LucentFailureFromWire.fromProblemDetails(
         problem,
         statusCode: 409,
       );
@@ -160,7 +160,7 @@ void main() {
       'code': 'UPSTREAM_UNAVAILABLE',
       'retryAfter': 4,
     });
-    final lucentFailure = LucentFailure.fromProblemDetails(
+    final lucentFailure = LucentFailureFromWire.fromProblemDetails(
       problem,
       statusCode: 503,
     );
@@ -192,7 +192,7 @@ void main() {
       'code': 'RATE_LIMITED',
       'retryAfter': 58233,
     });
-    final lucentFailure = LucentFailure.fromProblemDetails(
+    final lucentFailure = LucentFailureFromWire.fromProblemDetails(
       problem,
       statusCode: 429,
     );

@@ -17,11 +17,88 @@ cd Luminous
 flutter test tool/screenshots/generate.dart --update-goldens
 ```
 
-Outputs land in `outputs/screenshots/` (gitignored):
+Outputs land in `outputs/screenshots/` (gitignored), 按 tab 分目录：
 
-- `NN_group_page.png` — one PNG per catalog page, then the extras numbered on
-- `MANIFEST.md` — file → group/page/route → rendered-text count
-- `_rendered_text.txt` — every string each page rendered, for diffing runs
+```text
+outputs/screenshots/
+  today/        1_today.png  ...             tab 根页（一级，`1_` 前缀）
+  record/       1_record.png  2_detail.png   本 tab 的子页面（二级，`2_` 前缀）
+  medicine/     1_medicine.png  2_search.png  ...
+  review/  mine/  settings/  assistant/  scan/  customize/  ...
+  long/         全部整页长截图
+  desktop/      五个 tab 根页的桌面档（1280x800）
+  MANIFEST.md   文件 → 分组/页面/路由 → 渲染文本数 → 帧类别
+  _rendered_text.txt   每个页面渲染出的全部字符串，用于对比两次运行
+```
+
+## 桌面档
+
+除手机档（Pixel 8 Pro 448×998 @ dpr 3）外，同一份 catalog 还会再生成一档桌面尺寸：
+
+| 档位 | 逻辑尺寸 | dpr | 窗口 chrome | 输出 |
+| --- | --- | --- | --- | --- |
+| phone | 448×998 | 3 | `false` | `<tab>/` 与 `long/` |
+| desktop | 1280×800 | 2 | `true` | `desktop/` |
+
+1280 落在 M3 `large` 档（≥1200），侧边栏、分组标签、三层底色与桌面密度都会出现。
+`desktopChrome: true` 让窗口按钮与拖拽区一起入镜——那是桌面端自身的验收对象，
+用手机档的 `false` 截出来看不到。
+
+桌面档覆盖两级页面，与手机档一一对应：
+
+- **一级页**（五个 tab 根页，`shell` 组）→ `desktop/<tab>.png`，5 张；
+- **二级页**（其余全部分组）→ `desktop/<group>-<id>.png`，文件名带分组前缀，
+  避免与一级页在同一个目录里重名。
+
+只截首屏，不产出 `_scrolled` 与整页长截图（`longCapture: false`）：桌面内容区一次
+能容纳更多，而 1280×800 的整页图会是一张高度远超宽度的怪图。
+
+```powershell
+# 只跑桌面档（一级页 + 二级页抽样）
+flutter test tool/screenshots/generate.dart --update-goldens --plain-name "generate desktop/"
+```
+
+
+每种页面产出：
+
+| 帧 | 文件 | 何时产出 |
+| --- | --- | --- |
+| 首屏 | `<folder>/<name>.png` | 总是 |
+| 滚到底 | `<folder>/<name>_scrolled.png` | 内容溢出一屏的一半以上时 |
+| 长截图 | `long/<folder>__<name>.png` | 内容溢出一屏时（整页，dpr 2） |
+
+**每一帧都是设备视口**：手机档 1344×2992，桌面档 2560×1600，长截图除外。
+截图集里不允许出现被裁短的「尾帧」——比例本身就是评审对象之一。
+
+### 滚动帧：直接滚到底
+
+以前是「滚到 `maxScrollExtent × 0.55` 再截一张」，结果是：
+
+- 只冒头一点点的页面（提醒详情/提醒编辑只溢出十几像素）第二帧和首屏几乎
+  逐像素相同——纯粹是重复图；
+- 高出好几屏的页面（用药 3 屏、回顾 2.7 屏）只到中段，页面尾部没有任何帧；
+- 对话类页面进页面时已经贴底，再往下拖不动，「滚动后」= 首屏原样。
+
+现在是**滚到 `maxScrollExtent`（页面底部）**再截一张完整视口（`_bottomScrollOffset`）：
+第二帧看到的是页面尾部，与首屏在纵向错开半个屏以上，不会出现「几乎相同」的重复图。
+溢出不足半屏的页面不产这一帧（那点位移就是首屏复制，尾部由长截图覆盖）。
+
+### 长截图高度包含页面 chrome
+
+长截图的帧高是「内容总高 + chrome」（`_frameHeight - viewportDimension`，即底部
+tab bar / 安全区）。只按内容高画帧时，滚动视口会跟着缩小同样多，最后一屏会被
+骨架裁掉一截——页面尾部看起来是被切断的。
+
+extras（同路由的特定状态：弹层、抽屉、候选面板）不产出滚动帧与长截图——它们
+的状态本身不占整页，滚动帧只会是首屏的原样复制。
+
+搜索页（`/medicine/search`）是**提交驱动**的：生成器必须补一次 `submitQuery`，
+只写 `updateQuery` 会截到「输入框有字、下面一片空白」。回顾页趋势的三个维度
+同理：中文字面量在页面里出现三次，`find.text('饮水').last` 打到的是图例，正确做
+法是通过 `reviewTrendDimensionProvider` 选中维度。
+
+顶部不渲染桌面窗口条：生成器给 `LuminousApp` 传 `desktopChrome: false`，
+否则在 Windows 上跑测试会把「最小化/最大化/关闭」画进移动端页面截图。
 
 To iterate on a few pages, filter by test name:
 
@@ -34,6 +111,50 @@ Then tile the results into contact sheets:
 ```powershell
 python tool/screenshots/contact_sheet.py outputs/screenshots build/contact
 ```
+
+## Component crops
+
+`crop_components.py` cuts **meaningful blocks** out of the captures — a section
+title together with its card/list (``健康档案`` + five rows), a labelled form
+field, a chip row, a dialog — so they can be reused as a component library.
+Output lands in `outputs/components/<group>/` plus a `MANIFEST.md` mapping every
+crop back to its source capture and pixel box.
+
+```powershell
+# first run: OCR labels the crops and drops skeleton/placeholder blocks
+python -m pip install --target %TEMP%\ocr-libs rapidocr-onnxruntime
+python tool/screenshots/crop_components.py --ocr-libs %TEMP%\ocr-libs
+
+# later runs reuse outputs/.ocr-cache (per-capture OCR result keyed by hash)
+python tool/screenshots/crop_components.py --ocr-libs %TEMP%\ocr-libs
+```
+
+Without `--ocr-libs` the script still runs (`--no-ocr` explicitly), but names
+fall back to `<capture>__<index>.png` and flat skeleton bars cannot be dropped.
+
+How it decides what a component is:
+
+1. the page canvas colour is the mode of the capture's border ring;
+2. foreground = pixels that differ from that canvas;
+3. connected components over that mask (row run-lengths + union-find, no
+   scipy/cv2 dependency); a near-full-screen sheet (chat/dialog) is segmented a
+   second time from its own fill colour, so bubbles on it are found;
+4. keep only surface-like blobs: high fill ratio (text lines and blurred
+   ghosts fail), minimum size, and **clear of the frame edges** — a block the
+   viewport cuts off is the "incomplete" case;
+5. dialog captures (dimmed scrim) keep only the bright panel;
+6. blocks are grouped into meaningful units: a section title plus the list it
+   heads is one block (rows continue while gaps stay small), and rows of
+   neighbouring chips/tabs/segmented controls are joined into one block; a
+   list the viewport cuts off falls back to its fully visible rows;
+7. blocks with no OCR text and no saturated accent colour are skeleton bars and
+   are dropped;
+8. crops are deduplicated by content hash (identical captures and repeated
+   widgets are written once).
+
+Only phone captures (portrait) are processed: `desktop/` and landscape frames
+are a different viewport class, and `long/` duplicates the same pages at
+another scale.
 
 ## How it works
 

@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/kv_test_store.dart';
 
 void main() {
   test('theme preference defaults to system for empty or unknown values', () {
@@ -24,10 +26,12 @@ void main() {
   test(
     'theme controller restores and persists the selected mode and family',
     () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        'theme.mode': AppThemeModePreference.dark.storageValue,
-        'theme.family': AppThemeFamily.green.storageValue,
-      });
+      KvTestStore.install(
+        seed: <String, Object>{
+          'theme.mode': AppThemeModePreference.dark.storageValue,
+          'theme.family': AppThemeFamily.green.storageValue,
+        },
+      );
 
       final container = ProviderContainer.test();
       addTearDown(container.dispose);
@@ -57,9 +61,9 @@ void main() {
         ),
       );
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getString('theme.mode'), 'light');
-      expect(preferences.getString('theme.family'), 'violet');
+      final preferences = KvStore.instance;
+      expect(preferences.getOrNull<String>('theme.mode'), 'light');
+      expect(preferences.getOrNull<String>('theme.family'), 'violet');
     },
   );
 }

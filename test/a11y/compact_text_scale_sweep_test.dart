@@ -21,22 +21,26 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/medicine/workspace.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/app/composition/review/review.dart';
+import 'package:luminous/app/composition/settings/notification_permission.dart';
+import 'package:luminous/app/composition/snapshot/record.dart';
+import 'package:luminous/app/composition/support/resources.dart';
+import 'package:luminous/app/composition/today/today_suggestion.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/pending_sync.dart';
-import 'package:luminous/core/database/models/pending_sync_error_details.dart';
+import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/pages/page.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/detail.dart';
@@ -50,8 +54,6 @@ import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.
 import 'package:luminous/features/mine/presentation/pages/page.dart' as mine;
 import 'package:luminous/features/mine/presentation/pages/sync_failures.dart';
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -61,7 +63,6 @@ import 'package:luminous/features/record/presentation/pages/page.dart'
     as record;
 import 'package:luminous/features/record/presentation/pages/quick_entry_reorder.dart';
 import 'package:luminous/features/record/presentation/pages/quick_entry_settings.dart';
-import 'package:luminous/features/review/data/providers/review.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
@@ -69,44 +70,44 @@ import 'package:luminous/features/review/presentation/pages/page.dart'
     as review;
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
-import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart'
     as search;
-import 'package:luminous/features/settings/data/providers/notification_permission.dart';
+import 'package:luminous/features/search/presentation/providers/data_access.dart';
+import 'package:luminous/features/settings/data/datasources/notification_permission.dart';
+import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
-import 'package:luminous/features/settings/domain/services/notification_permission.dart';
-import 'package:luminous/features/settings/presentation/pages/about.dart';
-import 'package:luminous/features/settings/presentation/pages/accessibility.dart';
-import 'package:luminous/features/settings/presentation/pages/advanced.dart';
-import 'package:luminous/features/settings/presentation/pages/ai.dart';
-import 'package:luminous/features/settings/presentation/pages/data_export.dart';
-import 'package:luminous/features/settings/presentation/pages/data_storage.dart';
-import 'package:luminous/features/settings/presentation/pages/dnd.dart';
-import 'package:luminous/features/settings/presentation/pages/feature_flags.dart';
-import 'package:luminous/features/settings/presentation/pages/help.dart';
-import 'package:luminous/features/settings/presentation/pages/language.dart';
-import 'package:luminous/features/settings/presentation/pages/notification.dart';
+import 'package:luminous/features/settings/presentation/pages/about/about.dart';
+import 'package:luminous/features/settings/presentation/pages/about/help.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/advanced.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/feature_flags.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/accessibility.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/language.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/theme.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/dnd.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/notification.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/sleep_reminder.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart'
     as settings;
 import 'package:luminous/features/settings/presentation/pages/profile.dart';
-import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
-import 'package:luminous/features/settings/presentation/pages/theme.dart';
+import 'package:luminous/features/settings/presentation/pages/storage/data_export.dart';
+import 'package:luminous/features/settings/presentation/pages/storage/data_storage.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/package_info.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/features/support/domain/entities/app_info.dart';
-import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart' as today;
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/mocks/health_context.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
@@ -116,8 +117,8 @@ import '../today/test_helpers.dart';
 const double _textScale = 1.3;
 
 void main() {
-  setUp(() {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+  setUp(() async {
+    KvTestStore.install(seed: const <String, Object>{});
   });
 
   _registerSweep(known: false);
@@ -313,6 +314,7 @@ Future<void> _pumpToday(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         activeHealthEventProvider.overrideWith(_NoActiveHealthEvent.new),
         todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
@@ -330,6 +332,7 @@ Future<void> _pumpRecord(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         recordRepositoryProvider.overrideWithValue(
           const MockRecordRepository(),
         ),
@@ -353,6 +356,7 @@ Future<void> _pumpMedicine(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         notificationUnreadCountProvider.overrideWith((ref) async => 0),
         medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -371,6 +375,7 @@ Future<void> _pumpReview(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         reviewRepositoryProvider.overrideWithValue(_FakeReviewRepository()),
         reviewDashboardProvider.overrideWith(
@@ -446,6 +451,7 @@ Future<void> _pumpMine(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(testHealthSnapshot()),
@@ -464,6 +470,7 @@ Future<void> _pumpAssistant(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         assistantRepositoryProvider.overrideWithValue(
           _FakeAssistantRepository(),
@@ -505,6 +512,7 @@ Future<void> _pumpSettings(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         notificationPermissionServiceProvider.overrideWithValue(
           _FakeNotificationPermissionService(),
@@ -533,6 +541,7 @@ Future<void> _pumpRecordCreate(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         dailyRecordRepositoryProvider.overrideWithValue(
           _FakeDailyRecordRepository(),
@@ -587,6 +596,7 @@ Future<void> _pumpMedicineDetail(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         medicineDetailProvider(
           'cn',
           'cn_1',
@@ -610,6 +620,7 @@ Future<void> _pumpMedicineDetailDrugbank(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         medicineDetailProvider(
           'drugbank',
           'DB01050',
@@ -633,6 +644,7 @@ Future<void> _pumpMedicineRiskCheck(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         medicineRiskCheckRepositoryProvider.overrideWithValue(
           FakeMedicineRiskCheckRepository(clearRiskCheckResult),
@@ -652,6 +664,7 @@ Future<void> _pumpMedicineSearch(WidgetTester tester, double scale) async {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         healthContextSnapshotProvider.overrideWith(
           (ref) async => testHealthSnapshot(),
@@ -695,11 +708,12 @@ Future<void> _pumpSyncFailures(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         pendingSyncDaoProvider.overrideWithValue(_MockPendingSyncDao()),
         syncWorkerProvider.overrideWithValue(_MockSyncWorker()),
         syncFailedCountProvider.overrideWith((ref) async => 1),
         mineSyncFailedEntriesProvider.overrideWith(
-          (ref) async => <PendingSyncEntry>[_pendingSyncEntry()],
+          (ref) async => <MineSyncEntry>[_pendingSyncEntry()],
         ),
       ],
       child: TestForuiApp(
@@ -714,6 +728,7 @@ Future<void> _pumpProfile(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(testHealthSnapshot()),
@@ -758,6 +773,7 @@ Future<void> _pumpHealthContextEdit(
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(testHealthSnapshot()),
@@ -785,6 +801,7 @@ Future<void> _pumpAbout(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         appInfoProvider.overrideWith(
           (ref) async => const AppInfo(supportEmail: 'support@example.com'),
         ),
@@ -802,6 +819,7 @@ Future<void> _pumpNotification(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         notificationPermissionServiceProvider.overrideWithValue(
           _FakeNotificationPermissionService(),
         ),
@@ -906,6 +924,7 @@ Future<void> _pumpAiSettings(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         userSettingsControllerProvider.overrideWith(
           _ReadyUserSettingsController.new,
         ),
@@ -922,6 +941,7 @@ Future<void> _pumpDataExport(WidgetTester tester, double scale) {
     tester,
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         dataExportControllerProvider.overrideWith(_StubExportController.new),
       ],
       child: TestForuiApp(
@@ -1151,7 +1171,7 @@ class _MockPendingSyncDao extends Mock implements PendingSyncDao {}
 
 class _MockSyncWorker extends Mock implements SyncWorker {}
 
-PendingSyncEntry _pendingSyncEntry() => PendingSyncEntry(
+MineSyncEntry _pendingSyncEntry() => MineSyncEntry(
   id: 'pending-1',
   entityType: 'daily_record',
   entityId: 'record-1',
@@ -1161,7 +1181,7 @@ PendingSyncEntry _pendingSyncEntry() => PendingSyncEntry(
   retryCount: 5,
   maxRetry: 5,
   lastError: 'DioException [connectionError]: network unavailable',
-  errorDetails: const PendingSyncErrorDetails(
+  errorDetails: const MineSyncErrorDetails(
     message: 'Connection timed out',
     networkErrorCode: NetworkErrorCode.connectionError,
     kind: LucentFailureKind.network,

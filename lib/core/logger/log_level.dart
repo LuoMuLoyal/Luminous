@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:luminous/core/logger/sentry_talker_observer.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
+
+export 'package:luminous/core/network/app_log.dart' show LogLevel;
 
 part 'log_level.g.dart';
 
@@ -9,25 +12,6 @@ part 'log_level.g.dart';
 ///
 /// Maps to [talker_pkg.Talker]'s internal log level filtering at runtime.
 /// Setting a [LogLevel] suppresses all messages below that level.
-enum LogLevel {
-  verbose,
-  info,
-  warning,
-  error,
-  none;
-
-  /// Parses a string into a [LogLevel], defaulting to [info].
-  static LogLevel fromString(String? value) {
-    return switch (value?.toLowerCase()) {
-      'verbose' => LogLevel.verbose,
-      'info' => LogLevel.info,
-      'warning' => LogLevel.warning,
-      'error' => LogLevel.error,
-      'none' => LogLevel.none,
-      _ => LogLevel.info,
-    };
-  }
-}
 
 /// Singleton [talker_pkg.Talker] instance shared by [talkerProvider] and
 /// [appTalker].
@@ -48,13 +32,21 @@ final _globalTalker = talker_pkg.Talker(
   observer: SentryTalkerObserver(),
 );
 
+/// Wire the data layer's log seam (`core/network/app_log.dart`) to the single
+/// Talker above once, at library initialisation. The seam is the only logging
+/// surface `data/` is allowed to import.
+void _installLogSink() => setAppLogSink(_globalTalker);
+
 /// Global [talker_pkg.Talker] accessor for contexts that do not have a Riverpod
 /// [Ref] (e.g. static utility classes, plain repository objects).
 ///
 /// ```dart
 /// appTalker.error('Something failed: $e');
 /// ```
-talker_pkg.Talker get appTalker => _globalTalker;
+talker_pkg.Talker get appTalker {
+  _installLogSink();
+  return _globalTalker;
+}
 
 /// Riverpod provider that returns the same [_globalTalker] singleton.
 ///

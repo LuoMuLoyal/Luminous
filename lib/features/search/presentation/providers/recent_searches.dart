@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/features/search/data/datasources/recent_searches.dart';
+import 'package:luminous/features/search/presentation/providers/data_access.dart';
 
 /// Notifier that exposes the persisted recent search keywords.
 ///

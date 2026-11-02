@@ -1,0 +1,288 @@
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/overview/score_ring.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/shared/metric_chip.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+/// Tab header showing last-updated time and run/re-run button.
+class TabHeader extends StatelessWidget {
+  const TabHeader({
+    super.key,
+    required this.l10n,
+    required this.record,
+    required this.isLlm,
+    required this.onRun,
+    required this.isRunning,
+  });
+
+  final AppLocalizations l10n;
+  final MedicineRiskCheckRecord record;
+  final bool isLlm;
+  final VoidCallback onRun;
+  final bool isRunning;
+
+  @override
+  Widget build(BuildContext context) {
+    final timeStr = medicineRiskCheckFormatTime(record.updatedAt);
+
+    // 运行按钮是固有宽度组件:放进 Row 会先占满固有宽度,把左侧「最后更新」
+    // 文本挤成多行;Wrap + spaceBetween 保持左信息右按钮,放不下时按钮换行。
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      spacing: Spacing.sm,
+      runSpacing: Spacing.xs,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              SemanticIcons.doseCheckedAt,
+              size: IconSizeTokens.sm,
+              color: SemanticColor.neutral.solid(context),
+            ),
+            const SizedBox(width: Spacing.xs),
+            Flexible(
+              child: Text(
+                l10n.medicineRiskCheckLastUpdated(timeStr),
+                style: context.theme.typography.body.xs.copyWith(
+                  color: SemanticColor.neutral.solid(context),
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (isRunning)
+          const SizedBox.square(
+            dimension: IconSizeTokens.md,
+            child: FCircularProgress.loader(size: .sm),
+          )
+        else
+          FButton(
+            variant: FButtonVariant.ghost,
+            size: .sm,
+            mainAxisSize: MainAxisSize.min,
+            onPress: onRun,
+            child: Flexible(
+              child: Text(
+                isLlm
+                    ? l10n.medicineRiskCheckRunLlm
+                    : l10n.medicineRiskCheckRunStatic,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Risk score hero — large score ring + level label + description.
+class RiskScoreHero extends StatelessWidget {
+  const RiskScoreHero({
+    super.key,
+    required this.l10n,
+    required this.score,
+    required this.riskLevel,
+    required this.findingCount,
+  });
+
+  final AppLocalizations l10n;
+  final int score;
+  final MedicineRiskLevel riskLevel;
+  final int findingCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = medicineRiskLevelColor(riskLevel).palette(context);
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
+
+    return DecoratedBox(
+      decoration: ShapeDecoration(
+        gradient: GradientTokens.tintFade(palette.muted, colors.background),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: context.theme.style.borderRadius.lg,
+          side: BorderSide(color: palette.border),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.xl2),
+        child: Row(
+          children: [
+            RiskScoreRing(score: score, riskLevel: riskLevel),
+            const SizedBox(width: Spacing.xl2),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.medicineRiskScoreTitle,
+                    style: typography.body.xs.copyWith(
+                      color: SemanticColor.neutral.solid(context),
+                    ),
+                  ),
+                  const SizedBox(height: Spacing.xs),
+                  Text(
+                    medicineRiskLevelLabel(l10n, riskLevel),
+                    style: typography.display.xl.copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0,
+                      color: palette.solid,
+                    ),
+                  ),
+                  const SizedBox(height: Spacing.sm),
+                  Text(
+                    medicineRiskLevelDescription(l10n, riskLevel, findingCount),
+                    style: typography.body.xs.copyWith(
+                      color: colors.foreground,
+                    ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Metric grid — 4 metric cells in a row.
+class MetricGrid extends StatelessWidget {
+  const MetricGrid({
+    super.key,
+    required this.l10n,
+    required this.result,
+    this.onFindingsTap,
+    this.onCoverageTap,
+  });
+
+  final AppLocalizations l10n;
+  final MedicineRiskCheckResult result;
+  final VoidCallback? onFindingsTap;
+  final VoidCallback? onCoverageTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: ShapeDecoration(
+        color: SemanticColor.neutral.subtle(context),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: context.theme.style.borderRadius.md,
+        ),
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            RiskMetricCell(
+              label: l10n.medicineRiskCheckCurrentMedicinesLabel,
+              value: '${result.currentMedicineCount}',
+              color: SemanticColor.neutral,
+            ),
+            RiskMetricCell(
+              label: l10n.medicineRiskCheckCheckedMedicinesLabel,
+              value: '${result.checkedMedicineCount}',
+              color: SemanticColor.neutral,
+            ),
+            RiskMetricCell(
+              label: l10n.medicineRiskCheckFindingsLabel,
+              value: '${result.findingCount}',
+              color: result.findingCount > 0
+                  ? SemanticColor.destructive
+                  : SemanticColor.success,
+              onTap: onFindingsTap,
+            ),
+            RiskMetricCell(
+              label: l10n.medicineRiskCheckCoverageLabel,
+              value: '${result.coverageCount}',
+              color: result.coverageCount > 0
+                  ? SemanticColor.warning
+                  : SemanticColor.success,
+              onTap: onCoverageTap,
+              showRightDivider: false,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Safe state card shown when no findings AND no coverage gaps.
+class SafeStateCard extends StatelessWidget {
+  const SafeStateCard({super.key, required this.l10n, required this.result});
+
+  final AppLocalizations l10n;
+  final MedicineRiskCheckResult result;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+    return DecoratedBox(
+      decoration: ShapeDecoration(
+        color: SemanticColor.success.subtle(context),
+        shape: RoundedSuperellipseBorder(
+          borderRadius: context.theme.style.borderRadius.md,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.xl),
+        child: Row(
+          children: [
+            Container(
+              width: Spacing.xl4,
+              height: Spacing.xl4,
+              decoration: ShapeDecoration(
+                color: SemanticColor.success.muted(context),
+                shape: const CircleBorder(),
+              ),
+              child: Icon(
+                SemanticIcons.safetyVerified,
+                color: SemanticColor.success.solid(context),
+                size: IconSizeTokens.lg,
+              ),
+            ),
+            const SizedBox(width: Spacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.medicineRiskCheckTierConfirmedSafe,
+                    style: typography.body.md.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: Spacing.xs),
+                  Text(
+                    l10n.medicineRiskCheckTierSafeBody(
+                      result.checkedMedicineCount,
+                    ),
+                    style: typography.body.xs.copyWith(
+                      color: SemanticColor.neutral.solid(context),
+                    ),
+                  ),
+                  const SizedBox(height: Spacing.xs),
+                  Text(
+                    l10n.medicineRiskCheckTierSafeDisclaimer,
+                    style: typography.body.xs.copyWith(
+                      color: SemanticColor.neutral.solid(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

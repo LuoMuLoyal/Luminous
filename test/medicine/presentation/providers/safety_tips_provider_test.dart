@@ -4,11 +4,16 @@ import 'package:luminous/features/medicine/data/datasources/safety_tips_remote.d
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 import 'package:luminous/features/medicine/presentation/providers/safety_tips.dart';
 import 'package:mocktail/mocktail.dart';
+import '../../../helpers/kv_test_store.dart';
 
 class _MockSafetyTipsRemoteDataSource extends Mock
     implements SafetyTipsRemoteDataSource {}
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _MockSafetyTipsRemoteDataSource mockDataSource;
 
   const tipA = MedicineSafetyTip(id: 'a', text: 'Tip A', category: 'c1');

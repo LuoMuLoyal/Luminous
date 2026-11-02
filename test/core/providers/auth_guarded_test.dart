@@ -2,15 +2,19 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/session_store.dart';
-import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/core/providers/session/auth_guarded.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('authGuarded', () {
     test('calls fetch when authenticated', () async {
       final container = ProviderContainer(
@@ -335,10 +339,10 @@ class _FakeSessionNotifier extends AuthSessionNotifier {
   Future<void> restore() async {}
 
   @override
-  Future<void> applySession(AuthSession session) async {}
+  Future<void> applySession(SessionSnapshot session, {Object? user}) async {}
 
   @override
-  void applyUser(AuthUser user) {}
+  void applyUser(SessionUserSnapshot user, {Object? entity}) {}
 
   @override
   void clearLocalSession() {}

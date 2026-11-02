@@ -15,11 +15,9 @@
 // This file is a generator fixture, not production code: nothing under `lib/`
 // imports it.
 
-import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
@@ -29,6 +27,7 @@ import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import 'simulated_fakes_misc.dart';
 
@@ -102,24 +101,18 @@ MineDashboard simulatedMineDashboard() {
     ),
     alerts: <MineStatusCard>[
       const MineStatusCard(
-        icon: SemanticIcons.statusWarning,
-        accent: SemanticColor.destructive,
         titleKey: MineCopyKey.alertAllergyTitle,
         kind: MineStatusCardKind.allergy,
         items: <String>['青霉素', '花粉'],
         count: 2,
       ),
       MineStatusCard(
-        icon: SemanticIcons.recordMedicine,
-        accent: SemanticColor.primary,
         titleKey: MineCopyKey.alertMedicineTitle,
         kind: MineStatusCardKind.medicine,
         items: <String>[_simulatedMedicineName(0), _simulatedMedicineName(2)],
         count: 2,
       ),
       const MineStatusCard(
-        icon: SemanticIcons.profileUser,
-        accent: SemanticColor.neutral,
         titleKey: MineCopyKey.alertPrivacyTitle,
         kind: MineStatusCardKind.privacy,
         subtitleKey: MineCopyKey.alertPrivacySubtitle,
@@ -128,46 +121,35 @@ MineDashboard simulatedMineDashboard() {
     ],
     archiveEntries: const <MineArchiveEntry>[
       MineArchiveEntry(
-        icon: FLucideIcons.badge,
-        accent: SemanticColor.primary,
         titleKey: MineCopyKey.archiveBasicTitle,
         subtitleKey: MineCopyKey.archiveBasicSubtitle,
         statusKey: MineCopyKey.archiveCompleted,
         route: Routes.profile,
       ),
       MineArchiveEntry(
-        icon: SemanticIcons.recordWater,
-        accent: SemanticColor.primary,
         titleKey: MineCopyKey.archiveAllergyTitle,
         subtitleKey: MineCopyKey.archiveAllergySubtitle,
         statusKey: MineCopyKey.archiveCompleted,
         route: Routes.mineAllergyNew,
       ),
       MineArchiveEntry(
-        icon: SemanticIcons.profileCondition,
-        accent: SemanticColor.primary,
         titleKey: MineCopyKey.archiveConditionTitle,
         subtitleKey: MineCopyKey.archiveConditionSubtitle,
         route: Routes.mineConditionNew,
       ),
       MineArchiveEntry(
-        icon: SemanticIcons.recordMedicine,
-        accent: SemanticColor.primary,
         titleKey: MineCopyKey.archiveMedicineTitle,
         subtitleKey: MineCopyKey.archiveMedicineSubtitle,
         statusKey: MineCopyKey.archiveCompleted,
         route: Routes.mineMedicineNew,
       ),
       MineArchiveEntry(
-        icon: SemanticIcons.profileContact,
-        accent: SemanticColor.primary,
         titleKey: MineCopyKey.archiveEmergencyTitle,
         subtitleKey: MineCopyKey.archiveEmergencySubtitle,
         statusKey: MineCopyKey.archiveNeedsFill,
       ),
     ],
     privacyNotice: const MinePrivacyNotice(
-      icon: SemanticIcons.safetyNeutral,
       titleKey: MineCopyKey.privacyNoticeTitle,
       actionKey: MineCopyKey.privacyNoticeAction,
     ),
@@ -200,22 +182,16 @@ MedicineWorkspace simulatedMedicineWorkspace() {
     ),
     quickActions: <MedicineQuickAction>[
       MedicineQuickAction(
-        icon: SemanticIcons.actionSearch,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-        accent: SemanticColor.primary,
       ),
       MedicineQuickAction(
-        icon: SemanticIcons.actionScan,
         titleKey: MedicineCopyKey.quickActionBarcodeTitle,
         subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
-        accent: SemanticColor.primary,
       ),
       MedicineQuickAction(
-        icon: SemanticIcons.actionCamera,
         titleKey: MedicineCopyKey.quickActionCameraTitle,
         subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
-        accent: SemanticColor.primary,
       ),
     ],
     plan: MedicinePlanSurface(
@@ -306,7 +282,7 @@ MedicineWorkspace simulatedMedicineWorkspace() {
     ),
     alerts: <MedicineAlert>[
       MedicineAlert(
-        icon: SemanticIcons.safetyInteraction,
+        iconKey: MedicineAlertIcon.safetyInteraction,
         rawTitle: '降压药与阿司匹林联用提示',
         rawBody: '两者之间没有需要避免的相互作用，但需留意踝部水肿与胃部不适。',
         rawDetail: '若出现黑便、持续胃痛或明显头晕，请尽快线下就诊。',
@@ -315,7 +291,7 @@ MedicineWorkspace simulatedMedicineWorkspace() {
         softColor: SemanticColor.warning,
       ),
       MedicineAlert(
-        icon: SemanticIcons.recordCaffeine,
+        iconKey: MedicineAlertIcon.recordCaffeine,
         rawTitle: '咖啡因与血压记录',
         rawBody: '近 7 天有 3 次在饮用咖啡后 1 小时内测量血压，读数普遍偏高 4-6 mmHg。',
         rawDetail: '建议测量前 30 分钟避免咖啡、浓茶与吸烟。',
@@ -324,7 +300,7 @@ MedicineWorkspace simulatedMedicineWorkspace() {
         softColor: SemanticColor.info,
       ),
       MedicineAlert(
-        icon: SemanticIcons.safetyDuplicate,
+        iconKey: MedicineAlertIcon.safetyDuplicate,
         rawTitle: '复方制剂重复成分检查',
         rawBody: '你录入的复方感冒灵颗粒含有解热镇痛成分，与阿司匹林肠溶片作用重叠。',
         rawDetail: '感冒期间请暂停其中一种，或先咨询药师。',
@@ -333,7 +309,7 @@ MedicineWorkspace simulatedMedicineWorkspace() {
         softColor: SemanticColor.destructive,
       ),
       MedicineAlert(
-        icon: SemanticIcons.safetySpecialGroup,
+        iconKey: MedicineAlertIcon.safetySpecialGroup,
         rawTitle: '二甲双胍与肾功能随访',
         rawBody: '已连续服用盐酸二甲双胍片 11 周，建议复诊时复查肾功能与血糖。',
         rawDetail: '服药期间避免饮酒，可降低乳酸酸中毒风险。',
@@ -490,8 +466,8 @@ HealthContextSnapshot simulatedHealthContextSnapshot() {
     currentMedicines: <CurrentMedicineItem>[
       CurrentMedicineItem(
         id: _simulatedMedicineId(0),
-        source: 'cn',
-        sourceRefId: 'cn-amlodipine-5mg',
+        source: 'drugbank',
+        sourceRefId: 'DB00381',
         displayName: _simulatedMedicineName(0),
         strengthText: '5mg',
         doseText: '每次 1 片，每日 2 次',
@@ -505,8 +481,8 @@ HealthContextSnapshot simulatedHealthContextSnapshot() {
       ),
       CurrentMedicineItem(
         id: _simulatedMedicineId(1),
-        source: 'cn',
-        sourceRefId: 'cn-aspirin-100mg',
+        source: 'drugbank',
+        sourceRefId: 'DB00945',
         displayName: _simulatedMedicineName(1),
         strengthText: '100mg',
         doseText: '每次 1 片，每日 1 次',
@@ -520,8 +496,8 @@ HealthContextSnapshot simulatedHealthContextSnapshot() {
       ),
       CurrentMedicineItem(
         id: _simulatedMedicineId(2),
-        source: 'cn',
-        sourceRefId: 'cn-metformin-500mg',
+        source: 'drugbank',
+        sourceRefId: 'DB00331',
         displayName: _simulatedMedicineName(2),
         strengthText: '0.5g',
         doseText: '每次 1 片，每日 1 次',

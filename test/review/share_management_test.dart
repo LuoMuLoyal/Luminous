@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/features/review/presentation/widgets/sheets/share_management.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 
@@ -58,6 +59,10 @@ Response<ClinicSummaryShareListResponse> _shareListResponse(
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _MockReportsApi reportsApi;
   late _FakeLucentClient client;
 

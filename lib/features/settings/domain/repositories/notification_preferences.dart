@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Repository interface for reading and patching the user's notification
 /// preferences.

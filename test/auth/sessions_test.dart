@@ -2,16 +2,17 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/auth/sessions.dart';
 import 'package:luminous/core/network/contract/api_paths.dart';
-import 'package:luminous/features/auth/data/providers/sessions.dart';
 import 'package:luminous/features/auth/data/repositories/sessions.dart';
 import 'package:luminous/features/auth/domain/entities/device_session.dart';
 import 'package:luminous/features/auth/domain/repositories/sessions.dart';
-import 'package:luminous/features/auth/presentation/pages/sessions.dart';
-import 'package:luminous/features/auth/presentation/providers/sessions.dart';
+import 'package:luminous/features/auth/presentation/pages/account/sessions.dart';
+import 'package:luminous/features/auth/presentation/providers/account/sessions.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 
@@ -26,6 +27,10 @@ Future<T> _right<T>(TaskEither<LucentFailure, T> task) async {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   final session = AuthDeviceSession(
     id: 'session-1',
     deviceType: 'desktop',
@@ -62,14 +67,14 @@ void main() {
       expect(mapped, hasLength(1));
       expect(mapped.single.id, 'session-1');
       expect(mapped.single.platform, 'web');
-      expect(adapter.capturedRequest?.path, LucentApiPaths.authSessions);
+      expect(adapter.capturedRequest?.path, LucentApiPaths.authDevices);
       expect(adapter.capturedRequest?.method, 'GET');
 
       adapter.responseData = null;
       await _right(repository.revokeSession('session-1'));
       expect(
         adapter.capturedRequest?.path,
-        LucentApiPaths.authSession('session-1'),
+        LucentApiPaths.authDevice('session-1'),
       );
       expect(adapter.capturedRequest?.method, 'DELETE');
     },

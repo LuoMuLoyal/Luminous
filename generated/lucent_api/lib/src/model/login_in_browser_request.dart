@@ -1,0 +1,71 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+
+// ignore_for_file: unused_element
+import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'login_in_browser_request.g.dart';
+
+@CopyWith()
+@JsonSerializable(
+  checked: true,
+  createToJson: true,
+  disallowUnrecognizedKeys: false,
+  explicitToJson: true,
+)
+class LoginInBrowserRequest {
+  /// Returns a new [LoginInBrowserRequest] instance.
+  LoginInBrowserRequest({
+    required this.email,
+
+    this.password,
+
+    this.code,
+
+    this.captchaToken,
+  });
+
+  /// 邮箱地址
+  @JsonKey(name: r'email', required: true, includeIfNull: false)
+  final String email;
+
+  /// 密码（与验证码二选一）
+  @JsonKey(name: r'password', required: false, includeIfNull: false)
+  final String? password;
+
+  /// 邮箱验证码（与密码二选一）
+  @JsonKey(name: r'code', required: false, includeIfNull: false)
+  final String? code;
+
+  /// 人机验证令牌
+  @JsonKey(name: r'captchaToken', required: false, includeIfNull: false)
+  final String? captchaToken;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LoginInBrowserRequest &&
+          other.email == email &&
+          other.password == password &&
+          other.code == code &&
+          other.captchaToken == captchaToken;
+
+  @override
+  int get hashCode =>
+      email.hashCode +
+      password.hashCode +
+      code.hashCode +
+      captchaToken.hashCode;
+
+  factory LoginInBrowserRequest.fromJson(Map<String, dynamic> json) =>
+      _$LoginInBrowserRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LoginInBrowserRequestToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
+}

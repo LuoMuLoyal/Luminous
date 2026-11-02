@@ -2,19 +2,17 @@ import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/core/providers/channel.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_local_preferences.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
-import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
+import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
+import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'reminders.g.dart';
@@ -165,7 +163,17 @@ Future<MedicineReminderDetailData> medicineReminderDetail(
       .where((item) => item.id == currentMedicineId)
       .firstOrNull;
   if (medicine == null) {
-    throw StateError(kMedicineReminderNotFoundCode);
+    // 品牌名只进日志：`kind` 归 business，`code` 就是展示层判定
+    // medicineReminderNotFoundTitle/Description 的稳定句柄
+    // （`pages/reminder/detail.dart` 读 `failure.code`）。
+    final failure = LucentFailure.business(
+      code: kMedicineReminderNotFoundCode,
+      message:
+          'Medicine $currentMedicineId is not in the health-context '
+          'snapshot.',
+    );
+    ref.read(talkerProvider).error('medicineReminderDetail: $failure');
+    throw LucentFailureException(failure);
   }
 
   final reminders = await ref.watch(medicineReminderListProvider.future);

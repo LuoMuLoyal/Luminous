@@ -2,19 +2,25 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/review/review.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/providers/channel.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/review/data/providers/review.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/review/presentation/providers/review.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('reviewCurrentProvider', () {
     test(
       'loads the current review and caches it as the last success',
@@ -64,7 +70,15 @@ void main() {
       container.invalidate(reviewCurrentProvider);
       await expectLater(
         container.read(reviewCurrentProvider.future),
-        throwsA(isA<LucentFailure>()),
+        // 失败经 `unwrapFailure` 走 Future 通道，落地形态是
+        // LucentFailureException，原始 failure 原样带在 `failure` 上。
+        throwsA(
+          isA<LucentFailureException>().having(
+            (error) => error.failure,
+            'failure',
+            isA<LucentFailure>(),
+          ),
+        ),
       );
       expect(container.read(reviewLastCurrentProvider), same(firstReview));
 
@@ -256,7 +270,15 @@ void main() {
 
         await expectLater(
           container.read(reviewHistoryProvider.future),
-          throwsA(isA<LucentFailure>()),
+          // 同 reviewCurrentProvider：失败在 Future 通道里是
+          // LucentFailureException，原始 failure 原样带在 `failure` 上。
+          throwsA(
+            isA<LucentFailureException>().having(
+              (error) => error.failure,
+              'failure',
+              isA<LucentFailure>(),
+            ),
+          ),
         );
         // 失败立即出现：repository 只被调用一次，没有自动重试。
         expect(repo.historyCalls, 1);

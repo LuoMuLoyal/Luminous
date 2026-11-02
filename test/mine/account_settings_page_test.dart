@@ -5,21 +5,26 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/providers/sensitive_action_password.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/auth/auth.dart';
+import 'package:luminous/core/providers/session/sensitive_action_password.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/pages/account_manage.dart';
+import 'package:luminous/features/auth/presentation/pages/account/manage/page.dart';
 import 'package:luminous/features/support/data/repositories/lucent.dart';
 import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/features/support/domain/repositories/support.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Account settings page renders auth account sections', (
     tester,
   ) async {
@@ -312,7 +317,10 @@ void main() {
     // 不需要手动输入密码对话框。pumpAndSettle 确保 unlink 异步流程完成。
 
     expect(remote.unlinkIdentityId, 'identity-1');
-    expect(container.read(authSessionProvider).user?.linkedIdentities, isEmpty);
+    expect(
+      container.read(authSessionProvider).userSnapshot?.linkedIdentities,
+      isEmpty,
+    );
     await tester.pump(const Duration(seconds: 2));
   });
 

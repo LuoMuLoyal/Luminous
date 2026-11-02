@@ -2,9 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('AvatarView', () {
     testWidgets('uses the account fallback when no URL is provided', (
       tester,

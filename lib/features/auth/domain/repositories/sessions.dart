@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/device_session.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 abstract interface class AuthSessionsRepository {
   TaskEither<LucentFailure, List<AuthDeviceSession>> listSessions();

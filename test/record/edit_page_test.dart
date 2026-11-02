@@ -5,19 +5,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/presentation/pages/edit.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 
 /// Fake repository that returns a canned record.
 class _FakeRecordRepo extends DailyRecordRepository {
@@ -102,7 +102,7 @@ void main() {
   testWidgets('RecordEditPage loads and displays record when authenticated', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final repo = _FakeRecordRepo();
 
@@ -169,7 +169,7 @@ void main() {
   });
 
   testWidgets('unsaved changes prompt before leaving', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final repo = _FakeRecordRepo();
 

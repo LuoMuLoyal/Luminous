@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -12,10 +13,9 @@ import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
-import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
+import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:luminous/features/scan/presentation/widgets/scan_corner_painter.dart';
 import 'package:luminous/features/scan/presentation/widgets/scan_result_sheet.dart';
 import 'package:luminous/features/search/presentation/widgets/shared/add_to_box.dart';
@@ -360,7 +360,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
         child: StateErrorView(
           title: l10n.scanPermissionDeniedTitle,
           description: l10n.scanPermissionDeniedHint,
-          icon: SemanticIcons.statusUnavailable,
+          icon: SemanticIcons.statusPermissionDenied,
           actionLabel: l10n.scanPermissionOpenSettings,
           onAction: () => openAppSettings(),
           tone: StateTone.warning,
@@ -380,7 +380,9 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
               setState(() => _torchOn = !_torchOn);
             },
             child: Icon(
-              _torchOn ? FLucideIcons.flashlight : FLucideIcons.flashlightOff,
+              _torchOn
+                  ? SemanticIcons.actionTorchOn
+                  : SemanticIcons.actionTorchOff,
               color: colors.foreground,
             ),
           ),

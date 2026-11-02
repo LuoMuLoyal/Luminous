@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/control/desktop_hover.dart';
+import 'package:luminous/core/widgets/common/control/desktop/hover.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/timeline_drag_data.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('TimelineDragData', () {
     test('carries recordId and entry', () {
       const entry = RecordTimelineEntry(
         time: '08:00',
         type: RecordEntryType.water,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         accent: SemanticColor.primary,
         softColor: SemanticColor.neutral,
         titleKey: RecordCopyKey.typeWater,
@@ -31,7 +36,7 @@ void main() {
       const entry = RecordTimelineEntry(
         time: '08:00',
         type: RecordEntryType.water,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         accent: SemanticColor.primary,
         softColor: SemanticColor.neutral,
         titleKey: RecordCopyKey.typeWater,
@@ -121,8 +126,8 @@ void main() {
       expect(Breakpoints.mobile, 600);
     });
 
-    test('tablet breakpoint is 960', () {
-      expect(Breakpoints.tablet, 960);
+    test('expanded breakpoint is 840', () {
+      expect(Breakpoints.expanded, 840);
     });
 
     test('smallDesktop breakpoint is 1080', () {

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/common/control/icon_action_button.dart';
 import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/top_bar.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/sync/top_bar.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -50,7 +51,7 @@ class MinePage extends ConsumerWidget {
       fatalErrorBuilder: (error) =>
           MineErrorView(onRetry: () => ref.invalidate(mineDashboardProvider)),
       readyBuilder: (dashboard, isPreview) {
-        return MineDashboardView(dashboard: dashboard);
+        return const MineDashboardView();
       },
     );
 
@@ -58,17 +59,18 @@ class MinePage extends ConsumerWidget {
       child: isDesktop
           ? DesktopTabShell(
               title: l10n.tabMine,
+              titleSurface: SurfaceId.mine,
               suffixes: [
                 IconActionButton(
                   tooltip: l10n.mineHeaderNotifications,
-                  icon: SemanticIcons.notificationBell,
+                  icon: SemanticIcons.notificationBellTopBar,
                   onTap: () => context.push(Routes.notifications),
                   showBadge: hasUnread,
                 ),
                 IconActionButton(
                   key: const Key('mine-settings-action'),
                   tooltip: l10n.mineHeaderSettings,
-                  icon: SemanticIcons.actionSettings,
+                  icon: SemanticIcons.actionSettingsTopBar,
                   onTap: () => context.push(Routes.settings),
                 ),
               ],

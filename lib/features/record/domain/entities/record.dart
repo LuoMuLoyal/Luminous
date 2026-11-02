@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'record.freezed.dart';
+part 'record.g.dart';
 
 /// Domain-safe enum for daily record kinds (mirrors Lucent DailyRecordKind).
 enum DailyRecordKind {
@@ -42,6 +43,9 @@ abstract class DailyRecordItem with _$DailyRecordItem {
     required String createdAt,
     required String updatedAt,
   }) = _DailyRecordItem;
+
+  factory DailyRecordItem.fromJson(Map<String, dynamic> json) =>
+      _$DailyRecordItemFromJson(json);
 }
 
 enum DailyRecordAttachmentKind { image }
@@ -65,6 +69,9 @@ abstract class DailyRecordAttachment with _$DailyRecordAttachment {
     required String createdAt,
   }) = _DailyRecordAttachment;
 
+  factory DailyRecordAttachment.fromJson(Map<String, dynamic> json) =>
+      _$DailyRecordAttachmentFromJson(json);
+
   String? get displayUrl {
     final url = publicUrl?.trim();
     return url == null || url.isEmpty ? null : url;
@@ -78,6 +85,9 @@ abstract class DailyRecordSummary with _$DailyRecordSummary {
     required num count,
     DailyRecordItem? latest,
   }) = _DailyRecordSummary;
+
+  factory DailyRecordSummary.fromJson(Map<String, dynamic> json) =>
+      _$DailyRecordSummaryFromJson(json);
 }
 
 @freezed
@@ -86,6 +96,9 @@ abstract class DailyRecordListData with _$DailyRecordListData {
     required List<DailyRecordItem> items,
     required num total,
   }) = _DailyRecordListData;
+
+  factory DailyRecordListData.fromJson(Map<String, dynamic> json) =>
+      _$DailyRecordListDataFromJson(json);
 }
 
 @freezed
@@ -93,4 +106,7 @@ abstract class DailyRecordSummaryData with _$DailyRecordSummaryData {
   const factory DailyRecordSummaryData({
     required List<DailyRecordSummary> summaries,
   }) = _DailyRecordSummaryData;
+
+  factory DailyRecordSummaryData.fromJson(Map<String, dynamic> json) =>
+      _$DailyRecordSummaryDataFromJson(json);
 }

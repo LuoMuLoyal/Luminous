@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_api/src/model/medicine_risk_check_records_response_llm_result_findings_mechanism.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -33,6 +34,8 @@ class MedicineRiskCheckRecordsResponseLlmResultFindings {
     this.evidence,
 
     this.recommendation,
+
+    this.mechanism,
   });
 
   /// Finding kind.
@@ -91,6 +94,9 @@ class MedicineRiskCheckRecordsResponseLlmResultFindings {
   @JsonKey(name: r'recommendation', required: false, includeIfNull: false)
   final String? recommendation;
 
+  @JsonKey(name: r'mechanism', required: false, includeIfNull: false)
+  final MedicineRiskCheckRecordsResponseLlmResultFindingsMechanism? mechanism;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -102,7 +108,8 @@ class MedicineRiskCheckRecordsResponseLlmResultFindings {
           other.secondaryMedicineName == secondaryMedicineName &&
           other.relatedLabel == relatedLabel &&
           other.evidence == evidence &&
-          other.recommendation == recommendation;
+          other.recommendation == recommendation &&
+          other.mechanism == mechanism;
 
   @override
   int get hashCode =>
@@ -113,7 +120,8 @@ class MedicineRiskCheckRecordsResponseLlmResultFindings {
       secondaryMedicineName.hashCode +
       relatedLabel.hashCode +
       evidence.hashCode +
-      recommendation.hashCode;
+      recommendation.hashCode +
+      mechanism.hashCode;
 
   factory MedicineRiskCheckRecordsResponseLlmResultFindings.fromJson(
     Map<String, dynamic> json,

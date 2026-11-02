@@ -1,10 +1,20 @@
 import 'package:clock/clock.dart';
-import 'package:flutter/foundation.dart';
-import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/utils/string.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_payload.dart';
+import 'package:meta/meta.dart';
+
+/// Trims [value] and returns null when it is null or blank.
+///
+/// Local copy of `core/utils/string.dart` keeps this file importable from the
+/// pure `domain/` layer (clean-layers R1/R2).
+String? _normalizeNullableText(String? value) {
+  final normalized = value?.trim();
+  if (normalized == null || normalized.isEmpty) {
+    return null;
+  }
+  return normalized;
+}
 
 @immutable
 class MedicineReminderNotificationTexts {
@@ -47,6 +57,7 @@ class MedicineReminderNotificationPlanner {
     this.horizonDays = 7,
     this.maxNotifications = 60,
     int Function(String value)? hashValue,
+    this._onError,
     this._clock = const Clock(),
   }) : _hashValue = hashValue ?? _defaultFfnv1a32;
 
@@ -66,6 +77,10 @@ class MedicineReminderNotificationPlanner {
   final int horizonDays;
   final int maxNotifications;
   final int Function(String value) _hashValue;
+
+  /// Diagnostics sink. The `domain/` layer cannot reach the app logger
+  /// (clean-layers R1/R2), so the caller injects it; null means "stay silent".
+  final void Function(Object error, StackTrace stackTrace)? _onError;
   final Clock _clock;
 
   List<PlannedNotification> plan({
@@ -147,8 +162,8 @@ class MedicineReminderNotificationPlanner {
             PlannedNotification(
               id: _allocateNotificationId(reminder.id, scheduledAt, usedIds),
               title:
-                  normalizeNullableText(reminder.label) ?? texts.defaultTitle,
-              body: normalizeNullableText(reminder.note) ?? texts.defaultBody,
+                  _normalizeNullableText(reminder.label) ?? texts.defaultTitle,
+              body: _normalizeNullableText(reminder.note) ?? texts.defaultBody,
               scheduledAt: scheduledAt,
               playSound: playSound,
               enableVibration: enableVibration && playSound,
@@ -165,7 +180,7 @@ class MedicineReminderNotificationPlanner {
         } on StateError catch (e) {
           // 通知 ID 线性探测耗尽(极端饱和输入):跳过该条提醒并记录日志,
           // 返回已分配的通知,保证上层调度不会因单条异常而整体崩溃。
-          appTalker.error('MedicineReminderNotificationPlanner: $e');
+          _onError?.call(e, StackTrace.current);
           continue;
         }
       }

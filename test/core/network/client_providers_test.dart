@@ -9,6 +9,7 @@ import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/client/interceptors/trace_interceptor.dart';
 import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/core/network/client/trace_context.dart';
+import '../../helpers/kv_test_store.dart';
 
 /// In-memory session store for testing.
 class _MemoryStore implements LucentSessionStore {
@@ -31,6 +32,10 @@ class _MemoryStore implements LucentSessionStore {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('lucent network providers', () {
     late LucentDioClient dioClient;
 

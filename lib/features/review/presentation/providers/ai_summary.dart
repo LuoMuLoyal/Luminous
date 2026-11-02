@@ -1,14 +1,15 @@
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:luminous/features/review/data/repositories/lucent_ai_summary.dart';
+import 'package:luminous/core/providers/channel.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/repositories/ai_summary.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
+import 'package:luminous/features/review/presentation/providers/data_access.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 class ReviewAiSummaryController extends Notifier<ReviewAiSummaryCardState> {
   ReviewAiSummaryController(this.range);
@@ -83,10 +84,14 @@ class ReviewAiSummaryController extends Notifier<ReviewAiSummaryCardState> {
         }
       }
 
-      throw const LucentFailure(
-        kind: LucentFailureKind.business,
-        code: 'AI_EMPTY_RESULT',
-        message: 'Report AI stream ended without a final result.',
+      // 流结束却没有 result 事件：把「服务端没给出结果」记成与请求失败同形的
+      // failure，交给下面统一的 catch 收口（日志 → 403 处理 → error 态）。
+      throw const LucentFailureException(
+        LucentFailure(
+          kind: LucentFailureKind.business,
+          code: 'AI_EMPTY_RESULT',
+          message: 'Report AI stream ended without a final result.',
+        ),
       );
     } catch (error) {
       ref

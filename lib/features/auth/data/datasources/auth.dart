@@ -1,11 +1,10 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/client/session_store.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:luminous/core/utils/date_format.dart';
+import 'package:luminous/core/network/contract/failure.dart';
+import 'package:luminous/core/network/wire_time.dart';
 import 'package:luminous/features/auth/data/mappers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
@@ -450,15 +449,6 @@ class LucentAuthRepository implements AuthRepository {
       );
       final dto = _requireBody(response.data, 'forgotPassword');
       return _mapCooldown(dto.message, dto.cooldown);
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
-  }
-
-  @override
-  TaskEither<LucentFailure, void> verifyEmail({required String token}) {
-    return TaskEither.tryCatch(() async {
-      await _client.auth.verifyEmail(
-        verifyEmailRequest: VerifyEmailRequest(token: token.trim()),
-      );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 

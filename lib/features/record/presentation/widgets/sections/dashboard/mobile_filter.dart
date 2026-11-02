@@ -1,0 +1,181 @@
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/scroll_fade.dart';
+import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+class RecordMobileFilter extends StatelessWidget {
+  const RecordMobileFilter({
+    super.key,
+    required this.filters,
+    required this.l10n,
+    this.onFilterSelected,
+  });
+
+  final List<RecordFilter> filters;
+  final AppLocalizations l10n;
+  final ValueChanged<RecordEntryType?>? onFilterSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final allSelected = filters.every((filter) => filter.selected);
+    final activeFilter = filters.where((f) => f.selected && !f.locked).toList();
+    final typography = context.theme.typography;
+
+    // Header: title or active-filter indicator.
+    final header = allSelected
+        ? Text(
+            l10n.recordFilterMobileTitle,
+            style: typography.display.xl.copyWith(fontWeight: FontWeight.w700),
+          )
+        : Row(
+            children: [
+              // 标题是长文案,而尾部按钮是固有宽度:标题必须 Expanded + 省略,
+              // 否则它先按固有宽度占位、把清除按钮顶出右缘。
+              Expanded(
+                child: Text(
+                  l10n.recordFilterActiveLabel(
+                    activeFilter
+                        .map((f) => mobileFilterLabel(l10n, f))
+                        .join(' · '),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: typography.display.xl.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              if (onFilterSelected != null)
+                // 清除按钮是固有宽度:给宽度上限 + 标签省略,标题(Expanded)
+                // 才不会被挤。
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 160),
+                  child: FButton(
+                    variant: FButtonVariant.ghost,
+                    size: FButtonSizeVariant.xs,
+                    mainAxisSize: MainAxisSize.min,
+                    onPress: () => onFilterSelected!(null),
+                    child: Flexible(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            SemanticIcons.actionClose,
+                            size: IconSizeTokens.sm,
+                            color: SemanticColor.neutral.solid(context),
+                          ),
+                          const SizedBox(width: Spacing.xs),
+                          Flexible(
+                            child: Text(
+                              l10n.recordFilterClearAction,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: SemanticColor.neutral.solid(context),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          );
+
+    return Column(
+      key: const Key('record-filter-chips'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        header,
+        const SizedBox(height: Spacing.md),
+        SizedBox(
+          height: 36,
+          child: HorizontalScrollFade(
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              // Trailing space keeps the last chip clear of the viewport edge
+              // so it is not flush against (and visually clipped by) it.
+              padding: const EdgeInsets.only(right: Spacing.md),
+              itemCount: filters.length + (allSelected ? 0 : 1),
+              separatorBuilder: (_, __) => const SizedBox(width: Spacing.sm),
+              itemBuilder: (context, index) {
+                // When a filter is active, prepend a "全部" chip.
+                if (!allSelected && index == 0) {
+                  return _FilterChip(
+                    chipKey: const Key('record-filter-all'),
+                    label: l10n.recordFilterAllAction,
+                    icon: null,
+                    selected: false,
+                    onTap: onFilterSelected == null
+                        ? null
+                        : () => onFilterSelected!(null),
+                  );
+                }
+                final filterIndex = allSelected ? index : index - 1;
+                final filter = filters[filterIndex];
+                return _FilterChip(
+                  chipKey: Key('record-filter-${filter.type.name}'),
+                  label: mobileFilterLabel(l10n, filter),
+                  icon: resolveIconName(filter.iconName),
+                  selected: filter.selected,
+                  onTap: filter.locked || onFilterSelected == null
+                      ? null
+                      : () => onFilterSelected!(filter.type),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FilterChip extends StatelessWidget {
+  const _FilterChip({
+    required this.chipKey,
+    required this.label,
+    required this.icon,
+    required this.selected,
+    this.onTap,
+  });
+
+  final Key chipKey;
+  final String label;
+  final IconData? icon;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final fontSize = context.theme.typography.body.xs.fontSize;
+    return FButton(
+      key: chipKey,
+      onPress: onTap,
+      variant: FButtonVariant.outline,
+      selected: selected,
+      size: FButtonSizeVariant.xs,
+      mainAxisSize: MainAxisSize.min,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(
+              icon,
+              size: fontSize,
+              // Let FButton's IconTheme/DefaultTextStyle provide the correct
+              // contrast color based on the button's selected state.
+            ),
+            const SizedBox(width: Spacing.xs),
+          ],
+          Text(label, style: TextStyle(fontSize: fontSize)),
+        ],
+      ),
+    );
+  }
+}

@@ -20,10 +20,10 @@ abstract final class LucentApiPaths {
 
   /// `GET /api/v1/auth/sessions` — the generated AuthApi currently declares
   /// this response as void, while the account-security UI needs its payload.
-  static const authSessions = '/api/v1/auth/sessions';
+  static const authDevices = '/api/v1/auth/sessions';
 
-  /// `DELETE /api/v1/auth/sessions/{sessionId}` — see [authSessions].
-  static String authSession(String sessionId) =>
+  /// `DELETE /api/v1/auth/sessions/{sessionId}` — see [authDevices].
+  static String authDevice(String sessionId) =>
       '/api/v1/auth/sessions/$sessionId';
 
   /// `POST /api/v1/user/today-analysis/generate/stream`
@@ -38,6 +38,16 @@ abstract final class LucentApiPaths {
   /// `POST /api/v1/user/reports/summary/generate/stream`
   static const reportSummaryGenerateStream =
       '/api/v1/user/reports/summary/generate/stream';
+
+  /// `POST /api/v1/layouts/{surface}/generate` — SSE stream of A2UI messages.
+  ///
+  /// Retrofit can't represent an event stream (see the section header), and the
+  /// response schema on the server side is an untyped `text/event-stream`, so
+  /// the generated client would only expose a `Future` that buffers the whole
+  /// body. The four frames (`chunk`/`result`/`error`/`done`) are dispatched in
+  /// `features/generative/data/datasources/generation_remote.dart`.
+  static String generativeSurface(String surface) =>
+      '/api/v1/layouts/$surface/generate';
 
   // ── Void-return endpoints (generated client discards response body) ────
 

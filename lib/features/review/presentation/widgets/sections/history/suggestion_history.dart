@@ -1,0 +1,318 @@
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:intl/intl.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+/// 按 title|reason|type 去重建议历史,保留生命周期状态最高的条目。
+///
+/// 从页面装配层下沉而来:去重归组是本 section 的展示职责,页面只传
+/// 数据源原始列表。
+///
+/// Deferred by Review Page Restructure P0-7: 建议历史已从 Review 主路径
+/// 下线（不再 watch `suggestionHistoryProvider`），本 section 目前仅被 legacy
+/// dashboard 兼容页消费。不删除——capability 仍有价值，待后续复核是否归档/启用。
+List<TodaySuggestionHistoryItem> dedupeTodaySuggestions(
+  List<TodaySuggestionHistoryItem> items,
+) {
+  final map = <String, TodaySuggestionHistoryItem>{};
+  for (final item in items) {
+    final key = '${item.title}|${item.reason}|${item.type.name}';
+    final existing = map[key];
+    if (existing == null ||
+        _suggestionLifecycleRank(item.lifecycleState) >
+            _suggestionLifecycleRank(existing.lifecycleState)) {
+      map[key] = item;
+    }
+  }
+  return map.values.toList(growable: false);
+}
+
+int _suggestionLifecycleRank(TodaySuggestionLifecycleState state) =>
+    switch (state) {
+      TodaySuggestionLifecycleState.active => 3,
+      TodaySuggestionLifecycleState.generated => 2,
+      TodaySuggestionLifecycleState.fading => 1,
+      TodaySuggestionLifecycleState.dismissed => 0,
+      TodaySuggestionLifecycleState.expired => -1,
+    };
+
+/// 建议历史卡:数据来自 Today 域的建议历史数据源。
+///
+/// 卡内默认只显示前 [_visibleLimit] 条;数据源超出时标题行提供
+/// 「查看全部 / 收起」就地展开,不再像旧版那样在页面装配层硬编码 take(3)
+/// 截断、导致超出部分永远不可见。
+///
+/// 从旧 `ReviewSuggestionHistorySection` 改名而来,装配到 Review 主路径。
+class ReviewSuggestionHistorySection extends StatefulWidget {
+  const ReviewSuggestionHistorySection({
+    super.key,
+    required this.suggestions,
+    required this.l10n,
+    this.isLoading = false,
+    this.onSuggestionTap,
+  });
+
+  /// 已去重的全量建议列表;卡内按 [_visibleLimit] 截断展示。
+  final List<TodaySuggestionHistoryItem> suggestions;
+  final AppLocalizations l10n;
+  final bool isLoading;
+  final ValueChanged<TodaySuggestionHistoryItem>? onSuggestionTap;
+
+  @override
+  State<ReviewSuggestionHistorySection> createState() =>
+      _ReviewSuggestionHistorySectionState();
+}
+
+class _ReviewSuggestionHistorySectionState
+    extends State<ReviewSuggestionHistorySection> {
+  static const _visibleLimit = 3;
+
+  bool _showAll = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = widget.l10n;
+    final typography = context.theme.typography;
+    final hasMore = widget.suggestions.length > _visibleLimit;
+    final visibleSuggestions = _showAll || !hasMore
+        ? widget.suggestions
+        : widget.suggestions.take(_visibleLimit).toList(growable: false);
+
+    return FCard(
+      key: const Key('review-suggestion-history-section'),
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 标题 + 展开按钮:按钮固有宽度会挤掉标题,改为 Wrap 换行。
+            // spacing 取 Spacing.md,与原 icon 与标题的间距一致。
+            Wrap(
+              spacing: Spacing.md,
+              runSpacing: Spacing.sm,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                ExcludeSemantics(
+                  child: Icon(
+                    SemanticIcons.reportHistory,
+                    size: IconSizeTokens.sm,
+                    color: SemanticColor.primary.solid(context),
+                  ),
+                ),
+                Text(
+                  l10n.reviewSuggestionHistorySectionTitle,
+                  style: typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                if (hasMore)
+                  FButton(
+                    key: const Key('review-suggestion-history-toggle'),
+                    variant: FButtonVariant.ghost,
+                    size: FButtonSizeVariant.sm,
+                    // Wrap 给子节点无界主轴约束:标签 Flexible 必须配
+                    // mainAxisSize.min,否则 RenderFlex 断言失败。
+                    mainAxisSize: MainAxisSize.min,
+                    onPress: () => setState(() => _showAll = !_showAll),
+                    child: Flexible(
+                      child: Text(
+                        _showAll
+                            ? l10n.reviewSuggestionHistoryCollapse
+                            : l10n.reviewSuggestionHistoryViewAll,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: Spacing.md),
+            if (widget.isLoading)
+              const _LoadingList()
+            else if (visibleSuggestions.isEmpty)
+              _EmptyView(l10n: l10n)
+            else
+              FTileGroup(
+                divider: FItemDivider.full,
+                children: [
+                  for (final suggestion in visibleSuggestions)
+                    FTile(
+                      key: Key('review-suggestion-${suggestion.id}'),
+                      prefix: Icon(_iconForType(suggestion.type), size: 18),
+                      title: Text(
+                        suggestion.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        suggestion.reason,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      details: Text(
+                        _formatTime(context, suggestion.generatedAt),
+                      ),
+                      suffix: _SuggestionBadge(
+                        lifecycleState: suggestion.lifecycleState,
+                        l10n: l10n,
+                      ),
+                      onPress: widget.onSuggestionTap == null
+                          ? null
+                          : () => widget.onSuggestionTap!(suggestion),
+                    ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _iconForType(TodaySuggestionType type) {
+    return switch (type) {
+      TodaySuggestionType.confirmedRisk => SemanticIcons.statusWarning,
+      TodaySuggestionType.compliance => SemanticIcons.recordClipboard,
+      TodaySuggestionType.trend => SemanticIcons.reportTrend,
+      TodaySuggestionType.behaviorAdvice => SemanticIcons.aiTip,
+      TodaySuggestionType.coverage => SemanticIcons.recordActivity,
+    };
+  }
+
+  String _formatTime(BuildContext context, String iso8601) {
+    final dateTime = DateTime.tryParse(iso8601)?.toLocal();
+    if (dateTime == null) {
+      return iso8601;
+    }
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    return DateFormat.Md(locale).add_Hm().format(dateTime);
+  }
+}
+
+class _SuggestionBadge extends StatelessWidget {
+  const _SuggestionBadge({required this.lifecycleState, required this.l10n});
+
+  final TodaySuggestionLifecycleState lifecycleState;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final (semanticColor, label) = switch (lifecycleState) {
+      TodaySuggestionLifecycleState.generated ||
+      TodaySuggestionLifecycleState.active ||
+      TodaySuggestionLifecycleState.fading => (
+        SemanticColor.primary,
+        l10n.reviewSuggestionHistoryActiveBadge,
+      ),
+      TodaySuggestionLifecycleState.expired => (
+        SemanticColor.neutral,
+        l10n.reviewSuggestionHistoryExpiredBadge,
+      ),
+      TodaySuggestionLifecycleState.dismissed => (
+        SemanticColor.neutral,
+        l10n.reviewSuggestionHistoryDismissedBadge,
+      ),
+    };
+
+    final color = semanticColor.solid(context);
+
+    return FBadge.raw(
+      style: .delta(
+        decoration: .shapeDelta(
+          color: semanticColor.muted(context),
+          shape: RoundedRectangleBorder(
+            borderRadius: context.theme.style.borderRadius.pill,
+          ),
+        ),
+      ),
+      builder: (context, style) => Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.md,
+          vertical: Spacing.xs,
+        ),
+        child: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: context.theme.typography.body.xs.copyWith(
+            color: color,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyView extends StatelessWidget {
+  const _EmptyView({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
+
+    return Container(
+      padding: const EdgeInsets.all(Spacing.xl),
+      decoration: BoxDecoration(
+        color: SemanticColor.neutral.subtle(context),
+        borderRadius: context.theme.style.borderRadius.sm,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            SemanticIcons.reportHistory,
+            color: colors.secondary,
+            size: IconSizeTokens.sm,
+          ),
+          const SizedBox(width: Spacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.reviewSuggestionHistoryEmptyTitle,
+                  style: typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: Spacing.xs),
+                Text(
+                  l10n.reviewSuggestionHistoryEmptyBody,
+                  style: typography.body.xs.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoadingList extends StatelessWidget {
+  const _LoadingList();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SkeletonShimmer(
+      child: Column(
+        children: [
+          InlineSkeletonBlock(height: 72, widthFactor: 1),
+          SizedBox(height: Spacing.md),
+          InlineSkeletonBlock(height: 72, widthFactor: 1),
+          SizedBox(height: Spacing.md),
+          InlineSkeletonBlock(height: 72, widthFactor: 1),
+        ],
+      ),
+    );
+  }
+}

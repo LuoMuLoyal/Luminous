@@ -3,16 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
-import 'package:luminous/features/auth/presentation/pages/login.dart';
+import 'package:luminous/features/auth/presentation/pages/login/login.dart';
 
+import '../helpers/kv_test_store.dart';
 import 'test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Login page submits password login and updates session', (
     tester,
   ) async {
@@ -48,7 +53,10 @@ void main() {
     expect(remote.loginPassword, 'Password123');
     expect(remote.loginCode, isNull);
     expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-    expect(container.read(authSessionProvider).user?.email, 'user@example.com');
+    expect(
+      container.read(authSessionProvider).userSnapshot?.email,
+      'user@example.com',
+    );
   });
 
   testWidgets('Login page returns to returnTo after password login', (

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
+import 'package:luminous/features/record/presentation/utils/meal_analysis_view_data.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_status_badge.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -206,7 +206,7 @@ class _InsightRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final typography = context.theme.typography;
     final (icon, color) = switch (item.polarity) {
-      'good' => (SemanticIcons.statusSuccess, SemanticColor.success),
+      'good' => (SemanticIcons.statusAnalyzed, SemanticColor.success),
       'watch' => (SemanticIcons.statusWarning, SemanticColor.warning),
       _ => (SemanticIcons.statusInfo, SemanticColor.neutral),
     };

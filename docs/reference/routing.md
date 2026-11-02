@@ -49,20 +49,20 @@ Router entry lives in `lib/app/`; typed routes are declared per feature:
 
 ```
 lib/app/
-├── router.dart          # Routes 常量、公开路由前缀、redirect 守卫、shell branches + routes spread
+├── router.dart          # 公开路由前缀、redirect 守卫、shell branches + routes spread（Routes 常量在 core/router/ 并 re-export）
 ├── router_helpers.dart  # fadePage / slidePage / sidePanelPage 页面过渡
 └── router.g.dart        # go_router_builder 生成的 typed routes（router.dart 的 part 文件）
 ```
 
 各 feature 在 `presentation/routes.dart` 用 `@TypedGoRoute` 声明 typed routes，生成 `$appRoutes`
 列表常量，由 `router.dart` 以 `...spread` 汇入（auth、record、medicine、mine、settings、
-notification、assistant、scan、health_data、legal）。另有三条手写 `GoRoute`：
-`/review/clinic-summary/:token`、`/review/legacy`、`/review/review/:eventId`。
+notification、assistant、scan、health_data、legal）。另有两条手写 `GoRoute`：
+`/review/clinic-summary/:token`、`/review/review/:eventId`。
 
 ### Route Constants
 
-Route path strings are centralized in `Routes` (defined in `lib/app/router.dart`) to avoid
-hardcoded strings across the codebase:
+Route path strings are centralized in `Routes` (`lib/core/router/app_routes.dart`, re-exported by
+`lib/app/router.dart`) to avoid hardcoded strings across the codebase:
 
 ```dart
 class Routes {
@@ -70,7 +70,6 @@ class Routes {
   static const login = '/login';
   static const review = '/review';  // Fifth tab
   static const reviewClinicSummaryShared = '/review/clinic-summary/:token';
-  static const reviewLegacyDashboard = '/review/legacy';
   static const reviewDetail = '/review/review/:eventId';
   // ... other routes
 }
@@ -104,8 +103,6 @@ The following routes are accessible without signing in so the app can be opened 
 - `/`, `/record`, `/medicine`, `/review`, `/mine` — the five shell tabs.
 - `/settings`, `/assistant` — standalone pages that render their own sign-in prompts when needed.
 - `/legal`, `/review/clinic-summary` — shared/legal content（列入 `_publicRoutePrefixes`）。
-- `/review/legacy` — legacy dashboard 兼容页：从回顾页 More sheet 的「历史报告」入口 push 进入，
-  沿用 `/review` 的公开预览语义（未登录显示 preview + 登录引导，不重定向到 /login）。
 - `/medicine/detail/:source/:id` — 药品详情页（列入 `_publicRoutePrefixes`）：后端
   `GET /medicines/:id?source=` 为 `@Public`、页面仅对「加入药箱」做 auth 门控，未登录可浏览
   说明书；「加入药箱」未登录时走 `showAuthRequiredDialog`。

@@ -4,12 +4,17 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/grid.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/quick_entry_panel.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/quick_entry_panel.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('RecordQuickEntryPanel', () {
     late AppLocalizations l10n;
 
@@ -111,12 +116,15 @@ void main() {
         findsNothing,
       );
 
-      // Note must contain an FAvatar with the same subtle background as grid tiles.
-      final avatarFinder = find.descendant(
-        of: noteFinder,
-        matching: find.byType(FAvatar),
+      // Decorative plates were removed app-wide: the note tile renders a bare icon.
+      expect(
+        find.descendant(of: noteFinder, matching: find.byType(FAvatar)),
+        findsNothing,
       );
-      expect(avatarFinder, findsOneWidget);
+      expect(
+        find.descendant(of: noteFinder, matching: find.byType(Icon)),
+        findsOneWidget,
+      );
 
       // Note must lay out icon and label horizontally (Row), not vertically (Column).
       final rowFinder = find.descendant(
@@ -154,7 +162,7 @@ void main() {
                   items: [
                     RecordSummaryItem(
                       type: RecordEntryType.water,
-                      icon: waterAction.icon,
+                      iconName: waterAction.iconName,
                       titleKey: waterAction.titleKey,
                       value: '500 ml',
                       accent: waterAction.accent,

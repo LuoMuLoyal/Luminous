@@ -4,7 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
+import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
 
 void main() {
   setUpAll(initializeDateFormatting);
@@ -19,8 +19,8 @@ void main() {
   });
 
   group('deliveryStatusIcon', () {
-    test('delivered returns badgeCheck', () {
-      expect(deliveryStatusIcon('delivered'), SemanticIcons.reportAdherence);
+    test('delivered returns send', () {
+      expect(deliveryStatusIcon('delivered'), SemanticIcons.notificationSent);
     });
     test('failed returns circleAlert', () {
       expect(deliveryStatusIcon('failed'), SemanticIcons.statusError);

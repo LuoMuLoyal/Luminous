@@ -3,14 +3,18 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/settings/data/repositories/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/task_either.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   test('maps the generated GET response into the domain entity', () async {
     final dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
     dio.httpClientAdapter = _JsonAdapter(

@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/settings_adapters.dart';
 import 'package:luminous/core/analytics/product_event_service.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
-import 'package:luminous/core/providers/sensitive_action_password.dart';
+import 'package:luminous/core/providers/session/sensitive_action_password.dart';
+import 'package:luminous/core/providers/session/sensitive_action_resolver.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/utils/export_actions.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
@@ -16,6 +18,7 @@ import 'package:luminous/features/settings/presentation/providers/data_export.da
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 
@@ -102,6 +105,23 @@ Future<void> _pumpHarness(
         userSettingsControllerProvider.overrideWith(
           () => _FakeUserSettingsController(),
         ),
+        sensitiveActionPolicyProvider.overrideWithValue(
+          FeatureSensitiveActionPolicy(
+            () async => const UserSettings(
+              aiSummariesEnabled: false,
+              dataSharingConsent: false,
+              assistantEnabled: false,
+              assistantMemoryEnabled: false,
+              waterTargetCount: 8,
+              assistantContext: AssistantContextSettings(
+                healthProfile: true,
+                dailyRecords: true,
+                sleepRecords: true,
+                currentMedicines: true,
+              ),
+            ),
+          ),
+        ),
       ],
       child: TestForuiApp(
         locale: const Locale('zh'),
@@ -134,6 +154,10 @@ Future<void> _tapExport(WidgetTester tester) async {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _MockDataExportApi api;
   late _RecordingProductEventService service;
 

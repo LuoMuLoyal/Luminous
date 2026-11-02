@@ -3,11 +3,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/review/presentation/utils/review_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/test_forui_app.dart';
 
 /// TestForuiApp 加载 AppLocalizations（zh），顺带初始化 intl 的 zh 日期符号，
 /// 与真实运行时一致。
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Future<BuildContext> pumpContext(WidgetTester tester) async {
     late BuildContext capturedContext;
     await tester.pumpWidget(

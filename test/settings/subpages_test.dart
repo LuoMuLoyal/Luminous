@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/features/settings/presentation/pages/accessibility.dart';
-import 'package:luminous/features/settings/presentation/pages/data_storage.dart';
-import 'package:luminous/features/settings/presentation/pages/dnd.dart';
-import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
+import 'package:luminous/features/settings/presentation/pages/appearance/accessibility.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/dnd.dart';
+import 'package:luminous/features/settings/presentation/pages/notification/sleep_reminder.dart';
+import 'package:luminous/features/settings/presentation/pages/storage/data_storage.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
   setUpAll(() {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
   });
 
   Future<void> pumpPage(WidgetTester tester, Widget page) async {

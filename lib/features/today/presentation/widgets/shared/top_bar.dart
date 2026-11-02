@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
+import 'package:luminous/core/widgets/common/control/surface_title_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Today page top bar.
@@ -17,6 +19,8 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// the page content area. Uses [FHeader.nested], placed at the top of a [Column]
 /// rather than inside a [ListView] to avoid tight width constraint crash
 /// (Forui 0.24.x known issue).
+///
+/// 标题即入口：点标题进入 `today` surface 的编排页（[SurfaceTitleButton]）。
 class TodayTopBar extends StatelessWidget {
   const TodayTopBar({super.key});
 
@@ -25,7 +29,10 @@ class TodayTopBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return FHeader.nested(
-      title: Text(l10n.todayHeroTitle),
+      title: SurfaceTitleEntry(
+        surface: SurfaceId.today,
+        title: l10n.todayHeroTitle,
+      ),
       suffixes: const [_AssistantEntryButton(), _NotificationButton()],
     );
   }
@@ -59,7 +66,10 @@ class _AssistantEntryButton extends ConsumerWidget {
         variant: FButtonVariant.ghost,
         size: FButtonSizeVariant.sm,
         mainAxisSize: MainAxisSize.min,
-        prefix: const Icon(SemanticIcons.aiEntry, size: IconSizeTokens.md),
+        prefix: const Icon(
+          SemanticIcons.aiEntryTopBar,
+          size: IconSizeTokens.md,
+        ),
         child: Text(l10n.assistantEntryTitle),
       ),
     );

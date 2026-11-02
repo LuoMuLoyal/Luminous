@@ -1,11 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:clock/clock.dart';
-import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/repositories/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Test-only mock implementation of [ReviewDashboardRepository].
 class MockReviewDashboardRepository implements ReviewDashboardRepository {
@@ -46,7 +45,7 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
     metrics: <ReviewMetric>[
       ReviewMetric(
         kind: ReviewDataKind.medication,
-        icon: SemanticIcons.recordMedicine,
+        iconName: 'tablets',
         color: SemanticColor.primary,
         value: '--',
         unit: '%',
@@ -57,7 +56,7 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.sleep,
-        icon: SemanticIcons.recordMoon,
+        iconName: 'moon-star',
         color: SemanticColor.primary,
         value: '--',
         unit: 'h',
@@ -68,7 +67,7 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.water,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         color: SemanticColor.primary,
         value: '--',
         unit: 'L',
@@ -103,8 +102,9 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
     ],
     findings: <ReviewFinding>[
       ReviewFinding(
+        id: 'hydration_low',
         kind: ReviewInsightKind.general,
-        icon: SemanticIcons.reportChart,
+        iconName: 'chart-line',
         color: SemanticColor.primary,
         title: 'Preparing report',
         body: 'The latest contract-backed report is loading.',
@@ -113,24 +113,24 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
     exportActions: <ReviewExportAction>[
       ReviewExportAction(
         kind: ReviewExportKind.hospital,
-        icon: SemanticIcons.medicineKit,
+        iconName: 'briefcase-medical',
         color: SemanticColor.primary,
       ),
       ReviewExportAction(
         kind: ReviewExportKind.monthly,
-        icon: FLucideIcons.barChart,
+        iconName: 'bar-chart',
         color: SemanticColor.primary,
       ),
       ReviewExportAction(
         kind: ReviewExportKind.print,
-        icon: SemanticIcons.actionExport,
+        iconName: 'arrow-down-to-line',
         color: SemanticColor.primary,
       ),
     ],
     patterns: <ReviewPatternCard>[
       ReviewPatternCard(
         kind: ReviewInsightKind.general,
-        icon: SemanticIcons.reportChart,
+        iconName: 'chart-line',
         color: SemanticColor.primary,
         title: 'Preparing report',
         status: ReviewStatus.stable,
@@ -149,7 +149,7 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
     metrics: <ReviewMetric>[
       ReviewMetric(
         kind: ReviewDataKind.medication,
-        icon: SemanticIcons.recordMedicine,
+        iconName: 'tablets',
         color: SemanticColor.primary,
         value: '--',
         unit: '%',
@@ -160,7 +160,7 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.sleep,
-        icon: SemanticIcons.recordMoon,
+        iconName: 'moon-star',
         color: SemanticColor.primary,
         value: '--',
         unit: 'h',
@@ -171,7 +171,7 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
       ),
       ReviewMetric(
         kind: ReviewDataKind.water,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         color: SemanticColor.primary,
         value: '--',
         unit: 'L',
@@ -206,8 +206,9 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
     ],
     findings: <ReviewFinding>[
       ReviewFinding(
+        id: 'sleep_insufficient',
         kind: ReviewInsightKind.general,
-        icon: SemanticIcons.statusBlocked,
+        iconName: 'lock',
         color: SemanticColor.primary,
         title: '登录后解锁报告',
         body: '报告会基于你的真实记录生成最近 7 天的聚合结果。',
@@ -216,24 +217,24 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
     exportActions: <ReviewExportAction>[
       ReviewExportAction(
         kind: ReviewExportKind.hospital,
-        icon: SemanticIcons.medicineKit,
+        iconName: 'briefcase-medical',
         color: SemanticColor.primary,
       ),
       ReviewExportAction(
         kind: ReviewExportKind.monthly,
-        icon: FLucideIcons.barChart,
+        iconName: 'bar-chart',
         color: SemanticColor.primary,
       ),
       ReviewExportAction(
         kind: ReviewExportKind.print,
-        icon: SemanticIcons.actionExport,
+        iconName: 'arrow-down-to-line',
         color: SemanticColor.primary,
       ),
     ],
     patterns: <ReviewPatternCard>[
       ReviewPatternCard(
         kind: ReviewInsightKind.general,
-        icon: SemanticIcons.statusBlocked,
+        iconName: 'lock',
         color: SemanticColor.primary,
         title: '等待登录',
         status: ReviewStatus.insufficientData,

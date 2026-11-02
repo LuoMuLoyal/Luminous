@@ -2,32 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/i18n/locale.dart';
-import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:luminous/core/network/contract/failure.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../../domain/entities/doc_type.dart';
 import '../../domain/entities/document.dart';
 import '../../domain/repositories/documents.dart';
-
-part 'lucent.g.dart';
-
-@riverpod
-LegalRepository legalRepository(Ref ref) {
-  return LucentLegalRepository(
-    api: ref.watch(lucentClientProvider).legalDocuments,
-    localeResolver: () =>
-        (ref.read(localeControllerProvider).asData?.value ?? AppLocale.system)
-            .acceptLanguage
-            .startsWith('en')
-        ? 'en'
-        : 'zh',
-  );
-}
 
 /// Lucent-backed implementation of [LegalRepository].
 ///
@@ -37,9 +19,9 @@ LegalRepository legalRepository(Ref ref) {
 /// pages (远程优先 + assets fallback, `plans/2026-07-10-legal-compliance-pages.md`
 /// P2-2): the pages must stay viewable even when the server has not published
 /// a document yet. The fallback is an alternative success path — a Right — and
-/// is observed via [appTalker] ("记录+继续"); it is not a catch-all. Network
+/// is observed via [appLog] ("记录+继续"); it is not a catch-all. Network
 /// errors, 5xx and other 4xx are rethrown into the mapper and become a Left.
-/// In `findAll` a missing bundled asset is skipped with a [appTalker] warning;
+/// In `findAll` a missing bundled asset is skipped with a [appLog] warning;
 /// in `findOne` a missing bundled asset surfaces as a Left(unknown).
 ///
 /// Repository boundary: every expected recoverable failure (network, server
@@ -76,7 +58,7 @@ class LucentLegalRepository implements LegalRepository {
       } on DioException catch (e) {
         if (e.response?.statusCode == 404) {
           // 文档化 best-effort 合同:404 回退内置资产（记录+继续）。
-          appTalker.warning('LucentLegalRepository: findAll 404, 回退内置资产');
+          appLog.warning('LucentLegalRepository: findAll 404, 回退内置资产');
           return _fallbackSummaries();
         }
         rethrow;
@@ -101,7 +83,7 @@ class LucentLegalRepository implements LegalRepository {
         );
       } on DioException catch (e) {
         if (e.response?.statusCode == 404) {
-          appTalker.warning('LucentLegalRepository: findOne 404, 回退内置资产');
+          appLog.warning('LucentLegalRepository: findOne 404, 回退内置资产');
           return _fallbackDocument(docType);
         }
         rethrow;
@@ -148,9 +130,7 @@ class LucentLegalRepository implements LegalRepository {
           ),
         );
       } catch (e) {
-        appTalker.warning(
-          'LucentLegalRepository: fallback asset not found: $e',
-        );
+        appLog.warning('LucentLegalRepository: fallback asset not found: $e');
         // Asset not found — skip this document.
       }
     }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
@@ -24,8 +23,9 @@ class TodayPage extends ConsumerWidget {
     ref.invalidate(todayDashboardProvider);
     ref.invalidate(todaySuggestionProvider);
     final session = ref.read(authSessionProvider);
-    final isMobile = MediaQuery.sizeOf(context).width < Breakpoints.desktop;
-    if (session.canAccessProtectedData && isMobile) {
+    // 桌面端也要刷新：`health_event.active` 组件现在两个形态都会渲染
+    // （此前桌面版双栏是手写的，根本没挂这张卡，所以只需要在移动端刷新）。
+    if (session.canAccessProtectedData) {
       ref.invalidate(activeHealthEventProvider);
     }
     try {
@@ -33,7 +33,7 @@ class TodayPage extends ConsumerWidget {
         ref.read(todayDashboardProvider.future),
         ref.read(todaySuggestionProvider.future),
       ];
-      if (session.canAccessProtectedData && isMobile) {
+      if (session.canAccessProtectedData) {
         futures.add(ref.read(activeHealthEventProvider.future));
       }
       await Future.wait(futures);
@@ -68,9 +68,7 @@ class TodayPage extends ConsumerWidget {
       readyBuilder: (dashboard, isPreview) => TodayDashboardView(
         dashboard: dashboard,
         isPreview: isPreview,
-        onSignIn: isPreview
-            ? () => context.push(loginRouteForCurrentLocation(context))
-            : null,
+        onSignIn: isPreview ? () => requestSignIn(context) : null,
         onRefresh: () => _refreshAll(context, ref),
       ),
     );

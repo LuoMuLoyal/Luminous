@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:fpdart/fpdart.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../support/e2e_test_helpers.dart';
 

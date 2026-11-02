@@ -6,14 +6,13 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
-import 'package:luminous/features/scan/domain/services/ocr_model_manager.dart';
-import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
+import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:luminous/features/scan/presentation/utils/box_scan_handlers.dart';
 import 'package:luminous/features/scan/presentation/widgets/box_scan_preview.dart';
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart';
@@ -43,7 +42,7 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
         ),
         const SizedBox(height: Spacing.md),
         MethodTile(
-          icon: SemanticIcons.aiEntry,
+          icon: SemanticIcons.aiScanMethod,
           title: l10n.scanMethodAiTitle,
           subtitle: l10n.scanMethodAiSubtitle,
           onTap: () => Navigator.of(dialogContext).pop(MedicineScanMethod.ai),
@@ -78,7 +77,7 @@ Future<void> _startPhotoScan(
       if (context.mounted) {
         await showAuthRequiredDialog(
           context,
-          onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+          onLogin: () => requestSignIn(context),
         );
       }
       return;

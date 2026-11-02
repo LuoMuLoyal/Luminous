@@ -1,12 +1,15 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/database/cache_constants.dart';
+import 'package:luminous/core/database/daos/mine/mine_dashboard.dart';
+import 'package:luminous/core/network/app_log.dart';
+import 'package:luminous/core/network/config/routes.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/mine/domain/entities/account.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 
@@ -15,7 +18,8 @@ import 'package:luminous/features/mine/domain/repositories/profile.dart';
 /// This repository intentionally has no dedicated datasource/mappers. It
 /// composes the Mine dashboard from existing data sources:
 /// - user profile / health archive / current medicines / allergies / conditions
-///   come from [healthContextSnapshotProvider].
+///   come from the injected health-context snapshot reader (provider-backed
+///   implementation supplied by `lib/app/composition/mine.dart`).
 ///
 /// Mine is therefore a presentation-facing aggregation layer rather than a
 /// standalone data owner.
@@ -25,43 +29,95 @@ import 'package:luminous/features/mine/domain/repositories/profile.dart';
 /// `LucentErrorMapper.fromObject` — the dashboard is never fabricated from
 /// default values when the snapshot fails.
 class LucentMineRepository implements MineRepository {
-  LucentMineRepository(this._ref);
+  LucentMineRepository({
+    required this.healthContextSnapshot,
+    required this.currentUser,
+    required this.dao,
+  });
 
-  final Ref _ref;
+  /// Lazily reads the health-context snapshot; the composition root supplies
+  /// the provider-backed implementation.
+  final Future<HealthContextSnapshot> Function() healthContextSnapshot;
+
+  /// The signed-in user, resolved by the composition root (the data layer may
+  /// not read the auth session); `null` when signed out.
+  final AccountIdentity? Function() currentUser;
+
+  final MineDashboardDao dao;
+
+  /// Background refresh throttle for the cached dashboard.
+  DateTime? _lastRefresh;
 
   @override
   TaskEither<LucentFailure, MineDashboard> fetchDashboard() {
     return TaskEither.tryCatch(() async {
-      final snapshot = await _ref.watch(healthContextSnapshotProvider.future);
-      return buildDashboard(
-        account: _buildAccount(),
-        profile: _buildProfile(snapshot),
-        completion: _buildCompletion(snapshot),
-        alerts: _buildAlerts(snapshot),
-        archiveEntries: _buildArchiveEntries(snapshot),
-      );
+      // Cache-first: the tab renders the previous dashboard immediately instead
+      // of holding a skeleton while the snapshot round trip completes.
+      final cached = await dao.fetch();
+      if (cached != null) {
+        _refreshInBackground();
+        return MineDashboard.fromJson(
+          jsonDecode(cached) as Map<String, dynamic>,
+        );
+      }
+
+      final dashboard = await _assemble();
+      await dao.replace(jsonEncode(dashboard.toJson()));
+      return dashboard;
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
+  Future<MineDashboard> _assemble() async {
+    final snapshot = await healthContextSnapshot();
+    return buildDashboard(
+      account: _buildAccount(),
+      profile: _buildProfile(snapshot),
+      completion: _buildCompletion(snapshot),
+      alerts: _buildAlerts(snapshot),
+      archiveEntries: _buildArchiveEntries(snapshot),
+    );
+  }
+
+  /// Best-effort refresh: throttled, failures only logged.
+  void _refreshInBackground() {
+    final now = DateTime.now();
+    final last = _lastRefresh;
+    if (last != null && now.difference(last) < backgroundRefreshThrottle) {
+      return;
+    }
+    _lastRefresh = now;
+
+    unawaited(
+      Future(() async {
+        try {
+          final dashboard = await _assemble();
+          await dao.replace(jsonEncode(dashboard.toJson()));
+        } catch (e) {
+          appLog.warning('Mine dashboard background refresh failed: $e');
+        }
+      }),
+    );
+  }
+
   MineAccount _buildAccount() {
-    final currentUser = _ref.read(authSessionProvider).user;
-    final nick = currentUser?.nickname?.trim();
+    final account = currentUser();
+    final nick = account?.nickname?.trim();
     final displayName = nick != null && nick.isNotEmpty
         ? nick
-        : currentUser?.email ?? currentUser?.id ?? '';
+        : account?.email ?? account?.id ?? '';
 
     return MineAccount(
       isAuthenticated: true,
       displayNameKey: MineCopyKey.accountDisplayName,
       displayName: displayName,
-      avatar: currentUser?.avatar,
-      email: currentUser?.email ?? '',
+      avatar: account?.avatar,
+      email: account?.email ?? '',
       statusKey: MineCopyKey.accountSignedIn,
       roleKey: MineCopyKey.accountStudentRole,
-      emailVerified: currentUser?.emailVerified ?? false,
-      hasPassword: currentUser?.hasPassword ?? false,
-      linkedIdentityCount: currentUser?.linkedIdentities.length ?? 0,
-      lastLoginAt: currentUser?.lastLoginAt,
+      emailVerified: account?.emailVerified ?? false,
+      hasPassword: account?.hasPassword ?? false,
+      linkedIdentityCount: account?.linkedIdentityCount ?? 0,
+      lastLoginAt: account?.lastLoginAt,
     );
   }
 
@@ -84,7 +140,6 @@ MineDashboard buildDashboard({
     alerts: alerts,
     archiveEntries: archiveEntries,
     privacyNotice: const MinePrivacyNotice(
-      icon: SemanticIcons.safetyNeutral,
       titleKey: MineCopyKey.privacyNoticeTitle,
       actionKey: MineCopyKey.privacyNoticeAction,
     ),
@@ -158,8 +213,6 @@ List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
   return [
     if (snapshot.summary.activeAllergyCount > 0 && allergyLabels.isNotEmpty)
       MineStatusCard(
-        icon: SemanticIcons.statusWarning,
-        accent: _red,
         titleKey: MineCopyKey.alertAllergyTitle,
         kind: MineStatusCardKind.allergy,
         items: allergyLabels,
@@ -167,16 +220,12 @@ List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
       ),
     if (snapshot.summary.currentMedicineCount > 0)
       MineStatusCard(
-        icon: SemanticIcons.recordMedicine,
-        accent: _blue,
         titleKey: MineCopyKey.alertMedicineTitle,
         kind: MineStatusCardKind.medicine,
         items: medicineNames,
         count: snapshot.summary.currentMedicineCount,
       ),
     const MineStatusCard(
-      icon: SemanticIcons.profileUser,
-      accent: _green,
       titleKey: MineCopyKey.alertPrivacyTitle,
       kind: MineStatusCardKind.privacy,
       subtitleKey: MineCopyKey.alertPrivacySubtitle,
@@ -204,8 +253,6 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
 
   return [
     MineArchiveEntry(
-      icon: SemanticIcons.reportAdherence,
-      accent: _green,
       titleKey: MineCopyKey.archiveBasicTitle,
       subtitleKey: MineCopyKey.archiveBasicSubtitle,
       statusKey: profile.basicInfoCompleted
@@ -214,8 +261,6 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       route: Routes.profile,
     ),
     MineArchiveEntry(
-      icon: SemanticIcons.recordWater,
-      accent: _pink,
       titleKey: MineCopyKey.archiveAllergyTitle,
       subtitleKey: MineCopyKey.archiveAllergySubtitle,
       statusKey: profile.allergyCount > 0
@@ -224,8 +269,6 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       route: Routes.mineAllergyNew,
     ),
     MineArchiveEntry(
-      icon: SemanticIcons.profileCondition,
-      accent: _red,
       titleKey: MineCopyKey.archiveConditionTitle,
       subtitleKey: MineCopyKey.archiveConditionSubtitle,
       statusKey: profile.conditionCount > 0
@@ -234,8 +277,6 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       route: Routes.mineConditionNew,
     ),
     MineArchiveEntry(
-      icon: SemanticIcons.recordMedicine,
-      accent: _blue,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
       statusKey: profile.currentMedicineCount > 0
@@ -245,8 +286,3 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
     ),
   ];
 }
-
-const _green = SemanticColor.neutral;
-const _pink = SemanticColor.neutral;
-const _red = SemanticColor.destructive;
-const _blue = SemanticColor.primary;

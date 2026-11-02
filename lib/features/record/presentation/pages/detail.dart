@@ -1,13 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/body.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/loading.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -37,8 +39,9 @@ class RecordDetailPage extends ConsumerWidget {
               session.isLoading
                   ? const RecordDetailLoading()
                   : AuthRequiredDialogGate(
-                      onLogin: () =>
-                          context.push(loginRouteForCurrentLocation(context)),
+                      onLogin: () => unawaited(
+                        context.push(loginRouteForCurrentLocation(context)),
+                      ),
                     ),
             ],
           ),
@@ -62,7 +65,7 @@ class RecordDetailPage extends ConsumerWidget {
                 error: (_, __) => StateErrorView(
                   title: l10n.recordDetailErrorTitle,
                   description: l10n.recordErrorDescription,
-                  icon: SemanticIcons.tabRecord,
+                  icon: SemanticIcons.statusError,
                   actionLabel: l10n.todayRetryAction,
                   onAction: () =>
                       ref.invalidate(dailyRecordDetailProvider(recordId)),

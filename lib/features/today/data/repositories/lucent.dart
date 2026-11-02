@@ -1,8 +1,8 @@
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder.dart';

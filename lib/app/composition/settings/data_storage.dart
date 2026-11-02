@@ -1,0 +1,140 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/core/network/config/pref_keys.dart';
+import 'package:luminous/core/storage/kv_store.dart';
+
+part 'data_storage.freezed.dart';
+
+/// Offline data retention period.
+enum DataRetentionPeriod {
+  thirtyDays('30', 30),
+  ninetyDays('90', 90),
+  forever('forever', -1);
+
+  const DataRetentionPeriod(this.storageValue, this.days);
+
+  /// The value persisted in [SharedPreferences].
+  final String storageValue;
+
+  /// The retention period in days, or `-1` for unlimited.
+  final int days;
+
+  static DataRetentionPeriod fromStorage(String? value) {
+    for (final period in DataRetentionPeriod.values) {
+      if (period.storageValue == value) {
+        return period;
+      }
+    }
+    return DataRetentionPeriod.ninetyDays;
+  }
+}
+
+/// Image quality preference for network images (e.g. medicine photos).
+enum ImageQualityPreference {
+  standard('standard'),
+  dataSaver('dataSaver');
+
+  const ImageQualityPreference(this.storageValue);
+
+  final String storageValue;
+
+  static ImageQualityPreference fromStorage(String? value) {
+    for (final quality in ImageQualityPreference.values) {
+      if (quality.storageValue == value) {
+        return quality;
+      }
+    }
+    return ImageQualityPreference.standard;
+  }
+}
+
+/// Network sync preference.
+enum SyncPreference {
+  wifiOnly('wifiOnly'),
+  wifiAndMobile('wifiAndMobile');
+
+  const SyncPreference(this.storageValue);
+
+  final String storageValue;
+
+  static SyncPreference fromStorage(String? value) {
+    for (final pref in SyncPreference.values) {
+      if (pref.storageValue == value) {
+        return pref;
+      }
+    }
+    return SyncPreference.wifiAndMobile;
+  }
+}
+
+@freezed
+abstract class DataStorageSettingsState with _$DataStorageSettingsState {
+  const factory DataStorageSettingsState({
+    @Default(DataRetentionPeriod.ninetyDays)
+    DataRetentionPeriod retentionPeriod,
+    @Default(ImageQualityPreference.standard)
+    ImageQualityPreference imageQuality,
+    @Default(SyncPreference.wifiAndMobile) SyncPreference syncPreference,
+  }) = _DataStorageSettingsState;
+}
+
+class DataStorageSettingsController
+    extends AsyncNotifier<DataStorageSettingsState> {
+  static const _retentionKey = PrefKeys.settingsDataStorageRetentionPeriod;
+  static const _imageQualityKey = PrefKeys.settingsDataStorageImageQuality;
+  static const _syncKey = PrefKeys.settingsDataStorageSyncPreference;
+
+  @override
+  Future<DataStorageSettingsState> build() async {
+    final preferences = KvStore.instance;
+    return DataStorageSettingsState(
+      retentionPeriod: DataRetentionPeriod.fromStorage(
+        preferences.getOrNull<String>(_retentionKey),
+      ),
+      imageQuality: ImageQualityPreference.fromStorage(
+        preferences.getOrNull<String>(_imageQualityKey),
+      ),
+      syncPreference: SyncPreference.fromStorage(
+        preferences.getOrNull<String>(_syncKey),
+      ),
+    );
+  }
+
+  Future<void> setRetentionPeriod(DataRetentionPeriod period) async {
+    final next = (state.asData?.value ?? const DataStorageSettingsState())
+        .copyWith(retentionPeriod: period);
+    state = AsyncData(next);
+    final preferences = KvStore.instance;
+    await preferences.set(_retentionKey, period.storageValue);
+  }
+
+  Future<void> setImageQuality(ImageQualityPreference quality) async {
+    final next = (state.asData?.value ?? const DataStorageSettingsState())
+        .copyWith(imageQuality: quality);
+    state = AsyncData(next);
+    final preferences = KvStore.instance;
+    await preferences.set(_imageQualityKey, quality.storageValue);
+  }
+
+  Future<void> setSyncPreference(SyncPreference pref) async {
+    final next = (state.asData?.value ?? const DataStorageSettingsState())
+        .copyWith(syncPreference: pref);
+    state = AsyncData(next);
+    final preferences = KvStore.instance;
+    await preferences.set(_syncKey, pref.storageValue);
+  }
+
+  Future<void> reset() async {
+    state = const AsyncData(DataStorageSettingsState());
+    final preferences = KvStore.instance;
+    await preferences.remove(_retentionKey);
+    await preferences.remove(_imageQualityKey);
+    await preferences.remove(_syncKey);
+  }
+}
+
+final dataStorageSettingsControllerProvider =
+    AsyncNotifierProvider<
+      DataStorageSettingsController,
+      DataStorageSettingsState
+    >(DataStorageSettingsController.new);

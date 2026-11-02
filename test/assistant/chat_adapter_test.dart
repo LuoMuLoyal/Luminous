@@ -6,6 +6,7 @@ import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/utils/message_id.dart';
 import 'package:luminous/features/assistant/presentation/widgets/chat_adapter.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 AssistantMessage _user(String content, DateTime createdAt) => AssistantMessage(
@@ -30,6 +31,10 @@ AssistantMessage _assistant(
 const _thinking = '正在思考';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   final base = DateTime.parse('2026-06-18T01:00:00Z');
 
   group('mapping', () {

@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 abstract interface class TodayRepository {
   TaskEither<LucentFailure, TodayDashboard> fetchDashboard();

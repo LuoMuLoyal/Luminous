@@ -2,13 +2,16 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/auth/session_gateway.dart';
+import 'package:luminous/core/auth/session_snapshot.dart';
 import 'package:luminous/core/auth/session_state.dart';
 import 'package:luminous/core/database/cache_constants.dart';
+import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
-import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/core/network/app_log.dart';
 
+export 'package:luminous/core/auth/session_snapshot.dart';
 export 'package:luminous/core/auth/session_state.dart';
 
 class AuthSessionNotifier extends Notifier<AuthSessionState> {
@@ -70,13 +73,13 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
     // with an auth error (expired/invalid access token), fall back to the
     // refresh flow so cold starts don't force the user to log in again.
     final fetchResult = await ref
-        .read(authRepositoryProvider)
+        .read(authSessionGatewayProvider)
         .fetchAccount()
         .run();
     switch (fetchResult) {
       case Right(:final value):
         return AuthSessionState(
-          user: value,
+          userSnapshot: value,
           isLoading: false,
           isAuthenticated: true,
         );
@@ -106,13 +109,13 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
     }
 
     final refreshResult = await ref
-        .read(authRepositoryProvider)
+        .read(authSessionGatewayProvider)
         .refreshSession(refreshToken: refreshToken)
         .run();
     switch (refreshResult) {
       case Right(:final value):
         return AuthSessionState(
-          user: value.user,
+          userSnapshot: value.user,
           isLoading: false,
           isAuthenticated: true,
         );
@@ -133,21 +136,57 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
     }
   }
 
-  Future<void> applySession(AuthSession session) async {
+  /// Applies a session produced by a feature-owned flow (login, OAuth…).
+  ///
+  /// [user] is the feature entity, stored opaquely for feature presentations;
+  /// [snapshot] is its feature-free projection, which is what core reads.
+  Future<void> applySession(SessionSnapshot snapshot, {Object? user}) async {
     state = AuthSessionState(
-      user: session.user,
+      user: user,
+      userSnapshot: snapshot.user,
       isLoading: false,
       isAuthenticated: true,
     );
+    _flushPendingSync();
   }
 
-  void applyUser(AuthUser user) {
+  /// 登录成功后重放离线队列。
+  ///
+  /// `SyncWorker` 原本只在网络恢复时 flush；未登录期间的写入（例如用户没登录
+  /// 就调整了首页布局）会一直躺在队列里，登录后没有任何东西再触发它。
+  /// fire-and-forget：重放失败仍由 worker 的退避策略处理，不阻塞登录流程。
+  void _flushPendingSync() {
+    try {
+      unawaited(
+        ref.read(syncWorkerProvider).flush().catchError((
+          Object error,
+          StackTrace stackTrace,
+        ) {
+          // 重放失败不能把登录流程带崩，记日志后交给 worker 的退避策略。
+          appLog.warning(
+            'AuthSessionNotifier: pending sync flush failed: $error',
+          );
+          return const SyncFlushResult();
+        }),
+      );
+    } catch (error) {
+      // worker 本身构造失败（测试容器没接本地库、或启动早期依赖未就绪）时，
+      // 同样不能把登录带崩：重放本就不是登录的必要环节。
+      appLog.warning(
+        'AuthSessionNotifier: sync worker unavailable, skip flush: $error',
+      );
+    }
+  }
+
+  void applyUser(SessionUserSnapshot user, {Object? entity}) {
     state = state.copyWith(
-      user: user,
+      user: entity,
+      userSnapshot: user,
       isAuthenticated: true,
       isLoading: false,
       errorMessage: null,
     );
+    _flushPendingSync();
   }
 
   void clearLocalSession() {
@@ -156,10 +195,10 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
 
   Future<void> logout() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
-    final result = await ref.read(authRepositoryProvider).logout().run();
+    final result = await ref.read(authSessionGatewayProvider).logout().run();
     switch (result) {
       case Right():
-        // 远程注销成功才把 UI 置为登出；本地 session 由 repository 在
+        // 远程注销成功才把 UI 置为登出；本地 session 由 adapter 在
         // Right 路径清空。
         state = const AuthSessionState();
       case Left(:final value):

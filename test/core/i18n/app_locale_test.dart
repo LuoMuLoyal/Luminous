@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/network/i18n/app_locale.dart';
 
 void main() {
   group('AppLocale enum values', () {

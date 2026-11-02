@@ -29,6 +29,10 @@ const Map<String, List<String>> fragmentRules = {
   'assistant': ['assistant'],
   'notification': ['notification'],
   'health_sync': ['health_sync'],
+  // 生成式 UI：入口、指示输入面板、失败与空态文案。内容本身（模型生成的展示
+  // 文字）不经过 ARB——它跟随 `Accept-Language` 由服务端产出；这里只有客户端
+  // 自己的界面框架文案。
+  'generative': ['generative'],
 };
 
 const List<String> locales = ['zh', 'en'];

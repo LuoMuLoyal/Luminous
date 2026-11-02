@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/quick_type_settings_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';
 
 void main() {
   Future<void> pumpDialog(WidgetTester tester, RecordQuickAction action) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     await tester.pumpWidget(
       ProviderScope(
         child: TestForuiApp(
@@ -84,12 +85,15 @@ void main() {
 
         // The select now shows the custom amount and preferences persist.
         expect(find.text('自定义 (300 ml)'), findsOneWidget);
-        final prefs = await SharedPreferences.getInstance();
+        final prefs = KvStore.instance;
         expect(
-          prefs.getString('record.quickEntry.water.defaultAmountMl'),
+          prefs.getOrNull<String>('record.quickEntry.water.defaultAmountMl'),
           'custom',
         );
-        expect(prefs.getInt('record.quickEntry.water.customMl'), 300);
+        expect(
+          prefs.get<int>('record.quickEntry.water.customMl', fallback: 0),
+          300,
+        );
       },
     );
 

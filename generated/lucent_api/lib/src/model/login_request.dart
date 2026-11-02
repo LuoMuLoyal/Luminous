@@ -17,7 +17,15 @@ part 'login_request.g.dart';
 )
 class LoginRequest {
   /// Returns a new [LoginRequest] instance.
-  LoginRequest({required this.email, this.password, this.code});
+  LoginRequest({
+    required this.email,
+
+    this.password,
+
+    this.code,
+
+    this.captchaToken,
+  });
 
   /// 邮箱地址
   @JsonKey(name: r'email', required: true, includeIfNull: false)
@@ -31,16 +39,25 @@ class LoginRequest {
   @JsonKey(name: r'code', required: false, includeIfNull: false)
   final String? code;
 
+  /// 人机验证令牌
+  @JsonKey(name: r'captchaToken', required: false, includeIfNull: false)
+  final String? captchaToken;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is LoginRequest &&
           other.email == email &&
           other.password == password &&
-          other.code == code;
+          other.code == code &&
+          other.captchaToken == captchaToken;
 
   @override
-  int get hashCode => email.hashCode + password.hashCode + code.hashCode;
+  int get hashCode =>
+      email.hashCode +
+      password.hashCode +
+      code.hashCode +
+      captchaToken.hashCode;
 
   factory LoginRequest.fromJson(Map<String, dynamic> json) =>
       _$LoginRequestFromJson(json);

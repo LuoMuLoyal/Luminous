@@ -5,12 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/today/today_suggestion.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
-import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
@@ -20,7 +21,9 @@ import 'package:luminous/features/today/presentation/widgets/views/dashboard_vie
 import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 import 'test_helpers.dart';
@@ -48,6 +51,10 @@ class _TrackingActiveHealthEventNotifier extends ActiveHealthEvent {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets(
     'Today page prioritizes primary suggestion above summary on mobile',
     (tester) async {
@@ -76,6 +83,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _EmptyActiveHealthEventNotifier.new,
@@ -113,6 +121,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
           todaySuggestionProvider.overrideWith(
             EmptyTodaySuggestionNotifier.new,
@@ -199,6 +208,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           todayDashboardProvider.overrideWith((ref) => pending.future),
         ],
         child: const TestForuiApp(home: TodayPage()),
@@ -252,6 +262,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _EmptyActiveHealthEventNotifier.new,
@@ -333,7 +344,7 @@ void main() {
     );
   });
 
-  testWidgets('desktop pull-to-refresh does not refresh active health event', (
+  testWidgets('desktop pull-to-refresh refreshes active health event', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -348,6 +359,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _TrackingActiveHealthEventNotifier.new,
@@ -364,12 +376,23 @@ void main() {
     );
     await _settleDashboard(tester);
 
-    await tester.drag(find.byType(CustomScrollView).last, const Offset(0, 400));
+    // 桌面端同样挂载并刷新 `health_event.active`：组件化后两个形态渲染的是同一份
+    // 表面布局，桌面不再有「手写双栏里没有这张卡」的差异。
+    expect(_TrackingActiveHealthEventNotifier.buildCalls, 1);
+
+    // 直接触发下拉刷新回调，而不是用 drag 手势：桌面端的表面布局高度随用户编排
+    // 变化，`CustomScrollView` 的中心点可能落在视口之外，按坐标拖动会 miss
+    // （"would not hit test on the specified widget"），那样测的是手势命中而
+    // 不是刷新语义。
+    final refreshIndicator = tester.widget<ForuiRefreshIndicator>(
+      find.byType(ForuiRefreshIndicator).first,
+    );
+    await refreshIndicator.onRefresh();
     await tester.pump();
     await tester.pump(const Duration(seconds: 2));
 
     expect(_TrackingActiveHealthEventNotifier.refreshCalls, 0);
-    expect(_TrackingActiveHealthEventNotifier.buildCalls, 0);
+    expect(_TrackingActiveHealthEventNotifier.buildCalls, greaterThan(1));
   });
 
   testWidgets('Today top bar assistant entry routes to assistant page', (
@@ -380,6 +403,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _EmptyActiveHealthEventNotifier.new,
@@ -426,6 +450,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -459,6 +484,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
@@ -500,6 +526,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _EmptyActiveHealthEventNotifier.new,
@@ -527,6 +554,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           activeHealthEventProvider.overrideWith(
             _EmptyActiveHealthEventNotifier.new,
@@ -574,6 +602,7 @@ void main() {
 Widget _signedInTodayApp() {
   return ProviderScope(
     overrides: [
+      ...compositionTestOverrides(),
       authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
       activeHealthEventProvider.overrideWith(
         _EmptyActiveHealthEventNotifier.new,

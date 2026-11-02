@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/accessibility/settings.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/core/storage/kv_store.dart';
+
+import '../../helpers/kv_test_store.dart';
 
 void main() {
   late ProviderContainer container;
 
   ProviderContainer buildContainer({Map<String, Object>? initialValues}) {
-    SharedPreferences.setMockInitialValues(
-      initialValues ?? const <String, Object>{},
-    );
+    KvTestStore.install(seed: initialValues ?? const <String, Object>{});
     final c = ProviderContainer();
     addTearDown(c.dispose);
     return c;
@@ -124,8 +124,11 @@ void main() {
       final state = container.read(accessibilitySettingsControllerProvider);
       expect(state.value?.fontSize, FontSizePreference.extraLarge);
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getString('accessibility.fontSize'), 'extraLarge');
+      final preferences = KvStore.instance;
+      expect(
+        preferences.getOrNull<String>('accessibility.fontSize'),
+        'extraLarge',
+      );
     });
   });
 
@@ -142,8 +145,14 @@ void main() {
       final state = container.read(accessibilitySettingsControllerProvider);
       expect(state.value?.reduceAnimations, isTrue);
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getBool('accessibility.reduceAnimations'), isTrue);
+      final preferences = KvStore.instance;
+      expect(
+        preferences.get<bool>(
+          'accessibility.reduceAnimations',
+          fallback: false,
+        ),
+        isTrue,
+      );
     });
   });
 
@@ -160,8 +169,11 @@ void main() {
       final state = container.read(accessibilitySettingsControllerProvider);
       expect(state.value?.highContrast, isTrue);
 
-      final preferences = await SharedPreferences.getInstance();
-      expect(preferences.getBool('accessibility.highContrast'), isTrue);
+      final preferences = KvStore.instance;
+      expect(
+        preferences.get<bool>('accessibility.highContrast', fallback: false),
+        isTrue,
+      );
     });
   });
 
@@ -186,7 +198,7 @@ void main() {
       expect(state.value?.reduceAnimations, isFalse);
       expect(state.value?.highContrast, isFalse);
 
-      final preferences = await SharedPreferences.getInstance();
+      final preferences = KvStore.instance;
       expect(preferences.containsKey('accessibility.fontSize'), isFalse);
       expect(
         preferences.containsKey('accessibility.reduceAnimations'),

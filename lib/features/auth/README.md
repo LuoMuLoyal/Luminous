@@ -13,6 +13,18 @@
 - 导出:domain/entities/session.dart(`AuthUser`/`AuthSession`/`AuthLinkedIdentity`,core/auth 消费)、data/providers/auth.dart(`authRepositoryProvider`)、presentation/services/wechat_oauth.dart(平台感知微信 OAuth,登录与身份绑定共用)。
 - 被依赖:core/auth/session_provider.dart 与 session_state.dart(`authSessionProvider` 建在其上)、app/router.dart redirect、mine/settings 的账号入口(账号管理 `/account`、个人信息 `/profile` 均经 `pushAuthRequiredRoute` 先做登录引导)。
 
+## 登录引导只有一种形态:先弹框
+
+- 任何「这个操作需要账号」的入口一律走 `core/widgets/auth/required_dialog.dart` 的
+  `pushAuthRequiredRoute`(带目标路由)或 `requestSignIn`(只需登录、无目标路由)。
+  两者都先弹 `auth-required-dialog`,用户点「去登录」才跳 `/login`。
+- **不要在点击处理里直接 `context.go/push(loginRoute…)`**——那是被淘汰的形态:
+  界面毫无征兆地跳走,用户不知道发生了什么。唯一例外是按设计本就该直达登录页的
+  登出入口(未登录时按「退出登录」)与预览态账号入口,它们用
+  `loginRouteForCurrentLocation` 直跳。
+- `requestSignIn` 内部已处理三件事,调用方不必重复:pending 态不弹、回跳地址取当前
+  location、`mounted`/已在登录页时不重复 push。
+
 ## 不变量
 - 会话状态只在 core/auth/session_provider.dart 的 `authSessionProvider` 上变更;presentation/providers/session.dart 仅为兼容 re-export,不得再 import。
 - 网络连通性错误不清 session store(`isNetworkConnectivityError` 分支);远程 logout 失败不得把用户置为登出。

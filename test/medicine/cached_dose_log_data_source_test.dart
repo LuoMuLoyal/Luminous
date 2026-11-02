@@ -4,13 +4,13 @@ import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/database/daos/medicine_dose_log.dart';
-import 'package:luminous/core/database/daos/pending_sync.dart';
+import 'package:luminous/core/database/daos/medicine/medicine_dose_log.dart';
+import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/database/sync/worker.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

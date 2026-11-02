@@ -5,9 +5,14 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_status_badge.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Future<void> pumpBadge(
     WidgetTester tester, {
     String? status,
@@ -65,7 +70,7 @@ void main() {
       expect(find.byIcon(SemanticIcons.statusPending), findsOneWidget);
 
       await pumpBadge(tester, status: 'analyzed');
-      expect(find.byIcon(SemanticIcons.reportAdherence), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.statusAnalyzed), findsOneWidget);
 
       await pumpBadge(tester, status: 'analysis_failed');
       expect(find.byIcon(SemanticIcons.statusError), findsOneWidget);

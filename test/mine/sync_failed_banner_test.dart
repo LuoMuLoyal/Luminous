@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/database/connection_providers.dart';
-import 'package:luminous/core/database/daos/pending_sync.dart';
+import 'package:luminous/core/database/daos/sync/pending_sync.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/features/mine/presentation/pages/sync_failures.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/sync_failed_banner.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/sync/sync_failed_banner.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 class _MockPendingSyncDao extends Mock implements PendingSyncDao {}
@@ -54,6 +55,10 @@ Widget _app({
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('hides the banner when there are no failed items', (
     tester,
   ) async {
@@ -85,7 +90,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(SyncFailuresPage), findsOneWidget);
-    expect(find.text('daily_record'), findsOneWidget);
-    expect(find.text('record-1'), findsOneWidget);
+    // The card leads with the human caption; wire identity stays collapsed.
+    expect(find.text('项待同步'), findsOneWidget);
+    expect(find.text('日常记录 · 2026年8月2日 12:00'), findsOneWidget);
   });
 }

@@ -2,17 +2,23 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late _FakeUserSettingsApi fakeApi;
   late ProviderContainer container;
 
@@ -21,6 +27,7 @@ void main() {
     fakeApi = fake;
     final c = ProviderContainer(
       overrides: [
+        userSettingsDaoProvider.overrideWithValue(_FakeUserSettingsDao()),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         lucentClientProvider.overrideWithValue(
           LucentClient(_FakeLucentApi(userSettingsApi: fake)),
@@ -574,4 +581,22 @@ class _FakeLucentApi extends LucentApi {
 
   @override
   UserSettingsApi getUserSettingsApi() => userSettingsApi;
+}
+
+/// Always a cache miss, so the repository exercises the API path.
+class _FakeUserSettingsDao implements UserSettingsDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

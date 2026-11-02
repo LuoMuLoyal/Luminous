@@ -18,12 +18,18 @@ part 'report_dashboard_response_findings.g.dart';
 class ReportDashboardResponseFindings {
   /// Returns a new [ReportDashboardResponseFindings] instance.
   ReportDashboardResponseFindings({
+    required this.id,
+
     required this.kind,
 
     required this.title,
 
     required this.body,
   });
+
+  /// Stable rule identifier of this finding, e.g. \"hydration_low\". Stable across requests and languages; safe to reference.
+  @JsonKey(name: r'id', required: true, includeIfNull: false)
+  final String id;
 
   @JsonKey(
     name: r'kind',
@@ -44,12 +50,14 @@ class ReportDashboardResponseFindings {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ReportDashboardResponseFindings &&
+          other.id == id &&
           other.kind == kind &&
           other.title == title &&
           other.body == body;
 
   @override
-  int get hashCode => kind.hashCode + title.hashCode + body.hashCode;
+  int get hashCode =>
+      id.hashCode + kind.hashCode + title.hashCode + body.hashCode;
 
   factory ReportDashboardResponseFindings.fromJson(Map<String, dynamic> json) =>
       _$ReportDashboardResponseFindingsFromJson(json);

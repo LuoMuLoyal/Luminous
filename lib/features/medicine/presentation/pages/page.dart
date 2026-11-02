@@ -1,28 +1,20 @@
-import 'dart:async';
-
-import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/control/surface_title_button.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
-import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
-import 'package:luminous/features/medicine/presentation/routes.dart';
-import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/mobile_dashboard_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -53,6 +45,7 @@ class MedicinePage extends ConsumerWidget {
         loadingBuilder: () => isDesktop
             ? DesktopTabShell(
                 title: l10n.tabMedicine,
+                titleSurface: SurfaceId.medicine,
                 suffixes: const [
                   _MedicineSafeGuardPill(),
                   _MedicineNotificationButton(),
@@ -71,6 +64,7 @@ class MedicinePage extends ConsumerWidget {
         fatalErrorBuilder: (error) => isDesktop
             ? DesktopTabShell(
                 title: l10n.tabMedicine,
+                titleSurface: SurfaceId.medicine,
                 suffixes: const [
                   _MedicineSafeGuardPill(),
                   _MedicineNotificationButton(),
@@ -101,14 +95,11 @@ class MedicinePage extends ConsumerWidget {
           // 加载且 `plan.items` 为空时进入，因此 `requireValue` 安全。
           final dashboard = MedicineMobileDashboardView(
             workspace: workspaceAsync.requireValue,
-            onMarkDose: (request) => _markDose(context, ref, request),
-            onOpenReminder: (currentMedicineId) =>
-                _openReminder(context, ref, currentMedicineId),
-            onCreateReminder: () => _openReminder(context, ref, null),
           );
           return isDesktop
               ? DesktopTabShell(
                   title: l10n.tabMedicine,
+                  titleSurface: SurfaceId.medicine,
                   suffixes: const [
                     _MedicineSafeGuardPill(),
                     _MedicineNotificationButton(),
@@ -125,16 +116,8 @@ class MedicinePage extends ConsumerWidget {
               : _MedicineMobileShell(child: dashboard);
         },
         readyBuilder: (workspace, isPreview) {
-          final onSignIn = isPreview
-              ? () => context.push(loginRouteForCurrentLocation(context))
-              : null;
-          final content = MedicineMobileDashboardView(
-            workspace: workspace,
-            onMarkDose: (request) => _markDose(context, ref, request),
-            onOpenReminder: (currentMedicineId) =>
-                _openReminder(context, ref, currentMedicineId),
-            onCreateReminder: () => _openReminder(context, ref, null),
-          );
+          final onSignIn = isPreview ? () => requestSignIn(context) : null;
+          final content = MedicineMobileDashboardView(workspace: workspace);
           final dashboardContent = isPreview
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,6 +131,7 @@ class MedicinePage extends ConsumerWidget {
           return isDesktop
               ? DesktopTabShell(
                   title: l10n.tabMedicine,
+                  titleSurface: SurfaceId.medicine,
                   suffixes: const [
                     _MedicineSafeGuardPill(),
                     _MedicineNotificationButton(),
@@ -169,128 +153,6 @@ class MedicinePage extends ConsumerWidget {
   }
 }
 
-Future<void> _markDose(
-  BuildContext context,
-  WidgetRef ref,
-  MedicineDoseMarkRequest request,
-) async {
-  final session = ref.read(authSessionProvider);
-  if (!session.canAccessProtectedData) {
-    if (session.isLoading) {
-      return;
-    }
-    if (context.mounted) {
-      await showAuthRequiredDialog(
-        context,
-        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
-      );
-    }
-    return;
-  }
-
-  final l10n = AppLocalizations.of(context)!;
-  final today = clock.now();
-  final dateStr =
-      '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-
-  try {
-    final result = await ref
-        .read(cachedDoseLogDataSourceProvider)
-        .mark(
-          currentMedicineId: request.currentMedicineId,
-          reminderId: request.reminderId,
-          scheduledTime: request.scheduledTime,
-          status: request.action.name,
-          date: dateStr,
-        )
-        .run();
-    result.fold((failure) => throw failure, (_) {});
-    ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
-    if (context.mounted) {
-      unawaited(
-        Toast.showWithAction(
-          context,
-          l10n.medicineDoseActionSavedToast,
-          l10n.medicineDoseUndoAction,
-          // The undo action fires on a later user tap; the page may have
-          // been popped in between, so guard before using the context
-          // (deactivated context trips the `_dependents.isEmpty` assertion).
-          () {
-            if (!context.mounted) return;
-            unawaited(_undoDose(context, ref, request, dateStr));
-          },
-        ),
-      );
-    }
-  } catch (error) {
-    ref.read(talkerProvider).error('_markDose: failed: $error');
-    if (context.mounted) {
-      unawaited(Toast.show(context, l10n.medicineDoseActionFailedToast));
-    }
-  }
-}
-
-Future<void> _undoDose(
-  BuildContext context,
-  WidgetRef ref,
-  MedicineDoseMarkRequest request,
-  String dateStr,
-) async {
-  if (!context.mounted) return;
-  final l10n = AppLocalizations.of(context)!;
-  try {
-    final result = await ref
-        .read(cachedDoseLogDataSourceProvider)
-        .mark(
-          currentMedicineId: request.currentMedicineId,
-          reminderId: request.reminderId,
-          scheduledTime: request.scheduledTime,
-          status: DoseLogStatus.planned.name,
-          date: dateStr,
-        )
-        .run();
-    result.fold((failure) => throw failure, (_) {});
-    ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
-    if (context.mounted) {
-      unawaited(Toast.show(context, l10n.medicineDoseUndoneToast));
-    }
-  } catch (error) {
-    ref.read(talkerProvider).error('_undoDose: failed: $error');
-    if (context.mounted) {
-      unawaited(Toast.show(context, l10n.medicineDoseActionFailedToast));
-    }
-  }
-}
-
-Future<void> _openReminder(
-  BuildContext context,
-  WidgetRef ref,
-  String? currentMedicineId,
-) async {
-  final session = ref.read(authSessionProvider);
-  if (!session.canAccessProtectedData) {
-    if (session.isLoading) {
-      return;
-    }
-    if (context.mounted) {
-      await showAuthRequiredDialog(
-        context,
-        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
-      );
-    }
-    return;
-  }
-
-  if (!context.mounted) return;
-  if (currentMedicineId == null) {
-    unawaited(const MedicineRemindersNewRoute().push(context));
-    return;
-  }
-  unawaited(
-    MedicineReminderDetailRoute(medicineId: currentMedicineId).push(context),
-  );
-}
-
 class _MedicineMobileShell extends StatelessWidget {
   const _MedicineMobileShell({required this.child});
 
@@ -305,7 +167,10 @@ class _MedicineMobileShell extends StatelessWidget {
       child: Column(
         children: [
           FHeader.nested(
-            title: Text(l10n.tabMedicine),
+            title: SurfaceTitleEntry(
+              surface: SurfaceId.medicine,
+              title: l10n.tabMedicine,
+            ),
             suffixes: const [
               _MedicineSafeGuardPill(),
               _MedicineNotificationButton(),
@@ -314,11 +179,11 @@ class _MedicineMobileShell extends StatelessWidget {
           Expanded(
             child: ListView(
               key: const PageStorageKey<String>('medicine-mobile-scroll'),
-              padding: const EdgeInsets.fromLTRB(
+              padding: EdgeInsets.fromLTRB(
                 Spacing.lg,
                 Spacing.lg,
                 Spacing.lg,
-                Spacing.xl6,
+                Spacing.xl6 + MediaQuery.paddingOf(context).bottom,
               ),
               children: [
                 const _MedicineMobileSearchBar(),
@@ -340,12 +205,12 @@ class _MedicineSafeGuardPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final isNarrow = MediaQuery.sizeOf(context).width < Breakpoints.tablet;
+    final isNarrow = MediaQuery.sizeOf(context).width < Breakpoints.expanded;
 
     final shieldIcon = Icon(
-      SemanticIcons.safetySafe,
+      SemanticIcons.safetyGuard,
       color: SemanticColor.primary.solid(context),
-      size: Spacing.xl,
+      size: IconSizeTokens.sm,
     );
 
     return FTooltip(
@@ -468,7 +333,7 @@ class _MedicineMobileSearchBar extends StatelessWidget {
             Icon(
               SemanticIcons.actionSearch,
               color: SemanticColor.neutral.solid(context),
-              size: Spacing.xl,
+              size: IconSizeTokens.sm,
             ),
             const SizedBox(width: Spacing.md),
             Expanded(

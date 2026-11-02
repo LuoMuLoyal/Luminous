@@ -1,37 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/utils/local_date.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
 import 'package:luminous/features/health_event/presentation/widgets/sheets/check_in.dart';
 import 'package:luminous/features/health_event/presentation/widgets/sheets/end_event.dart';
 import 'package:luminous/features/health_event/presentation/widgets/sheets/start_event.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/today/presentation/providers/user_timezone.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class HealthEventSection extends ConsumerWidget {
-  const HealthEventSection({
-    super.key,
-    required this.isPreview,
-    required this.onRefresh,
-  });
-
-  final bool isPreview;
-  final Future<void> Function() onRefresh;
+  const HealthEventSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (isPreview) return const SizedBox.shrink();
-
     final l10n = AppLocalizations.of(context)!;
     final event = ref.watch(activeHealthEventProvider);
 

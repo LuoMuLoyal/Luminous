@@ -1,30 +1,37 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/config/pref_keys.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/settings/notification_permission.dart';
+import 'package:luminous/app/composition/settings/notification_preferences.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
+import 'package:luminous/core/network/config/pref_keys.dart';
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/settings/data/providers/notification_permission.dart';
-import 'package:luminous/features/settings/data/providers/notification_preferences.dart';
+import 'package:luminous/features/settings/data/datasources/notification_permission.dart';
+import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
 import 'package:luminous/features/settings/domain/entities/notification_preferences.dart';
 import 'package:luminous/features/settings/domain/repositories/notification_preferences.dart';
-import 'package:luminous/features/settings/domain/services/notification_permission.dart';
-import 'package:luminous/features/settings/presentation/providers/notification.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
+import 'package:luminous/shared/domain/failure.dart';
+
+import '../helpers/kv_test_store.dart';
 
 void main() {
   test(
     'migrates legacy SharedPreferences once when the remote row is unconfigured',
     () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        PrefKeys.settingsNotificationsHealthAlerts: false,
-        PrefKeys.settingsNotificationsWeeklySummary: true,
-        PrefKeys.settingsNotificationsWaterReminders: false,
-        PrefKeys.settingsNotificationsSleepReminderEnabled: true,
-        PrefKeys.settingsNotificationsSleepBedtime: '22:30',
-        PrefKeys.settingsNotificationsSleepWakeTime: '06:45',
-      });
+      KvTestStore.install(
+        seed: <String, Object>{
+          PrefKeys.settingsNotificationsHealthAlerts: false,
+          PrefKeys.settingsNotificationsWeeklySummary: true,
+          PrefKeys.settingsNotificationsWaterReminders: false,
+          PrefKeys.settingsNotificationsSleepReminderEnabled: true,
+          PrefKeys.settingsNotificationsSleepBedtime: '22:30',
+          PrefKeys.settingsNotificationsSleepWakeTime: '06:45',
+        },
+      );
       final repository = _FakeNotificationPreferencesRepository(
         const NotificationPreferences.defaults(configured: false),
       );
@@ -46,11 +53,12 @@ void main() {
       await container.read(notificationSettingsControllerProvider.future);
       expect(repository.patches, hasLength(1));
       expect(
-        (await SharedPreferences.getInstance()).getBool(
+        KvStore.instance.get<bool>(
           PrefKeys.settingsNotificationsScoped(
             PrefKeys.settingsNotificationsRemoteMigrationCompleted,
             'user-a',
           ),
+          fallback: false,
         ),
         isTrue,
       );
@@ -58,10 +66,12 @@ void main() {
   );
 
   test('configured remote preferences win over legacy local values', () async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      PrefKeys.settingsNotificationsHealthAlerts: false,
-      PrefKeys.settingsNotificationsWeeklySummary: true,
-    });
+    KvTestStore.install(
+      seed: <String, Object>{
+        PrefKeys.settingsNotificationsHealthAlerts: false,
+        PrefKeys.settingsNotificationsWeeklySummary: true,
+      },
+    );
     final repository = _FakeNotificationPreferencesRepository(
       const NotificationPreferences(
         healthAlertsEnabled: true,
@@ -89,10 +99,12 @@ void main() {
   test(
     'isolates notification cache and migration by user across A to B to A',
     () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        PrefKeys.settingsNotificationsHealthAlerts: false,
-        PrefKeys.settingsNotificationsWeeklySummary: true,
-      });
+      KvTestStore.install(
+        seed: <String, Object>{
+          PrefKeys.settingsNotificationsHealthAlerts: false,
+          PrefKeys.settingsNotificationsWeeklySummary: true,
+        },
+      );
       var currentUserId = 'user-a';
       final repository = _MultiUserNotificationPreferencesRepository(
         currentUserId: () => currentUserId,
@@ -107,7 +119,9 @@ void main() {
       expect(userA.weeklySummary, isTrue);
 
       currentUserId = 'user-b';
-      container.read(authSessionProvider.notifier).applyUser(_user('user-b'));
+      container
+          .read(authSessionProvider.notifier)
+          .applyUser(_user('user-b').toSessionSnapshot());
       final userB = await container.read(
         notificationSettingsControllerProvider.future,
       );
@@ -115,7 +129,9 @@ void main() {
       expect(userB.weeklySummary, isFalse);
 
       currentUserId = 'user-a';
-      container.read(authSessionProvider.notifier).applyUser(_user('user-a'));
+      container
+          .read(authSessionProvider.notifier)
+          .applyUser(_user('user-a').toSessionSnapshot());
       final userAAgain = await container.read(
         notificationSettingsControllerProvider.future,
       );
@@ -136,11 +152,13 @@ void main() {
 
   test('keeps local values and leaves the migration marker unset when '
       'getPreferences fails', () async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      PrefKeys.settingsNotificationsHealthAlerts: false,
-      PrefKeys.settingsNotificationsWeeklySummary: true,
-      PrefKeys.settingsNotificationsWaterReminders: false,
-    });
+    KvTestStore.install(
+      seed: <String, Object>{
+        PrefKeys.settingsNotificationsHealthAlerts: false,
+        PrefKeys.settingsNotificationsWeeklySummary: true,
+        PrefKeys.settingsNotificationsWaterReminders: false,
+      },
+    );
     final repository = _FakeNotificationPreferencesRepository(
       const NotificationPreferences.defaults(configured: false),
     )..throwOnGet = true;
@@ -159,7 +177,7 @@ void main() {
     expect(repository.patches, isEmpty);
     // The migration marker stays unset so the next build retries the sync.
     expect(
-      (await SharedPreferences.getInstance()).getBool(
+      KvStore.instance.getOrNull<bool>(
         PrefKeys.settingsNotificationsScoped(
           PrefKeys.settingsNotificationsRemoteMigrationCompleted,
           'user-a',
@@ -172,7 +190,7 @@ void main() {
   test(
     'rolls back local and in-memory state when a remote patch fails',
     () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final repository = _FakeNotificationPreferencesRepository(
         const NotificationPreferences.defaults(configured: true),
       )..throwOnPatch = true;
@@ -194,11 +212,12 @@ void main() {
         isTrue,
       );
       expect(
-        (await SharedPreferences.getInstance()).getBool(
+        KvStore.instance.get<bool>(
           PrefKeys.settingsNotificationsScoped(
             PrefKeys.settingsNotificationsHealthAlerts,
             'user-a',
           ),
+          fallback: false,
         ),
         isTrue,
       );
@@ -211,6 +230,7 @@ ProviderContainer _buildContainer(
 ) {
   return ProviderContainer(
     overrides: [
+      userSettingsDaoProvider.overrideWithValue(_FakeUserSettingsDao()),
       authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
       notificationPreferencesRepositoryProvider.overrideWithValue(repository),
       notificationPermissionServiceProvider.overrideWithValue(
@@ -293,6 +313,7 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   @override
   AuthSessionState build() => AuthSessionState(
     user: _user('user-a'),
+    userSnapshot: _user('user-a').toSessionSnapshot(),
     isAuthenticated: true,
     isLoading: false,
   );
@@ -307,3 +328,21 @@ AuthUser _user(String id) => AuthUser(
   createdAt: DateTime.utc(2026, 1, 1),
   updatedAt: DateTime.utc(2026, 1, 1),
 );
+
+/// Always a cache miss, so the repository exercises the API path.
+class _FakeUserSettingsDao implements UserSettingsDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}

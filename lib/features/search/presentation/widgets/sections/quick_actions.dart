@@ -8,6 +8,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/scan/presentation/pages/box_scan.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
+import 'package:luminous/features/search/presentation/utils/search_visuals.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class QuickActions extends StatelessWidget {
@@ -47,6 +48,7 @@ class _QuickActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final (icon, accent) = SearchVisuals.quickAction(action.type);
     return FTappable(
       onPress: () {
         switch (action.type) {
@@ -65,7 +67,7 @@ class _QuickActionButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(action.icon, color: action.accent.solid(context)),
+              Icon(icon, color: accent.solid(context)),
               const SizedBox(width: Spacing.md),
               Text(
                 actionLabel(l10n, action.type),

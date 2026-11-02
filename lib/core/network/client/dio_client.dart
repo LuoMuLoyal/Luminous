@@ -27,6 +27,7 @@ class LucentClient {
   FilesApi get files => _api.getFilesApi();
   HealthApi get health => _api.getHealthApi();
   HealthEventsApi get healthEvents => _api.getHealthEventsApi();
+  LayoutsApi get layouts => _api.getLayoutsApi();
   LegalDocumentsApi get legalDocuments => _api.getLegalDocumentsApi();
   MedicineDoseLogsApi get medicineDoseLogs => _api.getMedicineDoseLogsApi();
   MedicineRemindersApi get medicineReminders => _api.getMedicineRemindersApi();

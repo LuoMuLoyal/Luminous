@@ -7,8 +7,8 @@ import 'package:luminous/features/medicine/presentation/widgets/sections/safety_
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class SafetyEngineSection extends StatelessWidget {
-  const SafetyEngineSection({
+class SafetyEngineSummary extends StatelessWidget {
+  const SafetyEngineSummary({
     super.key,
     required this.records,
     required this.alerts,
@@ -128,7 +128,7 @@ class LastCheckedLabel extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            SemanticIcons.doseSlot,
+            SemanticIcons.doseCheckedAt,
             size: IconSizeTokens.sm,
             color: SemanticColor.warning.solid(context),
           ),
@@ -149,7 +149,7 @@ class LastCheckedLabel extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
-          SemanticIcons.doseSlot,
+          SemanticIcons.doseCheckedAt,
           size: IconSizeTokens.sm,
           color: SemanticColor.neutral.solid(context),
         ),

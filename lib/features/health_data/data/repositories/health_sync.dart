@@ -1,7 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/features/health_data/data/datasources/health_platform.dart';
 import 'package:luminous/features/health_data/data/datasources/steps.dart';
 import 'package:luminous/features/health_data/data/mappers/health_record_mapper.dart';
@@ -66,7 +66,7 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
         message: capability.message,
       );
     } catch (e) {
-      appTalker.warning(
+      appLog.warning(
         'HealthSync: native steps capability failed, using plugin: $e',
       );
       return const HealthCapability(available: true);
@@ -93,13 +93,13 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
           pluginTypes = types.difference(const {HealthMetricType.steps});
         } else {
           pluginTypes = types.difference(const {HealthMetricType.steps});
-          appTalker.warning(
+          appLog.warning(
             'HealthSync: native steps unavailable: '
             '${capability.reason ?? 'unknown'}',
           );
         }
       } catch (e) {
-        appTalker.warning(
+        appLog.warning(
           'HealthSync: native steps failed, falling back to health plugin: $e',
         );
       }
@@ -146,7 +146,7 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
         final result = await dailyRecordRepo.create(input).run();
         result.fold(
           (failure) {
-            appTalker.warning('HealthSync: failed to create record: $failure');
+            appLog.warning('HealthSync: failed to create record: $failure');
             errors.add('$failure');
             failed++;
           },
@@ -156,7 +156,7 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
           },
         );
       } catch (e) {
-        appTalker.warning('HealthSync: failed to create record: $e');
+        appLog.warning('HealthSync: failed to create record: $e');
         errors.add('$e');
         failed++;
       }
@@ -205,7 +205,7 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
           // Left aborts the sync: dedup relies on the existing records, and
           // silently importing duplicates would corrupt the data.
           final data = result.fold((failure) {
-            appTalker.error(
+            appLog.error(
               'HealthSync: failed to fetch existing records for $date: '
               '$failure',
             );
@@ -224,7 +224,7 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
       } catch (e) {
         // Dedup relies on the existing records; abort the sync instead of
         // silently importing duplicates.
-        appTalker.error(
+        appLog.error(
           'HealthSync: failed to fetch existing records for $date: $e',
         );
         rethrow;

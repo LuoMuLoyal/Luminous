@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
+import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordOccurredAtFields extends StatelessWidget {

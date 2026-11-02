@@ -4,13 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/core/widgets/common/feedback/page_state.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/observation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/composition.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 import 'test_helpers.dart';
@@ -129,19 +133,25 @@ const _emptyObservationsBundle = TodaySuggestionBundle(
 );
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Widget buildApp({
     required TodaySuggestionNotifier Function() notifierFactory,
     required TodayDashboard dashboard,
   }) {
     return ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         todaySuggestionProvider.overrideWith(notifierFactory),
-      ],
-      child: TestForuiApp(
-        home: SingleChildScrollView(
-          child: TodayObservationSection(dashboard: dashboard),
+        todaySurfaceDashboardProvider.overrideWithValue(
+          PageViewStateReady(dashboard),
         ),
+      ],
+      child: const TestForuiApp(
+        home: SingleChildScrollView(child: TodayObservationSection()),
       ),
     );
   }

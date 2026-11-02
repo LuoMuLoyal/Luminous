@@ -62,13 +62,26 @@ class WaterProgressCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: Spacing.lg),
-          ClipRRect(
-            borderRadius: context.theme.style.borderRadius.xs2,
-            child: LinearProgressIndicator(
-              value: (waterTotalMl / waterTargetMl).clamp(0.0, 1.0),
-              minHeight: 8,
-              backgroundColor: colors.muted,
-              color: SemanticColor.primary.solid(context),
+          FDeterminateProgress(
+            value: (waterTotalMl / waterTargetMl).clamp(0.0, 1.0),
+            style: .delta(
+              constraints: const BoxConstraints.tightFor(height: 8),
+              fillDecoration: .value(
+                ShapeDecoration(
+                  color: SemanticColor.primary.solid(context),
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: context.theme.style.borderRadius.xs2,
+                  ),
+                ),
+              ),
+              trackDecoration: .value(
+                ShapeDecoration(
+                  color: colors.muted,
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: context.theme.style.borderRadius.xs2,
+                  ),
+                ),
+              ),
             ),
           ),
         ],

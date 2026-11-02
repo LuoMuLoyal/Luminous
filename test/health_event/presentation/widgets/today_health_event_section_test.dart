@@ -2,21 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/health_event/health_event.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/core/widgets/common/feedback/page_state.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/health_event/data/providers/health_event.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:timezone/data/latest.dart' as timezone_data;
 import 'package:timezone/timezone.dart' as timezone;
 
+import '../../../helpers/composition.dart';
+import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/test_forui_app.dart';
 import '../../../today/test_helpers.dart';
 
@@ -97,6 +101,10 @@ class _FakeHealthEventRepository implements HealthEventRepository {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('shows the start entry when there is no active event', (
     tester,
   ) async {
@@ -145,7 +153,12 @@ void main() {
     expect(repository.endedOutcome, HealthEventOutcome.improved);
   });
 
-  testWidgets('does not render health observation controls on desktop', (
+  // 组件化之后桌面端与移动端渲染同一份 `SurfaceId.today` 布局（见
+  // `desktop_dashboard.dart` 的注释：旧的手写 7:5 双栏已删除），所以「桌面端
+  // 不出现健康事件控件」这个旧前提不再成立。现在两端都渲染同一个
+  // `health_event.active` 组件；这里断言的是**没有进行中事件时只给入口**，
+  // 不出现打卡/结束这些需要事件存在才有意义的动作。
+  testWidgets('desktop renders the health event entry without active actions', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -158,7 +171,7 @@ void main() {
     await tester.pumpWidget(_app(_FakeHealthEventRepository()));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('health-event-start-action')), findsNothing);
+    expect(find.byKey(const Key('health-event-start-action')), findsOneWidget);
     expect(find.byKey(const Key('health-event-check-in-action')), findsNothing);
     expect(find.byKey(const Key('health-event-end-action')), findsNothing);
   });
@@ -266,6 +279,10 @@ Widget _app(
 }) {
   return ProviderScope(
     overrides: [
+      ...compositionTestOverrides(),
+      todaySurfaceDashboardProvider.overrideWithValue(
+        PageViewStateReady(TodayDashboard.signedOut()),
+      ),
       authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
       healthEventRepositoryProvider.overrideWithValue(repository),
       healthContextSnapshotProvider.overrideWith((ref) async => snapshot),

@@ -4,11 +4,10 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 void main() {
   group('DailyRecordRemoteDataSource', () {
@@ -219,16 +218,23 @@ void main() {
     );
 
     test(
-      'delete throws StateError when the server returns a non-204 status',
+      'delete reports a badResponse LucentFailure on a non-204 status',
       () async {
         await expectLater(
           dataSource.delete('record-1'),
           throwsA(
-            isA<StateError>().having(
-              (e) => e.message,
-              'message',
-              'Daily record delete returned 200.',
-            ),
+            isA<LucentFailure>()
+                .having((e) => e.kind, 'kind', LucentFailureKind.network)
+                .having(
+                  (e) => e.networkErrorCode,
+                  'networkErrorCode',
+                  NetworkErrorCode.badResponse,
+                )
+                .having(
+                  (e) => e.message,
+                  'message',
+                  'Daily record delete returned 200.',
+                ),
           ),
         );
       },

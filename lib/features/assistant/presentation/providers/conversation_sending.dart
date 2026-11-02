@@ -1,15 +1,14 @@
 import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/logger/log_level.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation_streams.dart';
+import 'package:luminous/features/assistant/presentation/providers/data_access.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 mixin MessageSending on Notifier<AssistantState>, ConversationStreams {
   Future<void> sendMessage(String input) async {

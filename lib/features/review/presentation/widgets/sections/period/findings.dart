@@ -1,0 +1,164 @@
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/features/review/presentation/utils/icons.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+class ReviewFindingsSection extends StatelessWidget {
+  const ReviewFindingsSection({
+    super.key,
+    required this.findings,
+    required this.l10n,
+  });
+
+  final List<ReviewFinding> findings;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.reviewFindingsSectionTitle,
+          style: context.theme.typography.body.md.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: Spacing.lg),
+        if (findings.isEmpty)
+          _EmptyFindingsView(l10n: l10n)
+        else
+          Wrap(
+            spacing: Spacing.md,
+            runSpacing: Spacing.md,
+            children: [
+              for (final finding in findings)
+                SizedBox(
+                  width: ResponsiveSizing.cardWidth(context),
+                  child: _FindingCard(finding: finding),
+                ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
+class _EmptyFindingsView extends StatelessWidget {
+  const _EmptyFindingsView({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
+
+    return Container(
+      padding: const EdgeInsets.all(Spacing.xl),
+      decoration: BoxDecoration(
+        color: SemanticColor.neutral.subtle(context),
+        borderRadius: context.theme.style.borderRadius.sm,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            SemanticIcons.aiTip,
+            color: colors.secondary,
+            size: IconSizeTokens.sm,
+          ),
+          const SizedBox(width: Spacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.reviewFindingsEmptyTitle,
+                  style: typography.body.md.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: Spacing.xs),
+                Text(
+                  l10n.reviewFindingsEmptyBody,
+                  style: typography.body.xs.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FindingCard extends StatelessWidget {
+  const _FindingCard({required this.finding});
+
+  final ReviewFinding finding;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = finding.color.palette(context);
+    final typography = context.theme.typography;
+
+    return FCard(
+      style: .delta(
+        decoration: .shapeDelta(
+          color: palette.muted,
+          shape: RoundedSuperellipseBorder(
+            side: BorderSide(color: palette.border),
+            borderRadius: context.theme.style.borderRadius.lg,
+          ),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  reviewIcon(finding.iconName),
+                  color: palette.solid,
+                  size: ResponsiveSizing.scaleByWidth(
+                    context,
+                    fraction: 0.052,
+                    minValue: 18,
+                    maxValue: 24,
+                  ),
+                ),
+                // No decorative chevron — the card is informational, not
+                // navigational. A chevron would mislead users into expecting
+                // a tap action that doesn't exist.
+              ],
+            ),
+            const SizedBox(height: Spacing.lg),
+            SkeletonText(
+              text: finding.title,
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
+              widthFactor: 0.7,
+            ),
+            const SizedBox(height: Spacing.md),
+            SkeletonText(
+              text: finding.body,
+              style: typography.body.xs.copyWith(
+                color: SemanticColor.neutral.solid(context),
+              ),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              widthFactor: 0.9,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

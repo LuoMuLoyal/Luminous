@@ -5,24 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/date_picker.dart';
+import 'package:luminous/core/widgets/common/control/surface_title_button.dart';
 import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/record/application/orchestrators/nlp_flow.dart';
-import 'package:luminous/features/record/application/usecases/change_record_date.dart';
-import 'package:luminous/features/record/application/usecases/quick_entry.dart';
-import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
+import 'package:luminous/features/record/presentation/providers/data_access.dart';
+import 'package:luminous/features/record/presentation/providers/surface.dart';
+import 'package:luminous/features/record/presentation/quick_entry/core/dispatcher.dart';
+import 'package:luminous/features/record/presentation/quick_entry/sheets/nlp_sheet.dart';
+import 'package:luminous/features/record/presentation/quick_entry/sheets/record_date.dart';
 import 'package:luminous/features/record/presentation/ui_defaults.dart';
-import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/header_actions.dart';
 import 'package:luminous/features/record/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/record/presentation/widgets/views/skeleton_view.dart';
@@ -104,10 +106,8 @@ class _RecordPageState extends ConsumerState<RecordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final session = ref.watch(authSessionProvider);
-    final canAccessProtectedData = session.canAccessProtectedData;
-    final isAuthLoading = session.isLoading;
-    final dashboardAsync = ref.watch(recordDashboardProvider);
+    // 与区块同一个状态机：页面负责骨架/错误这层分流，区块只读 dataOrNull。
+    final pageState = ref.watch(recordSurfaceStateProvider);
     final selectedDate = ref.watch(selectedRecordDateProvider);
     final l10n = AppLocalizations.of(context)!;
     final size = MediaQuery.sizeOf(context);
@@ -128,17 +128,12 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       selectedDate: selectedDate,
       onSetDate: _setSelectedDate,
       onPickDate: _pickSelectedDate,
-      onOpenNlpSheet: (ctx) => openNlpSheet(
-        ref: ref,
-        context: ctx,
-        canAccessProtectedData: canAccessProtectedData,
-        isAuthLoading: isAuthLoading,
-        selectedDate: selectedDate,
-      ),
+      onOpenNlpSheet: (ctx) =>
+          openNlpSheet(ref: ref, context: ctx, selectedDate: selectedDate),
     );
 
     final pageStateContent = PageStateSwitch<RecordDashboard>(
-      state: resolvePageViewState(session: session, data: dashboardAsync),
+      state: pageState,
       loadingBuilder: () => const RecordSkeletonView(),
       fatalErrorBuilder: (error) => StateErrorView(
         title: l10n.recordErrorTitle,
@@ -152,10 +147,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (isPreview) ...[
-            SignInHintBanner(
-              onSignIn: () =>
-                  context.push(loginRouteForCurrentLocation(context)),
-            ),
+            SignInHintBanner(onSignIn: () => requestSignIn(context)),
             const SizedBox(height: Spacing.lg),
           ],
           RecordDashboardView(
@@ -187,9 +179,6 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               );
               unawaited(handleQuickAction(context, ref, action));
             },
-            onQuickActionLongPress: (action) {
-              unawaited(handleQuickActionLongPress(context, ref, action));
-            },
             onNewEntry: () => _openRecordCreate(context),
           ),
         ],
@@ -200,6 +189,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       return ShellDeferredContent(
         child: DesktopTabShell(
           title: l10n.tabRecord,
+          titleSurface: SurfaceId.record,
           suffixes: headerActions,
           scrollStorageKey: 'record-desktop-scroll',
           onRefresh: () => _refreshAll(context),
@@ -232,7 +222,10 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     return ShellDeferredContent(
       child: FScaffold(
         header: FHeader.nested(
-          title: Text(l10n.tabRecord),
+          title: SurfaceTitleEntry(
+            surface: SurfaceId.record,
+            title: l10n.tabRecord,
+          ),
           suffixes: headerActions,
         ),
         child: scaffoldBody,

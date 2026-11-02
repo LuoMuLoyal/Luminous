@@ -3,9 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('ForuiRefreshIndicator', () {
     Future<void> pump(WidgetTester tester, {required VoidCallback onRefresh}) {
       return tester.pumpWidget(

@@ -1,14 +1,17 @@
-# lib/core/auth — UI 会话状态与敏感操作密码
+# lib/core/auth — UI 会话状态
 
-目录持有 UI 侧会话状态机与敏感操作辅助:`session_provider.dart`(`AuthSessionNotifier` +
-`authSessionProvider`)、`session_state.dart`(`@freezed AuthSessionState` + 状态扩展)、
-`sensitive_action_password_resolver.dart`(`session_state.freezed.dart` 为生成物)。
+目录持有 UI 侧会话状态机:`session_provider.dart`(`AuthSessionNotifier` +
+`authSessionProvider`)、`session_state.dart`(`@freezed AuthSessionState` + 状态扩展);
+`session_state.freezed.dart` 为生成物。
+
+敏感操作密码解析(`resolveSensitiveActionPassword` / `handleSensitiveActionFailure`)已迁到
+`../providers/sensitive_action_resolver.dart`——它只读写设置、弹密码框、弹 toast,不碰 I/O,
+归属 `core/providers/`(展示层唯一允许依赖的 core 子树)。
 
 ## 职责与边界
 
-- 管:会话状态(restore/applySession/applyUser/logout/onSessionExpired)、restore 超时与
-  重连语义、敏感操作密码解析(`resolveSensitiveActionPassword`)与失败处理
-  (`handleSensitiveActionFailure`)。
+- 管:会话状态(restore/applySession/applyUser/logout/onSessionExpired)与 restore 超时、
+  重连语义。
 - 不管:token 的读写与安全存储(在 `../network/client/session_store.dart` 的
   `LucentSessionStore`)、登录/刷新/登出的 HTTP 流与 token 写入(features/auth 的
   data repository)、路由守卫声明(`app/router.dart`)。
@@ -17,8 +20,7 @@
 
 - 导出:`authSessionProvider` / `AuthSessionNotifier`、`AuthSessionState` +
   `AuthSessionStateStatus`(`canAccessProtectedData` / `isRestoring` / `isConfirmedSignedOut`)、
-  `AuthRequiredException`、`pendingAuthSessionResolution`、`kSessionRestoreTimeout`、
-  `resolveSensitiveActionPassword` / `handleSensitiveActionFailure`。
+  `AuthRequiredException`、`pendingAuthSessionResolution`、`kSessionRestoreTimeout`。
 - 被依赖:`app/router.dart`、`app/bootstrap.dart`(启动 restore)、features/auth、shell、
   notification、mine、health_event、scan,以及 `../widgets/common/feedback/` 的连接横幅与
   页面状态组件。
@@ -41,8 +43,7 @@
 ## 依赖禁区
 
 - 本目录是 core 内的既有例外:`AuthSessionNotifier` 引用 features/auth 的 repository
-  provider 与 session entity,`sensitive_action_password_resolver.dart` 引用 features/settings
-  的 provider。新增引用需保持克制,可收敛时优先收敛为 domain 接口;禁止引用 features 的
+  provider 与 session entity。新增引用需保持克制,可收敛时优先收敛为 domain 接口;禁止引用 features 的
   pages/widgets 与其他 feature 的 data 层。
 
 ## 陷阱与决策
@@ -52,7 +53,7 @@
   本目录不重复实现存取。
 - OAuth-only 用户无本地密码:密码相关失败命中 `LucentFailure.isPasswordNotSet`
   (线格式码归 `../errors/lucent_failure.dart` 的 `kPasswordNotSetCode` 持有)时走
-  Toast + 引导去账号页,而非弹密码框;`resolveSensitiveActionPassword` 先等 settings
-  ready,避免加载中 `?? true` 误弹用户永远无法完成的密码框。
+  Toast + 引导去账号页,而非弹密码框(解析器在 `../providers/sensitive_action_resolver.dart`,
+  先等 settings ready,避免加载中 `?? true` 误弹用户永远无法完成的密码框)。
 - `pendingAuthSessionResolution()` 返回永不完成的 future,供 authGuarded 工厂挂起恢复中的
   provider(模式见 `../../../docs/reference/adr/0003-riverpod-generator-and-auth-guard.md`)。

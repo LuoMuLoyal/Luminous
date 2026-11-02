@@ -56,8 +56,11 @@ class LegalDetailPage extends ConsumerWidget {
           actionLabel: l10n.legalRetryAction,
           onAction: () => ref.invalidate(legalDocumentProvider(parsedType)),
         ),
-        data: (doc) => ResponsiveContentFrame(
-          child: SingleChildScrollView(
+        // 滚动视图必须在 ResponsiveContentFrame **外面**：Frame 是 Center，
+        // 套在外面会给 SingleChildScrollView 松约束，滚动视图收缩到内容高度
+        // 后被垂直居中，正文就落在屏幕中间而不是页头下方。
+        data: (doc) => SingleChildScrollView(
+          child: ResponsiveContentFrame(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/network/contract/api_paths.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/auth/domain/entities/device_session.dart';
 import 'package:luminous/features/auth/domain/repositories/sessions.dart';
 
@@ -15,7 +14,7 @@ class LucentAuthSessionsRepository implements AuthSessionsRepository {
   @override
   TaskEither<LucentFailure, List<AuthDeviceSession>> listSessions() {
     return TaskEither.tryCatch(() async {
-      final response = await dio.get<Object>(LucentApiPaths.authSessions);
+      final response = await dio.get<Object>(LucentApiPaths.authDevices);
       final raw = response.data;
       if (raw is! List) {
         throw LucentFailure.network(
@@ -41,7 +40,7 @@ class LucentAuthSessionsRepository implements AuthSessionsRepository {
   @override
   TaskEither<LucentFailure, void> revokeSession(String sessionId) {
     return TaskEither.tryCatch(() async {
-      await dio.delete<Object>(LucentApiPaths.authSession(sessionId));
+      await dio.delete<Object>(LucentApiPaths.authDevice(sessionId));
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 }

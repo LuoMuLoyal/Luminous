@@ -47,7 +47,7 @@ abstract final class ResponsiveSizing {
     final width = MediaQuery.sizeOf(context).width;
     if (width >= Breakpoints.ultrawide) return ultrawide;
     if (width >= Breakpoints.desktop) return desktop;
-    if (width >= Breakpoints.tablet) return tablet;
+    if (width >= Breakpoints.expanded) return tablet;
     return mobile;
   }
 

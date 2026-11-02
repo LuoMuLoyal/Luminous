@@ -1,18 +1,9 @@
-import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/date_bar.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/mobile_filter.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/mobile_timeline.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/new_entry_panel.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/quick_entry_panel.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/sidebar.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/summary_grid.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/timeline.dart';
-import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
-import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordDashboardView extends StatelessWidget {
   const RecordDashboardView({
@@ -21,7 +12,6 @@ class RecordDashboardView extends StatelessWidget {
     this.isPreview = false,
     this.isLoading = false,
     this.onQuickAction,
-    this.onQuickActionLongPress,
     this.onNewEntry,
     this.onFilterSelected,
     this.onDateSelected,
@@ -31,8 +21,10 @@ class RecordDashboardView extends StatelessWidget {
   final RecordDashboard dashboard;
   final bool isPreview;
   final bool isLoading;
+
+  /// 桌面端底部「新建记录」面板仍由页面装配，因此保留整块看板级别的回调。
+  /// 移动端已改为区块自取数据/自处理交互，不再经过这里。
   final ValueChanged<RecordQuickAction>? onQuickAction;
-  final ValueChanged<RecordQuickAction>? onQuickActionLongPress;
   final VoidCallback? onNewEntry;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
@@ -43,180 +35,38 @@ class RecordDashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= Breakpoints.desktop;
-
-    final content = isDesktop
-        ? _DesktopRecordDashboard(
-            dashboard: dashboard,
-            l10n: l10n,
-            onDateSelected: onDateSelected,
-            onFilterSelected: onFilterSelected,
-            onQuickAction: onQuickAction,
-            onNewEntry: onNewEntry,
-            onRecordDateChange: onRecordDateChange,
-          )
-        : _MobileRecordDashboard(
-            dashboard: dashboard,
-            l10n: l10n,
-            onQuickAction: onQuickAction,
-            onQuickActionLongPress: onQuickActionLongPress,
-            onFilterSelected: onFilterSelected,
-            onDateSelected: onDateSelected,
-          );
-
     // 不再叠加入场动画：外围过渡已经负责把内容带进来（页面状态切换 fade-through /
     // Tab 分支交叉淡化），再叠一层淡入 + 上浮会让显示被推迟，并有"内容往上飘"的观感。
-    return SkeletonScope(isLoading: isLoading, child: content);
+    return SkeletonScope(isLoading: isLoading, child: const _RecordSurface());
   }
 }
 
-class _MobileRecordDashboard extends StatelessWidget {
-  const _MobileRecordDashboard({
-    required this.dashboard,
-    required this.l10n,
-    this.onQuickAction,
-    this.onQuickActionLongPress,
-    this.onFilterSelected,
-    this.onDateSelected,
-  });
-
-  final RecordDashboard dashboard;
-  final AppLocalizations l10n;
-  final ValueChanged<RecordQuickAction>? onQuickAction;
-  final ValueChanged<RecordQuickAction>? onQuickActionLongPress;
-  final ValueChanged<RecordEntryType?>? onFilterSelected;
-  final ValueChanged<DateTime>? onDateSelected;
+/// record 表面：只负责渲染 record 表面的布局。
+///
+/// 页面不再知道有哪些区块——区块的清单、顺序、跨列与间距都在
+/// `presentation/components/catalog.dart` 里；增删改一个区块不会碰到这个文件。
+/// 桌面端与移动端共用同一个宿主：宿主按当前视口解析列数（手机 1 列、桌面 2 列），
+/// 因此不再需要手写的桌面三栏。
+class _RecordSurface extends ConsumerWidget {
+  const _RecordSurface();
 
   @override
-  Widget build(BuildContext context) {
-    final quickActions = buildMobileQuickActions(dashboard.quickActions);
-    final mobileFilters = buildMobileFilters(dashboard.filters);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final layout = ref.watch(surfaceLayoutProvider(SurfaceId.record));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RecordDateBar(
-          dashboard: dashboard,
-          l10n: l10n,
-          onDateSelected: onDateSelected,
+        // 区块由宿主逐个渲染并按「相邻之间」给间距：末项之后不留空，
+        // 条件隐藏的区块也不留洞（不再需要手写 SizedBox.shrink 占位）。
+        ComponentHostGrid(
+          surface: SurfaceId.record,
+          layout: layout,
+          rowSpacing: Spacing.lg,
+          columnSpacing: Spacing.lg,
         ),
+        // 与改动前一致：页面底部统一留一个间距。
         const SizedBox(height: Spacing.lg),
-        RecordQuickEntryPanel(
-          actions: quickActions,
-          summary: dashboard.summary,
-          timeline: dashboard.timeline,
-          l10n: l10n,
-          onQuickAction: onQuickAction,
-          onQuickActionLongPress: onQuickActionLongPress,
-        ),
-        const SizedBox(height: Spacing.lg),
-        RecordMobileFilter(
-          filters: mobileFilters,
-          l10n: l10n,
-          onFilterSelected: onFilterSelected,
-        ),
-        const SizedBox(height: Spacing.lg),
-        RecordMobileTimeline(
-          entries: dashboard.timeline,
-          totalCount: dashboard.timeline.length,
-          l10n: l10n,
-          selectedDate: dashboard.selectedDate,
-          hasActiveFilter: !dashboard.filters.every((f) => f.selected),
-          onClearFilter: onFilterSelected != null
-              ? () => onFilterSelected!(null)
-              : null,
-          onBackToToday: onDateSelected != null
-              ? () => onDateSelected!(clock.now())
-              : null,
-        ),
-        const SizedBox(height: Spacing.lg),
-      ],
-    );
-  }
-}
-
-class _DesktopRecordDashboard extends StatelessWidget {
-  const _DesktopRecordDashboard({
-    required this.dashboard,
-    required this.l10n,
-    this.onDateSelected,
-    this.onFilterSelected,
-    this.onQuickAction,
-    this.onNewEntry,
-    this.onRecordDateChange,
-  });
-
-  final RecordDashboard dashboard;
-  final AppLocalizations l10n;
-  final ValueChanged<DateTime>? onDateSelected;
-  final ValueChanged<RecordEntryType?>? onFilterSelected;
-  final ValueChanged<RecordQuickAction>? onQuickAction;
-  final VoidCallback? onNewEntry;
-  final void Function(String recordId, DateTime newDate)? onRecordDateChange;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 260,
-          child: Column(
-            children: [
-              RecordMonthCalendarPanel(
-                days: dashboard.monthDays,
-                selectedDate: dashboard.selectedDate,
-                l10n: l10n,
-                onDateSelected: onDateSelected,
-                onRecordDropped: onRecordDateChange,
-                // Month navigation is handled internally by the panel's
-                // _viewedMonth state — no parent callback needed.
-              ),
-              const SizedBox(height: Spacing.lg),
-              RecordFilterPanel(
-                filters: dashboard.filters,
-                l10n: l10n,
-                onFilterSelected: onFilterSelected,
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: Spacing.xl),
-        Expanded(
-          child: Column(
-            children: [
-              RecordSummaryGrid(
-                summary: dashboard.summary,
-                l10n: l10n,
-                onTypeSelected: onFilterSelected,
-              ),
-              const SizedBox(height: Spacing.lg),
-              RecordTimelinePanel(
-                entries: dashboard.timeline,
-                l10n: l10n,
-                onClearFilter: () => onFilterSelected?.call(null),
-                selectedDate: dashboard.selectedDate,
-                onRecordDateChange: onRecordDateChange,
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: Spacing.xl),
-        SizedBox(
-          width: 220,
-          child: Column(
-            children: [
-              RecordNewEntryPanel(
-                actions: dashboard.quickActions,
-                l10n: l10n,
-                onNewEntry: onNewEntry,
-                onQuickAction: onQuickAction,
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }

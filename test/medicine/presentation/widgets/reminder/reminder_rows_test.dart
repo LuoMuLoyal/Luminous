@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/rows.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/rows.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';
 
 AppLocalizations _getL10n(WidgetTester tester) {
@@ -36,6 +37,10 @@ CurrentMedicineItem _buildMedicine({
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('SelectedMedicineRow', () {
     testWidgets('renders medicine display name and dose text', (tester) async {
       final medicine = _buildMedicine();
@@ -49,7 +54,7 @@ void main() {
       expect(find.text('阿莫西林胶囊'), findsOneWidget);
       // doseText is "每次1粒", strengthText is "0.25g" → "0.25g · 每次1粒"
       expect(find.textContaining('0.25g'), findsOneWidget);
-      expect(find.byIcon(SemanticIcons.recordMedicine), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.medicineReminderRow), findsOneWidget);
     });
 
     testWidgets('shows not-set text when no dose info', (tester) async {

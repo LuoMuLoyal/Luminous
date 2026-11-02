@@ -6,19 +6,19 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
+import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/back_button.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/record/application/usecases/record_detail_actions.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/features/record/presentation/providers/record_edit_controller.dart';
-import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
+import 'package:luminous/features/record/presentation/quick_entry/sheets/detail_actions.dart';
 import 'package:luminous/features/record/presentation/utils/sleep_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/edit/edit_parts.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/edit_actions.dart';
@@ -194,8 +194,9 @@ class RecordEditPage extends HookConsumerWidget {
               session.isLoading
                   ? const RecordEditLoading()
                   : AuthRequiredDialogGate(
-                      onLogin: () =>
-                          context.push(loginRouteForCurrentLocation(context)),
+                      onLogin: () => unawaited(
+                        context.push(loginRouteForCurrentLocation(context)),
+                      ),
                     ),
             ],
           ),
@@ -211,7 +212,7 @@ class RecordEditPage extends HookConsumerWidget {
           child: StateErrorView(
             title: l10n.recordDetailErrorTitle,
             description: l10n.recordErrorDescription,
-            icon: SemanticIcons.tabRecord,
+            icon: SemanticIcons.statusError,
             actionLabel: l10n.todayRetryAction,
             onAction: () => controller.load(recordId),
             tone: StateTone.warning,

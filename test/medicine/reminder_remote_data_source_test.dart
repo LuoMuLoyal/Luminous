@@ -4,8 +4,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineRemindersApi;
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/task_either.dart';
 
@@ -356,31 +356,25 @@ void main() {
         },
       );
 
-      test(
-        'items not a list maps to Left(unknown) keeping the FormatException cause',
-        () async {
-          adapter.itemsBodyOverride = <String, Object?>{'items': 'not-a-list'};
+      test('items not a list maps to a LucentFailure', () async {
+        adapter.itemsBodyOverride = <String, Object?>{'items': 'not-a-list'};
 
-          final failure = await expectTaskLeft(dataSource.fetchActive());
+        final failure = await expectTaskLeft(dataSource.fetchActive());
 
-          expect(failure.kind, LucentFailureKind.unknown);
-          expect(failure.cause, isA<FormatException>());
-        },
-      );
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
+      });
 
-      test(
-        'item not a map maps to Left(unknown) keeping the FormatException cause',
-        () async {
-          adapter.itemsBodyOverride = <String, Object?>{
-            'items': <Object?>[42],
-          };
+      test('item not a map maps to a LucentFailure', () async {
+        adapter.itemsBodyOverride = <String, Object?>{
+          'items': <Object?>[42],
+        };
 
-          final failure = await expectTaskLeft(dataSource.fetchActive());
+        final failure = await expectTaskLeft(dataSource.fetchActive());
 
-          expect(failure.kind, LucentFailureKind.unknown);
-          expect(failure.cause, isA<FormatException>());
-        },
-      );
+        expect(failure.kind, LucentFailureKind.network);
+        expect(failure.networkErrorCode, NetworkErrorCode.emptyResponse);
+      });
 
       test(
         'non-Problem Details error body propagates FormatException from run()',

@@ -3,14 +3,17 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/health_event/health_event.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/health_event/data/providers/health_event.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
+import 'package:luminous/shared/domain/failure.dart';
+
+import '../../../helpers/kv_test_store.dart';
 
 class _FakeHealthEventRepository implements HealthEventRepository {
   _FakeHealthEventRepository({this.event, this.failure});
@@ -122,11 +125,18 @@ class _FakeHealthEventRepository implements HealthEventRepository {
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   @override
-  AuthSessionState build() =>
-      AuthSessionState(isAuthenticated: true, user: _testUser);
+  AuthSessionState build() => AuthSessionState(
+    isAuthenticated: true,
+    user: _testUser,
+    userSnapshot: _testUser.toSessionSnapshot(),
+  );
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   test('loads active event data and supports explicit refresh', () async {
     final repository = _FakeHealthEventRepository(event: _event);
     final container = ProviderContainer(
@@ -163,7 +173,13 @@ void main() {
 
     await expectLater(
       container.read(activeHealthEventProvider.future),
-      throwsA(same(failure)),
+      throwsA(
+        isA<LucentFailureException>().having(
+          (error) => error.failure,
+          'failure',
+          same(failure),
+        ),
+      ),
     );
     expect(container.read(activeHealthEventProvider).hasError, isTrue);
   });
@@ -227,6 +243,7 @@ void main() {
       container.read(authSessionProvider.notifier).state = AuthSessionState(
         isAuthenticated: true,
         user: _otherTestUser,
+        userSnapshot: _otherTestUser.toSessionSnapshot(),
       );
       pending.complete(_event);
       await refresh;
@@ -370,6 +387,7 @@ void _switchToOtherUser(ProviderContainer container) {
   container.read(authSessionProvider.notifier).state = AuthSessionState(
     isAuthenticated: true,
     user: _otherTestUser,
+    userSnapshot: _otherTestUser.toSessionSnapshot(),
   );
 }
 

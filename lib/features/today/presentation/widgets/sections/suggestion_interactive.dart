@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
@@ -250,7 +249,7 @@ class AiExplainContent extends StatelessWidget {
               Icon(
                 explanation.aiGenerated
                     ? SemanticIcons.aiGenerated
-                    : SemanticIcons.statusInfo,
+                    : SemanticIcons.statusRuleBased,
                 size: IconSizeTokens.sm,
                 color: explanation.aiGenerated
                     ? SemanticColor.primary.solid(context)
@@ -308,7 +307,7 @@ class AiExplainUnavailable extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            SemanticIcons.statusInfo,
+            SemanticIcons.statusRetryExhausted,
             size: IconSizeTokens.sm,
             color: SemanticColor.neutral.solid(context),
           ),

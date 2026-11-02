@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -284,7 +285,7 @@ TodayAiSummaryCardContent buildAiCardContent({
     return TodayAiSummaryCardContent(
       bullets: [
         TodayAiSummaryItem(
-          icon: SemanticIcons.aiEntry,
+          icon: SemanticIcons.aiPermissionHint,
           color: SemanticColor.primary,
           text: l10n.todayAiSummaryPreviewHint,
         ),
@@ -311,7 +312,7 @@ TodayAiSummaryCardContent buildAiCardContent({
     return TodayAiSummaryCardContent(
       bullets: [
         TodayAiSummaryItem(
-          icon: SemanticIcons.aiEntry,
+          icon: SemanticIcons.aiEmptyAnalysis,
           color: SemanticColor.primary,
           text: l10n.todayAnalysisEmptyTitle,
         ),
@@ -408,7 +409,7 @@ List<TodayQuickActionItem> buildQuickActionItems(
 
   return [
     TodayQuickActionItem(
-      icon: SemanticIcons.doseTaken,
+      icon: SemanticIcons.statusComplete,
       title: l10n.todayQuickActionConfirmTitle,
       subtitle: confirmSubtitle,
       route: Routes.medicine,

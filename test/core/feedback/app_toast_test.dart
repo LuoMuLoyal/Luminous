@@ -6,6 +6,7 @@ import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 /// Builds a Forui-aware test shell so the toast widget can resolve its theme.
@@ -43,6 +44,10 @@ Widget _toastShell(Widget child) {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('Toast.show — graceful degradation', () {
     testWidgets('returns false when no FToaster ancestor exists', (
       tester,

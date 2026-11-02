@@ -193,7 +193,7 @@ class _AttachmentPreview extends StatelessWidget {
               errorWidget: (context, url, error) =>
                   const _PreviewFallback(icon: SemanticIcons.statusUnavailable),
             ),
-            _ => const _PreviewFallback(icon: SemanticIcons.actionAdd),
+            _ => const _PreviewFallback(icon: SemanticIcons.actionAddImage),
           },
         ),
       ),

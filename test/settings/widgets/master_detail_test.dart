@@ -3,11 +3,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/settings/presentation/widgets/master_detail.dart';
 
+import '../../helpers/kv_test_store.dart';
 // ignore_for_file: prefer_const_constructors
 
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('MasterNavItem', () {
     testWidgets('renders label and icon', (tester) async {
       await tester.pumpWidget(

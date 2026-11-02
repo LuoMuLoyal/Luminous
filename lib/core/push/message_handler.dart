@@ -4,73 +4,63 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
+import 'package:luminous/core/push/event_handlers.dart';
 import 'package:luminous/core/push/jpush_gateway.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
-import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
+
+export 'package:luminous/core/push/event_handlers.dart';
 
 /// Maps a remote notification to the existing in-app destination.
 String routeForPushEvent(Map<String, dynamic> event) {
   // Keep the action-specific branch explicit so new push actions can add
   // destinations without changing the coordinator or gateway contracts.
-  final action = JpushGateway.extrasFrom(event)['action'];
+  final action = pushActionOf(event);
   switch (action) {
-    case 'ai_today_summary':
+    case PushAction.aiTodaySummary:
       return Routes.home;
-    case 'medicine_reminder':
+    case PushAction.medicineReminder:
     default:
       return Routes.notifications;
   }
 }
 
-/// Connects JPush events to notification cache invalidation and navigation.
+/// Connects JPush events to the registered [PushEventHandlers] and to the
+/// foreground AI-summary stream.
+///
+/// Core no longer imports `features/notification` or `features/today`; the
+/// feature-backed behaviour (unread-count invalidation, today analysis
+/// invalidation) is registered by `lib/app/push_handlers.dart`.
 class PushMessageHandler {
   PushMessageHandler({
     required this.gateway,
-    required this.invalidateUnread,
+    required this.handlers,
+    required this.emitAiSummary,
     required this.navigate,
-    required this.invalidateTodayAnalysis,
   });
 
   final JpushGateway gateway;
-  final void Function() invalidateUnread;
+  final PushEventHandlers handlers;
+  final void Function(Map<String, dynamic> event) emitAiSummary;
   final void Function(String route) navigate;
-  final void Function() invalidateTodayAnalysis;
 
   StreamSubscription<Map<String, dynamic>>? _receiveSubscription;
   StreamSubscription<Map<String, dynamic>>? _openSubscription;
 
-  final StreamController<Map<String, dynamic>>
-  _foregroundAiTodaySummaryController =
-      StreamController<Map<String, dynamic>>.broadcast();
-
-  /// Foreground push events with action `ai_today_summary`, suitable for
-  /// showing an in-app toast/banner.
-  Stream<Map<String, dynamic>> get foregroundAiTodaySummaryEvents =>
-      _foregroundAiTodaySummaryController.stream;
-
   void start() {
     if (_receiveSubscription != null) return;
-    _receiveSubscription = gateway.receiveEvents.listen((event) {
-      invalidateUnread();
-      _handleReceiveEvent(event);
-    });
-    _openSubscription = gateway.openEvents.listen((event) {
-      invalidateUnread();
-      navigate(routeForPushEvent(event));
-    });
+    _receiveSubscription = gateway.receiveEvents.listen(_handleReceiveEvent);
+    _openSubscription = gateway.openEvents.listen(handleOpenEvent);
   }
 
   void _handleReceiveEvent(Map<String, dynamic> event) {
-    final action = JpushGateway.extrasFrom(event)['action'];
-    if (action == 'ai_today_summary') {
-      invalidateTodayAnalysis();
-      _foregroundAiTodaySummaryController.add(event);
+    handlers.onReceive(event);
+    if (pushActionOf(event) == PushAction.aiTodaySummary) {
+      emitAiSummary(event);
     }
   }
 
   /// Public entry point used by [PushCoordinator] for cold-start open events.
   void handleOpenEvent(Map<String, dynamic> event) {
-    invalidateUnread();
+    handlers.onOpen(event);
     navigate(routeForPushEvent(event));
   }
 
@@ -79,7 +69,6 @@ class PushMessageHandler {
     await _openSubscription?.cancel();
     _receiveSubscription = null;
     _openSubscription = null;
-    await _foregroundAiTodaySummaryController.close();
   }
 }
 
@@ -91,10 +80,9 @@ final jpushGatewayProvider = Provider<JpushGateway>((ref) {
 final pushMessageHandlerProvider = Provider<PushMessageHandler>((ref) {
   final handler = PushMessageHandler(
     gateway: ref.watch(jpushGatewayProvider),
-    invalidateUnread: () => ref.invalidate(notificationUnreadCountProvider),
+    handlers: ref.watch(pushEventHandlersProvider),
+    emitAiSummary: (event) => ref.read(aiSummarySinkProvider).add(event),
     navigate: (route) => ref.read(appRouterProvider).go(route),
-    invalidateTodayAnalysis: () =>
-        ref.invalidate(todayAiAnalysisControllerProvider),
   );
   handler.start();
   ref.onDispose(handler.dispose);
@@ -102,10 +90,17 @@ final pushMessageHandlerProvider = Provider<PushMessageHandler>((ref) {
 });
 
 /// Foreground push events with action `ai_today_summary`.
-final aiTodaySummaryPushEventsProvider = StreamProvider<Map<String, dynamic>>(
-  (ref) => ref.watch(pushMessageHandlerProvider).foregroundAiTodaySummaryEvents,
-);
+final aiTodaySummaryPushEventsProvider = StreamProvider<Map<String, dynamic>>((
+  ref,
+) {
+  final sink = ref.watch(aiSummarySinkProvider);
+  final controller = StreamController<Map<String, dynamic>>.broadcast();
+  sink.attach(controller.add);
+  ref.onDispose(controller.close);
+  return controller.stream;
+});
 
+/// Routes local-notification taps through the registered push handlers.
 final localNotificationRouterProvider = Provider<void>((ref) {
   final gateway = ref.watch(localNotificationGatewayProvider);
   final subscription = gateway.tapEvents.listen((response) {
@@ -121,9 +116,8 @@ final localNotificationRouterProvider = Provider<void>((ref) {
     if (decoded is! Map<String, dynamic>) return;
 
     final action = decoded['action'];
-    if (action == 'ai_today_summary') {
-      ref.invalidate(notificationUnreadCountProvider);
-      ref.invalidate(todayAiAnalysisControllerProvider);
+    if (action == PushAction.aiTodaySummary) {
+      ref.read(pushEventHandlersProvider).onOpen(decoded);
       ref.read(appRouterProvider).go(Routes.home);
     }
   });

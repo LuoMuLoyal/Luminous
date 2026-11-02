@@ -8,23 +8,26 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart' as api;
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/auth/auth.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_action_view.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/data/services/avatar_uploader.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/providers/account.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/settings/presentation/pages/profile.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 class _MockFilesApi extends Mock implements api.FilesApi {}
@@ -32,6 +35,10 @@ class _MockFilesApi extends Mock implements api.FilesApi {}
 class _MockDio extends Mock implements Dio {}
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   testWidgets('Profile avatar row opens the actions dialog', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(393, 852);
@@ -269,7 +276,7 @@ void main() {
       expect(remote.updateProfileAvatar, _uploadedAvatarUrl);
       // ……并且它就是头像渲染的取值来源(provider 与行的入参都要跟上)。
       expect(
-        container.read(authSessionProvider).user?.avatar,
+        container.read(authSessionProvider).userSnapshot?.avatar,
         _uploadedAvatarUrl,
       );
       expect(_rowAvatarUrl(tester), _uploadedAvatarUrl);
@@ -333,7 +340,7 @@ void main() {
       expect(uploaded, isFalse);
       expect(container.read(authAccountProvider).error, isNotNull);
       expect(remote.updateProfileAvatar, isNull);
-      expect(container.read(authSessionProvider).user?.avatar, isNull);
+      expect(container.read(authSessionProvider).userSnapshot?.avatar, isNull);
       expect(_rowAvatarUrl(tester), isNull);
       verifyNever(
         () => dio.put<dynamic>(
@@ -401,6 +408,7 @@ ProviderContainer _container({
 }) {
   final container = ProviderContainer(
     overrides: [
+      userSettingsDaoProvider.overrideWithValue(_FakeUserSettingsDao()),
       if (remote != null) authRepositoryProvider.overrideWithValue(remote),
       if (repository != null)
         healthContextRepositoryProvider.overrideWithValue(repository),
@@ -553,3 +561,21 @@ const _snapshot = HealthContextSnapshot(
   conditions: [],
   currentMedicines: [],
 );
+
+/// Always a cache miss, so the repository exercises the API path.
+class _FakeUserSettingsDao implements UserSettingsDao {
+  @override
+  Future<String?> fetch() async => null;
+
+  @override
+  Future<void> replace(String json) async {}
+
+  @override
+  Future<void> invalidate() async {}
+
+  @override
+  Future<int> cleanup(DateTime cutoff) async => 0;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}

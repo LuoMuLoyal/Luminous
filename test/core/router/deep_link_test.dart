@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/router/deep_link.dart';
 import 'package:luminous/core/router/deep_link_source.dart';
+import '../../helpers/kv_test_store.dart';
 
 /// Collects the non-null URIs emitted by [deepLinkStreamProvider].
 List<Uri> _uris(ProviderContainer container) {
@@ -14,6 +15,10 @@ List<Uri> _uris(ProviderContainer container) {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('isAcceptedDeepLink', () {
     test('accepts any host when none is configured', () {
       expect(

@@ -31,7 +31,7 @@ class ReviewSectionCard extends StatelessWidget {
                 ExcludeSemantics(
                   child: Icon(
                     icon,
-                    size: Spacing.xl,
+                    size: IconSizeTokens.sm,
                     color: SemanticColor.primary.solid(context),
                   ),
                 ),
@@ -70,7 +70,7 @@ class ReviewUnknownReason extends StatelessWidget {
       children: [
         Icon(
           SemanticIcons.statusInfo,
-          size: Spacing.lg,
+          size: IconSizeTokens.sm,
           color: SemanticColor.neutral.solid(context),
         ),
         const SizedBox(width: Spacing.sm),
@@ -104,7 +104,7 @@ class ReviewFactRow extends StatelessWidget {
           ExcludeSemantics(
             child: Icon(
               icon,
-              size: Spacing.lg,
+              size: IconSizeTokens.sm,
               color: SemanticColor.neutral.solid(context),
             ),
           ),

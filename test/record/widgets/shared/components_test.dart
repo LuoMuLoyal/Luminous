@@ -5,9 +5,14 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/components.dart';
 
+import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('RecordHeaderActionChip', () {
     Future<void> pumpChip(
       WidgetTester tester, {

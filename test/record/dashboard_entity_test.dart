@@ -93,7 +93,7 @@ void main() {
     test('locked defaults to false', () {
       const action = RecordQuickAction(
         type: RecordEntryType.meal,
-        icon: SemanticIcons.recordMeal,
+        iconName: 'utensils',
         titleKey: RecordCopyKey.typeMeal,
         subtitleKey: RecordCopyKey.summaryTimesUnit,
         accent: SemanticColor.primary,
@@ -108,7 +108,7 @@ void main() {
       const filter = RecordFilter(
         type: RecordEntryType.water,
         titleKey: RecordCopyKey.typeWater,
-        icon: SemanticIcons.recordWater,
+        iconName: 'droplets',
         accent: SemanticColor.primary,
         selected: false,
       );

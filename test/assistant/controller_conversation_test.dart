@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/providers/channel.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/utils/message_id.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../helpers/kv_test_store.dart';
 import 'controller_test_helpers.dart';
 
 void main() {
@@ -17,7 +17,7 @@ void main() {
     test(
       'confirmProposedAction confirms on the backend and emits dailyRecords',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final proposal = createDailyRecordProposal(id: 'proposal-1');
         final assistantMessage = buildAssistantMessage(
           content: '建议：记录喝水。',
@@ -71,7 +71,7 @@ void main() {
     test(
       'confirmProposedAction emits userSettings for settings proposals',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final proposal = updateUserSettingsProposal(id: 'proposal-settings-1');
         final assistantMessage = buildAssistantMessage(
           content: '建议：关闭记忆。',
@@ -113,7 +113,7 @@ void main() {
     test(
       'confirmProposedAction marks the proposal failed and rethrows',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final proposal = createDailyRecordProposal(id: 'proposal-1');
         final assistantMessage = buildAssistantMessage(
           content: '建议：记录喝水。',
@@ -138,7 +138,7 @@ void main() {
             messageId: messageIdFor(state.messages.last),
             proposalId: 'proposal-1',
           ),
-          throwsA(isA<LucentFailure>()),
+          throwsA(isA<LucentFailureException>()),
         );
 
         final updated = container.read(assistantControllerProvider);
@@ -153,47 +153,51 @@ void main() {
       },
     );
 
-    test(
-      'confirmProposedAction throws without a persisted conversation',
-      () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
-        final fake = FakeAssistantRepository(
-          streamOverride: Stream<AssistantGenerationEvent>.fromIterable([
-            AssistantGenerationResultEvent(
-              conversationId: '',
-              message: buildAssistantMessage(
-                content: '建议：记录喝水。',
-                proposedActions: <AssistantProposedAction>[
-                  createDailyRecordProposal(id: 'proposal-1'),
-                ],
-              ),
+    test('confirmProposedAction marks the proposal failed without a persisted '
+        'conversation', () async {
+      KvTestStore.install(seed: const <String, Object>{});
+      final fake = FakeAssistantRepository(
+        streamOverride: Stream<AssistantGenerationEvent>.fromIterable([
+          AssistantGenerationResultEvent(
+            conversationId: '',
+            message: buildAssistantMessage(
+              content: '建议：记录喝水。',
+              proposedActions: <AssistantProposedAction>[
+                createDailyRecordProposal(id: 'proposal-1'),
+              ],
             ),
-          ]),
-        );
-        final container = buildContainer(fake);
-        addTearDown(container.dispose);
-
-        final controller = container.read(assistantControllerProvider.notifier);
-        await controller.loadCapabilities();
-        await controller.loadLatestConversation();
-        await controller.sendMessage('帮我记一杯水');
-
-        final state = container.read(assistantControllerProvider);
-        expect(state.conversationId, isNull);
-
-        await expectLater(
-          controller.confirmProposedAction(
-            messageId: messageIdFor(state.messages.last),
-            proposalId: 'proposal-1',
           ),
-          throwsA(isA<StateError>()),
-        );
-        expect(fake.confirmCalls, isEmpty);
-      },
-    );
+        ]),
+      );
+      final container = buildContainer(fake);
+      addTearDown(container.dispose);
+
+      final controller = container.read(assistantControllerProvider.notifier);
+      await controller.loadCapabilities();
+      await controller.loadLatestConversation();
+      await controller.sendMessage('帮我记一杯水');
+
+      final state = container.read(assistantControllerProvider);
+      expect(state.conversationId, isNull);
+
+      await expectLater(
+        controller.confirmProposedAction(
+          messageId: messageIdFor(state.messages.last),
+          proposalId: 'proposal-1',
+        ),
+        completes,
+      );
+      expect(fake.confirmCalls, isEmpty);
+      final proposal = container
+          .read(assistantControllerProvider)
+          .messages
+          .expand((message) => message.proposedActions)
+          .singleWhere((item) => item.id == 'proposal-1');
+      expect(proposal.executionState, AssistantProposalExecutionState.failed);
+    });
 
     test('renameConversation updates the title optimistically', () async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final now = DateTime(2026, 6, 1);
       final fake = FakeAssistantRepository()
         ..recentList = <AssistantConversationSummary>[
@@ -229,7 +233,7 @@ void main() {
     test(
       'renameConversation ignores a concurrent rename for the same conversation',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final now = DateTime(2026, 6, 1);
         final fake = FakeAssistantRepository()
           ..recentList = <AssistantConversationSummary>[
@@ -281,7 +285,7 @@ void main() {
     test(
       'renameConversation rolls back the title and rethrows on failure',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final now = DateTime(2026, 6, 1);
         final fake = FakeAssistantRepository()
           ..recentList = <AssistantConversationSummary>[
@@ -307,7 +311,7 @@ void main() {
             conversationId: 'c1',
             title: 'New title',
           ),
-          throwsA(isA<LucentFailure>()),
+          throwsA(isA<LucentFailureException>()),
         );
 
         final rolledBack = container
@@ -321,7 +325,7 @@ void main() {
     test(
       'deleteConversation clears the current conversation and falls back to latest',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final now = DateTime(2026, 6, 1);
         final fake =
             FakeAssistantRepository(
@@ -384,7 +388,7 @@ void main() {
     test(
       'deleteConversation loads the next latest when the deleted one was current',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final now = DateTime(2026, 6, 1);
         final fake =
             FakeAssistantRepository(
@@ -442,7 +446,7 @@ void main() {
     test(
       'deleteConversation keeps the current conversation when deleting another',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final now = DateTime(2026, 6, 1);
         final message = AssistantMessage(
           role: AssistantMessageRole.user,
@@ -498,7 +502,7 @@ void main() {
     test(
       'clearConversation exposes isClearingConversation while archiving',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final fake = FakeAssistantRepository();
         final gate = Completer<bool>();
         fake.clearGate = gate;
@@ -527,7 +531,7 @@ void main() {
     test(
       'clearConversation resets isClearingConversation on failure',
       () async {
-        SharedPreferences.setMockInitialValues(const <String, Object>{});
+        KvTestStore.install(seed: const <String, Object>{});
         final fake = FakeAssistantRepository()..throwOnClear = true;
         final container = buildContainer(fake);
         addTearDown(container.dispose);
@@ -547,7 +551,7 @@ void main() {
 
   group('AssistantController.classifySendError', () {
     AssistantController buildController() {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      KvTestStore.install(seed: const <String, Object>{});
       final container = buildContainer(FakeAssistantRepository());
       addTearDown(container.dispose);
       return container.read(assistantControllerProvider.notifier);

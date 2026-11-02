@@ -31,11 +31,11 @@ updated: 2026-10-03
 
 ## 产品表面
 
-- 移动端是当前产品表面。
+- 移动端、桌面端与手表端均为已实现表面；**桌面端与手机端地位平等**，共用同一套 Flutter + KMP 客户端、设计语言与业务语义，差异体现在布局与密度（见 [ADR-0008](../reference/adr/0008-desktop-independent-web-product-route.md)）；手表端是独立的 Wear OS 应用（`../Luminous-watch`）。
 - 底部 tab 为 `today / record / medicine / review / mine` 五个运行时入口；`report` 的用户任务和名称已改为「回顾」（review，`lib/features/review/`、`Routes.review`），`/report` 保留为兼容路由。
-- 现有 Flutter Web 应用保持当前维护边界；未来 Web 产品承担大屏纵向洞察，采用 Next.js + Tauri 2 路线（见 [ADR-0008](../reference/adr/0008-desktop-independent-web-product-route.md)），完成实现前不扩展认证产品壳或追求功能对等。
+- 现有 Flutter Web 应用保持当前维护边界。
 - `Luminous-site` 当前是竞赛/营销首页，不做签入式报告预览。
-- 现有 Flutter 桌面端保留，当前只维护共享代码回归；这不是永久放弃桌面产品。桌面产品由 Tauri 2 承载 Web 大屏体验，客户端归属 Luminary、后端能力由 Lucent 提供（见 ADR-0008）；具体用户任务与数据边界待实现时决策。
+- 桌面端与手机端共用同一个 Flutter + KMP 客户端与 Lucent 后端；桌面专属的布局与交互在 `lib/features/shell/` 承载。任一端的改动需同时覆盖另一端，两端互不阻塞发布。
 
 ## 工作阶段总纲
 

@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/features/review/presentation/utils/icons.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -30,7 +31,7 @@ class ReviewExportSection extends StatelessWidget {
   double _exportCardHeight(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     if (width >= Breakpoints.desktop) return 124;
-    if (width >= Breakpoints.tablet) return 112;
+    if (width >= Breakpoints.expanded) return 112;
     return 104;
   }
 
@@ -132,13 +133,10 @@ class _ExportCard extends StatelessWidget {
           padding: const EdgeInsets.all(Spacing.lg),
           child: Row(
             children: [
-              FAvatar.raw(
-                size: Spacing.xl4,
-                child: Icon(
-                  action.icon,
-                  color: action.color.solid(context),
-                  size: Spacing.xl,
-                ),
+              Icon(
+                reviewIcon(action.iconName),
+                color: action.color.solid(context),
+                size: IconSizeTokens.lg,
               ),
               const SizedBox(width: Spacing.lg),
               Expanded(

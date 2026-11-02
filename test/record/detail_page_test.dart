@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -17,9 +17,10 @@ import 'package:luminous/features/record/presentation/pages/detail.dart';
 import 'package:luminous/features/settings/data/repositories/lucent.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../auth/test_helpers.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 class _FakeRepo extends DailyRecordRepository {
@@ -262,7 +263,7 @@ void main() {
   testWidgets('RecordDetailPage loads and displays record when authenticated', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       ProviderScope(
@@ -301,7 +302,7 @@ void main() {
   testWidgets('water detail shows daily progress and adjacent navigation', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _WaterFakeRepo();
 
     await tester.pumpWidget(
@@ -362,7 +363,7 @@ void main() {
 
   testWidgets('water detail reads daily water target from user-settings '
       '(waterTargetCount × 250 ml)', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _WaterFakeRepo();
 
     await tester.pumpWidget(
@@ -403,15 +404,15 @@ void main() {
     expect(find.text('今日饮水'), findsOneWidget);
     expect(find.text('550 / 3000 ml'), findsOneWidget);
 
-    final progress = tester.widget<LinearProgressIndicator>(
-      find.byType(LinearProgressIndicator),
+    final progress = tester.widget<FDeterminateProgress>(
+      find.byType(FDeterminateProgress),
     );
     expect(progress.value, closeTo(550 / 3000, 0.0001));
   });
 
   testWidgets('water detail falls back to the default target when '
       'user-settings are unavailable', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _WaterFakeRepo();
 
     await tester.pumpWidget(
@@ -457,7 +458,7 @@ void main() {
   testWidgets('water detail shows fl oz totals when unit system is imperial', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _WaterFakeRepo();
 
     await tester.pumpWidget(
@@ -500,15 +501,15 @@ void main() {
     expect(find.text('18.6 / 67.6 fl oz'), findsOneWidget);
     expect(find.text('550 / 2000 ml'), findsNothing);
 
-    final progress = tester.widget<LinearProgressIndicator>(
-      find.byType(LinearProgressIndicator),
+    final progress = tester.widget<FDeterminateProgress>(
+      find.byType(FDeterminateProgress),
     );
     expect(progress.value, closeTo(550 / 2000, 0.0001));
   });
 
   testWidgets('water detail falls back to metric when the health snapshot is '
       'unavailable', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _WaterFakeRepo();
 
     await tester.pumpWidget(
@@ -553,7 +554,7 @@ void main() {
 
   testWidgets('meal detail retries a failed analysis by re-submitting the '
       'existing image', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _FakeRepo();
     final container = ProviderContainer(
       overrides: [
@@ -625,7 +626,7 @@ void main() {
 
   testWidgets('meal detail retry failure keeps the retry action and shows '
       'an error toast', (tester) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final repo = _FakeRepo()..updateThrows = true;
 
     await tester.pumpWidget(

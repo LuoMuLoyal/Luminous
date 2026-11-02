@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/api_paths.dart';
-import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/providers/network/network_client.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/review/presentation/providers/clinic_summary.dart';
 import 'package:luminous/features/review/presentation/utils/pdf_download.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/clinic_summary_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Public page that displays a shared clinic summary by token.
 ///

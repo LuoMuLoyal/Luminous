@@ -1,0 +1,121 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/sync/worker.dart';
+import 'package:luminous/core/network/client/client_providers.dart';
+import 'package:luminous/core/network/contract/failure.dart';
+import 'package:luminous/features/record/data/datasources/record.dart';
+import 'package:luminous/features/record/data/repositories/lucent_daily.dart';
+import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'record_access.g.dart';
+
+@riverpod
+DailyRecordRemoteDataSource dailyRecordRemoteDataSource(Ref ref) {
+  final api = ref.watch(lucentClientProvider).dailyRecords;
+  final dio = ref.watch(lucentDioClientProvider).dio;
+  return DailyRecordRemoteDataSource(api: api, dio: dio);
+}
+
+@riverpod
+DailyRecordRepository dailyRecordRepository(Ref ref) {
+  final dataSource = ref.watch(dailyRecordRemoteDataSourceProvider);
+  final dao = ref.watch(dailyRecordDaoProvider);
+  final summaryDao = ref.watch(dailyRecordSummaryDaoProvider);
+  final pendingSyncDao = ref.watch(pendingSyncDaoProvider);
+  final syncWorker = ref.watch(syncWorkerProvider);
+
+  // Register replay handler for daily_record entity type
+  syncWorker.registerHandler('daily_record', (entry) async {
+    final payload = jsonDecode(entry.payload) as Map<String, dynamic>;
+
+    // 队列条目由本地乐观写入产生，entityId 缺失说明本地状态已损坏；
+    // 直接跳过该条而不是抛 TypeError 中断整批重放（坏数据不得升级为崩溃）。
+    final entityId = entry.entityId;
+    if (entityId == null) return;
+
+    switch (entry.operation) {
+      case 'create':
+        // Replay create: reconstruct input from the optimistic item JSON
+        final item = DailyRecordItem.fromJson(jsonDecode(entry.payload));
+        final input = DailyRecordCreateInput(
+          kind: item.kind,
+          occurredAt: item.occurredAt,
+          occurredTime: item.occurredTime,
+          title: item.title,
+          value: item.value,
+          unit: item.unit,
+          note: item.note,
+          payload: item.payload,
+        );
+        final remote = await dataSource.create(input);
+        // Replace optimistic copy with confirmed server response
+        await dao.confirmSync(entityId, jsonEncode(remote.toJson()));
+
+      case 'delete':
+        await dataSource.delete(entityId);
+        await dao.deleteById(entityId);
+
+      case 'update':
+        // For update, we only have the ID in payload — fetch latest and re-apply
+        // This is a best-effort replay; full update replay requires storing
+        // the original input in the payload.
+        final id = payload['id'] as String;
+        // The remote already has the latest state if the update partially succeeded;
+        // we just need to ensure local cache is in sync.
+        await dao.deleteById(id);
+    }
+  });
+
+  return LucentDailyRecordRepository(
+    dataSource: dataSource,
+    dao: dao,
+    summaryDao: summaryDao,
+    pendingSyncDao: pendingSyncDao,
+    syncWorker: syncWorker,
+  );
+}
+
+@Riverpod(keepAlive: true)
+Future<DailyRecordItem> dailyRecordDetail(Ref ref, String id) async {
+  final result = await ref
+      .watch(dailyRecordRepositoryProvider)
+      .get(id)
+      .run()
+      .timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => throw LucentFailure.network(
+          message: NetworkErrorCode.receiveTimeout.name,
+          networkErrorCode: NetworkErrorCode.receiveTimeout,
+        ),
+      );
+  // Left 投影到 AsyncValue.error。
+  return result.fold((failure) => throw failure, (value) => value);
+}
+
+/// Fetches the full daily-record list for [date] (formatted as a local date
+/// key), used by the record detail page for adjacent-record navigation and
+/// same-day water aggregation.
+final dailyRecordListForDateProvider =
+    FutureProvider.family<DailyRecordListData, DateTime>((ref, date) async {
+      final result = await ref
+          .watch(dailyRecordRepositoryProvider)
+          .fetchRecords(_localDateKey(date), pageSize: 200)
+          .run();
+      // Left 投影到 AsyncValue.error。
+      return result.fold((failure) => throw failure, (data) => data);
+    });
+
+/// Formats [date] as `yyyy-MM-dd` in local time, matching the daily-record
+/// wire contract.
+String _localDateKey(DateTime date) {
+  final d = DateTime(date.year, date.month, date.day);
+  return '${d.year.toString().padLeft(4, '0')}-'
+      '${d.month.toString().padLeft(2, '0')}-'
+      '${d.day.toString().padLeft(2, '0')}';
+}

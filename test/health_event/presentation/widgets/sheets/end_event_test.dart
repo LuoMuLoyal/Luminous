@@ -3,9 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/presentation/widgets/sheets/end_event.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Widget buildApp({
     required Future<void> Function(HealthEventOutcome outcome) onSubmit,
   }) {

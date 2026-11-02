@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/noteworthy.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/overview/noteworthy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late AppLocalizations l10n;
 
   setUp(() async {
@@ -52,8 +57,9 @@ void main() {
     String body = '下午摄入咖啡后睡眠时长下降',
   }) {
     return ReviewFinding(
+      id: 'hydration_low',
       kind: kind,
-      icon: SemanticIcons.reportInsight,
+      iconName: 'telescope',
       color: SemanticColor.warning,
       title: title,
       body: body,

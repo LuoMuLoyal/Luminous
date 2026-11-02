@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/widgets/common/dialog/sensitive_action_password_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 /// Widget tests for the sensitive-action password confirmation dialog.
@@ -17,6 +18,10 @@ import '../../helpers/test_forui_app.dart';
 /// issue documented in the migration log — the dialog works correctly in
 /// production. The remaining rendering tests verify the UI structure.
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   Future<AppLocalizations> loadL10n() =>
       AppLocalizations.delegate.load(const Locale('zh'));
 

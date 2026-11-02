@@ -81,7 +81,7 @@ class _AssistantConversationDrawerState
   Widget build(BuildContext context) {
     final width =
         widget.width ??
-        (MediaQuery.sizeOf(context).width < Breakpoints.tablet
+        (MediaQuery.sizeOf(context).width < Breakpoints.expanded
             ? MediaQuery.sizeOf(context).width * 0.85
             : 320.0);
 
@@ -107,7 +107,7 @@ class _AssistantConversationDrawerState
                         context,
                         style,
                         variants,
-                        const Icon(FLucideIcons.search),
+                        const Icon(SemanticIcons.actionSearch),
                       ),
                 ),
                 onNewConversation: widget.onNewConversation,

@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 /// Domain interface for medicine risk check records.
 ///

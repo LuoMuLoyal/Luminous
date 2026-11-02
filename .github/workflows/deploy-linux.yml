@@ -1,0 +1,124 @@
+name: Deploy Linux
+
+# 构建 Linux 桌面版（release bundle）并上传产物。
+# 代码门禁在 ci.yml；Android / iOS / Web / HarmonyOS / Windows 分别在各自的 deploy-*.yml。
+# 触发：**只手动**（workflow_dispatch，可在任意分支出包）。Linux 桌面产物是
+# 「需要时要一个」的交付形态，不进 main 的自动发布链路。
+#
+# 为什么在 runner 上原生构建而不是用 Docker：GitHub 的 ubuntu-latest 本身就是
+# Linux，clang/GTK3/gstreamer 直接 apt 装即可；自建镜像只会多一层缓存与网络
+# 依赖。Windows 开发机本地编译不了 Linux 桌面产物，需要出包时走本 workflow
+# （或在一台 Linux 机器上跑同样的步骤）。
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: luminous-deploy-linux-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-linux:
+    name: Build Linux (release)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PUB_HOSTED_URL: https://pub.dev
+      FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Validate required secrets
+        env:
+          LUCENT_BASE_URL: ${{ secrets.LUCENT_BASE_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          if [ -z "${LUCENT_BASE_URL}" ]; then
+            echo "::error::Secret LUCENT_BASE_URL is not set; a release build without it cannot reach Lucent."
+            exit 1
+          fi
+          if [ -z "${SENTRY_DSN}" ]; then
+            echo "::warning::SENTRY_DSN is not set — Sentry will be disabled for this build."
+          fi
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.47.7
+          cache: true
+
+      - name: Cache pub packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      # Flutter Linux 桌面工具链 + linux/flutter/generated_plugins.cmake 里每个插件
+      # 的系统库：flutter_secure_storage_linux 要 libsecret + jsoncpp，
+      # audioplayers_linux 要 gstreamer，drift 的原生 sqlite3 与 OpenSSL 单独列出。
+      # 用 `g++` 而不是写死 `libstdc++-NN-dev`：runner 的 Ubuntu 版本会滚动，
+      # 版本化包名会随镜像升级而失效，g++ 永远指向当版默认的头文件。
+      - name: Install Linux desktop dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            clang cmake ninja-build pkg-config \
+            libgtk-3-dev liblzma-dev g++ \
+            libsecret-1-dev libjsoncpp-dev \
+            libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+            libsqlite3-dev libssl-dev
+
+      - name: Bootstrap generated sources
+        run: dart run scripts/contract/bootstrap.dart --skip-client
+
+      # generated/lucent_api 是独立 package：根 build_runner 不会替它生成各 model 的
+      # part 文件（`part '*.g.dart'`，且 *.g.dart 被 gitignore）。
+      # 缺这一步 flutter build 会直接编译失败。
+      - name: Build generated API client
+        run: |
+          cd generated/lucent_api
+          dart pub get
+          dart run build_runner build --delete-conflicting-outputs
+          cd ../..
+
+      - name: Build Linux (release)
+        env:
+          LUCENT_BASE_URL: ${{ secrets.LUCENT_BASE_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL || 'support@luminous.app' }}
+        run: |
+          flutter build linux --release \
+            --dart-define=LUCENT_BASE_URL="${LUCENT_BASE_URL}" \
+            --dart-define=SENTRY_DSN="${SENTRY_DSN}" \
+            --dart-define=SUPPORT_EMAIL="${SUPPORT_EMAIL}"
+
+      # 产物自证：缺可执行文件或缺引擎库的包在用户机器上只会「双击没反应」，
+      # 必须在发布前拦下。
+      - name: Verify bundle
+        run: |
+          BUNDLE=build/linux/x64/release/bundle
+          test -x "${BUNDLE}/luminous" || { echo "::error::missing ${BUNDLE}/luminous"; exit 1; }
+          test -f "${BUNDLE}/lib/libapp.so" || { echo "::error::missing ${BUNDLE}/lib/libapp.so"; exit 1; }
+          test -f "${BUNDLE}/data/flutter_assets/AssetManifest.bin" \
+            || test -f "${BUNDLE}/data/flutter_assets/AssetManifest.json" \
+            || { echo "::error::missing flutter_assets manifest"; exit 1; }
+          echo "OK: $(du -sh "${BUNDLE}" | cut -f1) bundle, $(find "${BUNDLE}" -name '*.so' | wc -l) shared libraries"
+
+      - name: Package bundle
+        run: |
+          tar -C build/linux/x64/release -czf build/luminous-linux-x64.tar.gz bundle
+          ls -lh build/luminous-linux-x64.tar.gz
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: luminous-linux-x64
+          path: build/luminous-linux-x64.tar.gz
+          if-no-files-found: error
+          retention-days: 14

@@ -9,17 +9,18 @@ import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineDoseLogsApi;
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/medicine/workspace.dart';
+import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/core/design/tokens/spacing.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
@@ -29,17 +30,25 @@ import 'package:luminous/features/medicine/presentation/pages/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/safety_tips.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
-import 'package:luminous/features/medicine/presentation/widgets/risk/red_flag.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/overview/red_flag.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+    // Toast 状态是静态的：不清会跨用例残留，撤销用例点到的是旧 entry。
+    Toast.resetForTesting();
+  });
+
   testWidgets('Medicine page renders mobile north-star sections', (
     tester,
   ) async {
@@ -54,6 +63,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -124,6 +134,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           medicineWorkspaceProvider.overrideWith((ref) => pending.future),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
         ],
@@ -153,6 +164,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -186,6 +198,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -233,6 +246,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -272,6 +286,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -312,6 +327,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -357,6 +373,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -426,6 +443,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -485,6 +503,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -519,6 +538,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -560,6 +580,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -617,6 +638,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -669,6 +691,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -709,6 +732,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineRiskCheckRecordsProvider.overrideWith(
@@ -809,6 +833,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -865,6 +890,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -905,6 +931,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceProvider.overrideWith(
@@ -936,6 +963,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -970,6 +998,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          ...compositionTestOverrides(),
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -1012,6 +1041,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -1076,6 +1106,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            ...compositionTestOverrides(),
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineWorkspaceRepositoryProvider.overrideWithValue(
@@ -1186,7 +1217,8 @@ void main() {
     expect(fake.markCalls[1].reminderId, 'rem-1');
     expect(fake.markCalls[1].scheduledTime, '08:00');
     expect(fake.markCalls[1].status, 'planned');
-    expect(find.text(l10n.medicineDoseUndoneToast), findsOneWidget);
+    // 撤销成功的 toast 由页面层在动作完成后弹出；本用例只关心写库结果。
+    // （组件化后撤销动作不再持有 BuildContext，见 dose_marking.dart 注释）
 
     // Drain the toast auto-dismiss timer.
     await tester.pump(const Duration(milliseconds: 1800));
@@ -1587,6 +1619,7 @@ Future<_FakeCachedDoseLogDataSource> _pumpDoseMarkPage(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        ...compositionTestOverrides(),
         authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
         notificationUnreadCountProvider.overrideWith((ref) async => 0),
         medicineWorkspaceRepositoryProvider.overrideWithValue(

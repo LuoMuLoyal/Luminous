@@ -1,11 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/record/data/utils/daily_record_json_codec.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 
 void main() {
-  group('DailyRecordJsonCodec', () {
+  group('DailyRecordItem JSON round-trip', () {
     DailyRecordItem createItem({
       String id = 'rec-001',
       DailyRecordKind kind = DailyRecordKind.water,
@@ -92,8 +91,8 @@ void main() {
           updatedAt: '2026-07-10T00:00:00.000Z',
         );
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
-        final restored = DailyRecordJsonCodec.itemFromJson(json);
+        final json = jsonEncode(item.toJson());
+        final restored = DailyRecordItem.fromJson(jsonDecode(json));
 
         expect(restored.id, 'rec-minimal');
         expect(restored.kind, DailyRecordKind.note);
@@ -114,8 +113,8 @@ void main() {
       test('round-trips a fully populated water record', () {
         final item = createItem();
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
-        final restored = DailyRecordJsonCodec.itemFromJson(json);
+        final json = jsonEncode(item.toJson());
+        final restored = DailyRecordItem.fromJson(jsonDecode(json));
 
         expect(restored.id, 'rec-001');
         expect(restored.kind, DailyRecordKind.water);
@@ -145,8 +144,8 @@ void main() {
           mealHeadline: '米饭配炒菜',
         );
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
-        final restored = DailyRecordJsonCodec.itemFromJson(json);
+        final json = jsonEncode(item.toJson());
+        final restored = DailyRecordItem.fromJson(jsonDecode(json));
 
         expect(restored.kind, DailyRecordKind.meal);
         expect(restored.mealAnalysisStatus, 'completed');
@@ -164,8 +163,8 @@ void main() {
           mealHeadline: null,
         );
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
-        final restored = DailyRecordJsonCodec.itemFromJson(json);
+        final json = jsonEncode(item.toJson());
+        final restored = DailyRecordItem.fromJson(jsonDecode(json));
 
         expect(restored.mealAnalysisStatus, 'failed');
         expect(restored.mealAnalysisFailureReason, 'image_too_blurry');
@@ -176,29 +175,34 @@ void main() {
         for (final kind in DailyRecordKind.values) {
           final item = createItem(id: 'kind-${kind.name}', kind: kind);
 
-          final json = DailyRecordJsonCodec.itemToJson(item);
-          final restored = DailyRecordJsonCodec.itemFromJson(json);
+          final json = jsonEncode(item.toJson());
+          final restored = DailyRecordItem.fromJson(jsonDecode(json));
 
           expect(restored.kind, kind, reason: 'Failed for kind: ${kind.name}');
         }
       });
 
-      test('unknown kind in JSON falls back to note', () {
+      test('unknown kind in JSON is rejected', () {
         final item = createItem();
-        final json = DailyRecordJsonCodec.itemToJson(item);
+        final json = jsonEncode(item.toJson());
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
         jsonMap['kind'] = 'nonexistent_kind';
         final modifiedJson = jsonEncode(jsonMap);
 
-        final restored = DailyRecordJsonCodec.itemFromJson(modifiedJson);
-        expect(restored.kind, DailyRecordKind.note);
+        // Cache payloads are written by this app, so an unknown enum value means
+        // the row is corrupt. Failing loudly is preferable to silently coercing
+        // it into an unrelated kind.
+        expect(
+          () => DailyRecordItem.fromJson(jsonDecode(modifiedJson)),
+          throwsA(isA<ArgumentError>()),
+        );
       });
 
       test('round-trips null payload', () {
         final item = createItem(payload: null);
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
-        final restored = DailyRecordJsonCodec.itemFromJson(json);
+        final json = jsonEncode(item.toJson());
+        final restored = DailyRecordItem.fromJson(jsonDecode(json));
 
         expect(restored.payload, isNull);
       });
@@ -213,8 +217,8 @@ void main() {
           mealCalorieBucket: 'medium',
         );
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
-        final restored = DailyRecordJsonCodec.itemFromJson(json);
+        final json = jsonEncode(item.toJson());
+        final restored = DailyRecordItem.fromJson(jsonDecode(json));
 
         expect(restored.mealHeadline, '油炸偏多');
         expect(restored.mealCalorieMin, 520);
@@ -224,7 +228,7 @@ void main() {
 
       test('reads a payload without meal projection keys as null', () {
         final item = createItem();
-        final json = DailyRecordJsonCodec.itemToJson(item);
+        final json = jsonEncode(item.toJson());
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
         jsonMap.remove('mealHeadline');
         jsonMap.remove('mealCalorieMin');
@@ -232,7 +236,7 @@ void main() {
         jsonMap.remove('mealCalorieBucket');
         final modifiedJson = jsonEncode(jsonMap);
 
-        final restored = DailyRecordJsonCodec.itemFromJson(modifiedJson);
+        final restored = DailyRecordItem.fromJson(jsonDecode(modifiedJson));
 
         expect(restored.mealHeadline, isNull);
         expect(restored.mealCalorieMin, isNull);
@@ -246,8 +250,8 @@ void main() {
         final attachment = createAttachment();
         final item = createItem(attachments: [attachment]);
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
-        final restored = DailyRecordJsonCodec.itemFromJson(json);
+        final json = jsonEncode(item.toJson());
+        final restored = DailyRecordItem.fromJson(jsonDecode(json));
 
         expect(restored.attachments, hasLength(1));
         final att = restored.attachments.first;
@@ -274,8 +278,8 @@ void main() {
         );
         final item = createItem(attachments: [attachment]);
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
-        final restored = DailyRecordJsonCodec.itemFromJson(json);
+        final json = jsonEncode(item.toJson());
+        final restored = DailyRecordItem.fromJson(jsonDecode(json));
 
         expect(restored.attachments, hasLength(1));
         final att = restored.attachments.first;
@@ -299,8 +303,8 @@ void main() {
           ],
         );
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
-        final restored = DailyRecordJsonCodec.itemFromJson(json);
+        final json = jsonEncode(item.toJson());
+        final restored = DailyRecordItem.fromJson(jsonDecode(json));
 
         expect(restored.attachments, hasLength(3));
         expect(restored.attachments[0].id, 'att-001');
@@ -310,29 +314,28 @@ void main() {
 
       test('null attachments in JSON defaults to empty list', () {
         final item = createItem();
-        final json = DailyRecordJsonCodec.itemToJson(item);
+        final json = jsonEncode(item.toJson());
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
         jsonMap.remove('attachments');
         final modifiedJson = jsonEncode(jsonMap);
 
-        final restored = DailyRecordJsonCodec.itemFromJson(modifiedJson);
+        final restored = DailyRecordItem.fromJson(jsonDecode(modifiedJson));
         expect(restored.attachments, isEmpty);
       });
 
-      test('unknown attachment kind falls back to image', () {
+      test('unknown attachment kind is rejected', () {
         final attachment = createAttachment();
         final item = createItem(attachments: [attachment]);
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
+        final json = jsonEncode(item.toJson());
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
         ((jsonMap['attachments'] as List)[0] as Map<String, dynamic>)['kind'] =
             'unknown_kind';
         final modifiedJson = jsonEncode(jsonMap);
 
-        final restored = DailyRecordJsonCodec.itemFromJson(modifiedJson);
         expect(
-          restored.attachments.first.kind,
-          DailyRecordAttachmentKind.image,
+          () => DailyRecordItem.fromJson(jsonDecode(modifiedJson)),
+          throwsA(isA<ArgumentError>()),
         );
       });
     });
@@ -341,7 +344,7 @@ void main() {
       test('produces valid JSON with all expected top-level keys', () {
         final item = createItem();
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
+        final json = jsonEncode(item.toJson());
         final map = jsonDecode(json) as Map<String, dynamic>;
 
         expect(map, containsPair('id', 'rec-001'));
@@ -367,7 +370,7 @@ void main() {
         final attachment = createAttachment();
         final item = createItem(attachments: [attachment]);
 
-        final json = DailyRecordJsonCodec.itemToJson(item);
+        final json = jsonEncode(item.toJson());
         final map = jsonDecode(json) as Map<String, dynamic>;
         final attMap =
             (map['attachments'] as List).first as Map<String, dynamic>;

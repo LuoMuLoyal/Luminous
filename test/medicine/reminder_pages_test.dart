@@ -7,17 +7,16 @@ import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/medicine/workspace.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/database.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/detail.dart';
@@ -26,16 +25,17 @@ import 'package:luminous/features/medicine/presentation/providers/medicine_detai
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('Medicine reminder detail renders schedule and dose logs', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _testApp(
@@ -100,7 +100,7 @@ void main() {
   testWidgets('Medicine reminder detail shows not found for missing medicine', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await tester.pumpWidget(
@@ -123,7 +123,7 @@ void main() {
   testWidgets('Medicine reminder detail shows generic error on load failure', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await tester.pumpWidget(
@@ -154,7 +154,7 @@ void main() {
   testWidgets('medicine card opens detail page when source is cn', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _testApp(
@@ -186,7 +186,7 @@ void main() {
   testWidgets('medicine card does not navigate when sourceRefId is null', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
 
     await tester.pumpWidget(
       _testApp(
@@ -208,7 +208,7 @@ void main() {
   testWidgets('Medicine reminder create page prompts to select medicine', (
     tester,
   ) async {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await tester.pumpWidget(

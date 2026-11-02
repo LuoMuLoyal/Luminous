@@ -15,6 +15,7 @@ import 'package:luminous/features/assistant/presentation/widgets/shared/loading_
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
 import 'package:luminous/features/assistant/presentation/widgets/source_strip.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 Widget _shell(Widget child) {
@@ -24,6 +25,10 @@ Widget _shell(Widget child) {
 const _disclaimerText = 'AI 回答仅供参考，不构成医疗建议；用药调整请咨询医生';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('AssistantToolChip', () {
     testWidgets('renders label', (tester) async {
       await tester.pumpWidget(

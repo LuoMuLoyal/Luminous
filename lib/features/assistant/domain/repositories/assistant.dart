@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 sealed class AssistantGenerationEvent {
   const AssistantGenerationEvent();

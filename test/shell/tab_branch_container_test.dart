@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/features/shell/presentation/tab_branch_container.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 
@@ -19,7 +19,7 @@ import '../helpers/test_helpers.dart';
 /// single-`int?` "transitioning from" field used to break.
 void main() {
   setUpAll(() {
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    KvTestStore.install(seed: const <String, Object>{});
   });
 
   /// A shell whose tab roots are trivial widgets, so the only thing under test

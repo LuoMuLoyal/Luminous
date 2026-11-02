@@ -4,26 +4,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
+import 'package:luminous/features/medicine/presentation/controllers/reminder_calendar.dart';
+import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
-import 'package:luminous/features/medicine/presentation/services/reminder_calendar.dart';
-import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/delete_dialog.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/detail_info_tiles.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/loading.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/log_panels.dart';
+import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/delete_dialog.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/detail_info_tiles.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/loading.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/log_panels.dart';
 import 'package:luminous/features/today/presentation/providers/user_timezone.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -55,8 +56,9 @@ class MedicineReminderDetailPage extends ConsumerWidget {
               session.isLoading
                   ? const ReminderLoading()
                   : AuthRequiredDialogGate(
-                      onLogin: () =>
-                          context.push(loginRouteForCurrentLocation(context)),
+                      onLogin: () => unawaited(
+                        context.push(loginRouteForCurrentLocation(context)),
+                      ),
                     ),
             ],
           ),
@@ -80,9 +82,11 @@ class MedicineReminderDetailPage extends ConsumerWidget {
                 data: (data) => _ReminderDetailBody(data: data),
                 loading: () => const ReminderLoading(),
                 error: (error, _) {
+                  // provider 抛的是 failure 通道的 LucentFailureException；
+                  // 用 mapper 还原出 failure 再按 code 判定（不解析 message）。
                   final isNotFound =
-                      error is StateError &&
-                      error.message == kMedicineReminderNotFoundCode;
+                      LucentErrorMapper.fromObject(error).code ==
+                      kMedicineReminderNotFoundCode;
                   return StateErrorView(
                     title: isNotFound
                         ? l10n.medicineReminderNotFoundTitle
@@ -238,7 +242,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                   color: isActive
                       ? SemanticColor.primary.solid(context)
                       : SemanticColor.neutral.solid(context),
-                  size: Spacing.xl,
+                  size: IconSizeTokens.sm,
                 ),
                 const SizedBox(width: Spacing.lg),
                 Expanded(
@@ -319,7 +323,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                 l10n,
                 reminders: reminders,
               ),
-              prefix: const Icon(SemanticIcons.actionCalendar),
+              prefix: const Icon(SemanticIcons.actionAddToCalendar),
               child: Text(l10n.medicineReminderAddToCalendarAction),
             ),
             const SizedBox(height: Spacing.lg),

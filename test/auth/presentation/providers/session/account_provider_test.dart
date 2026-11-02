@@ -2,23 +2,22 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/client_error_code.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
-import 'package:luminous/features/auth/presentation/providers/account.dart';
+import 'package:luminous/features/auth/presentation/providers/account/account.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../../../../helpers/kv_test_store.dart';
 import '../../../test_helpers.dart';
 
 /// Extends [FakeLucentAuthRepository] with overrides for methods used by
 /// [AuthAccountNotifier] that the base fake doesn't cover.
 class _AccountFakeRemote extends FakeLucentAuthRepository {
   bool fetchAccountCalled = false;
-  bool verifyEmailCalled = false;
 
   @override
   TaskEither<LucentFailure, AuthUser> fetchAccount() {
@@ -35,13 +34,6 @@ class _AccountFakeRemote extends FakeLucentAuthRepository {
       ),
     );
   }
-
-  @override
-  TaskEither<LucentFailure, void> verifyEmail({required String token}) {
-    verifyEmailCalled = true;
-    verifyEmailToken = token;
-    return TaskEither.right(null);
-  }
 }
 
 /// Fails account operations with a [DioException].
@@ -57,22 +49,6 @@ class _FailingAccountRemote extends _AccountFakeRemote {
           statusCode: 500,
           code: 'INTERNAL_SERVER_ERROR',
           detail: '服务器错误',
-        ),
-      );
-    }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
-  }
-
-  @override
-  TaskEither<LucentFailure, void> verifyEmail({required String token}) {
-    return TaskEither.tryCatch(() async {
-      throw DioException(
-        requestOptions: RequestOptions(path: '/verify-email'),
-        type: DioExceptionType.badResponse,
-        response: problemResponse(
-          path: '/verify-email',
-          statusCode: 400,
-          code: 'AUTH_VERIFY_TOKEN_INVALID',
-          detail: '验证链接无效或已过期',
         ),
       );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
@@ -263,6 +239,10 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('AuthAccountNotifier — sendVerificationCode', () {
     test('sets isSendingCode and cooldown on success', () async {
       final remote = _AccountFakeRemote();
@@ -314,55 +294,6 @@ void main() {
     });
   });
 
-  group('AuthAccountNotifier — verifyEmail', () {
-    test('returns true on success and refreshes user', () async {
-      final remote = _AccountFakeRemote();
-      final container = ProviderContainer(
-        overrides: [
-          authRepositoryProvider.overrideWithValue(remote),
-          authSessionProvider.overrideWith(
-            () => _SignedInAuthSessionNotifier(),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      final notifier = container.read(authAccountProvider.notifier);
-
-      final result = await notifier.verifyEmail(token: 'verify-token-1');
-
-      expect(result, isTrue);
-      expect(remote.verifyEmailCalled, isTrue);
-      expect(remote.verifyEmailToken, 'verify-token-1');
-      expect(remote.fetchAccountCalled, isTrue);
-      final state = container.read(authAccountProvider);
-      expect(state.isSubmitting, isFalse);
-      expect(state.successMessage, '');
-    });
-
-    test('returns false on failure', () async {
-      final remote = _FailingAccountRemote();
-      final container = ProviderContainer(
-        overrides: [
-          authRepositoryProvider.overrideWithValue(remote),
-          authSessionProvider.overrideWith(
-            () => _SignedInAuthSessionNotifier(),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      final notifier = container.read(authAccountProvider.notifier);
-
-      final result = await notifier.verifyEmail(token: 'invalid-token');
-
-      expect(result, isFalse);
-      final state = container.read(authAccountProvider);
-      expect(state.isSubmitting, isFalse);
-      expect(state.error, isNotNull);
-    });
-  });
-
   group('AuthAccountNotifier — updateProfile', () {
     test('returns true and applies user on success', () async {
       final remote = _AccountFakeRemote();
@@ -383,7 +314,7 @@ void main() {
       expect(result, isTrue);
       expect(remote.updateProfileNickname, 'NewName');
       final session = container.read(authSessionProvider);
-      expect(session.user?.nickname, 'NewName');
+      expect(session.userSnapshot?.nickname, 'NewName');
     });
 
     test('returns false on failure', () async {
@@ -454,7 +385,7 @@ void main() {
       expect(remote.changeEmailNewEmail, 'new@example.com');
       expect(remote.changeEmailCode, '123456');
       final session = container.read(authSessionProvider);
-      expect(session.user?.email, 'new@example.com');
+      expect(session.userSnapshot?.email, 'new@example.com');
     });
 
     test('returns false when not signed in', () async {

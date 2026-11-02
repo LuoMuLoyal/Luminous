@@ -7,18 +7,17 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/database/cache_constants.dart';
-import 'package:luminous/core/database/daos/review_dashboard.dart';
-import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/database/daos/review/review_dashboard.dart';
+import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/review/data/datasources/dashboard_remote.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/repositories/dashboard.dart';
+import 'package:luminous/shared/design/review_dashboard.dart';
 
 // 文件级 typedef:生成的 dashboard metrics 来源枚举名过长
 // (2026-09-03 审查 #4 纯可读性收口,不改行为)。
@@ -29,10 +28,15 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   LucentReviewDashboardRepository({
     required this.dataSource,
     required this.dao,
+    required this.style,
   });
 
   final ReviewDashboardRemoteDataSource dataSource;
   final ReviewDashboardDao dao;
+
+  /// Design tokens for the dashboard view models; supplied by the composition
+  /// root so this layer never imports `application/` or `core/design`.
+  final ReviewDashboardTokens style;
 
   DateTime? _lastRefresh;
 
@@ -59,7 +63,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
           _refreshInBackground(query, cacheKey);
           return dashboard;
         } on FormatException catch (e, st) {
-          appTalker.warning(
+          appLog.warning(
             'Review dashboard cache parse failed, falling back to network',
             e,
             st,
@@ -69,7 +73,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
           // Schema evolution (missing fields, type mismatches) throws
           // TypeError/RangeError — degrade to network instead of surfacing
           // an "unknown error" to the user.
-          appTalker.warning(
+          appLog.warning(
             'Review dashboard cache parse failed, falling back to network',
             e,
             st,
@@ -96,7 +100,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
       metrics: dto.metrics.map(_mapMetric).toList(growable: false),
       trends: dto.trends.map(_mapTrend).toList(growable: false),
       findings: findings,
-      exportActions: _exportActions,
+      exportActions: style.exportActions,
       patterns: dto.patterns.map(_mapPattern).toList(growable: false),
       aiSummaryEnabled: dto.aiSummaryEnabled,
     );
@@ -117,7 +121,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
           final dto = await dataSource.fetchDashboard(query);
           await dao.replace(cacheKey, jsonEncode(dto.toJson()));
         } catch (e) {
-          appTalker.warning('Review dashboard background refresh failed: $e');
+          appLog.warning('Review dashboard background refresh failed: $e');
         }
       }),
     );
@@ -128,7 +132,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     final observedMetric = dto.observedMetric;
     return ReviewMetric(
       kind: kind,
-      icon: _metricIcon(kind),
+      iconName: _metricIconName(kind),
       color: _metricColor(kind),
       value: dto.value,
       unit: dto.unit,
@@ -181,7 +185,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     final observedMetric = dto.observedMetric;
     return ReviewTrendSeries(
       kind: kind,
-      color: _metricColor(kind),
+      color: style.metricColor(kind),
       unit: dto.unit,
       values: dto.values.map((value) => value.toDouble()).toList(),
       currentValue: dto.currentValue,
@@ -200,8 +204,9 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   ReviewFinding _mapFinding(lucent.ReportDashboardResponseFindings dto) {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewFinding(
+      id: dto.id,
       kind: kind,
-      icon: _insightIcon(kind),
+      iconName: _insightIconName(kind),
       color: _insightColor(kind),
       title: dto.title,
       body: dto.body,
@@ -212,7 +217,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     final kind = _mapInsightKind(dto.kind.value);
     return ReviewPatternCard(
       kind: kind,
-      icon: _insightIcon(kind),
+      iconName: _insightIconName(kind),
       color: _insightColor(kind),
       title: dto.title,
       status: _mapStatus(dto.status.value),
@@ -267,12 +272,12 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     };
   }
 
-  IconData _metricIcon(ReviewDataKind kind) {
+  String _metricIconName(ReviewDataKind kind) {
     return switch (kind) {
-      ReviewDataKind.medication => SemanticIcons.recordMedicine,
-      ReviewDataKind.water => SemanticIcons.recordWater,
-      ReviewDataKind.sleep => SemanticIcons.recordMoon,
-      ReviewDataKind.general => SemanticIcons.profileCondition,
+      ReviewDataKind.medication => 'tablets',
+      ReviewDataKind.water => 'droplets',
+      ReviewDataKind.sleep => 'moon-star',
+      ReviewDataKind.general => 'heart-pulse',
     };
   }
 
@@ -285,12 +290,12 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
     };
   }
 
-  IconData _insightIcon(ReviewInsightKind kind) {
+  String _insightIconName(ReviewInsightKind kind) {
     return switch (kind) {
-      ReviewInsightKind.medication => SemanticIcons.reportAdherence,
-      ReviewInsightKind.hydration => SemanticIcons.recordWater,
-      ReviewInsightKind.sleep => SemanticIcons.recordMoon,
-      ReviewInsightKind.general => SemanticIcons.reportChart,
+      ReviewInsightKind.medication => 'badge-check',
+      ReviewInsightKind.hydration => 'droplets',
+      ReviewInsightKind.sleep => 'moon-star',
+      ReviewInsightKind.general => 'chart-line',
     };
   }
 
@@ -307,26 +312,3 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
   Future<ReviewDashboard> get signedOutDashboard =>
       Future.value(ReviewDashboard.signedOut());
 }
-
-final _exportActions = <ReviewExportAction>[
-  const ReviewExportAction(
-    kind: ReviewExportKind.hospital,
-    icon: SemanticIcons.medicineKit,
-    color: SemanticColor.primary,
-  ),
-  const ReviewExportAction(
-    kind: ReviewExportKind.monthly,
-    icon: SemanticIcons.tabReview,
-    color: SemanticColor.primary,
-  ),
-  const ReviewExportAction(
-    kind: ReviewExportKind.print,
-    icon: SemanticIcons.actionExport,
-    color: SemanticColor.primary,
-  ),
-  const ReviewExportAction(
-    kind: ReviewExportKind.clinicShare,
-    icon: SemanticIcons.actionShare,
-    color: SemanticColor.primary,
-  ),
-];

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/oauth_panels.dart';
 
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 /// Helper to build an [OAuthButtonRow] with dummy values for the
@@ -54,6 +55,10 @@ OAuthButtonRow _buildRow({
 }
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('OAuthButtonRow — WeChat', () {
     testWidgets('renders start button when not loading', (tester) async {
       await tester.pumpWidget(

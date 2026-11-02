@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/app/composition/health_sync/health_sync.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/health_data/data/providers/health_sync.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
 import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
 import 'package:luminous/features/health_data/domain/entities/health_sync_result.dart';
+import 'package:luminous/features/health_data/presentation/providers/data_access.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_auto_sync.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_sync.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_sync_controller.dart';
@@ -339,7 +340,7 @@ class _ResultRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: Spacing.xs),
       child: Row(
         children: [
-          Icon(Icons.check_circle, size: Spacing.lg, color: color),
+          Icon(Icons.check_circle, size: IconSizeTokens.sm, color: color),
           const SizedBox(width: Spacing.sm),
           Text(label, style: context.theme.typography.body.md),
         ],

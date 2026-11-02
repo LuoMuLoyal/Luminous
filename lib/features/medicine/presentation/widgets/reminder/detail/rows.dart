@@ -1,0 +1,377 @@
+import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
+import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+class ReminderInfoRow extends StatelessWidget {
+  const ReminderInfoRow({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.showDivider = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final bool showDivider;
+
+  @override
+  Widget build(BuildContext context) {
+    final tile = FTile(
+      prefix: Icon(
+        icon,
+        color: SemanticColor.neutral.solid(context),
+        size: IconSizeTokens.sm,
+      ),
+      title: Text(label),
+      details: Text(
+        value,
+        textAlign: TextAlign.right,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(color: SemanticColor.neutral.solid(context)),
+      ),
+    );
+
+    if (!showDivider) return tile;
+
+    return Column(children: [tile, const AppDivider()]);
+  }
+}
+
+class ValueActionRow extends StatelessWidget {
+  const ValueActionRow({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.value,
+    required this.onTap,
+    this.onClear,
+  });
+
+  final IconData icon;
+  final String title;
+  final String value;
+  final VoidCallback onTap;
+  final VoidCallback? onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+
+    return FTappable(
+      onPress: onTap,
+      builder: (context, data, _) => Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.lg,
+          vertical: Spacing.md,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: SemanticColor.neutral.solid(context),
+              size: IconSizeTokens.sm,
+            ),
+            const SizedBox(width: Spacing.lg),
+            Expanded(
+              child: Text(
+                title,
+                style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
+            const SizedBox(width: Spacing.md),
+            // 值文本过长时会顶掉左侧标题:限宽 + 省略号,右侧图标位置不变。
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 160),
+              child: Text(
+                value,
+                textAlign: TextAlign.right,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: typography.body.sm.copyWith(
+                  color: SemanticColor.neutral.solid(context),
+                ),
+              ),
+            ),
+            const SizedBox(width: Spacing.sm),
+            onClear != null
+                ? FButton.icon(
+                    variant: FButtonVariant.ghost,
+                    size: .sm,
+                    onPress: onClear,
+                    child: const Icon(
+                      SemanticIcons.actionClose,
+                      size: IconSizeTokens.sm,
+                    ),
+                  )
+                : Icon(
+                    SemanticIcons.actionNext,
+                    color: SemanticColor.neutral.solid(context),
+                    size: IconSizeTokens.sm,
+                  ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SwitchRow extends StatelessWidget {
+  const SwitchRow({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String title;
+  final String subtitle;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Spacing.lg,
+        vertical: Spacing.md,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            SemanticIcons.notificationBellRing,
+            color: SemanticColor.neutral.solid(context),
+            size: IconSizeTokens.sm,
+          ),
+          const SizedBox(width: Spacing.lg),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: Spacing.xs),
+                Text(
+                  subtitle,
+                  style: typography.body.sm.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          FSwitch(value: value, onChange: onChanged),
+        ],
+      ),
+    );
+  }
+}
+
+class UnavailableMethodRow extends StatelessWidget {
+  const UnavailableMethodRow({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.status,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String status;
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+
+    return Opacity(
+      opacity: 0.5,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.lg,
+          vertical: Spacing.md,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: SemanticColor.neutral.solid(context),
+              size: IconSizeTokens.sm,
+            ),
+            const SizedBox(width: Spacing.lg),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: typography.body.sm.copyWith(
+                      color: SemanticColor.neutral.solid(context),
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: typography.body.sm.copyWith(
+                      color: SemanticColor.neutral.solid(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: Spacing.md),
+            // 徽标固有宽度:不设宽度上限会先占满固有宽度,把左侧文本挤成
+            // 多行并向右溢出;限宽 + chip 内 ellipsis 让它收缩省略。
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 120),
+              child: FBadge(
+                variant: FBadgeVariant.secondary,
+                child: Text(
+                  status,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SoundPreferenceRow extends StatelessWidget {
+  const SoundPreferenceRow({
+    super.key,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final MedicineReminderSoundPreference value;
+  final ValueChanged<MedicineReminderSoundPreference> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Spacing.lg,
+        vertical: Spacing.md,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            SemanticIcons.doseVolume,
+            color: SemanticColor.neutral.solid(context),
+            size: IconSizeTokens.sm,
+          ),
+          const SizedBox(width: Spacing.lg),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.medicineReminderSoundLabel,
+                  style: typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: Spacing.xs),
+                Text(
+                  l10n.medicineReminderSoundLocalHint,
+                  style: typography.body.sm.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: Spacing.md),
+          Flexible(
+            child: FSelect<MedicineReminderSoundPreference>(
+              items: {
+                for (final item in MedicineReminderSoundPreference.values)
+                  soundPreferenceLabel(l10n, item): item,
+              },
+              control: FSelectControl.lifted(
+                value: value,
+                onChange: (next) {
+                  if (next != null) onChanged(next);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SelectedMedicineRow extends StatelessWidget {
+  const SelectedMedicineRow({super.key, required this.medicine});
+
+  final CurrentMedicineItem medicine;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
+
+    return Padding(
+      padding: const EdgeInsets.all(Spacing.lg),
+      child: Row(
+        children: [
+          Icon(
+            SemanticIcons.medicineReminderRow,
+            color: SemanticColor.primary.solid(context),
+          ),
+          const SizedBox(width: Spacing.lg),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  medicine.displayName,
+                  style: typography.body.sm.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: Spacing.xs),
+                Text(
+                  medicineDoseText(l10n, medicine),
+                  style: typography.body.sm.copyWith(
+                    color: SemanticColor.neutral.solid(context),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

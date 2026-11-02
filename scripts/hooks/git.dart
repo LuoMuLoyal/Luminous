@@ -103,17 +103,15 @@ Future<void> runPrePushChecks(ToolContext context) async {
   );
   stdout.writeln('');
 
-  // Custom lint rules — observation mode (always exit 0); --quiet keeps
-  // the output to the per-rule summary.
-  await runLoggedCommand(
-    'dart',
-    ['run', 'bin/luminous_lints.dart', '--quiet'],
-    workingDirectory: Directory(
-      '${context.repoRoot.path}${Platform.pathSeparator}'
-      'tool${Platform.pathSeparator}luminous_lints',
-    ),
-    stepName: 'luminous_lints (observation)',
-  );
+  // NOTE: `luminous_lints --clean-layers` and `arch_guard` are **not** run
+  // here. Both carry large amounts of pre-existing debt (26 clean-layers
+  // findings, 178 tracked layer violations, 2 known dependency cycles) that has
+  // nothing to do with the change being pushed, so gating a push on them means
+  // every branch is blocked by the same存量 debt until an unrelated cleanup
+  // lands. They stay as explicit local/CI checks instead:
+  //   cd tool/luminous_lints; dart run bin/luminous_lints.dart --clean-layers
+  //   dart run scripts/arch/guard.dart
+  // CI still runs both (continue-on-error during the architecture cleanup).
 }
 
 Future<void> runPreCommitChecks(ToolContext context) async {

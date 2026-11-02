@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
-import 'package:luminous/core/network/contract/error_code.dart';
-import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
+import 'package:luminous/features/search/presentation/providers/data_access.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/search/presentation/providers/recent_searches.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/shared/domain/failure.dart';
+
+import '../../../helpers/kv_test_store.dart';
 
 /// Fake implementation of [MedicineSearchRepository] for testing
 /// [MedicineSearchNotifier] state transitions.
@@ -112,7 +112,7 @@ void main() {
   setUp(() {
     // The search notifier writes successful queries into the persisted recent
     // searches provider, which is backed by SharedPreferences.
-    SharedPreferences.setMockInitialValues({});
+    KvTestStore.install(seed: {});
     repo = _FakeSearchRepository();
     container = ProviderContainer(
       overrides: [medicineSearchRepositoryProvider.overrideWithValue(repo)],

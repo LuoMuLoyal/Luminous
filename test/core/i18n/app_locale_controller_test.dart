@@ -1,12 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/i18n/locale.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/core/storage/kv_store.dart';
+
+import '../../helpers/kv_test_store.dart';
 
 void main() {
   group('LocaleController', () {
     test('build returns system locale when nothing is stored', () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{});
+      KvTestStore.install(seed: <String, Object>{});
 
       final container = ProviderContainer();
       addTearDown(container.dispose);
@@ -17,9 +19,7 @@ void main() {
     });
 
     test('build returns stored locale when present', () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        'app.locale': 'zh-CN',
-      });
+      KvTestStore.install(seed: <String, Object>{'app.locale': 'zh-CN'});
 
       final container = ProviderContainer();
       addTearDown(container.dispose);
@@ -30,7 +30,7 @@ void main() {
     });
 
     test('setLocale updates the provider value', () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{});
+      KvTestStore.install(seed: <String, Object>{});
 
       final container = ProviderContainer();
       addTearDown(container.dispose);
@@ -46,7 +46,7 @@ void main() {
     });
 
     test('setLocale persists to SharedPreferences', () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{});
+      KvTestStore.install(seed: <String, Object>{});
 
       final container = ProviderContainer();
       addTearDown(container.dispose);
@@ -57,12 +57,12 @@ void main() {
           .read(localeControllerProvider.notifier)
           .setLocale(AppLocale.zhCn);
 
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getString('app.locale'), equals('zh-CN'));
+      final prefs = KvStore.instance;
+      expect(prefs.getOrNull<String>('app.locale'), equals('zh-CN'));
     });
 
     test('setLocale can change locale multiple times', () async {
-      SharedPreferences.setMockInitialValues(<String, Object>{});
+      KvTestStore.install(seed: <String, Object>{});
 
       final container = ProviderContainer();
       addTearDown(container.dispose);

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/auth/presentation/services/oauth_webview.dart';
+import 'package:luminous/features/auth/presentation/controllers/oauth_webview.dart';
 
 void main() {
   final callback = Uri.parse('https://api.luminous.app/login/oauth/qq');

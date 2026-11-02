@@ -27,6 +27,7 @@
 // raster capture deadlocks in this binding when a pump follows the encode
 // (flutter/flutter#49317). `matchesGoldenFile` uses the supported raster path.
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -34,21 +35,44 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/bootstrap.dart';
+import 'package:luminous/app/composition/components/registry.dart'
+    show compositionProviderOverrides;
+import 'package:luminous/app/composition/customizer/layout_repository.dart'
+    show layoutRepositoryProvider;
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/health_event/health_event.dart'
+    show healthEventRepositoryProvider;
+import 'package:luminous/app/composition/health_sync/health_sync.dart'
+    show healthSyncRepositoryProvider;
+import 'package:luminous/app/composition/medicine/workspace.dart'
+    show medicineWorkspaceRepositoryProvider, reminderRepositoryProvider;
+import 'package:luminous/app/composition/mine/mine.dart'
+    show mineRepositoryProvider;
+import 'package:luminous/app/composition/notification/unread_count.dart'
+    show notificationUnreadCountProvider;
+import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/app/composition/review/review.dart'
+    show reviewDashboardRepositoryProvider;
+import 'package:luminous/app/composition/snapshot/legal.dart';
+import 'package:luminous/app/composition/snapshot/record.dart';
+import 'package:luminous/app/composition/today/today_suggestion.dart'
+    show todayRepositoryProvider;
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/config/feature_flags.dart'
+    show genUiEnabledProvider;
+import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart'
     show assistantRepositoryProvider;
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
-import 'package:luminous/features/health_data/data/providers/health_sync.dart'
-    show healthSyncRepositoryProvider;
-import 'package:luminous/features/legal/data/repositories/lucent.dart'
-    show legalRepositoryProvider;
-import 'package:luminous/features/medicine/data/providers/workspace.dart'
-    show medicineWorkspaceRepositoryProvider, reminderRepositoryProvider;
+import 'package:luminous/features/customizer/domain/repositories/layout.dart';
+import 'package:luminous/features/generative/presentation/widgets/slot_preview.dart';
+import 'package:luminous/features/medicine/data/repositories/relations.dart'
+    show medicineRelationsRepositoryProvider;
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart'
     show medicineRiskCheckRepositoryProvider;
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart'
@@ -58,27 +82,26 @@ import 'package:luminous/features/medicine/presentation/providers/reminders.dart
         medicineReminderDeliveryLogProvider,
         medicineReminderListProvider,
         medicineTodayDoseLogsProvider;
-import 'package:luminous/features/mine/data/providers/mine.dart'
-    show mineRepositoryProvider;
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart'
     show mineSyncFailedEntriesProvider;
-import 'package:luminous/features/notification/data/providers/unread_count.dart'
-    show notificationUnreadCountProvider;
 import 'package:luminous/features/notification/data/repositories/lucent.dart'
     show notificationRepositoryProvider;
-import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/review/data/providers/review.dart'
-    show reviewDashboardRepositoryProvider;
+import 'package:luminous/features/review/domain/entities/dashboard.dart'
+    show ReviewDataKind;
+import 'package:luminous/features/review/presentation/providers/dashboard.dart'
+    show reviewDashboardProvider;
 import 'package:luminous/features/review/presentation/providers/review.dart'
     show reviewCurrentProvider, reviewHistoryProvider;
-import 'package:luminous/features/scan/data/repositories/scan.dart'
-    show scanRepositoryProvider;
+import 'package:luminous/features/review/presentation/providers/trend.dart'
+    show reviewTrendDimensionProvider;
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/presentation/pages/box_scan.dart'
     show showMedicineBoxScanSheet;
+import 'package:luminous/features/scan/presentation/providers/data_access.dart'
+    show scanRepositoryProvider;
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart'
     show MedicineRecognizeDialog;
-import 'package:luminous/features/search/data/repositories/lucent.dart'
+import 'package:luminous/features/search/presentation/providers/data_access.dart'
     show medicineSearchRepositoryProvider;
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart'
     show medicineSearchNotifierProvider;
@@ -86,14 +109,18 @@ import 'package:luminous/features/settings/data/repositories/lucent.dart'
     show userSettingsRepositoryProvider;
 import 'package:luminous/features/support/data/repositories/lucent.dart'
     show supportRepositoryProvider;
-import 'package:luminous/features/today/data/providers/today_suggestion.dart'
-    show todayRepositoryProvider;
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:luminous/shared/domain/composition/id.dart';
+import 'package:luminous/shared/domain/composition/layout.dart';
+import 'package:luminous/shared/domain/composition/surface.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
 import '../../integration_test/screenshots/page_catalog_screenshot_test.dart'
     as catalog;
+import '../../test/helpers/kv_test_store.dart';
 import 'simulated_fakes_assistant.dart';
+import 'simulated_fakes_graph.dart';
+import 'simulated_fakes_health_event.dart';
 import 'simulated_fakes_misc.dart';
 import 'simulated_fakes_review.dart';
 import 'simulated_fakes_shell_a.dart';
@@ -101,16 +128,93 @@ import 'simulated_fakes_shell_b.dart';
 
 // ── Frame ───────────────────────────────────────────────────────────────────
 
+/// A capture frame: logical size + pixel density.
+typedef _Frame = ({double width, double height, double dpr});
+
 /// Pixel 8 Pro: 1344x2992 physical at density 480 (dpr 3).
-const double _frameWidth = 448;
-const double _frameHeight = 2992 / 3;
-const double _frameDpr = 3;
+const _Frame _phoneFrame = (width: 448, height: 2992 / 3, dpr: 3);
+
+/// Desktop window: 1280x800 logical at dpr 2 (2560x1600 physical).
+///
+/// 1280 落在 M3 `large` 档（≥1200），桌面布局的侧边栏、双栏、右侧面板都会出现。
+/// dpr 2 而不是 3：桌面屏幕的物理密度本来就低，dpr 3 只会得到一张
+/// 3840x2400 的巨型 PNG，评审时缩放看反而更糊。
+const _Frame _desktopFrame = (width: 1280, height: 800, dpr: 2);
+
+/// 当前用例使用的帧。由各 testWidgets 在开跑前设置。
+_Frame _frame = _phoneFrame;
+
+double get _frameWidth => _frame.width;
+double get _frameHeight => _frame.height;
+double get _frameDpr => _frame.dpr;
 
 /// Capture directory; the golden comparator resolves this against this file.
 const String _outputDir = '../../outputs/screenshots';
 
 /// Project-relative form of [_outputDir], for the manifest write.
 const String _outputDirRelative = 'outputs/screenshots';
+
+/// 长截图单独一个目录：它们的高度和常规帧差一个数量级，混在页面目录里会
+/// 让「按页面浏览」失效。
+const String _longDir = 'long';
+
+/// 长截图的像素密度。
+///
+/// 常规帧是 dpr 3；整页截图动辄 4000+ 逻辑像素，按 dpr 3 会得到一万多像素
+/// 高、单张几 MB 的图。降到 2 后文字仍然清晰，体积减半以上。
+const double _longDpr = 2;
+
+/// 长截图的最大逻辑高度，超出则截断。
+///
+/// 这是防呆上限，不是设计目标：真出现这么高的页面说明布局有问题，值得
+/// 在评审时看到「被截断」而不是生成一张打不开的图。
+const double _longMaxHeight = 8000;
+
+/// 产翻页帧所需的最小溢出量（占一个视口的比例）。
+///
+/// 首屏以下不足这个比例的页面不产第二帧：几十像素的位移截出来就是首屏的复制，
+/// 尾部由长截图覆盖。
+const double _minScrollFraction = 0.5;
+
+/// 一级页（五个 tab 根页）所在的分组。
+const String _shellGroup = 'shell';
+
+/// 二级页所属的 tab 分组：这些页面归到各自 tab 目录，并以 `2_` 开头，
+/// 与一级页（`1_`）在同一目录里天然排序分开。
+const Set<String> _tabGroups = {
+  'today',
+  'record',
+  'medicine',
+  'review',
+  'mine',
+};
+
+/// 一条产物在输出目录中的落点。
+typedef _Placement = ({String folder, String prefix});
+
+/// 决定一条产物放哪个子目录、文件名加什么前缀。
+///
+/// 规则（对应用户要的「按 tab 分一级/二级页」）：
+/// - 五个 tab 根页（`shell` 组）→ 各自的 tab 目录，前缀 `1_`；
+/// - 某个 tab 的子页面 → 同目录，前缀 `2_`；
+/// - 其它分组（settings / auth / scan / …）→ 独立目录，不加前缀。
+_Placement _placementFor(String group, String id) {
+  if (group == _shellGroup) return (folder: id, prefix: '1_');
+  if (_tabGroups.contains(group)) return (folder: group, prefix: '2_');
+  return (folder: group, prefix: '');
+}
+
+/// golden 路径：比较器以本文件所在目录为基准解析。
+String _goldenPath(String folder, String name) => '$_outputDir/$folder/$name';
+
+/// 建目录用项目根相对路径：`flutter test` 的工作目录就是项目根。
+void _ensureOutputDir(String folder) {
+  Directory('$_outputDirRelative/$folder').createSync(recursive: true);
+}
+
+/// 长截图的文件名：`long/<folder>__<name>.png`。
+String _longName(String folder, String name) =>
+    '${folder.replaceAll('/', '_')}__$name.png';
 
 // ── Platform channel stubs ──────────────────────────────────────────────────
 //
@@ -128,7 +232,7 @@ void _installPlatformStubs() {
       'isMaximized' || 'isFullScreen' || 'isPreventClose' => false,
       'isFocused' => true,
       'getPosition' => const <double>[0, 0],
-      'getSize' => const <double>[_frameWidth, _frameHeight],
+      'getSize' => <double>[_frameWidth, _frameHeight],
       _ => null,
     },
   );
@@ -142,6 +246,33 @@ void _installPlatformStubs() {
       'getApplicationSupportDirectory' ||
       'getLibraryDirectory' => cacheDir,
       _ => null,
+    },
+  );
+
+  // 本地库（drift + SQLCipher）的密钥来自安全存储。没有这个桩时
+  // `DatabaseKeyProvider` 抛 `MissingPluginException`，drift 打开失败，
+  // bootstrap 里的缓存清理把这个失败作为**未捕获异常**抛进测试，
+  // 整页截图虽然已经写出，用例仍然判失败。
+  //
+  // 这里给一个固定的密钥：截图不需要真实加密强度，只需要可重复、能开库。
+  //
+  // **必须按 key 名精确返回**：同一个通道也被会话存储用来读 token payload，
+  // 对所有 key 都返回数据库密钥会让会话反序列化报 FormatException 并把登录态
+  // 打回未登录——那样截出来的是登录页。
+  const dbKey = 'c2NyZWVuc2hvdC1nZW5lcmF0b3ItZGIta2V5LTMyYnl0ZXM=';
+  const dbKeyName = 'luminous.db.key';
+  messenger.setMockMethodCallHandler(
+    const MethodChannel('plugins.it_nomads.com/flutter_secure_storage'),
+    (call) async {
+      final args = call.arguments;
+      final key = args is Map ? args['key'] : null;
+      return switch (call.method) {
+        'read' => key == dbKeyName ? dbKey : null,
+        'readAll' => <String, String>{dbKeyName: dbKey},
+        'containsKey' => key == dbKeyName,
+        'write' || 'delete' || 'deleteAll' => null,
+        _ => null,
+      };
     },
   );
 
@@ -315,9 +446,6 @@ Future<void> _loadFonts() async {
       await rootBundle.load('packages/forui_phosphor/assets/$variant.ttf'),
     );
   }
-
-  // ignore: avoid_print
-  print('FONTS cjk=${cjk != null} mono=${mono != null}');
 }
 
 // ── Route resolution ────────────────────────────────────────────────────────
@@ -388,6 +516,69 @@ class _SimulatedAuthSessionNotifier extends AuthSessionNotifier {
 
 // ── Fixtures ────────────────────────────────────────────────────────────────
 
+/// 演示用的用药页布局：默认四张卡 + **全部十个关系图组件**。
+///
+/// 十个图组件在生产里默认不挂载（见 `medicine/presentation/components/catalog.dart`
+/// 的注释：五个需要入参、且都依赖 health_context 快照）。截图要展示它们，
+/// 所以这里给出一份"用户自己编排出来的用药安全工作台"，顺序即阅读顺序：
+/// 风险检查 → 组合概览 → 机制/靶点/级联 → 单药类 → 需要入参的那几个。
+///
+/// 这份布局同时是「组件化编排真实生效」的证据：截出来的页面不是手写页面，
+/// 而是 `ComponentHost` 按 `SurfaceLayout` 渲染的结果。
+const _medicineWorkbenchLayout = SurfaceLayout(
+  placements: [
+    ComponentPlacement(id: ComponentId('drug_box.inventory')),
+    ComponentPlacement(id: ComponentId('dose.records')),
+    ComponentPlacement(id: ComponentId('dose.safety_engine')),
+    ComponentPlacement(id: ComponentId('quick_action.medicine')),
+    ComponentPlacement(id: ComponentId('dose.medication_overview')),
+    ComponentPlacement(id: ComponentId('dose.mechanism_paths')),
+    ComponentPlacement(id: ComponentId('dose.shared_targets')),
+    ComponentPlacement(id: ComponentId('dose.cascade_paths')),
+    ComponentPlacement(id: ComponentId('dose.enzyme_duels')),
+    ComponentPlacement(id: ComponentId('dose.drug_actions')),
+    ComponentPlacement(id: ComponentId('dose.transport_routes')),
+    ComponentPlacement(id: ComponentId('dose.substitutes')),
+    ComponentPlacement(id: ComponentId('dose.shortest_routes')),
+    ComponentPlacement(id: ComponentId('dose.target_drugs')),
+  ],
+);
+
+/// 今日页 + 已生成的 `generative.today` 组件。
+///
+/// 复用默认布局的顺序，只在摘要之后插入生成式格子——这正是用户打开实验
+/// 开关、点「生成」之后会看到的形态。
+const _generativeTodayLayout = SurfaceLayout(
+  placements: [
+    ComponentPlacement(id: ComponentId('daily.greeting')),
+    ComponentPlacement(id: ComponentId('suggestion.primary')),
+    ComponentPlacement(id: ComponentId('generative.today')),
+    ComponentPlacement(id: ComponentId('summary.metrics')),
+    ComponentPlacement(id: ComponentId('observation.metrics')),
+    ComponentPlacement(id: ComponentId('quick_action.strip')),
+  ],
+);
+
+/// 只读布局仓储：把上面那份演示布局交给 app。
+///
+/// 不读 KV 也不发网络：截图不需要"用户改布局"的能力，只需要一个确定的起点。
+class _SimulatedLayoutRepository implements LayoutRepository {
+  const _SimulatedLayoutRepository(this.layouts);
+
+  final Map<SurfaceId, SurfaceLayout> layouts;
+
+  @override
+  TaskEither<LucentFailure, Map<SurfaceId, SurfaceLayout>> readAll() =>
+      TaskEither.right(layouts);
+
+  @override
+  TaskEither<LucentFailure, SurfaceLayout> write(
+    SurfaceId surface,
+    SurfaceLayout layout, {
+    int? ifVersion,
+  }) => TaskEither.right(layout);
+}
+
 /// Boots the real app against the simulated dataset.
 ///
 /// `retry: (_, _) => null` disables Riverpod's automatic retry timer: any
@@ -398,18 +589,48 @@ Future<ProviderContainer> _pumpPage(
   WidgetTester tester, {
   AssistantConversation? assistantConversation,
   bool signedIn = true,
+  bool desktopChrome = false,
+  // 打开实验开关并注入一份已生成的 surface 消息，用于截「生成式 UI」。
+  bool generative = false,
 }) async {
   // ignore: invalid_use_of_visible_for_testing_member -- this file is a test-run generator.
-  SharedPreferences.setMockInitialValues(const <String, Object>{});
-  final prefs = await SharedPreferences.getInstance();
+  KvTestStore.install(seed: const <String, Object>{});
+  final prefs = KvStore.instance;
   await prefs.clear();
-  await prefs.setString('app.locale', 'zh-CN');
+  await prefs.set('app.locale', 'zh-CN');
+
+  if (generative) {
+    // `genui.<surface>.spec`：用户自定义区块的**声明**（标题 + 让 agent
+    // 渲染什么）。编排页那一行据此显示用户填的名字，而不是通用的「尚未配置」。
+    //
+    // **不写生成结果**（`genui.<surface>.surface`）：生成内容的渲染依赖一次
+    // 真实异步读取，而 `flutter_test` 的假时钟推不动它（详见
+    // `_pumpPage` 里 `generative` 参数的说明），在截图流程里无法稳定复现。
+    // 页面截图因此不在本生成器的覆盖范围内——它属于 widget 测试的领域。
+    await prefs.set(
+      'genui.today.spec',
+      jsonEncode({'title': '本周饮水与睡眠', 'prompt': '把本周的饮水量和睡眠时长做成两张并排的小卡'}),
+    );
+  }
 
   const healthContext = SimulatedHealthContextRepository();
 
   final container = ProviderContainer(
     retry: (_, _) => null,
     overrides: [
+      // ── 组件化装配根 ──────────────────────────────────────────────
+      //
+      // **没有这一条，所有 tab 页的内容区都是空的。**
+      //
+      // tab 页的内容不再是手写 Column，而是 `ComponentHost` 按
+      // `surfaceLayoutProvider(SurfaceId.x)` 渲染。那个 provider 默认为
+      // "空 catalog ⇒ 空布局"，真实定义与注册表由组合根在
+      // `compositionProviderOverrides()` 里注入（`main.dart` 通过
+      // `buildRootContainer()` 做这件事）。本生成器自建容器，若不同样注入，
+      // 每个页面的内容区就渲染 0 个组件——截图看起来像"页面没内容"，
+      // 实际是装配缺失。
+      ...compositionProviderOverrides(),
+
       if (signedIn)
         authSessionProvider.overrideWith(_SimulatedAuthSessionNotifier.new),
 
@@ -463,6 +684,33 @@ Future<ProviderContainer> _pumpPage(
       medicineRiskCheckRepositoryProvider.overrideWithValue(
         SimulatedRiskCheckRepository(),
       ),
+
+      // 关系图十个端点 + 用药组合概览的模拟实现。
+      medicineRelationsRepositoryProvider.overrideWithValue(
+        const SimulatedMedicineRelationsRepository(),
+      ),
+
+      // 今日页「健康观察」：不接这个仓储时整块渲染成「暂不可用，请重试」。
+      healthEventRepositoryProvider.overrideWithValue(
+        const SimulatedHealthEventRepository(),
+      ),
+
+      // 布局仓储：给用药页一份挂了全部十个图组件的布局，这样截出来的
+      // 用药页就是"用户编排出来的安全工作台"，同时证明组件化真的在驱动渲染。
+      // 其余 surface 返回空 map ⇒ 走各自的 defaultLayout（与改造前一致）。
+      layoutRepositoryProvider.overrideWithValue(
+        _SimulatedLayoutRepository({
+          SurfaceId.medicine: _medicineWorkbenchLayout,
+          if (generative) SurfaceId.today: _generativeTodayLayout,
+        }),
+      ),
+      // 生成式 UI 由实验开关控制（默认 false）。关闭时 `generative.<surface>`
+      // 根本不注册，布局里提到它也只是被跳过——所以截图必须先开这个开关。
+      genUiEnabledProvider.overrideWith((ref) => generative),
+      // 生成结果的真实渲染要经过一次异步 KV 恢复，`flutter_test` 的假时钟
+      // 推不动真实 Future（详见 `capture` 里的注释）。截图改用等价的手绘预览：
+      // 同样是三张并排小卡，形状与生成结果一致。
+      generativeSlotPreviewProvider.overrideWith((ref) => generative),
       legalRepositoryProvider.overrideWithValue(SimulatedLegalRepository()),
       supportRepositoryProvider.overrideWithValue(SimulatedSupportRepository()),
       userSettingsRepositoryProvider.overrideWithValue(
@@ -493,6 +741,18 @@ Future<ProviderContainer> _pumpPage(
       reviewHistoryProvider.overrideWith(
         (ref) async => buildSimulatedReviewHistory(),
       ),
+      // review 的 dashboard 数据：生成式 UI 的领域 item（`trendChart` /
+      // `metricCard` / `finding`）都从 `reviewSurfaceStateProvider` 取真值，
+      // 而它最终落到这个 family。不覆盖就走真实网络，`trendChart` 拿不到
+      // 数据会**静默返回空**（渲染一截空白，不报错），截图里那块地方看起来
+      // 就像什么都没生成。
+      reviewDashboardProvider.overrideWith(
+        (ref, query) async =>
+            (await const SimulatedReviewDashboardRepository()
+                    .fetchDashboard(query)
+                    .run())
+                .fold((failure) => throw failure, (dashboard) => dashboard),
+      ),
 
       // Local-only surfaces that read the drift DAO rather than a repository.
       mineSyncFailedEntriesProvider.overrideWith(
@@ -514,7 +774,12 @@ Future<ProviderContainer> _pumpPage(
   container.read(appRouterProvider).go('/');
 
   await tester.pumpWidget(
-    UncontrolledProviderScope(container: container, child: const LuminousApp()),
+    UncontrolledProviderScope(
+      container: container,
+      // 桌面档需要窗口 chrome 一起入镜（标题栏按钮、拖拽区），
+      // 手机档不渲染它，否则截图里会混进最小化/最大化/关闭。
+      child: LuminousApp(desktopChrome: desktopChrome),
+    ),
   );
 
   await _settle(tester);
@@ -552,11 +817,18 @@ Future<void> _primeRoute(
 ) async {
   switch (route) {
     case '/medicine/search':
-      await container
-          .read(medicineSearchNotifierProvider.notifier)
-          .updateQuery('氨氯地平');
-      // The notifier debounces by 400 ms before searching.
-      await tester.pump(const Duration(milliseconds: 500));
+      // 搜索是**提交驱动**的：`updateQuery` 只把文本记进 state，不再自动发请求
+      // （`hasSubmittedResults` 用它和 `submittedQuery` 比对来决定是否展示结果
+      // 面板）。只调 `updateQuery` 会截到「输入框有字、下面一片空白」的图，
+      // 所以这里必须补一次 `submitQuery`，与用户点搜索按钮走同一条路径。
+      final searchNotifier = container.read(
+        medicineSearchNotifierProvider.notifier,
+      );
+      await searchNotifier.updateQuery('氨氯地平');
+      // 不 await：`_doSearch` 末尾会把关键字写进 KV（真实异步 I/O），在假时钟
+      // 下推不动。结果 state 在那之前就已提交，推几帧即可。
+      unawaited(searchNotifier.submitQuery());
+      await tester.pump();
       await _settle(tester);
     case '/medicine/risk-check':
       // Kick the check so the page shows findings instead of an idle prompt.
@@ -564,8 +836,188 @@ Future<void> _primeRoute(
   }
 }
 
+/// 产物帧的类别标注，写进 manifest。
+String _frameKindLabel(String relativePath) {
+  if (relativePath.startsWith('$_longDir/')) return ' (长截图)';
+  if (RegExp(r'_scrolled\d*\.png$').hasMatch(relativePath)) return ' (翻页)';
+  return '';
+}
+
+/// 把画布还原成当前档位的标准帧。
+///
+/// 尾帧与长截图都会临时改帧高，改完必须还原，否则同一用例里的后续截图
+/// （以及 binding 的收尾断言）会拿到一个被改小的窗口。
+Future<void> _restoreFrameSize(WidgetTester tester) async {
+  tester.view.physicalSize = Size(
+    _frameWidth * _frameDpr,
+    _frameHeight * _frameDpr,
+  );
+  tester.view.devicePixelRatio = _frameDpr;
+  await tester.pump();
+  await _settle(tester);
+}
+
+/// 页面的主滚动视图（`maxScrollExtent` 最大的纵向 `Scrollable`）。
+///
+/// ## 为什么自己找滚动视图
+///
+/// 页面形态不一：tab 页是 `CustomScrollView`，表单页是 `ListView`，
+/// 弹层里还有各自的 `Scrollable`。`find.byType(Scrollable).first` 经常命中
+/// 横向条或嵌套列表。这里取 `maxScrollExtent` 最大的那个——它就是**页面
+/// 主滚动方向**，也是「往下翻」这个动作在用户眼里的含义。
+///
+/// **只认纵向滚动**：记录页顶部的横向日期条也可能有更大的 `maxScrollExtent`，
+/// 而「往下翻」对它没有意义；一旦选中它，垂直拖拽会被横向手势识别器抢走并
+/// 触发 `DragUpdateDetails` 断言。
+ScrollableState? _primaryScrollable(WidgetTester tester) {
+  ScrollableState? primary;
+  var best = -1.0;
+  for (final element in find.byType(Scrollable).evaluate()) {
+    if (element is! StatefulElement) continue;
+    final state = element.state;
+    if (state is! ScrollableState) continue;
+    final position = state.position;
+    if (!position.hasContentDimensions) continue;
+    if (position.axis != Axis.vertical) continue;
+    if (position.maxScrollExtent > best) {
+      best = position.maxScrollExtent;
+      primary = state;
+    }
+  }
+  return primary;
+}
+
+/// 主滚动视图的内容总高度（逻辑像素）；无纵向滚动时返回 null。
+///
+/// `maxScrollExtent + viewportDimension` 就是「整页」的高度：首屏之外那部分
+/// 加上已经显示的一屏。
+double? _pageContentHeight(WidgetTester tester) {
+  final primary = _primaryScrollable(tester);
+  if (primary == null) return null;
+  final position = primary.position;
+  final total = position.maxScrollExtent + position.viewportDimension;
+  return total > 0 ? total : null;
+}
+
+/// 页面 chrome（滚动视口之外的那部分）的逻辑高度。
+///
+/// 帧高减去滚动视口高就是底部 tab bar / 安全区等固定骨架的占位：
+/// 长截图要把「内容高 + chrome」一起当帧高，否则底部一屏会被骨架吃掉一截。
+double _pageChromeHeight(WidgetTester tester) {
+  final primary = _primaryScrollable(tester);
+  if (primary == null) return 0;
+  final chrome = _frameHeight - primary.position.viewportDimension;
+  return chrome > 0 ? chrome : 0;
+}
+
+/// 把主滚动视图滚到 [offset]，用的是真实手势链路。
+///
+/// ## 为什么用 drag 而不是 `position.jumpTo`
+///
+/// `jumpTo` 直接改滚动位置，绕过了手势与滚动物理；在有嵌套 sliver 的页面上
+/// 会把已经进入销毁流程的 `RenderViewport` 再拉去 layout，触发
+/// 「RenderViewport DISPOSED」断言（记录页就是这么挂的）。`tester.drag` 走的是
+/// 真实手势链路，滚动由 `Scrollable` 自己应用，不会和 layout 抢时序。
+///
+/// 返回滚动后的实际偏移（拿不到位置时返回 null）。手势路径上的失败是
+/// **逐页的**，不该让整张截图判失败：这里临时接管 `FlutterError.onError`
+/// 收集框架错误，只要发生了一条就返回 null，调用方跳过这一帧。
+Future<double?> _scrollPageTo(WidgetTester tester, double offset) async {
+  final primary = _primaryScrollable(tester);
+  if (primary == null) {
+    return null;
+  }
+
+  // 一次拖动的位移受「手势起手点到视口边缘」限制，超过一屏就得拆成多次拖动
+  // （尾帧把视口压小后尤其明显），否则拖动会被截断在半路。
+  //
+  // 起手点直接取 `ScrollableState` 自己那个 `RenderBox` 的矩形，而不是
+  // `find.byElementPredicate(identical(...))`：改了帧高之后 `Scrollable` 的
+  // element 会被重建，靠 element 同一性找定位点在换尺寸之后会落空。
+  for (var attempt = 0; attempt < 8; attempt += 1) {
+    final distance = offset - primary.position.pixels;
+    if (distance.abs() < 1) break;
+
+    // `ScrollableState.context` 是稳定的（就是该 Scrollable 的 element）：
+    // 每轮读一次 RenderBox 只是为了拿「这一轮拖动之后」的最新视口矩形，不存在
+    // 跨 await 持有过期 BuildContext 的问题。
+    // ignore: use_build_context_synchronously
+    final box = primary.context.findRenderObject();
+    if (box is! RenderBox || !box.hasSize) {
+      return null;
+    }
+    final rect = box.localToGlobal(Offset.zero) & box.size;
+    final maxDrag = rect.height * 0.55;
+    final step = distance.abs() > maxDrag
+        ? (distance.isNegative ? -maxDrag : maxDrag)
+        : distance;
+
+    // 起手点取滚动区域的中下部，而不是默认的几何中心：记录页顶部有一条横向
+    // 日期条，从中心起手仍可能压到它上面，垂直拖拽的指针事件会被
+    // `DragUpdateDetails` 的一致性断言拦下（primaryDelta 与 delta 不匹配）。
+    // 往页面靠下的位置起手，能稳定落在页面主体的纵向列表上。
+    final startPoint = distance.isNegative
+        ? Offset(rect.center.dx, rect.top + rect.height * 0.75)
+        : Offset(rect.center.dx, rect.top + rect.height * 0.35);
+
+    final scrollErrors = <FlutterErrorDetails>[];
+    final previousOnError = FlutterError.onError;
+    FlutterError.onError = scrollErrors.add;
+    try {
+      await tester.dragFrom(startPoint, Offset(0, -step));
+      await tester.pump();
+      await _settle(tester);
+    } catch (e) {
+      return null;
+    } finally {
+      FlutterError.onError = previousOnError;
+    }
+    if (scrollErrors.isNotEmpty) {
+      return null;
+    }
+  }
+  return primary.position.pixels;
+}
+
+/// 把主滚动视图拉回顶部。
+///
+/// 长截图必须从顶部开始，否则会把「当前滚动位置」以上那一段裁掉。
+/// 目标偏移 0 永远是合法值，所以这里可以直接 `jumpTo`，不存在
+/// [_scrollPageTo] 里「目标落在已销毁 viewport」的问题。
+Future<void> _scrollPageToTop(WidgetTester tester) async {
+  _primaryScrollable(tester)?.position.jumpTo(0);
+  await tester.pump();
+  await _settle(tester);
+}
+
+/// 翻页帧的滚动目标：**直接滚到底**（`maxScrollExtent`）。
+///
+/// ## 为什么是「滚到底」而不是按比例或切片
+///
+/// 截图档的要求很朴素：**每张图都是设备视口（1344×2992）**，而且第二张要让人
+/// 看到首屏没露出的那部分。两件事同时满足的做法只有一种——把页面滚到最后，
+/// 用完整视口截尾部：
+///
+/// - 按比例（`maxScrollExtent × 0.55`）：只溢出十几像素的页面，第二帧和首屏几乎
+///   逐像素相同（废图）；多屏页面又只到中段。
+/// - 按视口切片再给末帧改帧高：解了重复，但末帧比例不是设备比例（被判定为
+///   「比例变了」），也不该出现在一份页面截图集里。
+///
+/// 返回值是滚动目标；内容溢出不足 [_minScrollFraction] 个视口时返回 null——
+/// 那点位移（几十像素）截出来就是首屏的复制，长截图已经覆盖了这点尾巴。
+double? _bottomScrollOffset(WidgetTester tester) {
+  final primary = _primaryScrollable(tester);
+  if (primary == null) return null;
+  final position = primary.position;
+  if (!position.hasContentDimensions) return null;
+  final extent = position.maxScrollExtent;
+  final viewport = position.viewportDimension;
+  if (extent <= 0 || viewport <= 0) return null;
+  if (extent < viewport * _minScrollFraction) return null;
+  return extent;
+}
+
 // ── Extra surfaces ──────────────────────────────────────────────────────────
-//
 // The catalog is one shot per route; several real capabilities only exist in a
 // state a single at-rest route cannot show (a confirmation card awaiting a tap,
 // an expanded source strip, a photo-recognition dialog). These extras reuse the
@@ -596,7 +1048,12 @@ class _ExtraCapture {
   final AssistantConversation? assistantConversation;
 
   /// Runs after navigation; the place to open drawers/dialogs and pump.
-  final Future<void> Function(WidgetTester tester)? prepare;
+  ///
+  /// 第二个参数是本次截图的 [ProviderContainer]：有些状态（趋势维度、搜索
+  /// 提交）只有换一种方式驱动才稳定——对屏幕外的控件 `tap` 打不中，而直接
+  /// 走 notifier 与用户操作是同一条状态通路。
+  final Future<void> Function(WidgetTester tester, ProviderContainer container)?
+  prepare;
 
   /// Renders the app signed out.
   ///
@@ -632,7 +1089,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     route: '/assistant',
     note: '来源条展开：工具覆盖度/置信度/歧义/来源表/溯源引用',
     assistantConversation: buildAssistantToolSourceConversation(),
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await tester.tap(find.byKey(const Key('assistant-source-strip')).first);
       await _settle(tester);
     },
@@ -643,7 +1100,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'capabilities',
     route: '/assistant',
     note: '能力面板：可用工具清单与状态（含未授权工具）',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await tester.tap(find.byKey(const Key('assistant-capabilities-action')));
       await _settle(tester);
     },
@@ -654,7 +1111,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'conversations',
     route: '/assistant',
     note: '会话抽屉：近期会话列表、当前会话与搜索入口',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await tester.tap(
         find.byKey(const Key('assistant-recent-conversations-action')),
       );
@@ -675,7 +1132,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'photo-method-picker',
     route: '/medicine/search',
     note: '药物图检索入口：OCR 文字识别 / AI 智能识别方式选择',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       // Not awaited: the sheet only completes when the user picks a method, and
       // the screenshot is taken while it is still open.
       unawaited(showMedicineBoxScanSheet(_hostContext(tester)));
@@ -688,7 +1145,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'photo-recognize-ocr',
     route: '/medicine/search',
     note: '药物图检索结果：OCR 路径候选匹配与置信度排序',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await _showRecognizeDialog(tester, MedicineScanMethod.ocr, 'OCR 文字识别');
     },
   ),
@@ -698,7 +1155,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'photo-recognize-ai',
     route: '/medicine/search',
     note: '药物图检索结果：AI 识别路径候选列表展开',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await _showRecognizeDialog(tester, MedicineScanMethod.ai, 'AI 智能识别');
       await tester.tap(find.textContaining('从列表选择其他匹配'));
       await _settle(tester);
@@ -728,7 +1185,137 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     note: '找回密码页：邮箱验证码重置流程入口（未登录态）',
     signedOut: true,
   ),
+
+  // ── 回顾页：多维度趋势图的三个维度 ─────────────────────────────
+  //
+  // 「健康趋势」是同一张折线图按维度切换（用药完成率 / 饮水 / 睡眠）。
+  // 单张 at-rest 截图只能看到默认维度，另外两个必须切 tab 才出现；
+  // 三者一起才是「多维度」的证据。
+  //
+  // **不要按文案 `tap('饮水')`**：中文字面量在页面里出现三次（覆盖率小卡、
+  // 趋势卡的 tab、多维度趋势图的图例），`.last` 命中的是图例——它不可点，
+  // 于是三张图完全一样。层级不明的「点一下」还会因为 tab 在屏幕外而打空。
+  // 这里直接走选中维度的 notifier，与用户点 tab 触发的是同一个 provider。
+  _ExtraCapture(
+    fileName: '58_review_trend-medication.png',
+    group: 'review',
+    page: 'trend-medication',
+    route: '/review',
+    note: '回顾 · 健康趋势（用药完成率维度）',
+    prepare: (tester, container) async {
+      await _selectReviewTrend(tester, container, ReviewDataKind.medication);
+    },
+  ),
+  _ExtraCapture(
+    fileName: '59_review_trend-water.png',
+    group: 'review',
+    page: 'trend-water',
+    route: '/review',
+    note: '回顾 · 健康趋势（饮水维度）',
+    prepare: (tester, container) async {
+      await _selectReviewTrend(tester, container, ReviewDataKind.water);
+    },
+  ),
+  _ExtraCapture(
+    fileName: '60_review_trend-sleep.png',
+    group: 'review',
+    page: 'trend-sleep',
+    route: '/review',
+    note: '回顾 · 健康趋势（睡眠维度）',
+    prepare: (tester, container) async {
+      await _selectReviewTrend(tester, container, ReviewDataKind.sleep);
+    },
+  ),
+
+  // ── 用药页：切到「图」视图后的样子 ───────────────────────────
+  //
+  // 列表/图是两个变体，但默认截出来只有列表。若不专门拍，`graphview` 的分层图
+  // 在整个产物集里没有任何证据——它坏了也不会有人发现。
+  _ExtraCapture(
+    fileName: '61_medicine_graph-view-mechanism.png',
+    group: 'medicine',
+    page: 'graph-view-mechanism',
+    route: '/medicine',
+    note: '用药 · 机制通路的图视图（Sugiyama 分层）',
+    prepare: (tester, container) async {
+      await _toggleGraphView(tester, last: false);
+    },
+  ),
+  _ExtraCapture(
+    fileName: '62_medicine_graph-view-cascade.png',
+    group: 'medicine',
+    page: 'graph-view-cascade',
+    route: '/medicine',
+    note: '用药 · 级联传播的图视图（四跳链）',
+    prepare: (tester, container) async {
+      await _toggleGraphView(tester, last: true);
+    },
+  ),
+
+  // ── 同步失败页：单条展开诊断信息 ─────────────────────────────
+  //
+  // 列表态是默认态，展开态才是排查时真正读的那一屏：诊断面板里的
+  // wire 字段、trace、原始异常只在这里出现，不专门截就没有证据。
+  _ExtraCapture(
+    fileName: '63_mine_sync-failures-diagnostics.png',
+    group: 'mine',
+    page: 'sync-failures-diagnostics',
+    route: '/mine/sync/failures',
+    note: '同步失败 · 首条展开诊断信息（wire 字段、trace、原始异常与复制入口）',
+    prepare: (tester, container) async {
+      final toggle = find
+          .byKey(const Key('sync-failed-entry-diagnostics'))
+          .first;
+      await tester.ensureVisible(toggle);
+      await _settle(tester);
+      await tester.tap(toggle);
+      await _settle(tester);
+      await tester.ensureVisible(toggle);
+      await _settle(tester);
+    },
+  ),
 ];
+
+/// 把关系图卡切到「图」视图，并滚到它进入视口。
+///
+/// [last] 为真时取最后一个切换钮（级联），否则取第一个（机制通路）。
+/// 切换钮是图标按钮，语义标签在 `Semantics` 上，所以按 Key 找更稳。
+Future<void> _toggleGraphView(WidgetTester tester, {required bool last}) async {
+  final toggles = find.byKey(const Key('medicine-graph-view-toggle'));
+  if (toggles.evaluate().isEmpty) return;
+  final target = last ? toggles.last : toggles.first;
+  await tester.ensureVisible(target);
+  await _settle(tester);
+  await tester.tap(target);
+  await _settle(tester);
+  // 图卡片比列表高，再滚一次让它整体进入视口。
+  await tester.ensureVisible(target);
+  await _settle(tester);
+}
+
+/// 切到回顾页「健康趋势」的指定维度，并把趋势卡滚进视口。
+///
+/// 维度走 [reviewTrendDimensionProvider]——与用户点趋势卡的 tab 是同一条
+/// 状态通路，因此不会因为「tab 在屏幕外 / 命中的是别处的同名文字」而失效
+/// （那正是三张趋势图曾经完全相同的原因）。
+///
+/// 滚的是 `ensureVisible`（趋势卡带 `review-trend-section` key），不是「滚到底」：
+/// 结尾那几个组件的高度随维度变化，固定滚到底会把 tab 行推出视口。
+Future<void> _selectReviewTrend(
+  WidgetTester tester,
+  ProviderContainer container,
+  ReviewDataKind kind,
+) async {
+  container.read(reviewTrendDimensionProvider.notifier).select(kind);
+  await tester.pump();
+  await _settle(tester);
+
+  final section = find.byKey(const Key('review-trend-section'));
+  if (section.evaluate().isEmpty) return;
+  await tester.ensureVisible(section);
+  await tester.pump();
+  await _settle(tester);
+}
 
 /// A context below both `Localizations` and the app `Navigator`.
 ///
@@ -857,7 +1444,11 @@ Future<void> _showRecognizeDialog(
     showAppDialog<void>(
       context: _hostContext(tester),
       barrierDismissible: false,
+      // `DialogShell` 断言禁止「scrollable: false 且没有 maxHeight」：内容一旦
+      // 高于弹窗上限就会静默溢出底边。识别结果列表是可变长的，这里给有界高度；
+      // 保留 `scrollable: false` 是因为列表自己要滚，外层滚动层会和它抢手势。
       scrollable: false,
+      maxHeight: _frameHeight * 0.85,
       builder: (_) => MedicineRecognizeDialog(
         imagePath: _boxPhotoPath,
         method: method,
@@ -876,6 +1467,10 @@ void main() {
   final manifest = StringBuffer()
     ..writeln('# Luminous page-catalog screenshots (generated)')
     ..writeln()
+    ..writeln('目录结构：每个 tab 一个目录，`1_*` 是 tab 根页（一级），`2_*` 是')
+    ..writeln('该 tab 的子页面（二级）；`*_scrolled.png` 是滚到中段的第二帧；')
+    ..writeln('`long/` 放所有整页长截图。')
+    ..writeln()
     ..writeln('| File | Group | Page | Route | Text widgets | Note |')
     ..writeln('| --- | --- | --- | --- | --- | --- |');
 
@@ -887,16 +1482,38 @@ void main() {
 
   /// Shared capture body: frame, navigate, prime, prepare, dump text, shoot,
   /// record, then unmount and drain before the binding's invariant check.
+  ///
+  /// 每个页面产出：
+  /// 1. `<folder>/<name>.png` — 首屏；
+  /// 2. `<folder>/<name>_scrolled.png`、`_scrolled2.png`… — 首屏以下的整页翻页
+  ///    （仅当内容溢出，每帧只露出新内容，见 [_pageTurnPlan]）；
+  /// 3. `long/<folder>__<name>.png` — 整页长截图（仅当内容溢出）。
   Future<void> capture(
     WidgetTester tester, {
-    required String fileName,
+    required _Placement placement,
+    required String name,
     required String route,
     AssistantConversation? assistantConversation,
     Future<void> Function(WidgetTester tester)? prepare,
+
+    /// extras 用：能拿到本次截图的 container，用来直接驱动 provider 状态。
+    Future<void> Function(WidgetTester tester, ProviderContainer container)?
+    prepareWithContainer,
     bool signedOut = false,
-    required void Function(int textWidgetCount) record,
+    bool longCapture = true,
+    bool scrolledCapture = true,
+    // 桌面档：1280x800 + 窗口 chrome。默认手机档，行为与改动前一致。
+    bool desktop = false,
+    // 打开实验开关 + 注入一份已生成的 surface 消息，用于截生成式 UI。
+    bool generative = false,
+    required void Function(String relativePath, int textWidgetCount) record,
   }) async {
-    tester.view.physicalSize = const Size(
+    _frame = desktop ? _desktopFrame : _phoneFrame;
+    final folder = placement.folder;
+    final baseName = '${placement.prefix}$name';
+    _ensureOutputDir(folder);
+
+    tester.view.physicalSize = Size(
       _frameWidth * _frameDpr,
       _frameHeight * _frameDpr,
     );
@@ -907,6 +1524,8 @@ void main() {
       tester,
       assistantConversation: assistantConversation,
       signedIn: !signedOut,
+      desktopChrome: desktop,
+      generative: generative,
     );
 
     // Navigate by route rather than tapping through the UI: the catalog is
@@ -921,6 +1540,29 @@ void main() {
       await prepare(tester);
       await _settle(tester);
     }
+    if (prepareWithContainer != null) {
+      await prepareWithContainer(tester, container);
+      await _settle(tester);
+    }
+
+    // 生成式 UI 的冷启动恢复是异步的：`GenerativeSurfaceNotifier.build`
+    // 先同步返回 `Idle`（不占位），再 await 一次缓存读取把状态推成 `Ready`。
+    // `_settle` 在「当前没有待调度帧」时就返回，正好会卡在 Idle 与 Ready 之间，
+    // 于是截到的是空态入口而不是重放出来的消息。这里显式多推几轮，让那次
+    // 异步读取与其后的 setState 都落定。
+    if (generative) {
+      // 生成式区块的**声明**写进 KV 后，编排页那一行要等一次异步读取才显示
+      // 用户填的名字。这里多推几轮让那次读取落定，否则截到的是「尚未配置」。
+      //
+      // 注意：这里**不等生成内容**。生成结果的渲染依赖一次真实异步读取，
+      // `flutter_test` 的假时钟推不动它（`pump` 不推进真实 Future），在截图
+      // 流程里无法稳定复现——页面侧的生成内容属于 widget 测试的领域，见
+      // `test/generative/generative_surface_test.dart`。
+      await _settle(tester);
+      for (var i = 0; i < 12; i += 1) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
 
     // Record the rendered text instead of asserting on it. The catalog's
     // `expectVisible` strings describe the e2e fixture's copy, which this
@@ -929,28 +1571,108 @@ void main() {
     //
     // Text-field content lives in `EditableText`, not `Text`, so a form that
     // prefill correctly would otherwise look empty here.
-    final rendered = <String>[];
-    for (final element in find.byType(Text).evaluate()) {
-      final data = (element.widget as Text).data;
-      if (data != null && data.trim().isNotEmpty) {
-        rendered.add(data.trim());
+    void dumpRendered(String relativePath) {
+      final rendered = <String>[];
+      for (final element in find.byType(Text).evaluate()) {
+        final data = (element.widget as Text).data;
+        if (data != null && data.trim().isNotEmpty) {
+          rendered.add(data.trim());
+        }
       }
-    }
-    for (final element in find.byType(EditableText).evaluate()) {
-      final data = (element.widget as EditableText).controller.text;
-      if (data.trim().isNotEmpty) {
-        rendered.add(data.trim());
+      for (final element in find.byType(EditableText).evaluate()) {
+        final data = (element.widget as EditableText).controller.text;
+        if (data.trim().isNotEmpty) {
+          rendered.add(data.trim());
+        }
       }
+      renderedTexts[relativePath] = rendered;
+      record(relativePath, rendered.length);
     }
-    renderedTexts[fileName] = rendered;
-    record(rendered.length);
+
+    final firstFrame = '$folder/$baseName.png';
+    dumpRendered(firstFrame);
 
     await expectLater(
       find.byType(LuminousApp),
-      matchesGoldenFile('$_outputDir/$fileName'),
+      matchesGoldenFile(_goldenPath(folder, '$baseName.png')),
     );
 
-    captured.add(fileName);
+    captured.add(firstFrame);
+
+    // ── 滚动后的第二帧：直接滚到底 ───────────────────────────────────
+    //
+    // 此前每个页面只截首屏，标题以下的内容全部看不见：用药页新增的十个
+    // 关系图卡片、回顾页的趋势区块、我的页的下半部分都不在证据范围内。
+    //
+    // 做法是**滚到 `maxScrollExtent`（页面底部）**再截一张，帧仍然保持设备
+    // 比例。以前「滚到 55%」会让只溢出一点点的页面产出与首屏几乎逐像素相同的
+    // 重复图；而按「剩余内容高度」改帧高虽然不重复，却破坏了截图档的比例。
+    //
+    // 溢出不足半屏的页面不产帧（见 [_bottomScrollOffset]）：那点位移截出来就是
+    // 首屏复制，尾部由长截图覆盖。
+    //
+    // 桌面档不产出这一帧（`scrolledCapture`）：它证明的是「内容溢出一屏」，
+    // 而桌面上这个结论本身就是要看的信号——如果五个 tab 在 1280×800 下
+    // 仍然全部溢出，说明布局还没有利用宽屏，评审时应当直接看到「只有首屏
+    // 一张图」，而不是被同名的第二帧稀释掉这个信号。
+    if (scrolledCapture) {
+      final bottom = _bottomScrollOffset(tester);
+      if (bottom != null) {
+        final actual = await _scrollPageTo(tester, bottom);
+        if (actual != null) {
+          final scrolledFrame = '$folder/${baseName}_scrolled.png';
+          dumpRendered(scrolledFrame);
+          await expectLater(
+            find.byType(LuminousApp),
+            matchesGoldenFile(_goldenPath(folder, '${baseName}_scrolled.png')),
+          );
+          captured.add(scrolledFrame);
+        }
+        await _scrollPageToTop(tester);
+      }
+    }
+
+    // ── 整页长截图 ──────────────────────────────────────────────────
+    //
+    // 把帧高临时拉到「内容总高 + chrome」，一次性画出整页：这是「这个页面
+    // 到底有多长」最省事的证据。
+    //
+    // 高度必须带上 chrome（底部 tab bar / 安全区）：只按内容高画帧，滚动视口
+    // 会跟着缩小同样多，最后一屏的内容被骨架裁掉一截——以前的长截图就是这样
+    // 把页面尾部切掉的。
+    //
+    // 只在内容确实溢出时产出；高度封顶 [_longMaxHeight]，防止异常布局
+    // 生成一张打不开的图。
+    final contentHeight = _pageContentHeight(tester);
+    if (longCapture &&
+        contentHeight != null &&
+        contentHeight > _frameHeight * 1.05) {
+      await _scrollPageToTop(tester);
+      final longHeight = (contentHeight + _pageChromeHeight(tester)).clamp(
+        _frameHeight,
+        _longMaxHeight,
+      );
+      tester.view.physicalSize = Size(
+        _frameWidth * _longDpr,
+        longHeight * _longDpr,
+      );
+      tester.view.devicePixelRatio = _longDpr;
+      await tester.pump();
+      await _settle(tester);
+      await _scrollPageToTop(tester);
+
+      final longFile = '$_longDir/${_longName(folder, baseName)}';
+      _ensureOutputDir(_longDir);
+      dumpRendered(longFile);
+      await expectLater(
+        find.byType(LuminousApp),
+        matchesGoldenFile(_goldenPath(_longDir, _longName(folder, baseName))),
+      );
+      captured.add(longFile);
+
+      // 还原常规帧，后面的 teardown 与其它断言都按原尺寸走。
+      await _restoreFrameSize(tester);
+    }
 
     // Unmount and drain before the binding's end-of-test invariant check.
     // `addTearDown(container.dispose)` runs *after* that check, so several
@@ -967,20 +1689,87 @@ void main() {
     await tester.pump(const Duration(seconds: 5));
   }
 
+  // ── 桌面档：五个 tab 根页 ────────────────────────────────────────────
+  //
+  // 1280x800 落在 M3 `large` 档，侧边栏、分组、三层底色与桌面密度全部出现。
+  // 输出到 `desktop/` 子目录，与手机档的 tab 目录分开——同一个页面在两个
+  // 尺寸下的表现差异，正是这一档要看的证据。
+  //
+  // 不产出 `_scrolled` 与长截图：桌面内容区一次能容纳更多，滚动帧的价值
+  // 低于手机档；而 1280x800 的整页长截图会得到一张高度远超宽度的怪图。
+  for (final target in catalog.screenshotCatalog.where(
+    (t) => t.group == _shellGroup,
+  )) {
+    testWidgets(
+      'generate desktop/${target.id}',
+      (tester) => capture(
+        tester,
+        desktop: true,
+        placement: (folder: 'desktop', prefix: ''),
+        name: target.id,
+        route: target.route,
+        prepare: target.prepare,
+        longCapture: false,
+        scrolledCapture: false,
+        record: (name, count) => manifest.writeln(
+          '| `$name` | ${target.group} | ${target.id} | '
+          '`${target.route}` | $count | desktop 1280x800${_frameKindLabel(name)} |',
+        ),
+      ),
+      timeout: const Timeout(Duration(seconds: 45)),
+    );
+  }
+
+  // ── 桌面档：全部二级页 ──────────────────────────────────────────────
+  //
+  // 手机档里的每一个二级页，在桌面档都有对应的一张。文件名带分组前缀
+  // （`<group>-<id>`），避免与一级页在同一个 `desktop/` 目录里重名。
+  //
+  // 这一档的价值不在「和手机档长得一样」，而在它暴露的问题：内容列是否与
+  // 桌面壳对齐、长文行宽是否越过阅读上限、表单是否还在贴边。曾经的
+  // `maxContentWidth`（桌面档 1600，而窗口只有 1280）就是被这一档看出来的
+  // ——上限从未生效，二级页比一级页的内容宽出 200 余像素。
+  for (final target in catalog.screenshotCatalog.where(
+    (t) => t.group != _shellGroup,
+  )) {
+    final fileName = '${target.group}-${target.id}';
+    testWidgets(
+      'generate desktop/$fileName',
+      (tester) => capture(
+        tester,
+        desktop: true,
+        placement: (folder: 'desktop', prefix: ''),
+        name: fileName,
+        route: target.route,
+        prepare: target.prepare,
+        longCapture: false,
+        scrolledCapture: false,
+        record: (name, count) => manifest.writeln(
+          '| `$name` | ${target.group} | ${target.id} | '
+          '`${target.route}` | $count | desktop 1280x800（二级页）'
+          '${_frameKindLabel(name)} |',
+        ),
+      ),
+      timeout: const Timeout(Duration(seconds: 45)),
+    );
+  }
+
   for (var i = 0; i < catalog.screenshotCatalog.length; i += 1) {
     final target = catalog.screenshotCatalog[i];
-    final fileName = catalog.screenshotFileName(i, target);
+    final placement = _placementFor(target.group, target.id);
 
     testWidgets(
       'generate ${target.group}/${target.id}',
       (tester) => capture(
         tester,
-        fileName: fileName,
+        placement: placement,
+        name: target.id,
         route: target.route,
         prepare: target.prepare,
-        record: (count) => manifest.writeln(
-          '| `$fileName` | ${target.group} | ${target.id} | '
-          '`${target.route}` | $count | ${target.note ?? ''} |',
+        record: (name, count) => manifest.writeln(
+          '| `$name` | ${target.group} | ${target.id} | '
+          '`${target.route}` | $count | ${target.note ?? ''}'
+          '${_frameKindLabel(name)} |',
         ),
       ),
       timeout: const Timeout(Duration(seconds: 45)),
@@ -992,14 +1781,78 @@ void main() {
       'generate ${extra.group}/${extra.page}',
       (tester) => capture(
         tester,
-        fileName: extra.fileName,
+        placement: _placementFor(extra.group, extra.page),
+        name: extra.fileName.replaceAll('.png', ''),
         route: extra.route,
         assistantConversation: extra.assistantConversation,
-        prepare: extra.prepare,
+        prepareWithContainer: extra.prepare,
         signedOut: extra.signedOut,
-        record: (count) => manifest.writeln(
-          '| `${extra.fileName}` | ${extra.group} | ${extra.page} | '
-          '`${extra.route}` | $count | ${extra.note} |',
+        // extras 是「同一条路由的某个特定状态」：弹层/抽屉/候选面板本身不占
+        // 整页，翻页帧只会是首屏的原样复制；整页长截图也会在同一路由上重复
+        // 产出内容几乎相同的图（趋势的三个维度就是这样）。它们的价值只在
+        // 首屏那一帧。
+        longCapture: false,
+        scrolledCapture: false,
+        record: (name, count) => manifest.writeln(
+          '| `$name` | ${extra.group} | ${extra.page} | '
+          '`${extra.route}` | $count | ${extra.note}'
+          '${_frameKindLabel(name)} |',
+        ),
+      ),
+      timeout: const Timeout(Duration(seconds: 45)),
+    );
+  }
+
+  // ── 生成式 UI（实验开关打开）──────────────────────────────────────
+  //
+  // 生成式组件默认不出现：开关关闭时 `generative.<surface>` 根本不注册，
+  // 打开但没生成过时 `GenerativeSurface` 返回 null 不占位。所以这一张必须
+  // **同时**做三件事——开开关、写一份已生成的 KV 文档、把组件挂进布局。
+  //
+  // 手机与桌面各一张：生成式结果是流式消息重放出来的，两端都要能看。
+  // 编排页上的自定义区块：那一行的名字是用户填的标题，尾部的笔形按钮是
+  // 配置入口。这一张要证明的是「配置发生在编排页、而不是页面上」。
+  testWidgets(
+    'generate genui-customizer',
+    (tester) => capture(
+      tester,
+      generative: true,
+      placement: (folder: 'generative', prefix: ''),
+      name: 'genui-customizer',
+      route: '/customize/today',
+      longCapture: false,
+      scrolledCapture: false,
+      record: (name, count) => manifest.writeln(
+        '| `$name` | generative | customize/today | '
+        '`/customize/today` | $count | 编排页：自定义生成式区块的名称与编辑入口'
+        '${_frameKindLabel(name)} |',
+      ),
+    ),
+    timeout: const Timeout(Duration(seconds: 45)),
+  );
+
+  // 生成式区块在页面上的形态：三张并排的小卡。
+  //
+  // 与编排页那张互补——那张证明「配置在哪」，这张证明「配置之后长什么样」。
+  // 内容由 `GenerativeSlotPreview` 手绘（不经过 genui 的异步恢复链路），
+  // 形状与真实生成结果同构。
+  for (final desktop in [false, true]) {
+    final label = desktop ? 'genui-today-desktop' : 'genui-today';
+    testWidgets(
+      'generate $label',
+      (tester) => capture(
+        tester,
+        generative: true,
+        desktop: desktop,
+        placement: (folder: 'generative', prefix: ''),
+        name: label,
+        route: '/',
+        longCapture: false,
+        scrolledCapture: false,
+        record: (name, count) => manifest.writeln(
+          '| `$name` | generative | today | `/` | $count | '
+          '生成式区块：三张并排小卡'
+          '${_frameKindLabel(name)} |',
         ),
       ),
       timeout: const Timeout(Duration(seconds: 45)),
@@ -1024,10 +1877,5 @@ void main() {
     File(
       '${dir.path}/_rendered_text.txt',
     ).writeAsStringSync(diagnostics.toString());
-
-    // ignore: avoid_print
-    print('CAPTURED_TOTAL=${captured.length}');
-    // ignore: avoid_print
-    print('MANIFEST=${dir.path}/MANIFEST.md');
   });
 }

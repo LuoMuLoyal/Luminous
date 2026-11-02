@@ -6,25 +6,28 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/suggestion_icon_mapping.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayObservationSection extends ConsumerWidget {
-  const TodayObservationSection({super.key, required this.dashboard});
-
-  final TodayDashboard dashboard;
+  const TodayObservationSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final dashboard = ref.watch(todaySurfaceDashboardProvider).dataOrNull;
+    if (dashboard == null) return const SizedBox.shrink();
     final suggestionAsync = ref.watch(todaySuggestionProvider);
-    final fallback = _fallbackObservations(context, l10n);
+    final fallback = _fallbackObservations(context, l10n, dashboard);
 
     return TodaySection(
       title: l10n.todayObservationSectionTitle,
@@ -58,12 +61,7 @@ class TodayObservationSection extends ConsumerWidget {
               children: [
                 for (var i = 0; i < items.length; i++) ...[
                   _ObservationTile(item: items[i]),
-                  if (i < items.length - 1)
-                    Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: SemanticColor.neutral.border(context),
-                    ),
+                  if (i < items.length - 1) const AppDivider(),
                 ],
               ],
             );
@@ -80,6 +78,7 @@ class TodayObservationSection extends ConsumerWidget {
   List<_ObservationItem> _fallbackObservations(
     BuildContext context,
     AppLocalizations l10n,
+    TodayDashboard dashboard,
   ) {
     if (!hasMeaningfulVitalValue(dashboard.vitals, TodayVitalType.sleep)) {
       return [
@@ -103,7 +102,7 @@ class TodayObservationSection extends ConsumerWidget {
     TodaySuggestionCard card,
   ) {
     return _ObservationItem(
-      icon: _iconFor(card.icon),
+      icon: SuggestionIconMapping.resolve(card.icon),
       title: card.title,
       subtitle: card.reason,
       tag: _tagForConfidence(l10n, card.confidence),
@@ -429,10 +428,20 @@ class _ConfidenceBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final variant = switch (confidence) {
       TodaySuggestionConfidence.high => FBadgeVariant.primary,
       TodaySuggestionConfidence.medium => FBadgeVariant.secondary,
       TodaySuggestionConfidence.low => FBadgeVariant.outline,
+    };
+    // 前景色随变体走，且必须**显式**给：这里为了调字重传了 `style:`，
+    // 它会取代 `FBadge` 放在 `DefaultTextStyle` 上的颜色（primary 变体
+    // 本该是 `primaryForeground` 近白），文字于是退回继承的深色——
+    // 表现就是「深色底 + 深色字」。
+    final foreground = switch (variant) {
+      FBadgeVariant.primary => colors.primaryForeground,
+      FBadgeVariant.secondary => colors.secondaryForeground,
+      _ => colors.foreground,
     };
 
     return FBadge(
@@ -442,6 +451,7 @@ class _ConfidenceBadge extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: context.theme.typography.body.xs.copyWith(
+          color: foreground,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -460,22 +470,5 @@ String _tagForConfidence(
     TodaySuggestionConfidence.medium =>
       l10n.todayObservationMediumConfidenceTag,
     TodaySuggestionConfidence.low => l10n.todayObservationLowConfidenceTag,
-  };
-}
-
-IconData _iconFor(String icon) {
-  return switch (icon) {
-    'droplets' => SemanticIcons.recordWater,
-    'moon' => SemanticIcons.recordMoon,
-    'activity' => SemanticIcons.recordActivity,
-    'utensils' => SemanticIcons.recordMeal,
-    'user' => SemanticIcons.profileUser,
-    'clipboard' => SemanticIcons.recordClipboard,
-    'alert-triangle' => SemanticIcons.statusWarning,
-    'pill' => SemanticIcons.recordMedicine,
-    'trending-up' => SemanticIcons.reportTrend,
-    'lightbulb' => SemanticIcons.aiTip,
-    'info' => SemanticIcons.statusInfo,
-    _ => SemanticIcons.aiEntry,
   };
 }

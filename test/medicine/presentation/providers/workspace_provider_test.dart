@@ -1,12 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/medicine/workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 
 import '../../../helpers/feature_mocks.dart';
+import '../../../helpers/kv_test_store.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('medicineWorkspaceProvider', () {
     test('returns preview workspace when not authenticated', () async {
       final c = ProviderContainer(

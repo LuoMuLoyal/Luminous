@@ -4,9 +4,14 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/dialog/icon_picker_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   group('showAppIconPicker', () {
     /// Helper: renders a Scaffold with a button that opens the icon picker
     /// sheet, taps the button, and pumps until the sheet is visible.

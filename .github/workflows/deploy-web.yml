@@ -7,7 +7,7 @@ name: Deploy web
 on:
   workflow_dispatch:
   push:
-    branches: [refactor]
+    branches: [main]
 
 permissions:
   contents: read
@@ -28,7 +28,7 @@ jobs:
       FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Validate required secrets
         run: |
@@ -50,14 +50,14 @@ jobs:
           fi
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.23.0
         with:
           channel: stable
-          flutter-version: 3.47.1
+          flutter-version: 3.47.7
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
@@ -79,6 +79,16 @@ jobs:
       - name: Compile drift web worker
         run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
 
+      # `web/sqlite3.wasm` is gitignored and no build step produces it: it is a
+      # release asset of sqlite3.dart keyed by the `sqlite3` version pinned in
+      # pubspec.yaml. The Pages build shipped without it (the web app's drift
+      # worker could not start), and nothing failed loudly because only the
+      # HarmonyOS build asserts on the artifact.
+      - name: Fetch sqlite3 web assembly
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/web/fetch_sqlite3_wasm.py
+
       - name: Build Web (release) with env
         # No --wasm: the wasm default renderer (skwasm) has a known layout
         # bug on mobile browsers — content area gets 0 height, bottom nav bar
@@ -95,12 +105,12 @@ jobs:
             --dart-define=LUCENT_BASE_URL="${LUCENT_BASE_URL}" \
             --dart-define=SENTRY_DSN="${SENTRY_DSN}" \
             --dart-define=SUPPORT_EMAIL="${SUPPORT_EMAIL}" \
-            --dart-define=LUMINOUS_EXPERIMENTAL_AI_RUNTIME=${{ vars.LUMINOUS_EXPERIMENTAL_AI_RUNTIME || 'false' }} \
-            --dart-define=LUMINOUS_AI_RUNTIME_PROVIDER=${{ vars.LUMINOUS_AI_RUNTIME_PROVIDER || 'openai' }} \
+            --dart-define=LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED=${{ vars.LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED || 'false' }} \
+            --dart-define=LUMINOUS_RUNTIME_PROVIDER=${{ vars.LUMINOUS_RUNTIME_PROVIDER || 'openai' }} \
             --dart-define=LUMINOUS_ENABLE_GEN_UI=${{ vars.LUMINOUS_ENABLE_GEN_UI || 'false' }}
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: build/web
 
@@ -114,4 +124,4 @@ jobs:
     steps:
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

@@ -4,10 +4,10 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/design/tokens/lucide_icon_bridge.dart';
 import 'package:luminous/core/widgets/common/dialog/icon_picker_sheet.dart';
-import 'package:luminous/features/record/data/datasources/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
+import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -35,14 +35,10 @@ class RecordKindIconField extends ConsumerWidget {
       key: Key('record-kind-icon-field-${kind.name}'),
       title: Text(l10n.recordQuickIconFieldLabel),
       subtitle: Text(l10n.recordQuickIconChangeAction),
-      prefix: FAvatar.raw(
-        size: Spacing.xl2,
-        style: .delta(backgroundColor: action.softColor.subtle(context)),
-        child: Icon(
-          icon,
-          color: action.accent.solid(context),
-          size: Spacing.lg,
-        ),
+      prefix: Icon(
+        icon,
+        color: action.accent.solid(context),
+        size: IconSizeTokens.lg,
       ),
       suffix: const Icon(SemanticIcons.actionNext),
       onPress: () => _pickIcon(context, ref, entryType, icon),

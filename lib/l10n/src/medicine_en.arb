@@ -725,5 +725,206 @@
   "medicineDetailExpandLongText": "Show more",
   "medicineDetailCollapseLongText": "Show less",
   "medicineDetailRiskCheckEntry": "Check my medicine risk",
-  "medicineDetailOpenReminderAction": "Reminder details"
+  "medicineDetailOpenReminderAction": "Reminder details",
+  "medicineGraphTitleMechanismPaths": "Mechanism paths",
+  "medicineGraphTitleSharedTargets": "Shared targets",
+  "medicineGraphTitleCascadePaths": "Cascade effects",
+  "medicineGraphTitleSubstitutes": "Structural alternatives",
+  "medicineGraphTitleShortestRoutes": "Shortest path",
+  "medicineGraphTitleDrugActions": "Action spectrum",
+  "medicineGraphTitleTargetDrugs": "Drugs on target",
+  "medicineGraphTitleTransportRoutes": "Transporter routes",
+  "medicineGraphTitleEnzymeDuels": "Induction vs substrate",
+  "medicineGraphTitleMedicationOverview": "My medication mix",
+  "medicineGraphUnavailable": "Mechanism analysis unavailable",
+  "medicineGraphUnavailableBody": "This does not mean \"no interaction\". The knowledge base cannot answer this right now.",
+  "medicineGraphUnavailableNotConfiguredBody": "The knowledge base is not connected, so mechanism analysis is unavailable. This does not mean \"no interaction\".",
+  "medicineGraphRetry": "Retry",
+  "medicineGraphEmpty": "No related findings",
+  "medicineGraphNeedsTwoDrugs": "At least 2 identifiable medicines are needed",
+  "medicineGraphNeedsEnzyme": "Pick an enzyme to avoid, then query",
+  "medicineGraphNeedsTwoDrugsForRoute": "Pick a start and an end medicine to query the path",
+  "medicineGraphCoverageNote": "{covered} of {total} medicines analysed",
+  "@medicineGraphCoverageNote": {
+    "placeholders": {
+      "covered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCoverageNoteWithRest": "{covered} of {total} medicines analysed; {rest} have no identifiable id",
+  "@medicineGraphCoverageNoteWithRest": {
+    "placeholders": {
+      "covered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "rest": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphRelationInhibits": "inhibits",
+  "medicineGraphRelationInduces": "induces",
+  "medicineGraphRelationOtherDrug": "with {drug}",
+  "@medicineGraphRelationOtherDrug": {
+    "placeholders": {
+      "drug": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineGraphSharedTargetDrugs": "{count} medicines",
+  "@medicineGraphSharedTargetDrugs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCascadeStart": "Start",
+  "medicineGraphCascadeEnd": "Affected",
+  "medicineGraphSubstituteSharedTarget": "shared target {target}",
+  "@medicineGraphSubstituteSharedTarget": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineGraphTransportInverted": "reversed (drug is the endpoint)",
+  "medicineGraphEnzymeDuelExposureDown": "{substrate} exposure falls",
+  "@medicineGraphEnzymeDuelExposureDown": {
+    "placeholders": {
+      "substrate": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineGraphStepCount": "{count} hops",
+  "@medicineGraphStepCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphOverviewDuplicates": "{count} duplicate ingredient groups",
+  "@medicineGraphOverviewDuplicates": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphOverviewNoDuplicates": "No duplicate ingredients",
+  "medicineGraphOverviewSources": "Source grouping",
+  "medicineGraphOverviewUnattributed": "No linked event",
+  "medicineGraphOverviewResolvable": "{resolvable} of {total} with resolvable ingredients",
+  "@medicineGraphOverviewResolvable": {
+    "placeholders": {
+      "resolvable": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphOverviewDuplicateHigh": "High",
+  "medicineGraphOverviewDuplicateMedium": "Medium",
+  "medicineGraphOverviewEmpty": "No medicines on record yet",
+  "medicineGraphSelectEnzyme": "Enzyme to avoid",
+  "medicineGraphSelectFromDrug": "From medicine",
+  "medicineGraphSelectToDrug": "To medicine",
+  "medicineGraphSelectGene": "Target gene",
+  "medicineGraphSelectDrug": "Medicine",
+  "medicineGraphShowAll": "Show all ({count})",
+  "@medicineGraphShowAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCollapse": "Collapse",
+  "medicineGraphUnavailableShort": "Unavailable",
+  "medicineGraphViewGraph": "Graph",
+  "medicineGraphViewList": "List",
+  "medicineGraphViewGraphHint": "Show upstream and downstream as a layered graph",
+  "medicineGraphViewListHint": "List findings one row at a time",
+  "medicineGraphCountPaths": "{count} paths",
+  "@medicineGraphCountPaths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountTargets": "{count} targets",
+  "@medicineGraphCountTargets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountCascades": "{count} cascades",
+  "@medicineGraphCountCascades": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountDuels": "{count} pairs",
+  "@medicineGraphCountDuels": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountActions": "{count} actions",
+  "@medicineGraphCountActions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountRoutes": "{count} routes",
+  "@medicineGraphCountRoutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountDrugs": "{count} medicines",
+  "@medicineGraphCountDrugs": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphCountSubstitutes": "{count} candidates",
+  "@medicineGraphCountSubstitutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineGraphRelationActsOn": "acts on",
+  "medicineGraphRelationSubstrateOf": "is substrate of",
+  "medicineGraphRelationUnknown": "related",
+  "medicineGraphSelectEnzymeHint": "e.g. CYP2C9",
+  "medicineGraphSelectGeneHint": "e.g. CYP2C9"
 }

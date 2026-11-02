@@ -1,42 +1,5 @@
-/// Network-layer error codes used to map l10n strings in the presentation layer.
-///
-/// The network layer carries this enum (not hardcoded message text) when throwing
-/// [LucentFailure]. The presentation layer maps it to a localized string via
-/// [NetworkErrorL10n].
-enum NetworkErrorCode {
-  /// A domain/business failure that is not represented by a transport error.
-  businessFailure,
+/// Re-export façade: `NetworkErrorCode` now lives in the shared domain kernel
+/// (`lib/shared/domain/failure.dart`).
+library;
 
-  /// Stream response is empty
-  emptyStreamResponse,
-
-  /// SSE payload cannot be parsed as a Map
-  invalidSsePayload,
-
-  /// Response body is empty
-  emptyResponse,
-
-  /// Connection timeout
-  connectionTimeout,
-
-  /// Request send timeout
-  sendTimeout,
-
-  /// Response receive timeout
-  receiveTimeout,
-
-  /// Server certificate validation failed
-  badCertificate,
-
-  /// Network connection failed
-  connectionError,
-
-  /// Request cancelled
-  cancelled,
-
-  /// HTTP status code error
-  badResponse,
-
-  /// Unknown network error
-  unknown,
-}
+export 'package:luminous/shared/domain/failure.dart' show NetworkErrorCode;

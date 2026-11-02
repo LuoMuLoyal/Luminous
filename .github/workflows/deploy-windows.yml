@@ -1,0 +1,122 @@
+name: Deploy Windows
+
+# 构建 Windows 桌面版（release 目录）并上传产物。
+# 代码门禁在 ci.yml；Android / iOS / Web / HarmonyOS / Linux 分别在各自的 deploy-*.yml。
+# 触发：**只手动**（workflow_dispatch，可在任意分支出包）。桌面产物是「需要时要
+# 一个」的交付形态，不进 main 的自动发布链路。
+#
+# Windows 产物必须在 Windows runner 上构建（MSVC + Windows SDK）；开发机是
+# Windows 时本地也能跑同样的 `flutter build windows --release`，本 workflow 是
+# 「产物可溯源」的那条链路。
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: luminous-deploy-windows-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    name: Build Windows (release)
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      PUB_HOSTED_URL: https://pub.dev
+      FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Validate required secrets
+        shell: bash
+        env:
+          LUCENT_BASE_URL: ${{ secrets.LUCENT_BASE_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          if [ -z "${LUCENT_BASE_URL}" ]; then
+            echo "::error::Secret LUCENT_BASE_URL is not set; a release build without it cannot reach Lucent."
+            exit 1
+          fi
+          if [ -z "${SENTRY_DSN}" ]; then
+            echo "::warning::SENTRY_DSN is not set — Sentry will be disabled for this build."
+          fi
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2.23.0
+        with:
+          channel: stable
+          flutter-version: 3.47.7
+          cache: true
+
+      - name: Cache pub packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
+          restore-keys: pub-${{ runner.os }}-
+
+      - name: Bootstrap generated sources
+        run: dart run scripts/contract/bootstrap.dart --skip-client
+
+      # generated/lucent_api 是独立 package：根 build_runner 不会替它生成各 model 的
+      # part 文件（`part '*.g.dart'`，且 *.g.dart 被 gitignore）。
+      # 缺这一步 flutter build 会直接编译失败。
+      - name: Build generated API client
+        shell: bash
+        run: |
+          cd generated/lucent_api
+          dart pub get
+          dart run build_runner build --delete-conflicting-outputs
+          cd ../..
+
+      - name: Build Windows (release)
+        shell: bash
+        env:
+          LUCENT_BASE_URL: ${{ secrets.LUCENT_BASE_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SUPPORT_EMAIL: ${{ vars.SUPPORT_EMAIL || 'support@luminous.app' }}
+        run: |
+          flutter build windows --release \
+            --dart-define=LUCENT_BASE_URL="${LUCENT_BASE_URL}" \
+            --dart-define=SENTRY_DSN="${SENTRY_DSN}" \
+            --dart-define=SUPPORT_EMAIL="${SUPPORT_EMAIL}"
+
+      # 产物自证 + 定位：Flutter 的 Windows 产物目录随小版本在
+      # `build/windows/x64/runner/Release` 与 `build/windows/runner/Release` 之间移动，
+      # 所以按 `luminous.exe` 反查目录，不写死路径。缺 exe / 缺引擎 dll 的包在用户
+      # 机器上只会「双击没反应」，必须在发布前拦下。
+      - name: Verify bundle
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem -Path build/windows -Recurse -Filter luminous.exe |
+            Where-Object { $_.FullName -notmatch '\\intermediate\\' } | Select-Object -First 1
+          if (-not $exe) { Write-Error "::error::luminous.exe not found under build/windows"; exit 1 }
+          $dir = $exe.Directory.FullName
+          if (-not (Test-Path (Join-Path $dir 'flutter_windows.dll'))) {
+            Write-Error "::error::missing flutter_windows.dll in $dir"; exit 1
+          }
+          if (-not (Test-Path (Join-Path $dir 'data/flutter_assets'))) {
+            Write-Error "::error::missing data/flutter_assets in $dir"; exit 1
+          }
+          $size = [math]::Round((Get-ChildItem $dir -Recurse -File | Measure-Object Length -Sum).Sum / 1MB, 1)
+          Write-Host "OK: $dir ($size MB, $((Get-ChildItem $dir -Recurse -Filter *.dll).Count) dlls)"
+          "BUNDLE_DIR=$dir" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Package bundle
+        shell: pwsh
+        run: |
+          $zip = 'build/luminous-windows-x64.zip'
+          Compress-Archive -Path "$env:BUNDLE_DIR/*" -DestinationPath $zip -Force
+          Get-Item $zip | Format-List Name, Length
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: luminous-windows-x64
+          path: build/luminous-windows-x64.zip
+          if-no-files-found: error
+          retention-days: 14

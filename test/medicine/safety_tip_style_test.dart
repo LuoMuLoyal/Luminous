@@ -11,8 +11,8 @@ void main() {
     test('returns coffee for caffeine', () {
       expect(medicineSafetyTipIcon('caffeine'), SemanticIcons.recordCaffeine);
     });
-    test('returns clock3 for timing', () {
-      expect(medicineSafetyTipIcon('timing'), SemanticIcons.statusPending);
+    test('returns clockFading for timing', () {
+      expect(medicineSafetyTipIcon('timing'), SemanticIcons.safetyTipTiming);
     });
     test('returns thermometer for storage', () {
       expect(medicineSafetyTipIcon('storage'), SemanticIcons.recordSymptom);

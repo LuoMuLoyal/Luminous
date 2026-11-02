@@ -4,6 +4,7 @@ import 'package:luminous/core/widgets/common/feedback/page_state.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
 /// Regression coverage for the sign-in hint banner on narrow phones with a
@@ -14,6 +15,10 @@ import '../../helpers/test_forui_app.dart';
 /// icon + message + button shared a single [Row] and the message — the only
 /// flex child — absorbed all the compression.
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late AppLocalizations l10n;
 
   setUp(() async {

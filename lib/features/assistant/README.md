@@ -13,6 +13,7 @@
 
 ## 不变量
 - 生产链路 = Lucent 后端:generated `AssistantApi` + `LucentSseClient`(`core/network/client/sse.dart`)POST `/api/v1/user/assistant/messages/stream`(regenerate 走 `/conversations/{id}/regenerate`),事件 chunk/result/error/done;流语义不包 `TaskEither`,失败以 stream error 上抛(`domain/repositories/assistant.dart` 注释;`test/assistant/remote_data_source_stream_test.dart`)。
+- 长期记忆在后端:报告 / 今日摘要作为长期事实输入(`get_report_summary_by_range`、`get_recent_report_summaries`、`get_today_summary_by_date`、`get_recent_today_summaries`),会话线程由 LangGraph `PostgresSaver` checkpointer 持久化。客户端只消费流式回答与提案确认,不实现记忆存储。
 - `lib/core/ai` 是实验 seam(文件头 "not part of the shipping assistant path"),assistant 不得 import 它。
 - 发送门控以后端 capabilities 为准:`AssistantCapabilities.canSendMessages`;未登录(`canAccessProtectedData == false`)直接空态,不发请求(`presentation/providers/conversation.dart`)。
 - 消息 canonical id 由 `presentation/utils/message_id.dart` 决定,gen_ai 列表身份与之解耦(gen_ai 列表 id = `$conversationId:$index:$canonical`,`chat_adapter.dart` 头注释;`test/assistant/chat_adapter_test.dart`)。
@@ -28,5 +29,5 @@
 - SSE 复用 dio 实例(`LucentSseClient(dio: dio)`),`error` 事件经 `mapSseStreamError` 直接 throw,勿吞掉。
 - 会话持久化全在后端(latest/rename/delete/clear 均为 API 调用),客户端不写本地库。
 - AI 回复用 gen_ai 自带气泡(markdown/流式 caret),底色取主题桥的 `CustomThemeExtension.messageBubbleColor`(= Forui `colors.secondary`);来源条/免责声明/proposal 卡/copy-regen-动作行经 `MessageOptions.bubbleBuilder`(`chat_adapter.dart` 的 `buildBubble` + `_AssistantMessageChrome`)**追加在气泡下方**,不再包进一块面板。gen_ai 自带的 action row 关闭(`showCopyButton:false`/`showTime:false`),改由自研 `_ActionRow` 渲染以保留 l10n 文案。
-- 欢迎区 greeting 用 `AssistantSvgGreeting`(`sections/assistant_greeting.dart`,iconMind SVG AI 图标 `SemanticIconSvg.aiGenerated`),作为 gen_ai `WelcomeMessageConfig.builder` 的内容(`empty_conversation.dart`)渲染;gen_ai 在 `centerVertically:true` 时已用 `SingleChildScrollView`+`Center` 包裹 builder,故空态**不再自己滚动/居中**(避免嵌套滚动与无界高度约束)。
-- AI 语义图标(入口/生成中/记忆/RAG/工具)统一走 `SemanticIconSvg`(`core/design/tokens/semantic_icon_svg.dart`,iconMind SVG);通用操作/状态图标仍走 `SemanticIcons`(Lucide)。能力面板摘要行/工具行即为此分工的例子。
+- 欢迎区 greeting 用 `AssistantSvgGreeting`(`sections/assistant_greeting.dart`,AI 语义图标 `SemanticIcons.aiGenerated`),作为 gen_ai `WelcomeMessageConfig.builder` 的内容(`empty_conversation.dart`)渲染;gen_ai 在 `centerVertically:true` 时已用 `SingleChildScrollView`+`Center` 包裹 builder,故空态**不再自己滚动/居中**(避免嵌套滚动与无界高度约束)。
+- AI 语义图标(入口/生成中/记忆/RAG/工具)与通用操作/状态图标**统一走 `SemanticIcons`**(Lucide 单族)。iconMind SVG 侧注册表已于 2026-10-27 整体删除,不再存在第二套图标源;原先「AI 图标走 SVG、通用图标走 Lucide」的分工随之取消。能力面板摘要行/工具行即为此口径的例子。

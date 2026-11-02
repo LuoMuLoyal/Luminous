@@ -7,21 +7,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/medicine/workspace.dart';
+import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/app/composition/snapshot/record.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
@@ -30,21 +30,30 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
+import 'package:luminous/features/record/presentation/mappers/dashboard_assembler.dart';
 import 'package:luminous/features/record/presentation/pages/create.dart';
 import 'package:luminous/features/record/presentation/pages/detail.dart';
 import 'package:luminous/features/record/presentation/pages/edit.dart';
 import 'package:luminous/features/record/presentation/pages/page.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/time.dart';
+import 'package:luminous/features/record/presentation/quick_entry/flows/meal_quick_entry.dart';
 import 'package:luminous/features/record/presentation/quick_entry/meal_flow.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';
+import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   /// Runs a [LucentRecordRepository] dashboard task, failing the test on Left.
   Future<RecordDashboard> fetchDashboard(
     LucentRecordRepository repo,
@@ -1775,7 +1784,10 @@ void main() {
         itemValue: 'mild',
         itemUnit: null,
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1796,7 +1808,10 @@ void main() {
         itemNote: null,
         itemPayload: {'durationMinutes': 480},
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1815,7 +1830,10 @@ void main() {
         itemNote: null,
         itemPayload: {'durationMinutes': 450},
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1834,7 +1852,10 @@ void main() {
         itemNote: null,
         itemPayload: {'moodLevel': 4, 'moodLabel': 'good'},
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1890,7 +1911,10 @@ void main() {
         itemMealCalorieMax: 780,
         itemMealCalorieBucket: 'medium',
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1920,7 +1944,10 @@ void main() {
     'Lucent record repository does not fall back to mock timeline for empty filter results',
     () async {
       final dailyRepo = _FakeDailyRecordRepository(fetchThrows: true);
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(
         repo,
@@ -1945,7 +1972,10 @@ void main() {
         itemUnit: null,
         itemNote: 'Slept well tonight',
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1964,7 +1994,10 @@ void main() {
       itemUnit: null,
       itemNote: 'Felt good today',
     );
-    final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+    final repo = LucentRecordRepository(
+      dailyRecordRepo: dailyRepo,
+      viewAssembler: const RecordDashboardAssembler(),
+    );
 
     final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -1983,7 +2016,10 @@ void main() {
         itemValue: '500',
         itemUnit: 'ml',
       );
-      final repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+      final repo = LucentRecordRepository(
+        dailyRecordRepo: dailyRepo,
+        viewAssembler: const RecordDashboardAssembler(),
+      );
 
       final dashboard = await fetchDashboard(repo, DateTime(2026, 6, 6));
 
@@ -2058,6 +2094,8 @@ Future<void> _pumpRecordRouter(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
+        // 移动端看板按 record 表面的组件布局渲染，注册表为空时宿主什么都不会画。
+        ...compositionTestOverrides(),
         dailyRecordRepositoryProvider.overrideWithValue(
           dailyRecordRepository ?? _FakeDailyRecordRepository(),
         ),
@@ -2103,6 +2141,8 @@ Future<void> _pumpRecordPage(
   Locale locale = const Locale('zh'),
 }) async {
   final overrides = [
+    // 移动端看板按 record 表面的组件布局渲染，注册表为空时宿主什么都不会画。
+    ...compositionTestOverrides(),
     recordRepositoryProvider.overrideWithValue(recordRepository),
     dailyRecordRepositoryProvider.overrideWithValue(
       dailyRecordRepository ?? _FakeDailyRecordRepository(),
@@ -2568,7 +2608,7 @@ class _FakeRecordRepository implements RecordRepository {
                   const RecordTimelineEntry(
                     time: '09:45',
                     type: RecordEntryType.vitals,
-                    icon: SemanticIcons.profileCondition,
+                    iconName: 'heart-pulse',
                     accent: SemanticColor.primary,
                     softColor: SemanticColor.neutral,
                     titleKey: RecordCopyKey.typeVitals,
@@ -2615,7 +2655,7 @@ class _LongTimelineRecordRepository implements RecordRepository {
             return RecordTimelineEntry(
               time: time,
               type: RecordEntryType.note,
-              icon: SemanticIcons.tabRecord,
+              iconName: 'notebook-pen',
               accent: SemanticColor.primary,
               softColor: SemanticColor.neutral,
               titleKey: RecordCopyKey.typeNote,

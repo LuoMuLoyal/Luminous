@@ -2,18 +2,23 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/desktop_oauth_callback_listener.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/desktop_oauth_callback_server.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
-import 'package:luminous/features/auth/presentation/providers/account.dart';
-import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/callback/desktop_oauth_callback_listener.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/callback/desktop_oauth_callback_server.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/client/mobile_auth_client.dart';
+import 'package:luminous/features/auth/presentation/providers/account/account.dart';
+import 'package:luminous/features/auth/presentation/providers/oauth/oauth_login.dart';
 
+import '../helpers/kv_test_store.dart';
 import 'test_helpers.dart';
 
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   test('startWechatMobileLogin completes SDK callback login', () async {
     final remote = FakeLucentAuthRepository();
     final mobileClient = _FakeWechatMobileAuthClient(code: 'mobile-code');
@@ -33,7 +38,10 @@ void main() {
     expect(mobileClient.authorizeCalled, isTrue);
     expect(remote.wechatMobileCallbackCode, 'mobile-code');
     expect(container.read(authSessionProvider).isAuthenticated, isTrue);
-    expect(container.read(authSessionProvider).user?.nickname, 'WxMobile');
+    expect(
+      container.read(authSessionProvider).userSnapshot?.nickname,
+      'WxMobile',
+    );
   });
 
   test('startWechatDesktopLogin completes desktop callback login', () async {
@@ -147,7 +155,7 @@ void main() {
       expect(
         container
             .read(authSessionProvider)
-            .user
+            .userSnapshot
             ?.linkedIdentities
             .single
             .provider,
@@ -210,7 +218,7 @@ void main() {
     expect(
       container
           .read(authSessionProvider)
-          .user
+          .userSnapshot
           ?.linkedIdentities
           .single
           .provider,
@@ -265,8 +273,8 @@ void main() {
       expect(remote.wechatIdentityLinkCallbackState, isNull);
       expect(isCallbackServerClosed, isTrue);
       expect(
-        container.read(authSessionProvider).user?.linkedIdentities,
-        isEmpty,
+        container.read(authSessionProvider).userSnapshot?.linkedIdentities,
+        anyOf(isNull, isEmpty),
       );
     },
   );

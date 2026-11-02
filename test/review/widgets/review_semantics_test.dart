@@ -4,18 +4,21 @@ import 'package:flutter/rendering.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/errors/lucent_failure.dart';
+import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/app/composition/review/review.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/review/data/providers/review.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/domain/repositories/review.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
+import 'package:luminous/features/review/presentation/providers/review.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/failure.dart';
 
+import '../../helpers/composition.dart';
+import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 import 'review_fixtures.dart';
 
@@ -25,6 +28,10 @@ import 'review_fixtures.dart';
 /// 接下来怎么办）→ 历史 → More。测试按语义树深度优先遍历收集 label，
 /// 用首次出现位置断言相对顺序（中间允许存在日期、用药数等次要 label）。
 void main() {
+  setUp(() {
+    KvTestStore.install();
+  });
+
   late AppLocalizations l10n;
 
   setUp(() async {
@@ -57,6 +64,9 @@ void main() {
   }
 
   /// 断言 [requiredOrder] 中各 label 按首次出现位置严格递增。
+  ///
+  /// 用 `contains` 而不是 `==`：一个语义节点会把相邻文本合并成多行 label
+  /// （标题 + 状态 + 日期），要求全等会让断言依赖合并后的确切换行方式。
   void expectOrder(
     List<({String label, bool isButton})> semantics, {
     required List<String> requiredOrder,
@@ -64,7 +74,7 @@ void main() {
   }) {
     final positions = <String, int>{
       for (final key in requiredOrder)
-        key: semantics.indexWhere((item) => item.label == key),
+        key: semantics.indexWhere((item) => item.label.contains(key)),
     };
     final missing = requiredOrder.where((key) => positions[key] == -1);
     expect(
@@ -89,8 +99,6 @@ void main() {
     AsyncValue<ReviewEventPage>? history,
     bool canAccessProtectedData = true,
     bool isColdStart = false,
-    int coldObserved = 0,
-    int coldExpected = 0,
   }) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
@@ -99,33 +107,40 @@ void main() {
       tester.view.resetPhysicalSize();
     });
 
+    // `ReviewView` 无参、数据来自 provider：这里注入数据而不是构造参数。
+    // 冷启动/覆盖率由 dashboard 决定，`isColdStart` 只在数据侧有意义。
+    final dashboard = isColdStart
+        ? ReviewDashboard.signedOut()
+        : reviewDashboardWithCoverage();
+
     await tester.pumpWidget(
-      TestForuiApp(
-        home: Scaffold(
-          body: SingleChildScrollView(
-            child: ReviewView(
-              currentAsync: current,
-              cachedReview: null,
-              historyAsync:
-                  history ??
-                  const AsyncValue<ReviewEventPage>.data(
-                    ReviewEventPage(items: [], total: 0),
-                  ),
-              canAccessProtectedData: canAccessProtectedData,
-              isPreview: false,
-              onRetry: () {},
-              onGoRecord: () {},
-              onGoTodayCheckIn: () {},
-              onSignIn: () {},
-              isColdStart: isColdStart,
-              coldObserved: coldObserved,
-              coldExpected: coldExpected,
-            ),
+      ProviderScope(
+        overrides: [
+          ...compositionTestOverrides(),
+          reviewCurrentProvider.overrideWith(
+            (ref) async => current.asData?.value,
           ),
+          reviewDashboardProvider(
+            const ReviewDashboardQuery(range: ReviewDashboardRange.last7Days),
+          ).overrideWith((ref) async => dashboard),
+          reviewHistoryProvider.overrideWith(
+            (ref) async =>
+                (history ??
+                        const AsyncValue<ReviewEventPage>.data(
+                          ReviewEventPage(items: [], total: 0),
+                        ))
+                    .asData
+                    ?.value ??
+                const ReviewEventPage(items: [], total: 0),
+          ),
+        ],
+        child: const TestForuiApp(
+          home: Scaffold(body: SingleChildScrollView(child: ReviewView())),
         ),
       ),
     );
-    await tester.pump();
+    // override 是 async provider：一帧不够，等数据落到树上再断言。
+    await tester.pumpAndSettle();
   }
 
   // ── 内容区语义顺序（ReviewView 直接装配） ───────────────────────
@@ -229,8 +244,6 @@ void main() {
         reviewHistoryPage([reviewEventItem(id: 'evt-1', title: '头痛观察')]),
       ),
       isColdStart: true,
-      coldObserved: 3,
-      coldExpected: 7,
     );
 
     final semantics = collectSemantics(tester, find.byType(ReviewView));
@@ -239,7 +252,7 @@ void main() {
       semantics,
       requiredOrder: [
         l10n.reviewRecordGuideTitle,
-        l10n.reviewRecordGuideDescription(3, 7),
+        l10n.reviewRecordGuideDescription(0, 7),
         l10n.reviewRecordGuideGoRecordAction,
         l10n.reviewReviewHistoryTitle,
         '头痛观察',
@@ -262,6 +275,7 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          ...compositionTestOverrides(),
           reviewRepositoryProvider.overrideWithValue(
             _PageReviewRepository(
               current: reviewActive(),

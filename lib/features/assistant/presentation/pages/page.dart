@@ -235,7 +235,7 @@ class AssistantPage extends HookConsumerWidget {
     final screenWidth = MediaQuery.sizeOf(context).width;
     // Cached: recomputed only when the available width changes, not per frame.
     final drawerWidth = useMemoized(
-      () => screenWidth < Breakpoints.tablet ? screenWidth * 0.84 : 320.0,
+      () => screenWidth < Breakpoints.expanded ? screenWidth * 0.84 : 320.0,
       [screenWidth],
     );
     final isConversationDrawerOpen = useState(false);
