@@ -170,11 +170,11 @@ const double _longDpr = 2;
 /// 在评审时看到「被截断」而不是生成一张打不开的图。
 const double _longMaxHeight = 8000;
 
-/// 翻页末帧的最小内容高（占一个视口的比例）。
+/// 产翻页帧所需的最小溢出量（占一个视口的比例）。
 ///
-/// 首屏以下剩余内容不足这个比例时不产帧：几十像素的尾巴截图几乎全是与上一帧
-/// 重复的内容，长截图已经覆盖了它。
-const double _minTailFraction = 0.2;
+/// 首屏以下不足这个比例的页面不产第二帧：几十像素的位移截出来就是首屏的复制，
+/// 尾部由长截图覆盖。
+const double _minScrollFraction = 0.5;
 
 /// 一级页（五个 tab 根页）所在的分组。
 const String _shellGroup = 'shell';
@@ -990,57 +990,31 @@ Future<void> _scrollPageToTop(WidgetTester tester) async {
   await _settle(tester);
 }
 
-/// 整页翻页计划里的一帧。
+/// 翻页帧的滚动目标：**直接滚到底**（`maxScrollExtent`）。
 ///
-/// [offset] 是这一帧的滚动偏移；[frameHeight] 是这一帧的画布高度。
-/// 前面几帧是标准视口（[frameHeight] == 页面帧高），**最后一帧只画「上一帧
-/// 之后剩下的那段内容」**，所以它的帧高小于视口——这样两帧之间没有一像素
-/// 重复，同时整页每一段都有且只有一张图。
-typedef _ScreenFrame = ({double offset, double frameHeight});
-
-/// 把「首屏以下的内容」切成若干帧：每次前进**整整一个视口**，最后一帧收尾。
+/// ## 为什么是「滚到底」而不是按比例或切片
 ///
-/// ## 原来的做法为什么不合格
+/// 截图档的要求很朴素：**每张图都是设备视口（1344×2992）**，而且第二张要让人
+/// 看到首屏没露出的那部分。两件事同时满足的做法只有一种——把页面滚到最后，
+/// 用完整视口截尾部：
 ///
-/// 以前是「滚到 `maxScrollExtent * 0.55`」再截一张：
+/// - 按比例（`maxScrollExtent × 0.55`）：只溢出十几像素的页面，第二帧和首屏几乎
+///   逐像素相同（废图）；多屏页面又只到中段。
+/// - 按视口切片再给末帧改帧高：解了重复，但末帧比例不是设备比例（被判定为
+///   「比例变了」），也不该出现在一份页面截图集里。
 ///
-/// - 内容只溢出一点点时（提醒详情、提醒编辑只溢出十几像素），第二帧和首屏
-///   几乎逐像素相同——产出一张废图；
-/// - 内容高出好几屏时（用药 3 屏、回顾 2.7 屏），0.55 只到中段，页面尾部永远
-///   没有帧，只能靠长截图；
-/// - 对话类页面进页面时已经贴底，再往下拖根本不动，于是「滚动后」= 首屏原样。
-///
-/// 现在的规则是**按视口切片**：偏移依次取 `v, 2v, 3v, …`，每帧只露出新内容，
-/// 到头后用一帧高度为「剩余内容」的尾帧收尾，不留缝也不重叠。
-///
-/// 剩余内容不足 [minTailFraction] 个视口时不产帧：那点高度（几十像素）不值得
-/// 一张几乎全是重复内容的图，长截图已经覆盖了它。
-List<_ScreenFrame> _pageTurnPlan(
-  WidgetTester tester, {
-  required double minTailFraction,
-}) {
+/// 返回值是滚动目标；内容溢出不足 [_minScrollFraction] 个视口时返回 null——
+/// 那点位移（几十像素）截出来就是首屏的复制，长截图已经覆盖了这点尾巴。
+double? _bottomScrollOffset(WidgetTester tester) {
   final primary = _primaryScrollable(tester);
-  if (primary == null) return const [];
+  if (primary == null) return null;
   final position = primary.position;
-  final viewport = position.viewportDimension;
+  if (!position.hasContentDimensions) return null;
   final extent = position.maxScrollExtent;
-  if (viewport <= 0 || extent <= 0) return const [];
-
-  final chrome = _pageChromeHeight(tester);
-  final content = extent + viewport;
-  final minTail = viewport * minTailFraction;
-
-  final frames = <_ScreenFrame>[];
-  var offset = viewport;
-  while (offset + viewport <= content - minTail) {
-    frames.add((offset: offset, frameHeight: _frameHeight));
-    offset += viewport;
-  }
-  final tail = content - offset;
-  if (tail >= minTail) {
-    frames.add((offset: offset, frameHeight: tail + chrome));
-  }
-  return frames;
+  final viewport = position.viewportDimension;
+  if (extent <= 0 || viewport <= 0) return null;
+  if (extent < viewport * _minScrollFraction) return null;
+  return extent;
 }
 
 // ── Extra surfaces ──────────────────────────────────────────────────────────
@@ -1625,58 +1599,37 @@ void main() {
 
     captured.add(firstFrame);
 
-    // ── 首屏以下的帧：按视口翻页 ─────────────────────────────────────
+    // ── 滚动后的第二帧：直接滚到底 ───────────────────────────────────
     //
     // 此前每个页面只截首屏，标题以下的内容全部看不见：用药页新增的十个
     // 关系图卡片、回顾页的趋势区块、我的页的下半部分都不在证据范围内。
     //
-    // 现在对**内容确实溢出**的页面按整屏翻页：每帧前进一整个视口，末帧只画
-    // 剩下的那段内容（见 [_pageTurnPlan]）。这样两帧之间不重叠——以前「滚到
-    // 55% 再截一张」会让只冒头一截的页面产出与首屏几乎相同的重复图。
+    // 做法是**滚到 `maxScrollExtent`（页面底部）**再截一张，帧仍然保持设备
+    // 比例。以前「滚到 55%」会让只溢出一点点的页面产出与首屏几乎逐像素相同的
+    // 重复图；而按「剩余内容高度」改帧高虽然不重复，却破坏了截图档的比例。
+    //
+    // 溢出不足半屏的页面不产帧（见 [_bottomScrollOffset]）：那点位移截出来就是
+    // 首屏复制，尾部由长截图覆盖。
     //
     // 桌面档不产出这一帧（`scrolledCapture`）：它证明的是「内容溢出一屏」，
     // 而桌面上这个结论本身就是要看的信号——如果五个 tab 在 1280×800 下
     // 仍然全部溢出，说明布局还没有利用宽屏，评审时应当直接看到「只有首屏
     // 一张图」，而不是被同名的第二帧稀释掉这个信号。
     if (scrolledCapture) {
-      final plan = _pageTurnPlan(tester, minTailFraction: _minTailFraction);
-      for (var i = 0; i < plan.length; i += 1) {
-        final frame = plan[i];
-        final suffix = i == 0 ? '_scrolled' : '_scrolled${i + 1}';
-
-        // 尾帧比视口矮：先换帧高，页面重新布局后的 `maxScrollExtent` 正好是
-        // 「剩余内容 - 尾帧内容高」，直接滚到底就落在尾部起点上。
-        final shrink = frame.frameHeight < _frameHeight - 0.5;
-        if (shrink) {
-          tester.view.physicalSize = Size(
-            _frameWidth * _frameDpr,
-            frame.frameHeight * _frameDpr,
+      final bottom = _bottomScrollOffset(tester);
+      if (bottom != null) {
+        final actual = await _scrollPageTo(tester, bottom);
+        if (actual != null) {
+          final scrolledFrame = '$folder/${baseName}_scrolled.png';
+          dumpRendered(scrolledFrame);
+          await expectLater(
+            find.byType(LuminousApp),
+            matchesGoldenFile(_goldenPath(folder, '${baseName}_scrolled.png')),
           );
-          await tester.pump();
-          await _settle(tester);
+          captured.add(scrolledFrame);
         }
-
-        final target = shrink
-            ? (_primaryScrollable(tester)?.position.maxScrollExtent ??
-                  frame.offset)
-            : frame.offset;
-        final actual = await _scrollPageTo(tester, target);
-        if (actual == null) {
-          if (shrink) await _restoreFrameSize(tester);
-          break;
-        }
-
-        final scrolledFrame = '$folder/$baseName$suffix.png';
-        dumpRendered(scrolledFrame);
-        await expectLater(
-          find.byType(LuminousApp),
-          matchesGoldenFile(_goldenPath(folder, '$baseName$suffix.png')),
-        );
-        captured.add(scrolledFrame);
-
-        if (shrink) await _restoreFrameSize(tester);
+        await _scrollPageToTop(tester);
       }
-      await _scrollPageToTop(tester);
     }
 
     // ── 整页长截图 ──────────────────────────────────────────────────

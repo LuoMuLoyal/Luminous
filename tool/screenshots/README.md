@@ -64,10 +64,13 @@ flutter test tool/screenshots/generate.dart --update-goldens --plain-name "gener
 | 帧 | 文件 | 何时产出 |
 | --- | --- | --- |
 | 首屏 | `<folder>/<name>.png` | 总是 |
-| 翻页 | `<folder>/<name>_scrolled.png`、`_scrolled2.png`… | 内容溢出一屏时，每帧前进**整整一个视口** |
+| 滚到底 | `<folder>/<name>_scrolled.png` | 内容溢出一屏的一半以上时 |
 | 长截图 | `long/<folder>__<name>.png` | 内容溢出一屏时（整页，dpr 2） |
 
-### 翻页帧：按视口切片，不留缝也不重叠
+**每一帧都是设备视口**：手机档 1344×2992，桌面档 2560×1600，长截图除外。
+截图集里不允许出现被裁短的「尾帧」——比例本身就是评审对象之一。
+
+### 滚动帧：直接滚到底
 
 以前是「滚到 `maxScrollExtent × 0.55` 再截一张」，结果是：
 
@@ -76,10 +79,9 @@ flutter test tool/screenshots/generate.dart --update-goldens --plain-name "gener
 - 高出好几屏的页面（用药 3 屏、回顾 2.7 屏）只到中段，页面尾部没有任何帧；
 - 对话类页面进页面时已经贴底，再往下拖不动，「滚动后」= 首屏原样。
 
-现在按视口切：偏移依次取 `v, 2v, 3v, …`（`v` = 滚动视口高），末帧只画「上一帧
-之后剩下的那段内容」，所以它的图片高度**小于一屏**（`_pageTurnPlan`）。这样两
-帧之间没有一像素重复，整页每一段都有且只有一张图。剩余内容不足 0.2 屏时不产
-帧——那点高度不值得一张几乎全是重复内容的图，长截图已覆盖。
+现在是**滚到 `maxScrollExtent`（页面底部）**再截一张完整视口（`_bottomScrollOffset`）：
+第二帧看到的是页面尾部，与首屏在纵向错开半个屏以上，不会出现「几乎相同」的重复图。
+溢出不足半屏的页面不产这一帧（那点位移就是首屏复制，尾部由长截图覆盖）。
 
 ### 长截图高度包含页面 chrome
 
@@ -87,8 +89,8 @@ flutter test tool/screenshots/generate.dart --update-goldens --plain-name "gener
 tab bar / 安全区）。只按内容高画帧时，滚动视口会跟着缩小同样多，最后一屏会被
 骨架裁掉一截——页面尾部看起来是被切断的。
 
-extras（同路由的特定状态：弹层、抽屉、候选面板）不产出翻页帧与长截图——它们
-的状态本身不占整页，翻页帧只会是首屏的原样复制。
+extras（同路由的特定状态：弹层、抽屉、候选面板）不产出滚动帧与长截图——它们
+的状态本身不占整页，滚动帧只会是首屏的原样复制。
 
 搜索页（`/medicine/search`）是**提交驱动**的：生成器必须补一次 `submitQuery`，
 只写 `updateQuery` 会截到「输入框有字、下面一片空白」。回顾页趋势的三个维度
