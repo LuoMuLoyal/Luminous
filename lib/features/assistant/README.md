@@ -13,6 +13,7 @@
 
 ## 不变量
 - 生产链路 = Lucent 后端:generated `AssistantApi` + `LucentSseClient`(`core/network/client/sse.dart`)POST `/api/v1/user/assistant/messages/stream`(regenerate 走 `/conversations/{id}/regenerate`),事件 chunk/result/error/done;流语义不包 `TaskEither`,失败以 stream error 上抛(`domain/repositories/assistant.dart` 注释;`test/assistant/remote_data_source_stream_test.dart`)。
+- 长期记忆在后端:报告 / 今日摘要作为长期事实输入(`get_report_summary_by_range`、`get_recent_report_summaries`、`get_today_summary_by_date`、`get_recent_today_summaries`),会话线程由 LangGraph `PostgresSaver` checkpointer 持久化。客户端只消费流式回答与提案确认,不实现记忆存储。
 - `lib/core/ai` 是实验 seam(文件头 "not part of the shipping assistant path"),assistant 不得 import 它。
 - 发送门控以后端 capabilities 为准:`AssistantCapabilities.canSendMessages`;未登录(`canAccessProtectedData == false`)直接空态,不发请求(`presentation/providers/conversation.dart`)。
 - 消息 canonical id 由 `presentation/utils/message_id.dart` 决定,gen_ai 列表身份与之解耦(gen_ai 列表 id = `$conversationId:$index:$canonical`,`chat_adapter.dart` 头注释;`test/assistant/chat_adapter_test.dart`)。

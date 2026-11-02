@@ -17,7 +17,7 @@ Product Loop Program 的延后项如下。
 
 ### 平台与验证
 
-- 桌面端为在产平台目标，与手机端同步演进（ADR-0008 2026-11-01 修订）；不承诺与手机端功能对等，差异体现在布局与密度
+- 桌面端为与手机端平等的一等平台，共用 Flutter + KMP 客户端与 Lucent 后端（ADR-0008 2026-11-02 修订）；两端同步演进，差异只在布局与密度
 
 - 原始健康数据可移植性导出
   - 当前仅能导出就诊报告 PDF；原始 JSON/CSV 导出另行立项，不能继续用 PDF 宣称数据可移植性
@@ -38,16 +38,16 @@ Product Loop Program 的延后项如下。
 - Review 洞察的预置上下文入口（agentic 计划承接）
   - 现状：顶栏 [问助手] 为通用 `/assistant` 入口（与 today 同语义），不携带
     「看这个趋势 / 就此回顾问助手」的预置上下文
-  - 待 agentic 计划 P1-1/P1-3 预置上下文能力就绪后升级入口，并复核 `ai_summary` /
-    `suggestion_history` 组件（P0-7 deferred 标注）是否归档或改在主路径重新启用
+  - 待 agentic 计划 P1-1/P1-3 预置上下文能力就绪后升级入口，并复核这些默认不上屏的组件
+    （`ai_summary.*` / `history.suggestion` 等）是否保留或归档
 - Lucent observed-metric 域迁移（target 2026 Q4）后的 Wave 2 客户端适配
   - 现状：dashboard 维度仅 medication/water/sleep/general；趋势逐日 values 是
-    legacy scalar 投影，客户端无法区分「空档=无记录」与「0」；findings/patterns
+    旧版标量（deprecated） 投影，客户端无法区分「空档=无记录」与「0」；findings/patterns
     无证据引用（record id/日期）与反馈通道
   - 期望：维度扩展（mood/symptom/meal/activity）、逐日 presence（recorded: bool）、
     findings 证据引用与反馈字段；Lucent 侧 contract 变化后 `pnpm export:openapi`
     （Lucent）→ `dart run scripts/contract/bootstrap.dart`（Luminous）→ 按新实体改
-    mapper 与 UI（替换 legacy scalar 趋势渲染、趋势空档可视化、证据展开、反馈）
+    mapper 与 UI（替换 旧版标量（deprecated） 趋势渲染、趋势空档可视化、证据展开、反馈）
 
 ## 2026-10-16 客户端能力补齐的遗留项（深链 / 日历 / 许可）
 
@@ -146,14 +146,11 @@ Product Loop Program 的延后项如下。
 
 ## 延后（有明确原因）
 
-- Review 建议历史与 AI 摘要主路径下线（Review Page Restructure P0-7）
-  - `sections/suggestion_history.dart`（`ReviewSuggestionHistorySection` /
-    `dedupeTodaySuggestions`）、`sections/ai_summary.dart`
-    （`ReviewAiSummarySection`）、`dialogs/suggestion_history_detail_sheet.dart`
-    仍被 legacy dashboard 兼容页消费（`legacy_dashboard_compat.dart` /
-    `dashboard_view.dart`），有保留价值故不删除；`aiSummariesEnabled` 设置语义
-    不变（Today 摘要仍受其门控）
-  - 待 agentic 计划统一 AI 数据层（P0-3）后复核是否归档或改在主路径重新启用
+- Review 的 AI 摘要与建议历史组件默认不上屏（Review Page Restructure P0-7）
+  - legacy 兼容页已移除；`ai_summary.event`、`ai_summary.period`、
+    `history.suggestion` 及相关 `sections/` 组件改为组件系统里的默认不上屏组件，
+    用户可在编排页自行添加；`aiSummariesEnabled` 设置语义不变（Today 摘要仍受其门控）
+  - 待 agentic 计划统一 AI 数据层（P0-3）后复核这些组件是否需要归档
 
 - 药箱项「停用/归档」语义（F-2，0.1.0 后）
   - 现状：药箱项只能软删除，短期事件结束后「停药」会丢可见性
@@ -182,7 +179,7 @@ Product Loop Program 的延后项如下。
   - 方案：为 regenerate/confirm 路径加 per-thread 互斥
 
 - `lucent_dashboard.dart` 的 `// ignore_for_file: deprecated_member_use` 与 Q4 observed-metric 迁移强绑定
-  - 现状：dashboard 维度仅 medication/water/sleep/general；趋势逐日 values 是 legacy scalar 投影，客户端无法区分「空档=无记录」与「0」；`coverage_strip.dart` 使用 `ReviewObservedMetricCoverage` 枚举消费该投影
+  - 现状：dashboard 维度仅 medication/water/sleep/general；趋势逐日 values 是 旧版标量（deprecated） 投影，客户端无法区分「空档=无记录」与「0」；`coverage_strip.dart` 使用 `ReviewObservedMetricCoverage` 枚举消费该投影
   - 目标：2026 Q4 Lucent observed-metric 域迁移后删除 ignore，`coverage_strip.dart` 调用点同步调整
   - 跟踪：`// tracked-by-TODO-ignore-deprecated-metric-migration`
 
@@ -281,7 +278,7 @@ Product Loop Program 的延后项如下。
 
 - trend 图表零值与无数据的视觉区分（08-30 审查 W-1）
   - 现状：unknown 天不再补零后，用户主动记录的合法零值贴 X 轴，与「无数据」视觉难区分；
-    `ReviewTrendSection` 仅由 legacy preview/dashboard_view 装配；若把
+    `ReviewTrendSection` 由周期/预览组件装配；若把
     `observedMetric == null` 纳入空态判定，会在旧后端 scalar 兼容路径（observedMetric
     可空）误伤有数据的曲线
   - 方案：先确认 backend 对 zero-value 与 no-observation 的表达口径，再决定空态判定与
@@ -300,7 +297,7 @@ Product Loop Program 的延后项如下。
 - Women-health / period management
 - Sports recovery
 - Specialist health packs
-- Smart devices
+- Other smart devices (watch already shipped; speakers/hardware not planned)
 - Family profiles
 - Skin recognition
 - Desktop-first workflows

@@ -29,16 +29,17 @@
 | --- | --- |
 | `domain/` | `LayoutDraft`（各 surface 草稿 + 未挂载池）、`LayoutEdit`（move/toggle/remove/add/resize 的 sealed 动作）、`draft_rules.dart`（纯规则，非法编辑返回原草稿而不是抛异常） |
 | `application/` | `layout_store.dart`（cache-first 读、乐观写、`commit`）、`usecases/edit_session.dart`（会话生命周期） |
-| `data/` | KV 缓存（`layout.<surface>`）、`layout_wire.dart`、`cached_layout.dart`；`layout_remote.dart` 目前是**占位实现**（见下） |
+| `data/` | KV 缓存（`layout.<surface>`）、`layout_wire.dart`、`cached_layout.dart`；`layout_remote.dart` 走生成客户端的 `LayoutsApi`（`GET /layouts`、`PUT /layouts/:surface`）；`sync/layout_sync_queue.dart` 负责离线编辑重放 |
 | `presentation/` | `pages/page.dart`（编辑器本体：列表、拖拽重排、尺寸选择器、顶部操作）、`widgets/palette.dart`（跨 tab 候选面板）、`providers/draft.dart` |
 
-## 未完成与已知约束
+## 同步与已知约束
 
-- **远端同步未接线**：Lucent 还没有 `/ui/layouts` 端点，`data/datasources/layout_remote.dart`
-  是占位实现（`fetchAll` 返回空、`put` 返回成功）。当前布局只存本地——换机或重装会丢，
-  多设备不一致。契约见 `plans/2026-10-28-composable-tabs.md` §2.7，后端落地后只需替换
-  该文件。
-- **跨 surface 移动没有 UI 入口**：`LayoutEdit.move` 的 `from != to` 分支已实现且有单测，
+- **远端同步已接线**：`data/datasources/layout_remote.dart` 走生成客户端的 `LayoutsApi`——
+  `GET /layouts` 拉取全部表面、`PUT /layouts/:surface` 保存并携带 `ifVersion` 做乐观并发；
+  版本冲突是 409 `LAYOUT_VERSION_CONFLICT`，`errors.current` 带回服务端当前文档，由
+  `CachedLayoutRepository` 采纳服务端版本。离线编辑进 `sync/layout_sync_queue.dart` 重放。
+  服务端不解析布局 payload，只保管与校验版本。
+- **跨 surface 移动没有一次性 UI 入口**：`LayoutEdit.move` 的 `from != to` 分支已实现且有单测，
   但界面上只能「在本页移除 → 在另一页加入」，不能一次拖动完成。
 - **拖拽是列表形态**：`flutter_reorderable_grid_view` 的网格模式未接入，拖拽时看不到
   格子预览；宽度档位本身可以设置（每行下方的三档 chip）。

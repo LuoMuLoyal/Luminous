@@ -2,15 +2,15 @@
 
 [![Backend: Lucent](https://img.shields.io/badge/backend-LuoMuLoyal%2FLucent-2563eb?logo=github)](https://github.com/LuoMuLoyal/Lucent)
 
-Flutter 主动式个人健康助手，手机与桌面共用一套客户端。
+Flutter + KMP 主动式个人健康助手，手机、桌面与手表共用同一套事实底座与 Lucent 后端。
 
 产品由三条主线构成，它们不是并列的功能清单，而是同一个「可检查的个人上下文」的不同切入面：
 
-- **记录与洞察**：以低负担的稀疏记录积累事实，在日 / 周 / 月尺度发现值得注意的变化。缺失表示未知而非零，每条结论携带覆盖率，证据不足时明确弃权。
+- **记录与洞察**：以低负担的稀疏记录积累事实，在日 / 周 / 月尺度发现值得注意的变化。缺失表示未知而非零，每条结论携带覆盖率，证据不足时明确弃权。Review 同时承担 agent 的长期记忆：它生成周报 / 月报式摘要，agent 通过报告摘要工具按区间或按最近若干份读取，不必逐日重扫原始记录。
 - **用药与药理知识**：从个人用药盒延伸到药物—酶—靶点—通路的关系网络，把「我这样吃药有没有风险」与「这些药之间是什么机制关联」放在同一个工作区里。用药安全是其中证据要求最高的一条主线，不是产品天花板。
-- **可编排的工作台**：每个 tab 由已注册的组件装配而成，用户自己决定出现哪些、按什么顺序、多大尺寸；同一份布局同时描述手机、平板与桌面三种形态。
+- **可编排的工作台**：每个 tab 由已注册的组件装配而成，用户自己决定出现哪些、按什么顺序、多大尺寸；同一份布局同时描述手机、平板与桌面三种形态，并经 Lucent 的布局端点持久化与版本校验。
 
-AI 在这三条主线里只承担理解、总结、解释与提醒文案；任何写操作都以提案形式出现，需用户显式确认。诊断、处方与药物风险判定不交给模型。
+AI 在这三条主线里只承担理解、总结、解释与提醒文案；任何写操作都以提案形式出现，需用户显式确认。诊断、处方与药物风险判定不交给模型。会话线程与工作流状态由 LangGraph 的 Postgres checkpointer 持久化；长期上下文由已持久化的 today / report 摘要与健康数据本身共同构成，不依赖把聊天原文当事实。
 
 Current version: **0.1.0-dev**
 
@@ -39,12 +39,18 @@ Current version: **0.1.0-dev**
 ## Baseline
 
 - Tabs: `today / record / medicine / review / mine` — Today is the action panel, Record is the
-  sparse-record fact panel, Medicine is the drug workspace, Review is longitudinal insight, Mine
+  sparse-record fact panel, Medicine is the drug workspace, Review is longitudinal insight **and
+  the agent's long-term memory** (weekly/monthly report summaries that assistant tools read), Mine
   holds profile and settings. Each tab's boundaries live in its feature README.
-- **Platforms**: phone is the first-release surface; **desktop is a shipping target**, evolving in
-  step with phone from one Flutter codebase and one Lucent backend (ADR-0008, 2026-11 修订). The two
-  share the design system and business semantics; they differ in layout and density, not in product
-  definition. Desktop-only structure lives in `lib/features/shell/`.
+- **Platforms**: phone, desktop and the Wear OS watch are all shipping surfaces; **desktop is an
+  equal platform, not a secondary adaptation target** (ADR-0008 amendment). Phone and desktop share
+  one Flutter + KMP client and one Lucent backend; the watch is a separate Kotlin + Compose for Wear
+  OS companion app in `../Luminous-watch`. The Web build remains available from the same client.
+- **Shared platform layer**: Flutter owns UI, state and business logic; `native/` is a Kotlin
+  Multiplatform module for platform-independent logic (step counting, baseline arithmetic, day
+  splitting and related contracts), consumed through `pkgs/luminous_native_bridge` on Android and
+  iOS. KMP is part of the client stack, not an optional add-on.
+
 - **Composable surfaces**: every tab is assembled from registered components rather than a
   hand-written page. A surface's layout (which components, in what order, at which size, visible or
   not) is persisted per user and synced through Lucent, so one layout describes phone, tablet and
@@ -204,7 +210,9 @@ Key frontend docs:
 - [docs/product/product-mvp-scope.md](docs/product/product-mvp-scope.md)
 - [docs/product/product-safety-privacy.md](docs/product/product-safety-privacy.md)
 - [docs/product/product-information-architecture.md](docs/product/product-information-architecture.md)
-- [docs/reference/architecture.md](docs/reference/architecture.md) — Unified Flutter architecture
+- [docs/reference/architecture.md](docs/reference/architecture.md) — Flutter + KMP architecture
+- [native/README.md](native/README.md) — Kotlin Multiplatform shared module (`luminous-native`)
+- Watch companion app: [`../Luminous-watch`](../Luminous-watch) — separate Kotlin + Compose for Wear OS project
 - [docs/reference/state-management.md](docs/reference/state-management.md)
 - [docs/reference/routing.md](docs/reference/routing.md)
 - [docs/reference/data-layer.md](docs/reference/data-layer.md)

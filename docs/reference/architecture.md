@@ -1,12 +1,16 @@
 ---
 status: active
 owner: frontend
-updated: 2026-10-29
+updated: 2026-11-02
 ---
 
 # Luminous Architecture
 
 本文档保留目录结构与模块结构总览。
+
+## Client stack
+
+客户端不是"单一 Flutter"：**Flutter（Dart）承担 UI、状态、业务逻辑与网络层，Kotlin Multiplatform（`native/luminous-native`）承担平台无关逻辑**（步数读取、基线差值、跨日切分等），经 `pkgs/luminous_native_bridge` 的 Pigeon/MethodChannel 桥接在 Android 与 iOS 复用。桌面端与手机端是同等级的运行表面，共用这一套客户端与 Lucent 后端；手表端（`../Luminous-watch`）是独立的 Kotlin + Compose for Wear OS 应用，不并入 Flutter 代码库。
 
 子文档：
 
@@ -78,7 +82,7 @@ lib/
 │   ├── mine/              # User profile dashboard, health context summary
 │   ├── notification/      # In-app notification list
 │   ├── record/            # Daily record logging (symptoms, water, sleep, quick entry, NLP intake)
-│   ├── review/            # Review tab: event review and suggestion history
+│   ├── review/            # Review tab: 纵向洞察 + agent 报告摘要（事件与周期组件并存）
 │   ├── scan/              # Barcode/QR medicine scanning
 │   ├── search/            # Global medicine search
 │   ├── settings/          # App settings (preferences, account, help, sleep reminder)

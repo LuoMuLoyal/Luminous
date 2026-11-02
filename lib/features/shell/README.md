@@ -33,8 +33,7 @@ review / mine)移动端渲染 `FBottomNavigationBar`、桌面端渲染 `FSidebar
 - `ShellTab.review.testKey()` 固定为 `shell-tab-report`(改名兼容,test/shell/tab_test.dart)。
 - 桌面/移动形态仅由 `Breakpoints.desktop` 宽度决定;indexedStack 保证各 branch 导航栈
   独立保活(test/shell/shell_page_test.dart、test/app/router_test.dart)。
-- **桌面端是在产平台目标,不是冻结的遗留代码**(ADR-0008 2026-11-01 修订):可新增桌面
-  专属布局与交互,但任一改动需同时覆盖手机端;桌面改动不得阻塞手机端发布。
+- **桌面端是与手机端平等的一等平台，不是冻结的遗留代码**(ADR-0008 2026-11-02 修订)：可新增桌面专属布局与交互，但任一改动需同时覆盖手机端；两端同步演进，互不阻塞发布。
 - 详情面板关闭时不占位:内容区宽度与「没有面板」时完全一致,否则开关面板会引起文字
   重新折行(test/shell/detail_pane_test.dart)。
 

@@ -106,8 +106,8 @@ const reviewSurfaceDefinition = SurfaceDefinition(
     reviewPreviewOverviewId,
     reviewNoEventExplanationId,
     reviewStaleBannerId,
-    // legacy 组件：可被用户选中编排，但不进默认布局（默认必须等于
-    // 今天的事件优先页面）。
+    // 周期视角组件：可被用户选中编排，但不进默认布局（默认布局必须等于
+    // 组件化前的事件优先页面）。它们不是 legacy 页面，只是默认不上屏。
     ...reviewPeriodComponentIds,
   ],
   defaultLayout: SurfaceLayout(

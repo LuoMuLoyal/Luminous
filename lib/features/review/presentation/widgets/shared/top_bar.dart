@@ -1,11 +1,11 @@
 // ═══════════════════════════════════════════════════════════════════════════
-// LEGACY — 兼容期保留，已不再装配到主路径。
+// 兼容期保留，已不再装配到主路径。
 //
 // 旧 dashboard 的顶栏与 7/30 天范围切换（ReviewTopBar / ReviewRangeMenu /
 // ReviewPeriodPill）。Task 6 起 `/review` 主路径改用 page.dart 内部的
-// `_ReviewTopBar`（仅标题，无范围切换），本文件仅被 legacy widgets
-// `dashboard_view.dart` 与 `sections/trend.dart` 消费，不属于 Review
-// 主路径。Task 8 把导出迁入 More 后评估删除。
+// `_ReviewTopBar`（仅标题，无范围切换），本文件仅被预览/趋势旧视图
+// （`sections/preview/trend.dart` 等）消费，不属于 Review 主路径。
+// Task 8 把导出迁入 More 后评估删除。
 // ═══════════════════════════════════════════════════════════════════════════
 import 'dart:async';
 import 'package:flutter/material.dart';

@@ -53,9 +53,6 @@ const _publicRoutePrefixes = <String>[
   '/legal',
   '/medicine/detail',
   '/review/clinic-summary',
-  // Legacy dashboard 兼容页沿用 `/review` 的公开预览语义（未登录显示
-  // preview 内容 + 登录引导，不重定向到 /login）。
-  '/review/legacy',
   // 同步失败页只展示本地待同步队列的诊断信息，不触达服务端数据；Mine
   // 页在未登录预览态也会渲染失败横幅，保持点击后可直接查看（与改造前
   // 的详情对话框行为一致）。
