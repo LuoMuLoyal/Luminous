@@ -86,10 +86,14 @@ import 'package:luminous/features/mine/presentation/providers/sync_failures.dart
     show mineSyncFailedEntriesProvider;
 import 'package:luminous/features/notification/data/repositories/lucent.dart'
     show notificationRepositoryProvider;
+import 'package:luminous/features/review/domain/entities/dashboard.dart'
+    show ReviewDataKind;
 import 'package:luminous/features/review/presentation/providers/dashboard.dart'
     show reviewDashboardProvider;
 import 'package:luminous/features/review/presentation/providers/review.dart'
     show reviewCurrentProvider, reviewHistoryProvider;
+import 'package:luminous/features/review/presentation/providers/trend.dart'
+    show reviewTrendDimensionProvider;
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/presentation/pages/box_scan.dart'
     show showMedicineBoxScanSheet;
@@ -165,6 +169,12 @@ const double _longDpr = 2;
 /// 这是防呆上限，不是设计目标：真出现这么高的页面说明布局有问题，值得
 /// 在评审时看到「被截断」而不是生成一张打不开的图。
 const double _longMaxHeight = 8000;
+
+/// 翻页末帧的最小内容高（占一个视口的比例）。
+///
+/// 首屏以下剩余内容不足这个比例时不产帧：几十像素的尾巴截图几乎全是与上一帧
+/// 重复的内容，长截图已经覆盖了它。
+const double _minTailFraction = 0.2;
 
 /// 一级页（五个 tab 根页）所在的分组。
 const String _shellGroup = 'shell';
@@ -436,9 +446,6 @@ Future<void> _loadFonts() async {
       await rootBundle.load('packages/forui_phosphor/assets/$variant.ttf'),
     );
   }
-
-  // ignore: avoid_print
-  print('FONTS cjk=${cjk != null} mono=${mono != null}');
 }
 
 // ── Route resolution ────────────────────────────────────────────────────────
@@ -810,11 +817,18 @@ Future<void> _primeRoute(
 ) async {
   switch (route) {
     case '/medicine/search':
-      await container
-          .read(medicineSearchNotifierProvider.notifier)
-          .updateQuery('氨氯地平');
-      // The notifier debounces by 400 ms before searching.
-      await tester.pump(const Duration(milliseconds: 500));
+      // 搜索是**提交驱动**的：`updateQuery` 只把文本记进 state，不再自动发请求
+      // （`hasSubmittedResults` 用它和 `submittedQuery` 比对来决定是否展示结果
+      // 面板）。只调 `updateQuery` 会截到「输入框有字、下面一片空白」的图，
+      // 所以这里必须补一次 `submitQuery`，与用户点搜索按钮走同一条路径。
+      final searchNotifier = container.read(
+        medicineSearchNotifierProvider.notifier,
+      );
+      await searchNotifier.updateQuery('氨氯地平');
+      // 不 await：`_doSearch` 末尾会把关键字写进 KV（真实异步 I/O），在假时钟
+      // 下推不动。结果 state 在那之前就已提交，推几帧即可。
+      unawaited(searchNotifier.submitQuery());
+      await tester.pump();
       await _settle(tester);
     case '/medicine/risk-check':
       // Kick the check so the page shows findings instead of an idle prompt.
@@ -825,11 +839,25 @@ Future<void> _primeRoute(
 /// 产物帧的类别标注，写进 manifest。
 String _frameKindLabel(String relativePath) {
   if (relativePath.startsWith('$_longDir/')) return ' (长截图)';
-  if (relativePath.endsWith('_scrolled.png')) return ' (滚动后)';
+  if (RegExp(r'_scrolled\d*\.png$').hasMatch(relativePath)) return ' (翻页)';
   return '';
 }
 
-/// 把主滚动视图挪到 [fraction] 处，返回是否真的滚动了。
+/// 把画布还原成当前档位的标准帧。
+///
+/// 尾帧与长截图都会临时改帧高，改完必须还原，否则同一用例里的后续截图
+/// （以及 binding 的收尾断言）会拿到一个被改小的窗口。
+Future<void> _restoreFrameSize(WidgetTester tester) async {
+  tester.view.physicalSize = Size(
+    _frameWidth * _frameDpr,
+    _frameHeight * _frameDpr,
+  );
+  tester.view.devicePixelRatio = _frameDpr;
+  await tester.pump();
+  await _settle(tester);
+}
+
+/// 页面的主滚动视图（`maxScrollExtent` 最大的纵向 `Scrollable`）。
 ///
 /// ## 为什么自己找滚动视图
 ///
@@ -838,94 +866,12 @@ String _frameKindLabel(String relativePath) {
 /// 横向条或嵌套列表。这里取 `maxScrollExtent` 最大的那个——它就是**页面
 /// 主滚动方向**，也是「往下翻」这个动作在用户眼里的含义。
 ///
-/// ## 为什么用 drag 而不是 `position.jumpTo`
-///
-/// `jumpTo` 直接改滚动位置，绕过了手势与滚动物理；在有嵌套 sliver 的页面上
-/// 会把已经进入销毁流程的 `RenderViewport` 再拉去 layout，触发
-/// 「RenderViewport DISPOSED」断言（记录页就是这么挂的）。`tester.drag` 走的是
-/// 真实手势链路，滚动由 `Scrollable` 自己应用，不会和 layout 抢时序。
-///
-/// 没有可滚动内容时返回 false，调用方据此跳过第二帧：短页面不该产出
-/// 与首屏一模一样的重复图。
-Future<bool> _scrollPageToFraction(WidgetTester tester, double fraction) async {
-  Element? primaryElement;
-  var bestExtent = 0.0;
-  for (final element in find.byType(Scrollable).evaluate()) {
-    if (element is! StatefulElement) continue;
-    final state = element.state;
-    if (state is! ScrollableState) continue;
-    final position = state.position;
-    if (!position.hasContentDimensions) continue;
-    // **只认纵向滚动**。记录页顶部的横向日期条也可能有更大的
-    // `maxScrollExtent`，而「往下翻」对它没有意义：一旦选中它，
-    // 垂直拖拽会被横向手势识别器抢走并触发 `DragUpdateDetails` 断言。
-    if (position.axis != Axis.vertical) continue;
-    if (position.maxScrollExtent > bestExtent) {
-      bestExtent = position.maxScrollExtent;
-      primaryElement = element;
-    }
-  }
-  if (primaryElement == null || bestExtent <= 0) return false;
-
-  final distance = (bestExtent * fraction).clamp(0.0, bestExtent);
-  if (distance <= 0) return false;
-
-  final anchor = find.byElementPredicate((e) => identical(e, primaryElement));
-  if (anchor.evaluate().isEmpty) return false;
-
-  // 起手点取滚动区域的中下部，而不是默认的几何中心：记录页顶部有一条横向
-  // 日期条，从中心起手仍可能压到它上面，垂直拖拽的指针事件会被
-  // `DragUpdateDetails` 的一致性断言拦下（primaryDelta 与 delta 不匹配）。
-  // 往页面靠下的位置起手，能稳定落在页面主体的纵向列表上。
-  final rect = tester.getRect(anchor);
-  final startPoint = Offset(rect.center.dx, rect.top + rect.height * 0.7);
-
-  // 手势路径上的失败是**逐页的**，不该让整张截图判失败。这里临时接管
-  // `FlutterError.onError`，把滚动过程中的框架错误收集起来；只要发生了一条，
-  // 就放弃这一页的滚动帧——首屏截图已经成功，证据不受损。
-  final scrollErrors = <FlutterErrorDetails>[];
-  final previousOnError = FlutterError.onError;
-  FlutterError.onError = scrollErrors.add;
-  try {
-    await tester.dragFrom(startPoint, Offset(0, -distance));
-    await tester.pump();
-    await _settle(tester);
-  } catch (_) {
-    return false;
-  } finally {
-    FlutterError.onError = previousOnError;
-  }
-  if (scrollErrors.isNotEmpty) return false;
-  return true;
-}
-
-/// 主滚动视图的内容总高度（逻辑像素）；无纵向滚动时返回 null。
-///
-/// `maxScrollExtent + viewportDimension` 就是「整页」的高度：首屏之外那部分
-/// 加上已经显示的一屏。长截图把这个值当成帧高，一次性把整页画出来。
-double? _pageContentHeight(WidgetTester tester) {
-  var best = 0.0;
-  for (final element in find.byType(Scrollable).evaluate()) {
-    if (element is! StatefulElement) continue;
-    final state = element.state;
-    if (state is! ScrollableState) continue;
-    final position = state.position;
-    if (!position.hasContentDimensions) continue;
-    if (position.axis != Axis.vertical) continue;
-    final total = position.maxScrollExtent + position.viewportDimension;
-    if (total > best) best = total;
-  }
-  return best > 0 ? best : null;
-}
-
-/// 把主滚动视图拉回顶部。
-///
-/// 长截图必须从顶部开始，否则会把「当前滚动位置」以上那一段裁掉。
-/// 目标偏移 0 永远是合法值，所以这里可以直接 `jumpTo`，不存在
-/// [_scrollPageToFraction] 里「目标落在已销毁 viewport」的问题。
-void _scrollPageToTop(WidgetTester tester) {
+/// **只认纵向滚动**：记录页顶部的横向日期条也可能有更大的 `maxScrollExtent`，
+/// 而「往下翻」对它没有意义；一旦选中它，垂直拖拽会被横向手势识别器抢走并
+/// 触发 `DragUpdateDetails` 断言。
+ScrollableState? _primaryScrollable(WidgetTester tester) {
   ScrollableState? primary;
-  var best = 0.0;
+  var best = -1.0;
   for (final element in find.byType(Scrollable).evaluate()) {
     if (element is! StatefulElement) continue;
     final state = element.state;
@@ -938,7 +884,163 @@ void _scrollPageToTop(WidgetTester tester) {
       primary = state;
     }
   }
-  primary?.position.jumpTo(0);
+  return primary;
+}
+
+/// 主滚动视图的内容总高度（逻辑像素）；无纵向滚动时返回 null。
+///
+/// `maxScrollExtent + viewportDimension` 就是「整页」的高度：首屏之外那部分
+/// 加上已经显示的一屏。
+double? _pageContentHeight(WidgetTester tester) {
+  final primary = _primaryScrollable(tester);
+  if (primary == null) return null;
+  final position = primary.position;
+  final total = position.maxScrollExtent + position.viewportDimension;
+  return total > 0 ? total : null;
+}
+
+/// 页面 chrome（滚动视口之外的那部分）的逻辑高度。
+///
+/// 帧高减去滚动视口高就是底部 tab bar / 安全区等固定骨架的占位：
+/// 长截图要把「内容高 + chrome」一起当帧高，否则底部一屏会被骨架吃掉一截。
+double _pageChromeHeight(WidgetTester tester) {
+  final primary = _primaryScrollable(tester);
+  if (primary == null) return 0;
+  final chrome = _frameHeight - primary.position.viewportDimension;
+  return chrome > 0 ? chrome : 0;
+}
+
+/// 把主滚动视图滚到 [offset]，用的是真实手势链路。
+///
+/// ## 为什么用 drag 而不是 `position.jumpTo`
+///
+/// `jumpTo` 直接改滚动位置，绕过了手势与滚动物理；在有嵌套 sliver 的页面上
+/// 会把已经进入销毁流程的 `RenderViewport` 再拉去 layout，触发
+/// 「RenderViewport DISPOSED」断言（记录页就是这么挂的）。`tester.drag` 走的是
+/// 真实手势链路，滚动由 `Scrollable` 自己应用，不会和 layout 抢时序。
+///
+/// 返回滚动后的实际偏移（拿不到位置时返回 null）。手势路径上的失败是
+/// **逐页的**，不该让整张截图判失败：这里临时接管 `FlutterError.onError`
+/// 收集框架错误，只要发生了一条就返回 null，调用方跳过这一帧。
+Future<double?> _scrollPageTo(WidgetTester tester, double offset) async {
+  final primary = _primaryScrollable(tester);
+  if (primary == null) {
+    return null;
+  }
+
+  // 一次拖动的位移受「手势起手点到视口边缘」限制，超过一屏就得拆成多次拖动
+  // （尾帧把视口压小后尤其明显），否则拖动会被截断在半路。
+  //
+  // 起手点直接取 `ScrollableState` 自己那个 `RenderBox` 的矩形，而不是
+  // `find.byElementPredicate(identical(...))`：改了帧高之后 `Scrollable` 的
+  // element 会被重建，靠 element 同一性找定位点在换尺寸之后会落空。
+  for (var attempt = 0; attempt < 8; attempt += 1) {
+    final distance = offset - primary.position.pixels;
+    if (distance.abs() < 1) break;
+
+    // `ScrollableState.context` 是稳定的（就是该 Scrollable 的 element）：
+    // 每轮读一次 RenderBox 只是为了拿「这一轮拖动之后」的最新视口矩形，不存在
+    // 跨 await 持有过期 BuildContext 的问题。
+    // ignore: use_build_context_synchronously
+    final box = primary.context.findRenderObject();
+    if (box is! RenderBox || !box.hasSize) {
+      return null;
+    }
+    final rect = box.localToGlobal(Offset.zero) & box.size;
+    final maxDrag = rect.height * 0.55;
+    final step = distance.abs() > maxDrag
+        ? (distance.isNegative ? -maxDrag : maxDrag)
+        : distance;
+
+    // 起手点取滚动区域的中下部，而不是默认的几何中心：记录页顶部有一条横向
+    // 日期条，从中心起手仍可能压到它上面，垂直拖拽的指针事件会被
+    // `DragUpdateDetails` 的一致性断言拦下（primaryDelta 与 delta 不匹配）。
+    // 往页面靠下的位置起手，能稳定落在页面主体的纵向列表上。
+    final startPoint = distance.isNegative
+        ? Offset(rect.center.dx, rect.top + rect.height * 0.75)
+        : Offset(rect.center.dx, rect.top + rect.height * 0.35);
+
+    final scrollErrors = <FlutterErrorDetails>[];
+    final previousOnError = FlutterError.onError;
+    FlutterError.onError = scrollErrors.add;
+    try {
+      await tester.dragFrom(startPoint, Offset(0, -step));
+      await tester.pump();
+      await _settle(tester);
+    } catch (e) {
+      return null;
+    } finally {
+      FlutterError.onError = previousOnError;
+    }
+    if (scrollErrors.isNotEmpty) {
+      return null;
+    }
+  }
+  return primary.position.pixels;
+}
+
+/// 把主滚动视图拉回顶部。
+///
+/// 长截图必须从顶部开始，否则会把「当前滚动位置」以上那一段裁掉。
+/// 目标偏移 0 永远是合法值，所以这里可以直接 `jumpTo`，不存在
+/// [_scrollPageTo] 里「目标落在已销毁 viewport」的问题。
+Future<void> _scrollPageToTop(WidgetTester tester) async {
+  _primaryScrollable(tester)?.position.jumpTo(0);
+  await tester.pump();
+  await _settle(tester);
+}
+
+/// 整页翻页计划里的一帧。
+///
+/// [offset] 是这一帧的滚动偏移；[frameHeight] 是这一帧的画布高度。
+/// 前面几帧是标准视口（[frameHeight] == 页面帧高），**最后一帧只画「上一帧
+/// 之后剩下的那段内容」**，所以它的帧高小于视口——这样两帧之间没有一像素
+/// 重复，同时整页每一段都有且只有一张图。
+typedef _ScreenFrame = ({double offset, double frameHeight});
+
+/// 把「首屏以下的内容」切成若干帧：每次前进**整整一个视口**，最后一帧收尾。
+///
+/// ## 原来的做法为什么不合格
+///
+/// 以前是「滚到 `maxScrollExtent * 0.55`」再截一张：
+///
+/// - 内容只溢出一点点时（提醒详情、提醒编辑只溢出十几像素），第二帧和首屏
+///   几乎逐像素相同——产出一张废图；
+/// - 内容高出好几屏时（用药 3 屏、回顾 2.7 屏），0.55 只到中段，页面尾部永远
+///   没有帧，只能靠长截图；
+/// - 对话类页面进页面时已经贴底，再往下拖根本不动，于是「滚动后」= 首屏原样。
+///
+/// 现在的规则是**按视口切片**：偏移依次取 `v, 2v, 3v, …`，每帧只露出新内容，
+/// 到头后用一帧高度为「剩余内容」的尾帧收尾，不留缝也不重叠。
+///
+/// 剩余内容不足 [minTailFraction] 个视口时不产帧：那点高度（几十像素）不值得
+/// 一张几乎全是重复内容的图，长截图已经覆盖了它。
+List<_ScreenFrame> _pageTurnPlan(
+  WidgetTester tester, {
+  required double minTailFraction,
+}) {
+  final primary = _primaryScrollable(tester);
+  if (primary == null) return const [];
+  final position = primary.position;
+  final viewport = position.viewportDimension;
+  final extent = position.maxScrollExtent;
+  if (viewport <= 0 || extent <= 0) return const [];
+
+  final chrome = _pageChromeHeight(tester);
+  final content = extent + viewport;
+  final minTail = viewport * minTailFraction;
+
+  final frames = <_ScreenFrame>[];
+  var offset = viewport;
+  while (offset + viewport <= content - minTail) {
+    frames.add((offset: offset, frameHeight: _frameHeight));
+    offset += viewport;
+  }
+  final tail = content - offset;
+  if (tail >= minTail) {
+    frames.add((offset: offset, frameHeight: tail + chrome));
+  }
+  return frames;
 }
 
 // ── Extra surfaces ──────────────────────────────────────────────────────────
@@ -972,7 +1074,12 @@ class _ExtraCapture {
   final AssistantConversation? assistantConversation;
 
   /// Runs after navigation; the place to open drawers/dialogs and pump.
-  final Future<void> Function(WidgetTester tester)? prepare;
+  ///
+  /// 第二个参数是本次截图的 [ProviderContainer]：有些状态（趋势维度、搜索
+  /// 提交）只有换一种方式驱动才稳定——对屏幕外的控件 `tap` 打不中，而直接
+  /// 走 notifier 与用户操作是同一条状态通路。
+  final Future<void> Function(WidgetTester tester, ProviderContainer container)?
+  prepare;
 
   /// Renders the app signed out.
   ///
@@ -1008,7 +1115,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     route: '/assistant',
     note: '来源条展开：工具覆盖度/置信度/歧义/来源表/溯源引用',
     assistantConversation: buildAssistantToolSourceConversation(),
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await tester.tap(find.byKey(const Key('assistant-source-strip')).first);
       await _settle(tester);
     },
@@ -1019,7 +1126,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'capabilities',
     route: '/assistant',
     note: '能力面板：可用工具清单与状态（含未授权工具）',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await tester.tap(find.byKey(const Key('assistant-capabilities-action')));
       await _settle(tester);
     },
@@ -1030,7 +1137,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'conversations',
     route: '/assistant',
     note: '会话抽屉：近期会话列表、当前会话与搜索入口',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await tester.tap(
         find.byKey(const Key('assistant-recent-conversations-action')),
       );
@@ -1051,7 +1158,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'photo-method-picker',
     route: '/medicine/search',
     note: '药物图检索入口：OCR 文字识别 / AI 智能识别方式选择',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       // Not awaited: the sheet only completes when the user picks a method, and
       // the screenshot is taken while it is still open.
       unawaited(showMedicineBoxScanSheet(_hostContext(tester)));
@@ -1064,7 +1171,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'photo-recognize-ocr',
     route: '/medicine/search',
     note: '药物图检索结果：OCR 路径候选匹配与置信度排序',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await _showRecognizeDialog(tester, MedicineScanMethod.ocr, 'OCR 文字识别');
     },
   ),
@@ -1074,7 +1181,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'photo-recognize-ai',
     route: '/medicine/search',
     note: '药物图检索结果：AI 识别路径候选列表展开',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await _showRecognizeDialog(tester, MedicineScanMethod.ai, 'AI 智能识别');
       await tester.tap(find.textContaining('从列表选择其他匹配'));
       await _settle(tester);
@@ -1108,16 +1215,21 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
   // ── 回顾页：多维度趋势图的三个维度 ─────────────────────────────
   //
   // 「健康趋势」是同一张折线图按维度切换（用药完成率 / 饮水 / 睡眠）。
-  // 单张 at-rest 截图只能看到默认维度，另外两个必须点 tab 才出现；
+  // 单张 at-rest 截图只能看到默认维度，另外两个必须切 tab 才出现；
   // 三者一起才是「多维度」的证据。
+  //
+  // **不要按文案 `tap('饮水')`**：中文字面量在页面里出现三次（覆盖率小卡、
+  // 趋势卡的 tab、多维度趋势图的图例），`.last` 命中的是图例——它不可点，
+  // 于是三张图完全一样。层级不明的「点一下」还会因为 tab 在屏幕外而打空。
+  // 这里直接走选中维度的 notifier，与用户点 tab 触发的是同一个 provider。
   _ExtraCapture(
     fileName: '58_review_trend-medication.png',
     group: 'review',
     page: 'trend-medication',
     route: '/review',
     note: '回顾 · 健康趋势（用药完成率维度）',
-    prepare: (tester) async {
-      await _scrollToReviewTrend(tester);
+    prepare: (tester, container) async {
+      await _selectReviewTrend(tester, container, ReviewDataKind.medication);
     },
   ),
   _ExtraCapture(
@@ -1126,10 +1238,8 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'trend-water',
     route: '/review',
     note: '回顾 · 健康趋势（饮水维度）',
-    prepare: (tester) async {
-      await _scrollToReviewTrend(tester);
-      await tester.tap(find.text('饮水').last);
-      await _settle(tester);
+    prepare: (tester, container) async {
+      await _selectReviewTrend(tester, container, ReviewDataKind.water);
     },
   ),
   _ExtraCapture(
@@ -1138,10 +1248,8 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'trend-sleep',
     route: '/review',
     note: '回顾 · 健康趋势（睡眠维度）',
-    prepare: (tester) async {
-      await _scrollToReviewTrend(tester);
-      await tester.tap(find.text('睡眠').last);
-      await _settle(tester);
+    prepare: (tester, container) async {
+      await _selectReviewTrend(tester, container, ReviewDataKind.sleep);
     },
   ),
 
@@ -1155,7 +1263,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'graph-view-mechanism',
     route: '/medicine',
     note: '用药 · 机制通路的图视图（Sugiyama 分层）',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await _toggleGraphView(tester, last: false);
     },
   ),
@@ -1165,7 +1273,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'graph-view-cascade',
     route: '/medicine',
     note: '用药 · 级联传播的图视图（四跳链）',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       await _toggleGraphView(tester, last: true);
     },
   ),
@@ -1180,7 +1288,7 @@ final List<_ExtraCapture> _extraCaptures = <_ExtraCapture>[
     page: 'sync-failures-diagnostics',
     route: '/mine/sync/failures',
     note: '同步失败 · 首条展开诊断信息（wire 字段、trace、原始异常与复制入口）',
-    prepare: (tester) async {
+    prepare: (tester, container) async {
       final toggle = find
           .byKey(const Key('sync-failed-entry-diagnostics'))
           .first;
@@ -1211,35 +1319,26 @@ Future<void> _toggleGraphView(WidgetTester tester, {required bool last}) async {
   await _settle(tester);
 }
 
-/// 滚到回顾页的「健康趋势」标题处，让趋势图进入视口。
+/// 切到回顾页「健康趋势」的指定维度，并把趋势卡滚进视口。
 ///
-/// 趋势区块在回顾页很靠下，且切换维度的 tab 必须**可见**才能点中
-/// （tap 会对屏幕外的点报 warnIfMissed）。这里直接把主滚动视图滚到底：
-/// 趋势图是页面的最后一块。
-Future<void> _scrollToReviewTrend(WidgetTester tester) async {
-  final scrollables = find.byType(Scrollable).evaluate();
-  Element? deepest;
-  var best = 0.0;
-  for (final element in scrollables) {
-    if (element is! StatefulElement) continue;
-    final state = element.state;
-    if (state is! ScrollableState) continue;
-    final position = state.position;
-    if (!position.hasContentDimensions) continue;
-    if (position.axis != Axis.vertical) continue;
-    if (position.maxScrollExtent > best) {
-      best = position.maxScrollExtent;
-      deepest = element;
-    }
-  }
-  if (deepest == null || best <= 0) return;
-  final anchor = find.byElementPredicate((e) => identical(e, deepest));
-  if (anchor.evaluate().isEmpty) return;
-  final rect = tester.getRect(anchor);
-  await tester.dragFrom(
-    Offset(rect.center.dx, rect.top + rect.height * 0.7),
-    Offset(0, -best),
-  );
+/// 维度走 [reviewTrendDimensionProvider]——与用户点趋势卡的 tab 是同一条
+/// 状态通路，因此不会因为「tab 在屏幕外 / 命中的是别处的同名文字」而失效
+/// （那正是三张趋势图曾经完全相同的原因）。
+///
+/// 滚的是 `ensureVisible`（趋势卡带 `review-trend-section` key），不是「滚到底」：
+/// 结尾那几个组件的高度随维度变化，固定滚到底会把 tab 行推出视口。
+Future<void> _selectReviewTrend(
+  WidgetTester tester,
+  ProviderContainer container,
+  ReviewDataKind kind,
+) async {
+  container.read(reviewTrendDimensionProvider.notifier).select(kind);
+  await tester.pump();
+  await _settle(tester);
+
+  final section = find.byKey(const Key('review-trend-section'));
+  if (section.evaluate().isEmpty) return;
+  await tester.ensureVisible(section);
   await tester.pump();
   await _settle(tester);
 }
@@ -1410,9 +1509,10 @@ void main() {
   /// Shared capture body: frame, navigate, prime, prepare, dump text, shoot,
   /// record, then unmount and drain before the binding's invariant check.
   ///
-  /// 每个页面最多产出三帧：
+  /// 每个页面产出：
   /// 1. `<folder>/<name>.png` — 首屏；
-  /// 2. `<folder>/<name>_scrolled.png` — 滚动到中段（仅当内容溢出）；
+  /// 2. `<folder>/<name>_scrolled.png`、`_scrolled2.png`… — 首屏以下的整页翻页
+  ///    （仅当内容溢出，每帧只露出新内容，见 [_pageTurnPlan]）；
   /// 3. `long/<folder>__<name>.png` — 整页长截图（仅当内容溢出）。
   Future<void> capture(
     WidgetTester tester, {
@@ -1421,6 +1521,10 @@ void main() {
     required String route,
     AssistantConversation? assistantConversation,
     Future<void> Function(WidgetTester tester)? prepare,
+
+    /// extras 用：能拿到本次截图的 container，用来直接驱动 provider 状态。
+    Future<void> Function(WidgetTester tester, ProviderContainer container)?
+    prepareWithContainer,
     bool signedOut = false,
     bool longCapture = true,
     bool scrolledCapture = true,
@@ -1460,6 +1564,10 @@ void main() {
 
     if (prepare != null) {
       await prepare(tester);
+      await _settle(tester);
+    }
+    if (prepareWithContainer != null) {
+      await prepareWithContainer(tester, container);
       await _settle(tester);
     }
 
@@ -1517,36 +1625,68 @@ void main() {
 
     captured.add(firstFrame);
 
-    // ── 滚动后的第二帧 ──────────────────────────────────────────────
+    // ── 首屏以下的帧：按视口翻页 ─────────────────────────────────────
     //
     // 此前每个页面只截首屏，标题以下的内容全部看不见：用药页新增的十个
     // 关系图卡片、回顾页的趋势区块、我的页的下半部分都不在证据范围内。
-    // 这里对**内容确实溢出**的页面再截一帧中段画面。
     //
-    // 判据是主滚动视图的 `maxScrollExtent > 0`：短页面（表单、弹层）没有
-    // 可滚动内容，就不产出多余的重复图。
+    // 现在对**内容确实溢出**的页面按整屏翻页：每帧前进一整个视口，末帧只画
+    // 剩下的那段内容（见 [_pageTurnPlan]）。这样两帧之间不重叠——以前「滚到
+    // 55% 再截一张」会让只冒头一截的页面产出与首屏几乎相同的重复图。
     //
     // 桌面档不产出这一帧（`scrolledCapture`）：它证明的是「内容溢出一屏」，
     // 而桌面上这个结论本身就是要看的信号——如果五个 tab 在 1280×800 下
     // 仍然全部溢出，说明布局还没有利用宽屏，评审时应当直接看到「只有首屏
     // 一张图」，而不是被同名的第二帧稀释掉这个信号。
     if (scrolledCapture) {
-      final everScrolled = await _scrollPageToFraction(tester, 0.55);
-      if (everScrolled) {
-        final scrolledFrame = '$folder/${baseName}_scrolled.png';
+      final plan = _pageTurnPlan(tester, minTailFraction: _minTailFraction);
+      for (var i = 0; i < plan.length; i += 1) {
+        final frame = plan[i];
+        final suffix = i == 0 ? '_scrolled' : '_scrolled${i + 1}';
+
+        // 尾帧比视口矮：先换帧高，页面重新布局后的 `maxScrollExtent` 正好是
+        // 「剩余内容 - 尾帧内容高」，直接滚到底就落在尾部起点上。
+        final shrink = frame.frameHeight < _frameHeight - 0.5;
+        if (shrink) {
+          tester.view.physicalSize = Size(
+            _frameWidth * _frameDpr,
+            frame.frameHeight * _frameDpr,
+          );
+          await tester.pump();
+          await _settle(tester);
+        }
+
+        final target = shrink
+            ? (_primaryScrollable(tester)?.position.maxScrollExtent ??
+                  frame.offset)
+            : frame.offset;
+        final actual = await _scrollPageTo(tester, target);
+        if (actual == null) {
+          if (shrink) await _restoreFrameSize(tester);
+          break;
+        }
+
+        final scrolledFrame = '$folder/$baseName$suffix.png';
         dumpRendered(scrolledFrame);
         await expectLater(
           find.byType(LuminousApp),
-          matchesGoldenFile(_goldenPath(folder, '${baseName}_scrolled.png')),
+          matchesGoldenFile(_goldenPath(folder, '$baseName$suffix.png')),
         );
         captured.add(scrolledFrame);
+
+        if (shrink) await _restoreFrameSize(tester);
       }
+      await _scrollPageToTop(tester);
     }
 
     // ── 整页长截图 ──────────────────────────────────────────────────
     //
-    // 把帧高临时拉到「内容总高」，一次性画出整页：这是「这个页面到底有多长、
-    // 中段和尾部各是什么」最省事的证据，也避免滚动帧只能覆盖中段的偶然性。
+    // 把帧高临时拉到「内容总高 + chrome」，一次性画出整页：这是「这个页面
+    // 到底有多长」最省事的证据。
+    //
+    // 高度必须带上 chrome（底部 tab bar / 安全区）：只按内容高画帧，滚动视口
+    // 会跟着缩小同样多，最后一屏的内容被骨架裁掉一截——以前的长截图就是这样
+    // 把页面尾部切掉的。
     //
     // 只在内容确实溢出时产出；高度封顶 [_longMaxHeight]，防止异常布局
     // 生成一张打不开的图。
@@ -1554,9 +1694,11 @@ void main() {
     if (longCapture &&
         contentHeight != null &&
         contentHeight > _frameHeight * 1.05) {
-      _scrollPageToTop(tester);
-      await tester.pump();
-      final longHeight = contentHeight.clamp(_frameHeight, _longMaxHeight);
+      await _scrollPageToTop(tester);
+      final longHeight = (contentHeight + _pageChromeHeight(tester)).clamp(
+        _frameHeight,
+        _longMaxHeight,
+      );
       tester.view.physicalSize = Size(
         _frameWidth * _longDpr,
         longHeight * _longDpr,
@@ -1564,6 +1706,7 @@ void main() {
       tester.view.devicePixelRatio = _longDpr;
       await tester.pump();
       await _settle(tester);
+      await _scrollPageToTop(tester);
 
       final longFile = '$_longDir/${_longName(folder, baseName)}';
       _ensureOutputDir(_longDir);
@@ -1575,12 +1718,7 @@ void main() {
       captured.add(longFile);
 
       // 还原常规帧，后面的 teardown 与其它断言都按原尺寸走。
-      tester.view.physicalSize = Size(
-        _frameWidth * _frameDpr,
-        _frameHeight * _frameDpr,
-      );
-      tester.view.devicePixelRatio = _frameDpr;
-      await tester.pump();
+      await _restoreFrameSize(tester);
     }
 
     // Unmount and drain before the binding's end-of-test invariant check.
@@ -1694,12 +1832,14 @@ void main() {
         name: extra.fileName.replaceAll('.png', ''),
         route: extra.route,
         assistantConversation: extra.assistantConversation,
-        prepare: extra.prepare,
+        prepareWithContainer: extra.prepare,
         signedOut: extra.signedOut,
-        // extras 是「同一条路由的某个特定状态」，整页长截图会在同一路由上
-        // 重复产出内容几乎相同的图（趋势的三个维度就是这样）。它们的价值
-        // 在首屏那一帧，不产出长截图。
+        // extras 是「同一条路由的某个特定状态」：弹层/抽屉/候选面板本身不占
+        // 整页，翻页帧只会是首屏的原样复制；整页长截图也会在同一路由上重复
+        // 产出内容几乎相同的图（趋势的三个维度就是这样）。它们的价值只在
+        // 首屏那一帧。
         longCapture: false,
+        scrolledCapture: false,
         record: (name, count) => manifest.writeln(
           '| `$name` | ${extra.group} | ${extra.page} | '
           '`${extra.route}` | $count | ${extra.note}'
@@ -1784,10 +1924,5 @@ void main() {
     File(
       '${dir.path}/_rendered_text.txt',
     ).writeAsStringSync(diagnostics.toString());
-
-    // ignore: avoid_print
-    print('CAPTURED_TOTAL=${captured.length}');
-    // ignore: avoid_print
-    print('MANIFEST=${dir.path}/MANIFEST.md');
   });
 }
