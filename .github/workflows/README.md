@@ -10,7 +10,9 @@
 | `ci.yml` | `CI` | 校验：ARB 合并 / 生成物准备 / 生成客户端 / 生成文档一致性 / analyze / 全量单测 | push, PR, 手动 |
 | `deploy-android.yml` | `Deploy Android` | 构建 release APK 并上传产物 | push(`main`), 手动 |
 | `deploy-ios.yml` | `Deploy iOS` | 构建未签名 IPA（macOS runner）并上传产物 | push(`main`), 手动 |
-| `deploy-web.yml` | `Deploy web` | 构建 Flutter Web 并发布到 GitHub Pages | push(`refactor`), 手动 |
+| `deploy-web.yml` | `Deploy web` | 构建 Flutter Web 并发布到 GitHub Pages | push(`main`), 手动 |
+| `deploy-linux.yml` | `Deploy Linux` | 在 ubuntu runner 上原生构建 Linux 桌面版（release），校验产物后上传 tar.gz artifact | **仅手动** |
+| `deploy-windows.yml` | `Deploy Windows` | 在 windows runner 上构建 Windows 桌面版（release 目录），校验产物后上传 zip artifact | **仅手动** |
 | `deploy-harmonyos.yml` | `Deploy HarmonyOS` | 构建鸿蒙壳用的 Flutter Web 制品（`--base-href "/"` + `--no-web-resources-cdn`），跑 4 条产物断言后上传 artifact。**不跑 hvigorw**：托管 runner 没有鸿蒙工具链，`.hap` 由本机 `python scripts/ohos/build_hap.py` 出 | push(`develop`, 限相关路径), 手动 |
 | `codeql.yml` | `CodeQL` | 代码安全分析（生成客户端 / lint 工具 / scripts 的 TS-JS 部分） | push, PR, 周度 |
 | `osv-scanner.yml` | `OSV-Scanner` | pub 依赖漏洞扫描（含传递依赖） | push, PR, 周度 |
@@ -42,9 +44,11 @@
 
 - `ci.yml` 是唯一的门禁面：任何分支的 push 与 PR 都跑。
 - `deploy-*.yml` 都支持手动 `workflow_dispatch`（可在任意分支出包），自动触发各自绑定
-  分支：Android / iOS = `main`，Web = `refactor`。
-- `deploy-web.yml` **只在 `refactor` 分支的 push 上自动触发**——这与仓库当前的 Pages
-  发布约定一致，不要顺手改成 `main`。
+  分支：Android / iOS / Web = `main`；Windows / Linux / HarmonyOS 按需出包（仅手动或路径触发）。
+- `deploy-web.yml` 在 `main` 的 push 上自动构建并发布到 GitHub Pages（含 `deploy` job：
+  `pages: write` + `id-token: write` 只给这个文件）。
+- `deploy-linux.yml` **只手动触发**：Linux 桌面产物是「需要时要一个」的交付形态，
+  不进 `main` 的自动发布链路。
 - `deploy-ios.yml` 跑在 GitHub 托管 `macos-latest` 上：开发机是 Windows，本地编译不了
   iOS，CI 同时是唯一的编译验证面。公开仓库的标准托管 runner 不额外计费。
 
@@ -55,13 +59,15 @@
 | `deploy-android.yml` | `luminous-android-apk`（每 ABI 一个 `app-<abi>-release.apk`）、`luminous-android-symbols` | `--split-per-abi`：每个 APK 自带该 ABI 的 `libflutter.so`/`libapp.so`。无 `key.properties` 时 APK 走 debug 签名：可安装，不可上架 |
 | `deploy-ios.yml` | `luminous-ios-unsigned-ipa`、`luminous-ios-symbols`、`luminous-ios-podfile-lock` | 未签名，本机用 Sideloadly / AltStore 重签后装真机；签名分发与 TestFlight 见 `docs/TODO.md`。`ios/Podfile.lock` 已入库，pod 版本由它固定，产物里的那份用于对比漂移 |
 | `deploy-web.yml` | GitHub Pages | |
+| `deploy-linux.yml` | `luminous-linux-x64.tar.gz` | 桌面 bundle（`luminous` + `lib/` + `data/`）打成 tar.gz；Windows 开发机无法本地编译 Linux 桌面产物，出包以本 workflow 为准 |
+| `deploy-windows.yml` | `luminous-windows-x64.zip` | 桌面产物目录（`luminous.exe` + `flutter_windows.dll` + `data/`）打成 zip；目录由 `luminous.exe` 反查，不依赖固定路径 |
 
 `deploy-android.yml` 不再跑 `dart compile js web/drift_worker.dart`：那是 Web 端
 drift worker（只有 `lib/core/database/connection_web.dart` 消费），移动端产物不需要。
 
 ## 环境变量
 
-三个发布工作流都从 Repository Settings → Secrets and variables → Actions 读取。
+各发布工作流都从 Repository Settings → Secrets and variables → Actions 读取。
 `LUCENT_BASE_URL` 必填（缺失直接失败，避免发出访问不到后端的包）；其余缺失只 warning，
 仅关闭对应能力。
 
@@ -75,16 +81,19 @@ drift worker（只有 `lib/core/database/connection_web.dart` 消费），移动
 | `WECHAT_IOS_UNIVERSAL_LINK` | Variable | — | ✅ Dart define | — |
 | `LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED`、`LUMINOUS_RUNTIME_PROVIDER`、`LUMINOUS_ENABLE_GEN_UI` | Variable | — | — | ✅ |
 
+`deploy-linux.yml` 与 `deploy-windows.yml` 读取 `LUCENT_BASE_URL`（必填）、
+`SENTRY_DSN`（可选）、`SUPPORT_EMAIL`（可选），经 `--dart-define` 注入，与移动端/Web 同口径。
+
 Web 的三个 `LUMINOUS_*` 是 Web 实验运行时开关，移动端发布不注入，保持产品默认（关闭）。
 `WECHAT_IOS_UNIVERSAL_LINK` 还要求 Apple 账号侧配好 Associated Domains 才可用。
 
 ## 生成物前置步骤
 
 每个跑 `flutter build` 的 workflow（`ci.yml`、`deploy-web.yml`、`deploy-android.yml`、
-`deploy-ios.yml`）都按顺序跑 `Bootstrap generated sources` → `Build generated API client`：
-`generated/lucent_api` 是独立 package，根 `build_runner` 不会替它生成各 model 的
-`part '*.g.dart'`（这些 `.g.dart` 被 gitignore）。缺后者时 `flutter build` 会在编译期
-直接失败。
+`deploy-ios.yml`、`deploy-linux.yml`、`deploy-windows.yml`）都按顺序跑 `Bootstrap generated sources` →
+`Build generated API client`：`generated/lucent_api` 是独立 package，根 `build_runner`
+不会替它生成各 model 的 `part '*.g.dart'`（这些 `.g.dart` 被 gitignore）。缺后者时
+`flutter build` 会在编译期直接失败。`deploy-linux.yml` 与其它发布面同样按这个顺序执行。
 
 ## 改 `name:` / 文件名的注意
 
