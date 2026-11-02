@@ -28,7 +28,7 @@ jobs:
       FLUTTER_STORAGE_BASE_URL: https://storage.googleapis.com
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Validate required secrets
         run: |
@@ -50,14 +50,14 @@ jobs:
           fi
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.23.0
         with:
           channel: stable
           flutter-version: 3.47.7
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.pub-cache
           key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
@@ -110,7 +110,7 @@ jobs:
             --dart-define=LUMINOUS_ENABLE_GEN_UI=${{ vars.LUMINOUS_ENABLE_GEN_UI || 'false' }}
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: build/web
 
@@ -124,4 +124,4 @@ jobs:
     steps:
       - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
