@@ -7,7 +7,7 @@ name: Deploy web
 on:
   workflow_dispatch:
   push:
-    branches: [refactor]
+    branches: [main]
 
 permissions:
   contents: read
