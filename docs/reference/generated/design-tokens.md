@@ -35,11 +35,11 @@ is the machine projection; the interpretive contract lives in
 | Name | Type | Value | Docs |
 | --- | --- | --- | --- |
 | `compact` | `double` | `360` | Very small phones (≤360px). Text may need extra truncation. |
-| `mobile` | `double` | `600` |  |
-| `tablet` | `double` | `960` |  |
-| `smallDesktop` | `double` | `1080` | Small laptops / large tablets (960–1200). Uses a transitional |
-| `desktop` | `double` | `1200` |  |
-| `wide` | `double` | `1400` |  |
+| `mobile` | `double` | `600` | M3 `compact` 上限：`< 600` 是手机，`≥ 600` 进入 `medium`。 |
+| `expanded` | `double` | `840` | M3 `expanded` 起点：`≥ 840` 进入大平板 / 小笔记本。 |
+| `smallDesktop` | `double` | `1080` | 小桌面过渡区（840–1200）的中段参考值，用于两列网格的少量细粒度判断。 |
+| `desktop` | `double` | `1200` | M3 `large` 起点：`≥ 1200` 是桌面窗口。 |
+| `wide` | `double` | `1400` | 宽屏参考值（≥1400）。用于「是否放宽内容宽度上限」这类局部判断， |
 | `ultrawide` | `double` | `1920` | Ultra-wide monitors (≥1920). Content may use 3 columns or wider |
 | `assistantContent` | `double` | `560` | Fixed max-width for assistant panels and auth forms. |
 
