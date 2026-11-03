@@ -1,7 +1,10 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/features/shell/presentation/detail_pane.dart';
 import 'package:luminous/features/shell/presentation/detail_pane_state.dart';
@@ -83,10 +86,20 @@ void main() {
 
     final screen =
         tester.view.physicalSize.width / tester.view.devicePixelRatio;
-    // 关闭态内容区吃满可用宽度。上限由 `maxContentWidth`(1600) 与页边距(24)
-    // 共同决定，所以这里不按屏幕比例卡死，而是要求它确实接近满宽：
-    // 0.7 的阈值能区分「有面板在占位」和「没有」，又不依赖具体档位取值。
-    expect(contentWidth(tester), greaterThan(screen * 0.7));
+    final layout = LayoutScaleResolver.resolve(screen);
+    // 关闭态内容区吃满「设计内容列」：桌面壳把内容收口到 min(可用宽度,
+    // maxContentWidth)，再扣掉两侧页边距；面板关闭时不再额外让位。
+    // 不按屏幕比例卡死——桌面档的 maxContentWidth 是 1040，屏幕再宽内容列
+    // 也停在这个值（见 layout_scale.dart 的 _desktop 注释）。
+    final available = tester.getRect(find.byType(DesktopTabShell)).width;
+    expect(
+      contentWidth(tester),
+      closeTo(
+        math.min(available, layout.maxContentWidth) -
+            2 * layout.pageHorizontalPadding,
+        0.1,
+      ),
+    );
   });
 
   testWidgets('opening the pane shrinks the content area', (tester) async {

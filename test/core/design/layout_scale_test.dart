@@ -59,8 +59,19 @@ void main() {
     });
 
     test('1200 switches to the desktop tier (M3 large)', () {
-      expect(resolve(1200).maxContentWidth, 1600);
-      expect(resolve(2560).maxContentWidth, 1600);
+      // 桌面档与「小桌面」档共用同一个内容宽度上限（1040）：整个应用在
+      // ≥ 840 宽度上只有一个内容列，见 layout_scale.dart 的 _desktop 注释。
+      // 因此档位边界只能靠纵向节奏断言，不能再拿 maxContentWidth 当分档信号。
+      expect(resolve(1200).maxContentWidth, 1040);
+      expect(resolve(2560).maxContentWidth, 1040);
+      expect(
+        resolve(1200).heroVerticalPadding,
+        greaterThan(resolve(1199).heroVerticalPadding),
+      );
+      expect(
+        resolve(1200).sectionVerticalPadding,
+        greaterThan(resolve(1199).sectionVerticalPadding),
+      );
     });
 
     test('padding follows the tier, not the raw width', () {
@@ -73,7 +84,7 @@ void main() {
         resolve(839).pageHorizontalPadding,
         isNot(resolve(840).pageHorizontalPadding),
       );
-      // 小桌面与桌面共用同一水平留白（都是 Spacing.xl2 = 20），
+      // 小桌面与桌面共用同一水平留白（都是 Spacing.xl3 = 24），
       // 两者只靠纵向节奏区分。
       expect(
         resolve(1199).pageHorizontalPadding,
