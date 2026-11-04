@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -126,16 +125,15 @@ class AdvancedSettingsPage extends ConsumerWidget {
                               dataStorageSettingsControllerProvider.notifier,
                             )
                             .reset();
-                        if (kDebugMode) {
-                          await ref
-                              .read(
-                                developerSettingsControllerProvider.notifier,
-                              )
-                              .reset();
-                          await ref
-                              .read(featureFlagsControllerProvider.notifier)
-                              .reset();
-                        }
+                        // 开发者选项在所有构建模式都可见，重置也要跟着生效：
+                        // 端点回到编译期默认，否则「恢复默认」在 release 包里
+                        // 只清了一半偏好，用户看不出端点是否真的回退。
+                        await ref
+                            .read(developerSettingsControllerProvider.notifier)
+                            .reset();
+                        await ref
+                            .read(featureFlagsControllerProvider.notifier)
+                            .reset();
                         if (!context.mounted) {
                           return;
                         }
@@ -147,14 +145,10 @@ class AdvancedSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                if (kDebugMode) ...[
-                  const SizedBox(height: Spacing.xl),
-                  SettingsSectionLabel(
-                    label: l10n.settingsDeveloperSectionTitle,
-                  ),
-                  const SizedBox(height: Spacing.md),
-                  _DeveloperOptionsGroup(),
-                ],
+                const SizedBox(height: Spacing.xl),
+                SettingsSectionLabel(label: l10n.settingsDeveloperSectionTitle),
+                const SizedBox(height: Spacing.md),
+                _DeveloperOptionsGroup(),
               ],
             ),
           ),
@@ -309,17 +303,48 @@ class _EndpointSheetState extends State<_EndpointSheet> {
   late ApiEndpoint _selected;
   late TextEditingController _customController;
 
+  /// Inline validation message for the custom URL field; `null` when the input
+  /// is acceptable. A scheme-less value is not an error — [normalizeApiUrl]
+  /// repairs it (`122.9.102.50:3000` → `http://122.9.102.50:3000`) — but a
+  /// value that cannot be turned into an http(s) URL must never be persisted:
+  /// `Dio`'s `BaseOptions` throws `FormatException` for it, which used to take
+  /// the whole provider graph down with a red `ProviderException` screen.
+  String? _errorText;
+
   @override
   void initState() {
     super.initState();
     _selected = widget.current;
     _customController = TextEditingController(text: widget.customUrl);
+    _customController.addListener(_clearErrorOnEdit);
   }
 
   @override
   void dispose() {
+    _customController.removeListener(_clearErrorOnEdit);
     _customController.dispose();
     super.dispose();
+  }
+
+  void _clearErrorOnEdit() {
+    if (_errorText == null) return;
+    setState(() => _errorText = null);
+  }
+
+  void _confirm() {
+    if (_selected != ApiEndpoint.custom) {
+      if (_errorText != null) setState(() => _errorText = null);
+      unawaited(widget.onConfirm(_selected, ''));
+      return;
+    }
+
+    final normalized = normalizeApiUrl(_customController.text);
+    if (normalized == null) {
+      setState(() => _errorText = widget.l10n.settingsDevApiEndpointInvalid);
+      return;
+    }
+    if (_errorText != null) setState(() => _errorText = null);
+    unawaited(widget.onConfirm(ApiEndpoint.custom, normalized));
   }
 
   @override
@@ -352,7 +377,10 @@ class _EndpointSheetState extends State<_EndpointSheet> {
                     suffix: SettingsSelectionIcon(
                       selected: endpoint == _selected,
                     ),
-                    onPress: () => setState(() => _selected = endpoint),
+                    onPress: () => setState(() {
+                      _selected = endpoint;
+                      _errorText = null;
+                    }),
                   ),
               ],
             ),
@@ -363,15 +391,24 @@ class _EndpointSheetState extends State<_EndpointSheet> {
                   controller: _customController,
                 ),
                 label: Text(widget.l10n.settingsDevApiEndpointCustomUrl),
-                hint: 'https://...',
+                hint: 'http://192.168.1.50:3000',
               ),
+              if (_errorText != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: Spacing.sm),
+                  child: Text(
+                    _errorText!,
+                    style: context.theme.typography.body.xs.copyWith(
+                      color: SemanticColor.destructive.solid(context),
+                    ),
+                  ),
+                ),
             ],
             const SizedBox(height: Spacing.lg),
             SizedBox(
               width: double.infinity,
               child: FButton(
-                onPress: () =>
-                    widget.onConfirm(_selected, _customController.text.trim()),
+                onPress: _confirm,
                 child: Text(widget.l10n.settingsDevApiEndpointConfirm),
               ),
             ),

@@ -69,6 +69,17 @@ void main() {
     });
   });
 
+  group('normalizeApiUrl', () {
+    test('prepends http:// for scheme-less input', () {
+      expect(normalizeApiUrl('122.9.102.50:3000'), 'http://122.9.102.50:3000');
+    });
+
+    test('returns null for blank or non-http input', () {
+      expect(normalizeApiUrl(''), isNull);
+      expect(normalizeApiUrl('ftp://files.example.com'), isNull);
+    });
+  });
+
   group('DeveloperSettingsState.resolvedBaseUrl', () {
     test('returns defaultUrl for local endpoint', () {
       const state = DeveloperSettingsState(apiEndpoint: ApiEndpoint.local);
@@ -114,6 +125,33 @@ void main() {
         customApiUrl: '  http://192.168.1.100:8080  ',
       );
       expect(state.resolvedBaseUrl, 'http://192.168.1.100:8080');
+    });
+
+    test('normalizes a scheme-less customApiUrl', () {
+      // 这正是 ProviderException 的触发输入：`host:port` 没有 scheme 时
+      // Dio 的 BaseOptions 会抛 FormatException。解析层必须补 http://。
+      const state = DeveloperSettingsState(
+        apiEndpoint: ApiEndpoint.custom,
+        customApiUrl: '122.9.102.50:3000',
+      );
+      expect(state.resolvedBaseUrl, 'http://122.9.102.50:3000');
+    });
+
+    test('drops a trailing slash from customApiUrl', () {
+      const state = DeveloperSettingsState(
+        apiEndpoint: ApiEndpoint.custom,
+        customApiUrl: 'http://192.168.1.100:8080/',
+      );
+      expect(state.resolvedBaseUrl, 'http://192.168.1.100:8080');
+    });
+
+    test('falls back when customApiUrl is not a usable http(s) URL', () {
+      const state = DeveloperSettingsState(
+        apiEndpoint: ApiEndpoint.custom,
+        customApiUrl: 'ftp://files.example.com',
+      );
+      // setUp 固定为非 Android 平台，故回退到 127.0.0.1。
+      expect(state.resolvedBaseUrl, 'http://127.0.0.1:3000');
     });
 
     test('falls back to compile-time default when customApiUrl is empty', () {

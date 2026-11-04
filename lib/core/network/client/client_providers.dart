@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_final_locals, prefer_const_constructors
 
-import 'package:flutter/foundation.dart';
 import 'package:luminous/core/config/developer_settings.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/network/client/base_url.dart';
@@ -17,22 +16,23 @@ part 'client_providers.g.dart';
 
 /// Resolves the Lucent API base URL.
 ///
-/// In release mode, always uses the compile-time default. In debug mode,
-/// allows runtime switching via developer settings.
+/// The endpoint chosen in 设置 → 高级设置 → 开发者选项 applies in **every**
+/// build mode: a shipped package can be repointed at another host without a
+/// rebuild (the reporter of a mis-pinned HAP can fix it in-app). A build-pinned
+/// `LUCENT_BASE_URL` only decides the default when no choice is stored.
+///
+/// The value is normalized before it reaches Dio: a scheme-less entry such as
+/// `122.9.102.50:3000` used to make `BaseOptions` throw `FormatException`,
+/// which put this provider in an error state and took down every consumer
+/// (the red `ProviderException` screen).
 @Riverpod(keepAlive: true)
 String lucentBaseUrl(Ref ref) {
-  if (kReleaseMode) {
-    return LucentBaseUrl.value;
-  }
-
   final devSettings = ref
       .watch(developerSettingsControllerProvider)
       .asData
       ?.value;
-  if (devSettings != null) {
-    return devSettings.resolvedBaseUrl;
-  }
-  return LucentBaseUrl.value;
+  final candidate = devSettings?.resolvedBaseUrl ?? LucentBaseUrl.value;
+  return LucentBaseUrl.normalize(candidate) ?? LucentBaseUrl.fallback;
 }
 
 /// Provides the [LucentSessionStore] for token persistence.
