@@ -25,6 +25,11 @@
 
 ## 陷阱与决策
 
+- 开发者选项(`advanced/advanced.dart` 的 `_DeveloperOptionsGroup`)在所有构建模式可见,
+  不再用 `kDebugMode` 隐藏:端点切换要能在 release 包里救回「打错地址」的包。API 端点
+  输入框必须过 `normalizeApiUrl`(core/config/developer_settings.dart → `LucentBaseUrl.normalize`):
+  省略 scheme 的 `host:port` 会被补成 `http://host:port` 后落盘,非法值只在 sheet 内报错、
+  不写偏好——写进去会让 Dio 的 `BaseOptions` 抛 `FormatException` 并拖垮 provider 图。
 - 个人信息页(`presentation/pages/profile.dart`)是「左标签 / 右当前值 / 点击进编辑」的分组列表:页面不内联常驻输入框、也没有整体保存按钮;每个健康字段由单字段 sheet 独立提交,只发送被改动的那一个(其余保持 `healthContextNoChange`)。
 - 身高/体重滚轮(`widgets/shared/quantity_sheet.dart`)的取值可能被 clamp 到滚轮边界(旧数据越界,如 260cm 超过 250 上限)。clamp 命中时必须把边界值**同步写回** `slot`,否则用户不动滚轮直接确认会把越界值原样回写。反向约束同样重要:只在真正越界时回写——滚轮按整数取值,无条件回写会让每次打开 sheet 都轻微改写用户当前值(60kg 会变成 132lb 折回的 59.87kg)。`imperial` 在 sheet 打开后视为不可变(late final `_indexes`),要支持切换需走 `didUpdateWidget`。
 - 头像与昵称只在个人信息页可改;账号管理页(`/account`)与账号安全中心只跳转过来,不复制概要卡片或第二份编辑入口。

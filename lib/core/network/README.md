@@ -45,6 +45,17 @@
 
 ## 陷阱与决策
 
+- 端点解析集中在 `client/base_url.dart` 的 `LucentBaseUrl.normalize`:编译期 define、
+  开发者设置里存的地址、用户手输的地址**都要过这一层**再进 Dio。没有 scheme 的
+  `host:port`(`122.9.102.50:3000`)会让 `BaseOptions` 抛
+  `FormatException: Scheme not starting with alphabetic character`,而它发生在
+  `lucentDioClient` provider 的构建里,异常会把整棵 provider 图打成 error 态(红屏
+  `ProviderException`),不是一次普通的请求失败。归一化同时补 `http://`、裁掉尾部
+  `/`,非法值回退到 `LucentBaseUrl.fallback`,不向上抛。
+- `LucentBaseUrl.value` 只决定**默认端点**,release 缺少 `LUCENT_BASE_URL` 时回退到
+  平台本地地址并打日志,不再抛 `StateError`;运行时切换由
+  `设置 → 高级设置 → 开发者选项 → API 端点` 负责(`lucentBaseUrlProvider` 在所有构建
+  模式都读开发者设置,`LUCENT_BASE_URL` 只做未选择时的默认)。
 - token 刷新走独立 `refreshDio`,避免刷新请求再次触发拦截器递归;它的 trace 拦截器
   不挂 `onTraceId`、不回写 `TraceContext` / `lastTraceIdProvider`,防止刷新请求的
   trace 冒充用户可见 trace(见 dio_client.dart 注释)。

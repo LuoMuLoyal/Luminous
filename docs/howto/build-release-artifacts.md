@@ -152,8 +152,12 @@ python scripts/ohos/build_hap.py --skip-web      # 复用现有 build/web，只�
 6. `hvigorw assembleHap`。产物默认在
    `ohos/entry/build/default/outputs/default/entry-default-unsigned.hap`。
 
-`LUCENT_BASE_URL` 不设时回退到 `http://10.0.2.2:3000`（模拟器访问宿主机）；出正式包
-必须显式设置，否则 release 包里 `LucentBaseUrl.value` 会在启动时抛 `StateError`。
+`LUCENT_BASE_URL` 不设时回退到 `http://10.0.2.2:3000`（模拟器访问宿主机）。它只决定
+**默认端点**：release 包不再因为缺少这个 define 在启动时抛 `StateError`，而是回退到平台
+地址，并可在「设置 → 高级设置 → 开发者选项 → API 端点」里改到真实地址（选完即落盘、
+立即重建 HTTP 客户端并登出旧会话）。出正式包仍建议显式设置，否则首屏会打
+`127.0.0.1` / `10.0.2.2`。地址允许省略 scheme（`122.9.102.50:3000`），会归一化成
+`http://122.9.102.50:3000`；无法解析成 http(s) 的值会被输入框拦下，不会写进偏好。
 回退字体（CJK）由 `python scripts/ohos/fetch_fallback_fonts.py --all` 单独维护，
 缺了构建不失败但中文会显示成方块。
 
@@ -240,6 +244,7 @@ java -jar "$DEVECO_HOME/sdk/default/openharmony/toolchains/lib/hap-sign-tool.jar
 | 仍从 `www.gstatic.com` 拉资源、壳内白屏     | 漏了 `--no-web-resources-cdn`，`useLocalCanvasKit` 不为 `true`                                       |
 | drift / 本地库在 Web 端不可用               | `drift_worker.js` 或 `sqlite3.wasm` 缺失、或与 `sqlite3` 包版本不匹配（重跑 `build_hap.py`）          |
 | 中文显示成方块                              | 缺 `rawfile/fonts/` 回退字体：`python scripts/ohos/fetch_fallback_fonts.py --all`                    |
+| 红屏 `ProviderException` + `FormatException: Scheme not starting with alphabetic character` | API 端点缺 scheme（如 `122.9.102.50:3000`）。新代码已归一化并拦非法输入；旧包需重建，或先在「高级设置 → 开发者选项」改成 `http://` 开头的地址 |
 | 包体比预期大 20 MB 左右                     | 手工拷贝了未裁剪的 `build/web`（脚本会自动裁 canvaskit 的 skwasm/wimp 与 `.js.symbols`）             |
 
 ## Linux 桌面（各发行版 / 虚拟机）排查
