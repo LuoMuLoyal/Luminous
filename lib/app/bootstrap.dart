@@ -324,14 +324,25 @@ FThemeData _applyHighContrast(FThemeData theme) {
 /// 看不到自己在一篇长内容里的位置。桌面工作台的通行做法是常驻细条——
 /// 它同时是位置指示（拇指长度 = 可视比例），不是装饰。
 ///
-/// 只在桌面平台生效：移动端 `Scrollbar` 本身不绘制，覆盖不会影响手机。
+/// 「桌面」要同时满足**平台是桌面**和**窗口至少平板宽**。只看平台不够：
+/// Flutter web 的 OS 探测只读 `navigator.platform` / UA，鸿蒙壳（ArkWeb）的
+/// platform 以 `Linux` 开头、UA 里又没有 `Android`，因此被判成 Linux 桌面
+/// （`ui_web/browser_detection.dart`）——手机形态的壳上于是多出一条常驻的
+/// 粗黑滚动条（2026-11-04 在模拟器复现）。原生桌面的最小窗口是 960×640
+/// （`window_manager_setup.dart`），短边不会低于 `Breakpoints.mobile`；
+/// 手机无论竖屏还是横屏，短边都在 426dp 上下，永远不满足这一条。
 class _DesktopScrollBehavior extends MaterialScrollBehavior {
   const _DesktopScrollBehavior();
 
-  bool get _isDesktop =>
+  bool get _isDesktopPlatform =>
       defaultTargetPlatform == TargetPlatform.windows ||
       defaultTargetPlatform == TargetPlatform.macOS ||
       defaultTargetPlatform == TargetPlatform.linux;
+
+  bool _shouldDrawScrollbar(BuildContext context) {
+    if (!_isDesktopPlatform) return false;
+    return MediaQuery.sizeOf(context).shortestSide >= Breakpoints.mobile;
+  }
 
   @override
   Widget buildScrollbar(
@@ -339,7 +350,7 @@ class _DesktopScrollBehavior extends MaterialScrollBehavior {
     Widget child,
     ScrollableDetails details,
   ) {
-    if (!_isDesktop) return child;
+    if (!_shouldDrawScrollbar(context)) return child;
     final colors = Theme.of(context).colorScheme;
     return ScrollbarTheme(
       data: ScrollbarThemeData(
