@@ -118,7 +118,25 @@ jobs:
 
       - name: Package bundle
         run: |
+          BUNDLE=build/linux/x64/release/bundle
+          # `flutter build` does not guarantee the execute bit on the helper
+          # binaries it copies in. crashpad_handler missing +x makes Sentry's
+          # crash reporter abort with `posix_spawn ... 权限不够 (13)` at startup
+          # (observed on an Ubuntu 26 release bundle, 2026-11-04), and it is only
+          # noticed when a crash has to be reported. Set the bit here so the
+          # packaged tree is executable regardless of the build machine umask.
+          chmod +x "${BUNDLE}/luminous" "${BUNDLE}/lib/crashpad_handler"
+          test -x "${BUNDLE}/lib/crashpad_handler" \
+            || { echo "::error::crashpad_handler is not executable in the bundle"; exit 1; }
           tar -C build/linux/x64/release -czf build/luminous-linux-x64.tar.gz bundle
+          # Self-check the archive, not the tree: what ships is the tarball.
+          tar -tvzf build/luminous-linux-x64.tar.gz \
+            | grep -E '^-rwx' \
+            | grep -Eq 'bundle/luminous$' \
+            || { echo "::error::bundle/luminous loses its execute bit in the tarball"; exit 1; }
+          tar -tvzf build/luminous-linux-x64.tar.gz \
+            | grep -Eq '^-rwx[^ ]* .*bundle/lib/crashpad_handler$' \
+            || { echo "::error::bundle/lib/crashpad_handler loses its execute bit in the tarball"; exit 1; }
           ls -lh build/luminous-linux-x64.tar.gz
 
       - name: Upload Linux artifact
