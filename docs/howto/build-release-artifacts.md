@@ -242,6 +242,19 @@ java -jar "$DEVECO_HOME/sdk/default/openharmony/toolchains/lib/hap-sign-tool.jar
 | 中文显示成方块                              | 缺 `rawfile/fonts/` 回退字体：`python scripts/ohos/fetch_fallback_fonts.py --all`                    |
 | 包体比预期大 20 MB 左右                     | 手工拷贝了未裁剪的 `build/web`（脚本会自动裁 canvaskit 的 skwasm/wimp 与 `.js.symbols`）             |
 
+## Linux 桌面（各发行版 / 虚拟机）排查
+
+| 现象                                                                          | 首先怀疑                                                                                                |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| 终端无窗口，`lock failed, path = .../kv/preferences.lock`，`errno = 11`       | 另一个实例还持有 Hive 的 `flock`：`pkill -f luminous` 后重开。2026-11-03 前的构建把偏好库放在共享的 `$HOME/Documents`，两份安装必撞锁；现在落在应用私有的 application support 目录（`~/.local/share/luminous`） |
+| 停在 `Using the Impeller rendering backend (OpenGLES)` 长时间无窗口            | 虚拟机里的软件 OpenGL（llvmpipe）。`glxinfo -B` 看 `OpenGL renderer`；虚拟机设置里开 3D 加速（显存 ≥256 MB）再试 |
+| 启动即退、只有 `Gdk-Message: Unable to load ... from the cursor theme`         | 缺光标主题图标，属警告。`sudo apt install adwaita-icon-theme` 消除                                         |
+| `ldd bundle/luminous` 报 `not found`                                          | 缺 GTK3 运行库：装 `libgtk-3-0t64`（24.04 前叫 `libgtk-3-0`）、`libsecret-1-0`、`libjsoncpp25`            |
+
+偏好库与本地库都在 `getApplicationSupportDirectory()` 下：Linux 是
+`~/.local/share/luminous`（`kv/preferences` 与 `luminous.db`）。不要改回 documents
+目录——那是按用户共享的 `~/Documents`，不是按应用隔离的。
+
 ## 验证
 
 ```bash
