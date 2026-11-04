@@ -7,13 +7,16 @@ import 'package:material_ui/material_ui.dart';
 import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';
 
-/// Regression coverage for the sign-in hint banner on narrow phones with a
-/// large app font tier.
+/// Regression coverage for the sign-in hint banner: it is a **single row** —
+/// lock icon, message and action button never split across lines.
 ///
-/// Real-device report: on a 393dp phone the "sign in to see your real data"
-/// message wrapped onto four lines and pushed the whole banner taller, because
-/// icon + message + button shared a single [Row] and the message — the only
-/// flex child — absorbed all the compression.
+/// Two earlier bugs are guarded here:
+/// - the message used to absorb all compression (4-line wrap on a narrow phone
+///   with a large font tier);
+/// - the "does it fit on one line?" pre-check measured the button by its
+///   `maxWidth` (160) instead of its real width, so on a 480dp screen it
+///   wrongly fell back to a two-row layout (observed on the HarmonyOS shell,
+///   2026-11-04). Space is now redistributed by truncating the message.
 void main() {
   setUp(() {
     KvTestStore.install();
@@ -25,8 +28,8 @@ void main() {
     l10n = await AppLocalizations.delegate.load(const Locale('zh'));
   });
 
-  /// Pumps the banner at [width] under [textScale], mirroring the real device
-  /// (393dp, large tier) that surfaced the bug.
+  /// Pumps the banner at [width] under [textScale], mirroring the real devices
+  /// that surfaced the two bugs above.
   Future<void> pumpBanner(
     WidgetTester tester, {
     required double width,
@@ -55,17 +58,30 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('message stays on one line at 393dp with the large font tier', (
+  /// Message and action must share the same visual row: their vertical extents
+  /// overlap. A two-row fallback puts them on disjoint bands.
+  void expectSingleRow(WidgetTester tester) {
+    final messageBox = tester.getRect(find.text(l10n.statePreviewSignInHint));
+    final actionBox = tester.getRect(find.text(l10n.statePreviewSignInAction));
+    expect(
+      messageBox.top < actionBox.bottom && actionBox.top < messageBox.bottom,
+      isTrue,
+      reason: 'the banner must stay on one row',
+    );
+  }
+
+  testWidgets('stays on one row at 393dp with the large font tier', (
     tester,
   ) async {
     await pumpBanner(tester, width: 393, textScale: 1.15);
 
     final message = tester.widget<Text>(find.text(l10n.statePreviewSignInHint));
-    expect(message.maxLines, isNull, reason: 'copy must not be hard-clamped');
+    expect(message.maxLines, 1, reason: 'copy truncates instead of wrapping');
+    expect(message.overflow, TextOverflow.ellipsis);
 
     // The message renders as a single line. Measuring the laid-out paragraph
-    // is the invariant that actually broke: on the buggy single-Row layout the
-    // message was squeezed into 4 lines and the banner grew to fit them.
+    // is the invariant that actually broke: the old layout squeezed it into
+    // 4 lines and pushed the banner taller.
     final lineCount = _renderedLineCount(
       tester,
       find.text(l10n.statePreviewSignInHint),
@@ -75,6 +91,7 @@ void main() {
       1,
       reason: 'message must not wrap onto multiple lines on a narrow phone',
     );
+    expectSingleRow(tester);
   });
 
   testWidgets('no overflow at the narrowest supported width', (tester) async {
@@ -83,6 +100,7 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text(l10n.statePreviewSignInHint), findsOneWidget);
     expect(find.text(l10n.statePreviewSignInAction), findsOneWidget);
+    expectSingleRow(tester);
   });
 
   testWidgets('keeps message and action side by side on a wide screen', (
@@ -90,15 +108,7 @@ void main() {
   ) async {
     await pumpBanner(tester, width: 600, textScale: 1.0);
 
-    final messageBox = tester.getRect(find.text(l10n.statePreviewSignInHint));
-    final actionBox = tester.getRect(find.text(l10n.statePreviewSignInAction));
-
-    // Same visual row: their vertical extents overlap.
-    expect(
-      messageBox.top < actionBox.bottom && actionBox.top < messageBox.bottom,
-      isTrue,
-      reason: 'wide layouts keep the compact single-row presentation',
-    );
+    expectSingleRow(tester);
   });
 
   testWidgets('action button stays on one line at the narrowest width', (
