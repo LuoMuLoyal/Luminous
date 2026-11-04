@@ -57,5 +57,55 @@ void main() {
       // value still yields the debug fallback rather than an empty URL.
       expect(LucentBaseUrl.value, equals('http://127.0.0.1:3000'));
     });
+
+    group('normalize', () {
+      test('prepends http:// when the scheme is missing', () {
+        expect(
+          LucentBaseUrl.normalize('122.9.102.50:3000'),
+          equals('http://122.9.102.50:3000'),
+        );
+      });
+
+      test('keeps an explicit https scheme and path', () {
+        expect(
+          LucentBaseUrl.normalize('https://api.example.com/v1'),
+          equals('https://api.example.com/v1'),
+        );
+      });
+
+      test('trims whitespace, quotes and trailing slashes', () {
+        expect(
+          LucentBaseUrl.normalize('  "https://api.example.com/"  '),
+          equals('https://api.example.com'),
+        );
+      });
+
+      test('returns null for blank input', () {
+        expect(LucentBaseUrl.normalize(''), isNull);
+        expect(LucentBaseUrl.normalize('   '), isNull);
+      });
+
+      test('rejects non-http(s) schemes and missing hosts', () {
+        expect(LucentBaseUrl.normalize('ftp://files.example.com'), isNull);
+        expect(LucentBaseUrl.normalize('http://'), isNull);
+        expect(LucentBaseUrl.normalize('/relative/path'), isNull);
+      });
+
+      test('normalizes a scheme-less compile-time define', () {
+        EnvReader.setTestValue(EnvKey.lucentBaseUrl, '122.9.102.50:3000');
+        expect(LucentBaseUrl.configured, equals('http://122.9.102.50:3000'));
+        expect(LucentBaseUrl.value, equals('http://122.9.102.50:3000'));
+      });
+
+      test('treats an unusable define as unset', () {
+        EnvReader.setTestValue(EnvKey.lucentBaseUrl, 'ftp://files.example.com');
+        expect(LucentBaseUrl.configured, isNull);
+        expect(LucentBaseUrl.value, equals('http://127.0.0.1:3000'));
+      });
+
+      test('fallback is the platform-local development server', () {
+        expect(LucentBaseUrl.fallback, equals('http://127.0.0.1:3000'));
+      });
+    });
   });
 }
