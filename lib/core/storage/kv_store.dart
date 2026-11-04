@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:hive_ce/hive.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:path/path.dart' as p;
@@ -81,14 +82,23 @@ class HiveKvStore implements KvStore {
   /// Nothing else in the app initializes Hive, and the drift database already
   /// lives in the application documents directory, so the box is pointed at a
   /// path derived from the same root instead of adding a second storage root.
+  ///
+  /// **Web (including the HarmonyOS ArkWeb shell) passes no path.** hive_ce's
+  /// web backend stores the box in IndexedDB and ignores `path` entirely, while
+  /// `path_provider` has no web implementation: calling
+  /// `getApplicationDocumentsDirectory()` there throws
+  /// `MissingPluginException` — and because this runs before `runApp`,
+  /// `main()` dies with the splash screen still up (observed on the ohos shell,
+  /// 2026-11-04).
   static Future<KvStore> open() async {
     final box = await Hive.openBox<dynamic>(
       boxName,
-      path: await _storagePath(),
+      path: kIsWeb ? null : await _storagePath(),
     );
     return KvStore.installForTesting(HiveKvStore(box));
   }
 
+  /// File-system location of the box directory. Never called on web.
   static Future<String> _storagePath() async {
     final dir = await getApplicationDocumentsDirectory();
     final boxDir = Directory(p.join(dir.path, 'kv'));

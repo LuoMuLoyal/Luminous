@@ -1,7 +1,7 @@
 ---
 status: active
 owner: frontend
-updated: 2026-11-03
+updated: 2026-11-04
 ---
 
 # How-To: 构建发布包（Android / iOS / Web / HarmonyOS）
@@ -236,6 +236,7 @@ java -jar "$DEVECO_HOME/sdk/default/openharmony/toolchains/lib/hap-sign-tool.jar
 | ------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `hdc install` 报签名/Profile 校验失败       | HAP 未签名（看 hvigor 是否 `Will skip sign`），或 Profile 的 bundleName / 证书 / 设备 UDID 与包不匹配 |
 | 启动白屏、`ERR_FILE_NOT_FOUND`              | Web 产物没平铺到 `rawfile` 根（是否手工放进了 `rawfile/web/`），或漏了 `--base-href "/"`             |
+| 启动停在 splash（叶子 logo），日志只有 `console: Uncaught` | `runApp` 之前的平台插件调用抛错：`path_provider` 一类没有 web 实现的插件会抛 `MissingPluginException`。`hdc shell hilog -x` 过滤 tag `LuminousWeb` 看 `pageBegin` 之后的 console |
 | 仍从 `www.gstatic.com` 拉资源、壳内白屏     | 漏了 `--no-web-resources-cdn`，`useLocalCanvasKit` 不为 `true`                                       |
 | drift / 本地库在 Web 端不可用               | `drift_worker.js` 或 `sqlite3.wasm` 缺失、或与 `sqlite3` 包版本不匹配（重跑 `build_hap.py`）          |
 | 中文显示成方块                              | 缺 `rawfile/fonts/` 回退字体：`python scripts/ohos/fetch_fallback_fonts.py --all`                    |
