@@ -247,12 +247,32 @@ java -jar "$DEVECO_HOME/sdk/default/openharmony/toolchains/lib/hap-sign-tool.jar
 | 红屏 `ProviderException` + `FormatException: Scheme not starting with alphabetic character` | API 端点缺 scheme（如 `122.9.102.50:3000`）。新代码已归一化并拦非法输入；旧包需重建，或先在「高级设置 → 开发者选项」改成 `http://` 开头的地址 |
 | 包体比预期大 20 MB 左右                     | 手工拷贝了未裁剪的 `build/web`（脚本会自动裁 canvaskit 的 skwasm/wimp 与 `.js.symbols`）             |
 
-## Linux 桌面（各发行版 / 虚拟机）排查
+## Linux 桌面（各发行版 / 虚拟机）
+
+### 安装
+
+`deploy-linux.yml`（手动 dispatch）产出的 `luminous-linux-x64` artifact 解压后是一个
+`luminous-linux-x64.tar.gz`，里面只有 `bundle/`。安装用仓库里的脚本，不要手工散放：
+
+```bash
+bash scripts/desktop/install_linux.sh ~/luminous-linux-x64.tar.gz            # 默认 Skia
+bash scripts/desktop/install_linux.sh ~/luminous-linux-x64.tar.gz --impeller # 保持 Impeller
+```
+
+脚本装 GTK3 运行库、解开到 `~/.local/opt/luminous/bundle`、生成 `~/.local/bin/luminous`
+包装器和桌面启动器，并把 2026-11-03 之前留在 `~/Documents` 的旧存储搬到应用私有目录。
+
+默认注入 `LUMINOUS_SOFTWARE_RENDER=1`（Skia）：Impeller 在没有可用 GPU 驱动的机器上
+初始化完引擎却不出窗口，桌面用户不该为此自己找环境变量。`--impeller` 给有正常 GPU 的
+机器用，见 [README](../../README.md#process-environment-variables-desktop)。
+
+### 排查
 
 | 现象                                                                          | 首先怀疑                                                                                                |
 | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| 终端无窗口，`lock failed, path = .../kv/preferences.lock`，`errno = 11`       | 另一个实例还持有 Hive 的 `flock`：`pkill -f luminous` 后重开。2026-11-03 前的构建把偏好库放在共享的 `$HOME/Documents`，两份安装必撞锁；现在落在应用私有的 application support 目录（`~/.local/share/luminous`） |
+| 终端无窗口，`lock failed, path = .../kv/preferences.lock`，`errno = 11`       | 另一个实例还持有 Hive 的 `flock`：`pkill -f luminous` 后重开。当前构建已按应用 ID 单实例化（第二次启动会转发给运行中的实例并退出）；2026-11-03 前的构建把偏好库放在共享的 `$HOME/Documents`，两份安装必撞锁 |
 | 停在 `Using the Impeller rendering backend (OpenGLES)` 长时间无窗口            | 虚拟机里的软件 OpenGL（llvmpipe）：进程活着但从不创建 `xdg_toplevel`。先 `LUMINOUS_SOFTWARE_RENDER=1 ./luminous` 用 Skia 渲染（见 [README](../../README.md#process-environment-variables-desktop)）；仍不行再查 `glxinfo -B` 与虚拟机 3D 加速 |
+| `posix_spawn ... crashpad_handler: 权限不够 (13)` 或崩溃上报失效                | bundle 里的 `crashpad_handler` 缺执行位。打包步骤已 `chmod +x` 并在 tarball 里校验；装历史包时手工补 `chmod +x` |
 | 启动即退、只有 `Gdk-Message: Unable to load ... from the cursor theme`         | 缺光标主题图标，属警告。`sudo apt install adwaita-icon-theme` 消除                                         |
 | `ldd bundle/luminous` 报 `not found`                                          | 缺 GTK3 运行库：装 `libgtk-3-0t64`（24.04 前叫 `libgtk-3-0`）、`libsecret-1-0`、`libjsoncpp25`            |
 
