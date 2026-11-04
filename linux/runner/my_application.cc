@@ -97,13 +97,24 @@ static gboolean my_application_local_command_line(GApplication* application,
   // Strip out the first argument as it is the binary name.
   self->dart_entrypoint_arguments = g_strdupv(*arguments + 1);
 
-  g_autoptr(GError) error = nullptr;
-  if (!g_application_register(application, nullptr, &error)) {
-    g_warning("Failed to register: %s", error->message);
-    *exit_status = 1;
+  // Hand over to the instance that already owns the application ID: the
+  // arguments above are how D-Bus forwarding reaches the primary instance, and
+  // GApplication routes a forwarded launch into `activate` there.
+  //
+  // The Dart side locks the Hive box and the encrypted drift database in
+  // application support, so a second process must never reach
+  // `HiveKvStore.open()` — it would fail with `errno 11` before `runApp` and
+  // exit without ever showing a window (observed on Ubuntu 26, 2026-11-03).
+  if (!g_application_register(application, nullptr, nullptr)) {
+    *exit_status = 0;
     return TRUE;
   }
-
+  // Registered but owned by someone else: this process is the second launch,
+  // so it has no window to show and nothing left to do.
+  if (g_application_get_is_remote(application)) {
+    *exit_status = 0;
+    return TRUE;
+  }
   g_application_activate(application);
   *exit_status = 0;
 
@@ -153,7 +164,13 @@ MyApplication* my_application_new() {
   // the application to be recognized beyond its binary name.
   g_set_prgname(APPLICATION_ID);
 
-  return MY_APPLICATION(g_object_new(my_application_get_type(),
-                                     "application-id", APPLICATION_ID, "flags",
-                                     G_APPLICATION_NON_UNIQUE, nullptr));
+  // Single-instance on purpose. The Dart side opens an exclusive Hive box and
+  // an encrypted drift database in application support, both of which are
+  // locked by the first process; letting a second instance start would exit at
+  // `HiveKvStore.open()` with `errno 11` before the first frame. GApplication
+  // forwards a second launch to the running instance via D-Bus instead, which
+  // is what `my_application_local_command_line` checks for.
+  return MY_APPLICATION(g_object_new(
+      my_application_get_type(), "application-id", APPLICATION_ID, "flags",
+      G_APPLICATION_DEFAULT_FLAGS, nullptr));
 }
