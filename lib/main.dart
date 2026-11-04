@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show stderr;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Open the preference store before any widget reads a preference.
-  await HiveKvStore.open();
+  await _openPreferenceStore();
 
   // Persist the background callback handle before the app starts scheduling.
   await initializeBackgroundSync();
@@ -113,5 +114,36 @@ Future<void> _initSentry() async {
       '⚠️ Sentry initialization failed (DSN invalid?), '
       'Sentry disabled for this session.\n  Error: $e\n  Stack: $st',
     );
+  }
+}
+
+/// Opens the preference store, reporting a failure instead of crashing before
+/// the first frame.
+///
+/// `main()` runs before `runApp`, so an exception escaping this point shows up
+/// as "double-click does nothing" with no window and — on a release build — no
+/// console either. The known trigger is a stale Hive `flock` on the box file
+/// (`errno 11`), observed on Ubuntu 26 when the store lived in the shared
+/// `$HOME/Documents` root; another root cause would fail the same way, so the
+/// log is the only useful artefact either way.
+///
+/// Failures stay fatal on purpose: the app must not start with a store it
+/// cannot persist to (`KvStore.instance` throws exactly so preferences cannot
+/// silently appear to reset). The rerun is what turns a stale lock — which the
+/// kernel releases when the holder dies — into a clean start.
+Future<void> _openPreferenceStore() async {
+  try {
+    await HiveKvStore.open();
+  } catch (error, stackTrace) {
+    appTalker.error(
+      'Failed to open the preference store at bootstrap: $error\n$stackTrace',
+    );
+    stderr.writeln(
+      'Preference store failed to open: $error\n'
+      'The app cannot start without it. If this is a Hive lock error '
+      '(errno 11 / EAGAIN), another instance is still running: close it '
+      '(pkill -f luminous on Linux) and start again.\n$stackTrace',
+    );
+    rethrow;
   }
 }
