@@ -252,7 +252,7 @@ java -jar "$DEVECO_HOME/sdk/default/openharmony/toolchains/lib/hap-sign-tool.jar
 | 现象                                                                          | 首先怀疑                                                                                                |
 | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | 终端无窗口，`lock failed, path = .../kv/preferences.lock`，`errno = 11`       | 另一个实例还持有 Hive 的 `flock`：`pkill -f luminous` 后重开。2026-11-03 前的构建把偏好库放在共享的 `$HOME/Documents`，两份安装必撞锁；现在落在应用私有的 application support 目录（`~/.local/share/luminous`） |
-| 停在 `Using the Impeller rendering backend (OpenGLES)` 长时间无窗口            | 虚拟机里的软件 OpenGL（llvmpipe）。`glxinfo -B` 看 `OpenGL renderer`；虚拟机设置里开 3D 加速（显存 ≥256 MB）再试 |
+| 停在 `Using the Impeller rendering backend (OpenGLES)` 长时间无窗口            | 虚拟机里的软件 OpenGL（llvmpipe）：进程活着但从不创建 `xdg_toplevel`。先 `LUMINOUS_SOFTWARE_RENDER=1 ./luminous` 用 Skia 渲染（见 [README](../../README.md#process-environment-variables-desktop)）；仍不行再查 `glxinfo -B` 与虚拟机 3D 加速 |
 | 启动即退、只有 `Gdk-Message: Unable to load ... from the cursor theme`         | 缺光标主题图标，属警告。`sudo apt install adwaita-icon-theme` 消除                                         |
 | `ldd bundle/luminous` 报 `not found`                                          | 缺 GTK3 运行库：装 `libgtk-3-0t64`（24.04 前叫 `libgtk-3-0`）、`libsecret-1-0`、`libjsoncpp25`            |
 

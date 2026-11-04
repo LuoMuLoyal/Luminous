@@ -58,6 +58,17 @@ static void my_application_activate(GApplication* application) {
   fl_dart_project_set_dart_entrypoint_arguments(
       project, self->dart_entrypoint_arguments);
 
+  // Impeller is the default renderer on Linux since Flutter 3.47. On machines
+  // without a usable GPU driver (VMware/VirtualBox guests, anything that only
+  // exposes Mesa's llvmpipe software GL) it can finish engine init and then
+  // never present a first frame: the process stays alive with a Wayland
+  // connection but never creates an xdg_toplevel, so no window appears
+  // (observed on Ubuntu 26 under VMware, 2026-11-03). LUMINOUS_SOFTWARE_RENDER
+  // falls back to Skia, which is the documented opt-out for shipped Linux apps.
+  if (g_getenv("LUMINOUS_SOFTWARE_RENDER") != nullptr) {
+    fl_dart_project_set_enable_impeller(project, FALSE);
+  }
+
   FlView* view = fl_view_new(project);
   GdkRGBA background_color;
   // Background defaults to black, override it here if necessary, e.g. #00000000
