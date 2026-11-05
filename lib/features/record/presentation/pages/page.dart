@@ -115,8 +115,12 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final height = size.height;
     final isCompact = width < Breakpoints.mobile;
     final isMobileLayout = width < Breakpoints.desktop;
+    // 顶部只留一档小间距：标题栏（FHeader）自身底部已有 10dp 内边距，日期条
+    // 又有 56dp 的行高，再叠 10–16dp 的「内容上边距」会让标题与日期条之间
+    // 空出一大块（真机 390×844 上实测约 55dp）。间距由标题一侧决定，内容区
+    // 顶部不再重复计数。
     final contentVerticalPadding = EdgeInsets.only(
-      top: (height * 0.012).clamp(10.0, 16.0),
+      top: Spacing.xs,
       bottom: (height * 0.025).clamp(16.0, 28.0),
     );
 

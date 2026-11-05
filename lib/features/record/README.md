@@ -51,6 +51,10 @@
   (test/record/type_mapping_test.dart)。
 - 记录类型图标/强调色只取 `SemanticIcons` / `SemanticColor` token(`domain/entities/dashboard.dart` 的
   `defaultQuickActions`)。
+- 首屏纵向间距只算一次:`FHeader` 自身带 10dp 底部内边距,页面 `contentVerticalPadding`
+  的 `top` 因此只留一档小间距(`Spacing.xs`)。两处同时按「内容上边距」计算会让标题
+  与日期条之间叠出 30dp 以上的空白,标题看起来悬在半空——断言见
+  `test/record/presentation/pages/page_spacing_test.dart`。
 - 餐食分析(契约 v2,一次多模态分析直出):列表条目取 `mealHeadline`(最重要的一条结论)+ 粗化到百位的热量区间
   (`mealCalorieMin|Max`,文案在视图层本地化),**不再有估算/已确认角标**(状态只有
   `analyzing | analyzed | analysis_failed`);详情页取 payload 的 `items`(rank 序)与 `dishes`。
