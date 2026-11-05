@@ -191,6 +191,7 @@
   "settingsDevApiEndpointCustom": "自定义",
   "settingsDevApiEndpointCustomHint": "输入自定义 API 地址",
   "settingsDevApiEndpointCustomUrl": "自定义 URL",
+  "settingsDevApiEndpointInvalid": "请输入有效地址，如 http://192.168.1.50:3000",
   "settingsDevApiEndpointConfirm": "确认",
   "settingsDevApiEndpointSwitched": "端点已切换，请重新登录",
   "settingsDevLogLevel": "日志级别",

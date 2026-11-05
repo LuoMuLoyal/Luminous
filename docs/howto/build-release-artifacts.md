@@ -1,10 +1,10 @@
 ---
 status: active
 owner: frontend
-updated: 2026-10-06
+updated: 2026-11-04
 ---
 
-# How-To: 构建发布包（Android / iOS / Web）
+# How-To: 构建发布包（Android / iOS / Web / HarmonyOS）
 
 日常 `flutter run` 见 [README](../../README.md)；本文只覆盖**发布构建**——怎么出包、
 每个包要注入什么、以及出问题先看哪里。
@@ -122,6 +122,163 @@ flutter build web --release --base-href "/<repo-name>/" --dart-define-from-file=
   `web/flutter_bootstrap.js` 显式钉了 `renderer: 'canvaskit'` 防回归。
 - `deploy-web.yml` 发布到 GitHub Pages，自动触发绑定 `push` 到 `refactor` 分支
   （不是 `main`）。
+
+## HarmonyOS
+
+鸿蒙壳（`ohos/`）内嵌 Flutter Web 产物，**HAP 只能在装了 DevEco Studio 的本机打**：
+托管 runner 没有 hvigor / ohpm / OpenHarmony SDK，CI（`deploy-harmonyos.yml`）只负责产
+Web 制品，不跑 `assembleHap`。本机一条命令走完 Web 构建 → rawfile 平铺 → hvigor 打包：
+
+```bash
+python scripts/ohos/build_hap.py                 # debug
+python scripts/ohos/build_hap.py --release       # release
+python scripts/ohos/build_hap.py --skip-web      # 复用现有 build/web，只重打包
+```
+
+脚本内部的顺序有讲究，不要拆开手工跑：
+
+1. **重建两个 gitignore 的 Web 构建期产物**：`dart compile js web/drift_worker.dart` →
+   `web/drift_worker.js`；`python scripts/web/fetch_sqlite3_wasm.py` 按 `pubspec.yaml`
+   的 `sqlite3` pin 下载 `web/sqlite3.wasm` 并校验 sha256。两者**必须在
+   `flutter build web` 之前**生成，否则 Flutter 拷进 `build/web` 的是上一轮的旧文件。
+2. `flutter build web --release --base-href "/" --no-web-resources-cdn`：壳内是本地资源，
+   不能带 Pages 的 `/<repo>/` 前缀，也不能运行时从 `www.gstatic.com` 拉 CanvasKit。
+3. 校验 `useLocalCanvasKit:true`、`base href="/"`、两个构建期产物存在（与 CI 断言同口径）。
+4. 裁剪 canvaskit：删掉 `skwasm*` / `wimp*` 与所有 `.js.symbols`（壳内钉死 canvaskit
+   单渲染器，这些用不到），约省 20 MB。
+5. 把 `build/web` **平铺**进 `ohos/entry/src/main/resources/rawfile/`——不是
+   `rawfile/web/`：`resource://` 协议不认 `<base href>`，放子目录会让 `flutter_bootstrap.js`
+   / `main.dart.js` 全部 404（2026-10-23 模拟器实测）。
+6. `hvigorw assembleHap`。产物默认在
+   `ohos/entry/build/default/outputs/default/entry-default-unsigned.hap`。
+
+`LUCENT_BASE_URL` 不设时回退到 `http://10.0.2.2:3000`（模拟器访问宿主机）。它只决定
+**默认端点**：release 包不再因为缺少这个 define 在启动时抛 `StateError`，而是回退到平台
+地址，并可在「设置 → 高级设置 → 开发者选项 → API 端点」里改到真实地址（选完即落盘、
+立即重建 HTTP 客户端并登出旧会话）。出正式包仍建议显式设置，否则首屏会打
+`127.0.0.1` / `10.0.2.2`。地址允许省略 scheme（`122.9.102.50:3000`），会归一化成
+`http://122.9.102.50:3000`；无法解析成 http(s) 的值会被输入框拦下，不会写进偏好。
+回退字体（CJK）由 `python scripts/ohos/fetch_fallback_fonts.py --all` 单独维护，
+缺了构建不失败但中文会显示成方块。
+
+### 签名
+
+`ohos/build-profile.json5` 目前是 `signingConfigs: []`，所以 hvigor 只 WARN
+`Will skip sign 'hos_hap'`，产出的 HAP **未签名**：真机 `hdc install` 会失败，
+模拟器一般能装。签名材料（`.p12` / `.cer` / `.p7b` / `.csr`）已在 `ohos/.gitignore`
+里，**一律不入库**；bundleName 是 `com.devluo.luminous`（`ohos/AppScope/app.json5`），
+证书、Profile 必须和它对上。
+
+**本地调试：DevEco 自动签名（最省事）**
+
+1. 用 DevEco 打开 `ohos/`，`File` → `Project Structure` → `Signing Configs`。
+2. 勾选 `Automatically generate signature`（需要登录华为账号）。连了真机时会顺带
+   登记设备，生成调试证书与 Profile。
+3. `Sync Now`：DevEco 把签名材料放在用户目录（`~/.ohos/config/openharmony/` 附近），
+   并把 `signingConfigs` 写进 `ohos/build-profile.json5`。
+4. 之后 `python scripts/ohos/build_hap.py --release --skip-web` 直接产出**已签名**
+   HAP（`entry-default-signed.hap`），`python scripts/ohos/install_hap.py --launch` 可装可拉起。
+
+自动签名绑定当前账号与设备；换机器/换设备要重新生成。`signingConfigs` 里的密码字段
+可能被 DevEco 加密保存，提交前检查 diff，别把本机路径/口令带进仓库。
+
+**正式发布：AppGallery Connect（AGC）证书 + Profile**
+
+1. AGC → `用户与访问` → `证书管理`：生成密钥库（`.p12` + storePassword / keyPassword），
+   用 DevEco 或 `hap-sign-tool generate-keypair` 生成，创建 CSR 后上传，下载发布证书
+   `.cer`。
+2. AGC → `证书、Profile 与 AID 管理` → 新增 Profile：选应用（`com.devluo.luminous`）、
+   选刚建的证书、按用途选设备——调试 Profile 需登记设备 UDID，发布 Profile 用于上架。
+   下载 `.p7b`。
+3. 配 `ohos/build-profile.json5`（路径指向本机文件，密钥材料不入库）：
+
+   ```json5
+   "signingConfigs": [
+     {
+       "name": "default",
+       "type": "HarmonyOS",
+       "material": {
+         "certpath": "C:/keys/luminous.cer",
+         "storePassword": "<p12 密码>",
+         "keyAlias": "luminous",
+         "keyPassword": "<alias 密码>",
+         "profile": "C:/keys/luminous.p7b",
+         "signAlg": "SHA256withECDSA",
+         "storeFile": "C:/keys/luminous.p12"
+       }
+     }
+   ]
+   ```
+
+4. 重跑 `python scripts/ohos/build_hap.py --release --skip-web`。
+
+**命令行手动签（不进 DevEco）**：用 SDK 自带的 `hap-sign-tool.jar`（Java 用 DevEco
+自带的 jbr 即可）：
+
+```bash
+java -jar "$DEVECO_HOME/sdk/default/openharmony/toolchains/lib/hap-sign-tool.jar" sign-app \
+  -mode "localSign" \
+  -keyAlias "luminous" \
+  -signAlg "SHA256withECDSA" \
+  -appCertFile "C:/keys/luminous.cer" \
+  -profileFile "C:/keys/luminous.p7b" \
+  -inFile "ohos/entry/build/default/outputs/default/entry-default-unsigned.hap" \
+  -keystoreFile "C:/keys/luminous.p12" \
+  -outFile "ohos/entry/build/default/outputs/default/entry-default-signed.hap" \
+  -keyPwd "<alias 密码>" \
+  -keystorePwd "<p12 密码>" \
+  -compatibleVersion 26
+```
+
+`-compatibleVersion` 取 `ohos/build-profile.json5` 的 `compatibleSdkVersion` 主版本
+（当前 `26.0.0` → `26`）。签完可先用 `verify-app` 自检，再
+`python scripts/ohos/install_hap.py --hap <signed.hap> --launch` 安装。
+
+### 排查
+
+| 现象                                        | 首先怀疑                                                                                              |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `hdc install` 报签名/Profile 校验失败       | HAP 未签名（看 hvigor 是否 `Will skip sign`），或 Profile 的 bundleName / 证书 / 设备 UDID 与包不匹配 |
+| 启动白屏、`ERR_FILE_NOT_FOUND`              | Web 产物没平铺到 `rawfile` 根（是否手工放进了 `rawfile/web/`），或漏了 `--base-href "/"`             |
+| 启动停在 splash（叶子 logo），日志只有 `console: Uncaught` | `runApp` 之前的平台插件调用抛错：`path_provider` 一类没有 web 实现的插件会抛 `MissingPluginException`。`hdc shell hilog -x` 过滤 tag `LuminousWeb` 看 `pageBegin` 之后的 console |
+| 仍从 `www.gstatic.com` 拉资源、壳内白屏     | 漏了 `--no-web-resources-cdn`，`useLocalCanvasKit` 不为 `true`                                       |
+| drift / 本地库在 Web 端不可用               | `drift_worker.js` 或 `sqlite3.wasm` 缺失、或与 `sqlite3` 包版本不匹配（重跑 `build_hap.py`）          |
+| 中文显示成方块                              | 缺 `rawfile/fonts/` 回退字体：`python scripts/ohos/fetch_fallback_fonts.py --all`                    |
+| 红屏 `ProviderException` + `FormatException: Scheme not starting with alphabetic character` | API 端点缺 scheme（如 `122.9.102.50:3000`）。新代码已归一化并拦非法输入；旧包需重建，或先在「高级设置 → 开发者选项」改成 `http://` 开头的地址 |
+| 包体比预期大 20 MB 左右                     | 手工拷贝了未裁剪的 `build/web`（脚本会自动裁 canvaskit 的 skwasm/wimp 与 `.js.symbols`）             |
+
+## Linux 桌面（各发行版 / 虚拟机）
+
+### 安装
+
+`deploy-linux.yml`（手动 dispatch）产出的 `luminous-linux-x64` artifact 解压后是一个
+`luminous-linux-x64.tar.gz`，里面只有 `bundle/`。安装用仓库里的脚本，不要手工散放：
+
+```bash
+bash scripts/desktop/install_linux.sh ~/luminous-linux-x64.tar.gz            # 默认 Skia
+bash scripts/desktop/install_linux.sh ~/luminous-linux-x64.tar.gz --impeller # 保持 Impeller
+```
+
+脚本装 GTK3 运行库、解开到 `~/.local/opt/luminous/bundle`、生成 `~/.local/bin/luminous`
+包装器和桌面启动器，并把 2026-11-03 之前留在 `~/Documents` 的旧存储搬到应用私有目录。
+
+默认注入 `LUMINOUS_SOFTWARE_RENDER=1`（Skia）：Impeller 在没有可用 GPU 驱动的机器上
+初始化完引擎却不出窗口，桌面用户不该为此自己找环境变量。`--impeller` 给有正常 GPU 的
+机器用，见 [README](../../README.md#process-environment-variables-desktop)。
+
+### 排查
+
+| 现象                                                                          | 首先怀疑                                                                                                |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| 终端无窗口，`lock failed, path = .../kv/preferences.lock`，`errno = 11`       | 另一个实例还持有 Hive 的 `flock`：`pkill -f luminous` 后重开。当前构建已按应用 ID 单实例化（第二次启动会转发给运行中的实例并退出）；2026-11-03 前的构建把偏好库放在共享的 `$HOME/Documents`，两份安装必撞锁 |
+| 停在 `Using the Impeller rendering backend (OpenGLES)` 长时间无窗口            | 虚拟机里的软件 OpenGL（llvmpipe）：进程活着但从不创建 `xdg_toplevel`。先 `LUMINOUS_SOFTWARE_RENDER=1 ./luminous` 用 Skia 渲染（见 [README](../../README.md#process-environment-variables-desktop)）；仍不行再查 `glxinfo -B` 与虚拟机 3D 加速 |
+| `posix_spawn ... crashpad_handler: 权限不够 (13)` 或崩溃上报失效                | bundle 里的 `crashpad_handler` 缺执行位。打包步骤已 `chmod +x` 并在 tarball 里校验；装历史包时手工补 `chmod +x` |
+| 启动即退、只有 `Gdk-Message: Unable to load ... from the cursor theme`         | 缺光标主题图标，属警告。`sudo apt install adwaita-icon-theme` 消除                                         |
+| `ldd bundle/luminous` 报 `not found`                                          | 缺 GTK3 运行库：装 `libgtk-3-0t64`（24.04 前叫 `libgtk-3-0`）、`libsecret-1-0`、`libjsoncpp25`            |
+
+偏好库与本地库都在 `getApplicationSupportDirectory()` 下：Linux 是
+`~/.local/share/luminous`（`kv/preferences` 与 `luminous.db`）。不要改回 documents
+目录——那是按用户共享的 `~/Documents`，不是按应用隔离的。
 
 ## 验证
 

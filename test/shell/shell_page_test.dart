@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/shell/presentation/page.dart';
+import 'package:luminous/features/shell/presentation/sidebar/desktop.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -184,11 +185,18 @@ void main() {
       setDesktopScreenSize(tester);
       await pumpShell(tester, router: buildRouter());
 
-      expect(find.byType(FSidebar), findsOneWidget);
+      expect(find.byType(DesktopSidebar), findsOneWidget);
+      // 五个 tab 的 test key 都在侧栏里（其余为 footer 的四个工具入口）。
+      for (final tab in ShellTab.values) {
+        expect(find.byKey(tab.testKey()), findsOneWidget);
+      }
       expect(
-        find.byType(FSidebarItem),
-        findsNWidgets(9),
-      ); // 5 tabs + notifications + theme toggle + settings + help
+        find.descendant(
+          of: find.byType(DesktopSidebar),
+          matching: find.byType(Semantics),
+        ),
+        findsWidgets,
+      );
     });
 
     testWidgets('renders tab labels in sidebar', (tester) async {

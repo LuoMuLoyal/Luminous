@@ -141,6 +141,19 @@ Two untracked files, one template each (`.gitignore` ignores `.env` / `.env.*` b
 The E2E file is self-contained on purpose: `--dart-define-from-file` accepts exactly one file, so
 it carries the `E2E_*` account **and** the `LUCENT_BASE_URL` the app under test uses.
 
+### Process environment variables (desktop)
+
+Read by the native runner at process start, not compiled in — they work on any build, including
+CI-produced release bundles:
+
+| Variable | Platform | Effect |
+|---|---|---|
+| `LUMINOUS_SOFTWARE_RENDER` | Linux | Set to any non-empty value to disable Impeller and render with Skia. Needed on machines without a usable GPU driver (VMware/VirtualBox guests, `Mesa` llvmpipe): there the app otherwise initialises the engine and then never presents a first frame — process alive, no window. Unset restores the default (Impeller). See [`linux/runner/my_application.cc`](linux/runner/my_application.cc) |
+
+```bash
+LUMINOUS_SOFTWARE_RENDER=1 ~/.local/opt/luminous/luminous
+```
+
 ## Generated Sources Policy
 
 - App-side generated runtime sources stay local and are

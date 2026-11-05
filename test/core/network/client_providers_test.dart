@@ -4,11 +4,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/config/developer_settings.dart';
+import 'package:luminous/core/network/client/base_url.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/client/dio_client.dart';
 import 'package:luminous/core/network/client/interceptors/trace_interceptor.dart';
 import 'package:luminous/core/network/client/session_store.dart';
 import 'package:luminous/core/network/client/trace_context.dart';
+import 'package:luminous/core/network/config/env_keys.dart';
+import 'package:luminous/core/network/config/env_reader.dart';
 import '../../helpers/kv_test_store.dart';
 
 /// In-memory session store for testing.
@@ -110,5 +114,79 @@ void main() {
         expect(container.read(lastTraceIdProvider), traceId);
       },
     );
+  });
+
+  group('lucentBaseUrlProvider', () {
+    test('applies a stored custom endpoint that has no scheme', () async {
+      KvTestStore.install(
+        seed: const <String, Object>{
+          'developer.apiEndpoint': 'custom',
+          'developer.customApiUrl': '122.9.102.50:3000',
+        },
+      );
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await container.read(developerSettingsControllerProvider.future);
+
+      expect(container.read(lucentBaseUrlProvider), 'http://122.9.102.50:3000');
+    });
+
+    test(
+      'an unusable stored endpoint falls back instead of throwing',
+      () async {
+        KvTestStore.install(
+          seed: const <String, Object>{
+            'developer.apiEndpoint': 'custom',
+            'developer.customApiUrl': 'ftp://files.example.com',
+          },
+        );
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+
+        await container.read(developerSettingsControllerProvider.future);
+
+        // 关键回归：provider 不得进入 error 状态（否则整棵 provider 图被
+        // ProviderException 拖垮），而是回退到平台开发地址。
+        expect(container.read(lucentBaseUrlProvider), LucentBaseUrl.fallback);
+      },
+    );
+
+    test(
+      'build-pinned LUCENT_BASE_URL is the default with no stored choice',
+      () async {
+        EnvReader.setTestValue(
+          EnvKey.lucentBaseUrl,
+          'https://api.example.test',
+        );
+        addTearDown(EnvReader.clearTestValues);
+        KvTestStore.install();
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+
+        await container.read(developerSettingsControllerProvider.future);
+
+        expect(
+          container.read(lucentBaseUrlProvider),
+          'https://api.example.test',
+        );
+      },
+    );
+
+    test('the dio client never sees a scheme-less base URL', () async {
+      KvTestStore.install(
+        seed: const <String, Object>{
+          'developer.apiEndpoint': 'custom',
+          'developer.customApiUrl': '122.9.102.50:3000',
+        },
+      );
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await container.read(developerSettingsControllerProvider.future);
+
+      final client = container.read(lucentDioClientProvider);
+      expect(client.dio.options.baseUrl, 'http://122.9.102.50:3000');
+    });
   });
 }

@@ -9,11 +9,20 @@ import 'package:talker_flutter/talker_flutter.dart' as talker;
 
 part 'developer_settings.freezed.dart';
 
+/// Normalizes a user-entered API endpoint into a URL the client can dial.
+///
+/// Re-exported from this layer so the settings UI (presentation) does not have
+/// to import `core/network` directly. Returns `null` when the input cannot be
+/// turned into an http(s) URL — the endpoint sheet must reject it instead of
+/// persisting a value that would break Dio.
+String? normalizeApiUrl(String raw) => LucentBaseUrl.normalize(raw);
+
 /// API endpoint presets available for developer switching.
 ///
-/// Debug-only surface: [lucentBaseUrlProvider] returns [LucentBaseUrl.value]
-/// (the compile-time `LUCENT_BASE_URL`) in release builds and never consults a
-/// stored preference, so these URLs never decide where a shipped app talks.
+/// Runtime surface in every build mode: the stored choice decides where the
+/// app talks (see `lucentBaseUrlProvider`). A build-pinned `LUCENT_BASE_URL`
+/// only seeds the default when no choice is stored, so a release package can
+/// be repointed without a rebuild.
 enum ApiEndpoint {
   local('local', 'http://127.0.0.1:3000'),
   // 没有预发布环境（三台机器是同一套生产拓扑，见工作区 DEPLOY-SYSTEM-INFO.md），
@@ -54,8 +63,14 @@ abstract class DeveloperSettingsState with _$DeveloperSettingsState {
 
   /// The resolved base URL based on the current [apiEndpoint] selection.
   ///
-  /// For [ApiEndpoint.custom], returns [customApiUrl] if non-empty,
-  /// otherwise falls back to the compile-time default.
+  /// Always returns a URL that Dio can parse: [LucentBaseUrl.normalize] repairs
+  /// scheme-less input (`122.9.102.50:3000` → `http://122.9.102.50:3000`) and
+  /// falls back to the compile-time default when the stored custom value is
+  /// unusable, so a bad preference saved by an older build cannot put the HTTP
+  /// client provider into an error state.
+  ///
+  /// For [ApiEndpoint.custom], returns the normalized [customApiUrl] if
+  /// usable, otherwise falls back to the compile-time default.
   ///
   /// For [ApiEndpoint.production], returns the build-injected
   /// `LUCENT_PROD_BASE_URL`, falling back to the compile-time
@@ -65,17 +80,15 @@ abstract class DeveloperSettingsState with _$DeveloperSettingsState {
   /// `127.0.0.1` refers to the emulator itself) and `127.0.0.1` elsewhere.
   String get resolvedBaseUrl {
     if (apiEndpoint == ApiEndpoint.custom) {
-      final custom = customApiUrl.trim();
-      if (custom.isNotEmpty) return custom;
+      final custom = LucentBaseUrl.normalize(customApiUrl);
+      if (custom != null) return custom;
       return LucentBaseUrl.value;
     }
     if (apiEndpoint == ApiEndpoint.production) {
       return LucentBaseUrl.productionConfigured ?? LucentBaseUrl.value;
     }
     if (apiEndpoint == ApiEndpoint.local) {
-      return defaultTargetPlatform == TargetPlatform.android
-          ? 'http://10.0.2.2:3000'
-          : 'http://127.0.0.1:3000';
+      return LucentBaseUrl.fallback;
     }
     return apiEndpoint.defaultUrl;
   }
@@ -121,14 +134,6 @@ class DeveloperSettingsController
 
     // Apply log level immediately.
     _applyLogLevel(level);
-
-    // In release mode, force production endpoint.
-    if (kReleaseMode) {
-      return const DeveloperSettingsState(
-        apiEndpoint: ApiEndpoint.production,
-        logLevel: LogLevel.info,
-      );
-    }
 
     return DeveloperSettingsState(
       apiEndpoint: endpoint,

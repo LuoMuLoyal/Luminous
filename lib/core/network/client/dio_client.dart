@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_initializing_formals
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/network/client/base_url.dart';
 import 'package:luminous/core/network/client/interceptors/auth_interceptor.dart';
 import 'package:luminous/core/network/client/interceptors/error_interceptor.dart';
 import 'package:luminous/core/network/client/interceptors/retry_interceptor.dart';
@@ -154,8 +156,21 @@ class LucentDioClient {
     required Duration sendTimeout,
     Map<String, String> extraHeaders = const <String, String>{},
   }) {
+    // `BaseOptions` parses `baseUrl` with `Uri.parse` and throws
+    // `FormatException` for a scheme-less value (`host:port`), which used to
+    // escape from the client provider and break the whole provider graph.
+    // The constructor is also reachable from tests and diagnostics with a
+    // hand-written URL, so normalize here as the last line of defence rather
+    // than trusting every caller.
+    final normalized = LucentBaseUrl.normalize(baseUrl);
+    if (normalized == null) {
+      debugPrint(
+        '[LucentDioClient] invalid base URL "$baseUrl"; '
+        'falling back to ${LucentBaseUrl.fallback}',
+      );
+    }
     return BaseOptions(
-      baseUrl: baseUrl,
+      baseUrl: normalized ?? LucentBaseUrl.fallback,
       connectTimeout: connectTimeout,
       receiveTimeout: receiveTimeout,
       sendTimeout: sendTimeout,

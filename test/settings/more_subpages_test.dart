@@ -446,7 +446,9 @@ void main() {
       expect(find.text(l10n.settingsAdvancedResetDefaults), findsOneWidget);
     });
 
-    testWidgets('renders developer section in debug mode', (tester) async {
+    testWidgets('renders developer section in every build mode', (
+      tester,
+    ) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const AdvancedSettingsPage());
 
@@ -607,6 +609,74 @@ void main() {
       expect(
         preferences.getOrNull<String>(PrefKeys.developerCustomApiUrl),
         'http://192.168.1.50:3000',
+      );
+    });
+
+    testWidgets('a scheme-less custom endpoint is repaired and persisted', (
+      tester,
+    ) async {
+      KvTestStore.install(seed: const <String, Object>{});
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpPage(tester, const AdvancedSettingsPage());
+
+      await tester.tap(find.byKey(const Key('dev-settings-row-api-endpoint')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(l10n.settingsDevApiEndpointCustom));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(FTextField), '122.9.102.50:3000');
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.widgetWithText(FButton, l10n.settingsDevApiEndpointConfirm),
+      );
+      await tester.pumpAndSettle();
+
+      // `host:port` 缺 scheme 时不能原样落盘：Dio 的 BaseOptions 会抛
+      // FormatException 并把整棵 provider 图拖进 error 态（红屏
+      // ProviderException）。补 http:// 后写入。
+      final preferences = KvStore.instance;
+      expect(
+        preferences.getOrNull<String>(PrefKeys.developerCustomApiUrl),
+        'http://122.9.102.50:3000',
+      );
+      expect(
+        preferences.getOrNull<String>(PrefKeys.developerApiEndpoint),
+        'custom',
+      );
+    });
+
+    testWidgets('an unusable custom endpoint is rejected inline', (
+      tester,
+    ) async {
+      KvTestStore.install(seed: const <String, Object>{});
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpPage(tester, const AdvancedSettingsPage());
+
+      await tester.tap(find.byKey(const Key('dev-settings-row-api-endpoint')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(l10n.settingsDevApiEndpointCustom));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byType(FTextField),
+        'ftp://files.example.com',
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.widgetWithText(FButton, l10n.settingsDevApiEndpointConfirm),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10n.settingsDevApiEndpointInvalid), findsOneWidget);
+      // sheet 不关闭、也不落盘：端点仍然是之前的值。
+      final preferences = KvStore.instance;
+      expect(
+        preferences.getOrNull<String>(PrefKeys.developerApiEndpoint),
+        isNull,
       );
     });
   });

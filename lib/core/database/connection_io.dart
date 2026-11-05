@@ -13,7 +13,7 @@ import 'package:sqlite3/sqlite3.dart' as sqlite3;
 /// Opens a [DatabaseConnection] backed by an encrypted SQLite file on disk.
 ///
 /// Used on Android, iOS, macOS, Windows, and Linux. The database file lives in
-/// the app's documents directory as `luminous.db` and is encrypted with
+/// the app's application support directory as `luminous.db`, encrypted with
 /// SQLite3MultipleCiphers; the key is held by the platform secure store (see
 /// [DatabaseKeyProvider]).
 ///
@@ -30,7 +30,11 @@ DatabaseConnection connect() {
 
 LazyDatabase _open() {
   return LazyDatabase(() async {
-    final dir = await getApplicationDocumentsDirectory();
+    // Application support, not documents: the documents directory is a
+    // per-user shared folder on Linux and Windows ($HOME/Documents), so two
+    // installs would share one cache file. Same root as the KV box
+    // (lib/core/storage/kv_store.dart).
+    final dir = await getApplicationSupportDirectory();
     final file = File(p.join(dir.path, 'luminous.db'));
 
     final keyProvider = DatabaseKeyProvider();

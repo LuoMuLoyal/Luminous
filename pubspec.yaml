@@ -164,9 +164,12 @@ dev_dependencies:
   freezed: ^4.0.1
   mocktail: ^1.0.5
   network_image_mock: ^2.1.1
-  # Platform interfaces used directly in tests (fakes for scan/camera flows).
+  # Platform interfaces used directly in tests (fakes for scan/camera flows,
+  # and the storage-root contract in test/core/storage/kv_store_test.dart).
   permission_handler_platform_interface: ^4.4.1
   image_picker_platform_interface: ^2.11.2
+  path_provider_platform_interface: ^2.1.2
+  plugin_platform_interface: ^2.1.8
 
   integration_test:
     sdk: flutter

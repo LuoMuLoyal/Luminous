@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +9,11 @@ import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+// `LuminousApp` builds `MaterialApp` from the standalone `material_ui` package
+// (Flutter 3.47 split material out of the framework), so widget-type lookups
+// must use the same library — a `Scrollbar` from `flutter/material.dart` is a
+// different class.
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/kv_test_store.dart';
 
@@ -111,6 +116,70 @@ void main() {
     final preferences = KvStore.instance;
     expect(preferences.getOrNull<String>('app.locale'), 'zh-CN');
   });
+
+  // 鸿蒙壳（ArkWeb）在 Flutter web 的 OS 探测里就是 `TargetPlatform.linux`：
+  // ArkWeb 的 `navigator.platform` 以 "Linux" 开头、UA 里没有 "Android"
+  // （`ui_web/browser_detection.dart`）。下面两个用例用同一个平台判定，
+  // 断言「桌面滚动条」只由窗口尺寸决定是否绘制。
+  //
+  // `debugDefaultTargetPlatformOverride` 必须在测试体结束前复位：
+  // 框架在测试体内断言 foundation 的调试变量已清空，`addTearDown` 太晚。
+  Future<void> pumpAppAt(
+    WidgetTester tester,
+    Size size, {
+    required TargetPlatform platform,
+  }) async {
+    KvTestStore.install(seed: const <String, Object>{});
+    debugDefaultTargetPlatformOverride = platform;
+
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = size;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _NoopRestoreAuthSessionNotifier(),
+          ),
+        ],
+        child: LuminousApp(routerConfig: _scrollRouter),
+      ),
+    );
+    await tester.pump();
+  }
+
+  testWidgets('phone-sized surface gets no desktop scrollbar', (tester) async {
+    try {
+      // 手机短边 ≈ 426dp：桌面平台判定下仍不画常驻滚动条（鸿蒙壳回归）。
+      await pumpAppAt(
+        tester,
+        const Size(426, 944),
+        platform: TargetPlatform.linux,
+      );
+
+      expect(find.byType(Scrollbar), findsNothing);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
+
+  testWidgets('desktop-sized surface keeps the desktop scrollbar', (
+    tester,
+  ) async {
+    try {
+      await pumpAppAt(
+        tester,
+        const Size(1000, 700),
+        platform: TargetPlatform.linux,
+      );
+
+      expect(find.byType(Scrollbar), findsOneWidget);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
 }
 
 class _TrackingAuthSessionNotifier extends AuthSessionNotifier {
@@ -163,6 +232,22 @@ final _localizedRouter = GoRouter(
       path: '/',
       builder: (context, state) => Scaffold(
         body: Text(AppLocalizations.of(context)!.desktopSidebarSettings),
+      ),
+    ),
+  ],
+);
+
+/// A scrollable route so `ScrollBehavior.buildScrollbar` actually runs.
+final _scrollRouter = GoRouter(
+  initialLocation: '/',
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => Scaffold(
+        body: ListView.builder(
+          itemCount: 40,
+          itemBuilder: (context, index) => ListTile(title: Text('row-$index')),
+        ),
       ),
     ),
   ],

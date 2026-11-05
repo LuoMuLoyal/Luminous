@@ -62,6 +62,11 @@ jobs:
       # Flutter Linux 桌面工具链 + linux/flutter/generated_plugins.cmake 里每个插件
       # 的系统库：flutter_secure_storage_linux 要 libsecret + jsoncpp，
       # audioplayers_linux 要 gstreamer，drift 的原生 sqlite3 与 OpenSSL 单独列出。
+      # sentry_flutter 的 Linux 插件在 CMake configure 阶段用 FetchContent 拉
+      # sentry-native；它在 Linux 上默认 transport 是 curl（`find_package(CURL REQUIRED)`），
+      # crashpad backend 还要系统 zlib（`find_package(ZLIB REQUIRED)`）。缺开发包时
+      # configure 直接报「Could NOT find CURL (missing: CURL_LIBRARY CURL_INCLUDE_DIR)」，
+      # 所以 libcurl4-openssl-dev 与 zlib1g-dev 是构建期硬依赖，不是可选。
       # 用 `g++` 而不是写死 `libstdc++-NN-dev`：runner 的 Ubuntu 版本会滚动，
       # 版本化包名会随镜像升级而失效，g++ 永远指向当版默认的头文件。
       - name: Install Linux desktop dependencies
@@ -72,7 +77,8 @@ jobs:
             libgtk-3-dev liblzma-dev g++ \
             libsecret-1-dev libjsoncpp-dev \
             libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
-            libsqlite3-dev libssl-dev
+            libsqlite3-dev libssl-dev \
+            libcurl4-openssl-dev zlib1g-dev
 
       - name: Bootstrap generated sources
         run: dart run scripts/contract/bootstrap.dart --skip-client
@@ -112,7 +118,25 @@ jobs:
 
       - name: Package bundle
         run: |
+          BUNDLE=build/linux/x64/release/bundle
+          # `flutter build` does not guarantee the execute bit on the helper
+          # binaries it copies in. crashpad_handler missing +x makes Sentry's
+          # crash reporter abort with `posix_spawn ... 权限不够 (13)` at startup
+          # (observed on an Ubuntu 26 release bundle, 2026-11-04), and it is only
+          # noticed when a crash has to be reported. Set the bit here so the
+          # packaged tree is executable regardless of the build machine umask.
+          chmod +x "${BUNDLE}/luminous" "${BUNDLE}/lib/crashpad_handler"
+          test -x "${BUNDLE}/lib/crashpad_handler" \
+            || { echo "::error::crashpad_handler is not executable in the bundle"; exit 1; }
           tar -C build/linux/x64/release -czf build/luminous-linux-x64.tar.gz bundle
+          # Self-check the archive, not the tree: what ships is the tarball.
+          tar -tvzf build/luminous-linux-x64.tar.gz \
+            | grep -E '^-rwx' \
+            | grep -Eq 'bundle/luminous$' \
+            || { echo "::error::bundle/luminous loses its execute bit in the tarball"; exit 1; }
+          tar -tvzf build/luminous-linux-x64.tar.gz \
+            | grep -Eq '^-rwx[^ ]* .*bundle/lib/crashpad_handler$' \
+            || { echo "::error::bundle/lib/crashpad_handler loses its execute bit in the tarball"; exit 1; }
           ls -lh build/luminous-linux-x64.tar.gz
 
       - name: Upload Linux artifact

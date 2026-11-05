@@ -8,7 +8,15 @@
     python scripts/ohos/build_hap.py --skip-web     # 复用现有 build/web
 
 前置：DevEco Studio 已安装（默认 E:\\DevEco Studio，可用 --deveco-home 覆盖）。
-产物：ohos/entry/build/default/outputs/default/entry-default-*.hap
+
+构建前会现场重建两个 gitignore 的 Web 构建期产物（`web/drift_worker.js` 由
+`web/drift_worker.dart` 编译、`web/sqlite3.wasm` 从 sqlite3.dart 的 Release 资产
+下载，与 `pubspec.yaml` 的 pin 对齐），并按 `deploy-harmonyos.yml` 同款规则裁剪
+canvaskit 的 skwasm/wimp 变体与 `.js.symbols`。两条都不是可选步骤：前者决定
+drift 能否在 Web 端工作，后者决定包里是否白背 ~18 MB 用不到的渲染器。
+
+产物：ohos/entry/build/default/outputs/default/entry-default-*.hap（未签名，
+签名见 docs/howto/build-release-artifacts.md 的 HarmonyOS 一节）
 
 为什么用 Python 而不是 PowerShell：仓库内 scripts/ 下的工具链脚本统一用
 Dart/Python，PS1 会引入仅 Windows 可用的语法；本脚本只用标准库，跨平台可读。
@@ -102,6 +110,80 @@ def find_tool(env: dict[str, str], name: str) -> str:
         if found:
             return found
     fail(f"在 PATH 里找不到 {name}（DevEco 工具链是否装全？）")
+
+
+# ── 1.5 Web 构建期产物（gitignore，必须每次现场生成）────────────────────
+# 这两步与 deploy-harmonyos.yml 的步骤一一对应，且**必须在 flutter build web 之前**
+# 跑：Flutter 会把 web/ 目录整个拷进 build/web，晚于构建就等于没生成。
+def generate_web_assets(env: dict[str, str]) -> None:
+    step("生成 Web 构建期产物（drift worker / sqlite3.wasm）")
+
+    # drift_worker.js：Web 端 drift 的 worker 线程入口，由 connection_web.dart 加载。
+    dart = find_tool(env, "dart")
+    run(
+        [dart, "compile", "js", "web/drift_worker.dart", "-o", "web/drift_worker.js", "-O4"],
+        cwd=REPO_ROOT,
+        env=env,
+    )
+
+    # sqlite3.wasm：sqlite3.dart 的 Release 资产，按 pubspec.yaml 的 pin 下载并校验
+    # sha256。GITHUB_TOKEN / GH_TOKEN 设了就用（Actions 里必有），本地匿名也行。
+    run(
+        [sys.executable, "scripts/web/fetch_sqlite3_wasm.py"],
+        cwd=REPO_ROOT,
+        env=env,
+    )
+
+
+def sync_generated_assets_into_build_web() -> None:
+    """`--skip-web` 时把刚重建的两个产物同步进已有 build/web。
+
+    跳过 `flutter build web` 意味着 `web/` → `build/web` 的拷贝不会发生，不同步的话
+    后面的校验与 rawfile 拷贝仍会拿到上一轮的旧文件。
+    """
+    if not WEB_SRC.is_dir():
+        fail(f"--skip-web 需要已有 Web 产物：{WEB_SRC} 不存在")
+
+    for name in ("drift_worker.js", "sqlite3.wasm"):
+        src = REPO_ROOT / "web" / name
+        if not src.is_file():
+            fail(f"缺少 {src.relative_to(REPO_ROOT)} —— generate_web_assets() 没有产出它")
+        shutil.copy2(src, WEB_SRC / name)
+    log("已把重建的 drift_worker.js / sqlite3.wasm 同步进 build/web")
+
+
+def _dir_size(path: Path) -> int:
+    return sum(p.stat().st_size for p in path.rglob("*") if p.is_file())
+
+
+def trim_canvaskit() -> None:
+    """裁掉壳内用不到的渲染器变体，与 `deploy-harmonyos.yml` 的上传前裁剪同口径。
+
+    壳内钉死 canvaskit（`web/flutter_bootstrap.js` 的 renderer 与
+    `--no-web-resources-cdn`），skwasm/wimp 永远用不到；`.js.symbols` 只是调试符号。
+    不裁的话这 ~18 MB 会原样进 rawfile、进 HAP。
+    """
+    step("裁剪非必需 canvaskit 变体")
+    canvaskit = WEB_SRC / "canvaskit"
+    if not canvaskit.is_dir():
+        log("WARN: build/web 里没有 canvaskit/ —— 跳过裁剪")
+        return
+
+    before = _dir_size(canvaskit)
+
+    # 递归删：canvaskit/chromium/、canvaskit/webparagraph/ 这些子目录是不同浏览器
+    # 能力档的实际产物，要保留；只有它们的 .js.symbols 调试符号没用了。
+    for symbol in sorted(canvaskit.rglob("*.js.symbols")):
+        symbol.unlink()
+    for pattern in ("skwasm*", "wimp*"):
+        for entry in sorted(canvaskit.glob(pattern)):
+            if entry.is_dir():
+                shutil.rmtree(entry)
+            else:
+                entry.unlink()
+
+    after = _dir_size(canvaskit)
+    log(f"canvaskit {before / 1024 / 1024:.1f} MB → {after / 1024 / 1024:.1f} MB（省 {(before - after) / 1024 / 1024:.1f} MB）")
 
 
 # ── 2. Flutter Web 产物 ─────────────────────────────────────────────────
@@ -277,10 +359,15 @@ def main() -> None:
 
     env = setup_toolchain(Path(args.deveco_home))
 
-    if not args.skip_web:
+    # 顺序与 deploy-harmonyos.yml 一致：先生成 Web 构建期产物，再 flutter build web。
+    generate_web_assets(env)
+    if args.skip_web:
+        sync_generated_assets_into_build_web()
+    else:
         build_web(env, release=args.release)
 
     validate_web_artifacts()
+    trim_canvaskit()
     copy_web_to_rawfile()
     build_hap(env, release=args.release)
     report()

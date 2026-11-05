@@ -24,12 +24,16 @@ void main() {
     test('returns desktop scale for width >= 1200', () {
       final scale = LayoutScaleResolver.resolve(1440);
       expect(scale.pageHorizontalPadding, equals(Spacing.xl3));
-      expect(scale.maxContentWidth, equals(1600));
+      // 桌面档与「小桌面」档共用 1040 的内容宽度上限（≥ 840 只有一个内容列），
+      // 档位切换看纵向节奏：桌面档的 section 留白是 Spacing.xl6。
+      expect(scale.maxContentWidth, equals(1040));
+      expect(scale.sectionVerticalPadding, equals(Spacing.xl6));
     });
 
     test('returns desktop scale for width exactly 1200', () {
       final scale = LayoutScaleResolver.resolve(1200);
-      expect(scale.maxContentWidth, equals(1600));
+      expect(scale.maxContentWidth, equals(1040));
+      expect(scale.sectionVerticalPadding, equals(Spacing.xl6));
     });
 
     test('returns mobile scale for width exactly 0', () {

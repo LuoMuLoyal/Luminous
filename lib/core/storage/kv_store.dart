@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:hive_ce/hive.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:path/path.dart' as p;
@@ -78,19 +79,33 @@ class HiveKvStore implements KvStore {
   /// Opens the box and installs it as [KvStore.instance]. Call once at bootstrap.
   ///
   /// `Hive.openBox` needs either an explicit path or an initialized Hive.
-  /// Nothing else in the app initializes Hive, and the drift database already
-  /// lives in the application documents directory, so the box is pointed at a
-  /// path derived from the same root instead of adding a second storage root.
+  /// Nothing else in the app initializes Hive, so the box is given an explicit
+  /// path rooted at [applicationSupportDirectory], the same root the drift
+  /// database uses instead of adding a second storage root.
+  ///
+  /// **Never the documents directory.** On Linux and Windows
+  /// `getApplicationDocumentsDirectory()` resolves to a per-user shared folder
+  /// (`$HOME/Documents`), not a per-application one, so two installs of the app
+  /// open the same box and Hive's `flock` fails the second one with
+  /// `errno 11` before `runApp` (observed on Ubuntu 26, 2026-11-03).
+  ///
+  /// **Web (including the HarmonyOS ArkWeb shell) passes no path.** hive_ce's
+  /// web backend stores the box in IndexedDB and ignores `path` entirely, while
+  /// `path_provider` has no web implementation: calling
+  /// `getApplicationSupportDirectory()` there throws `MissingPluginException`
+  /// — and because this runs before `runApp`, `main()` dies with the splash
+  /// screen still up (observed on the ohos shell, 2026-11-04).
   static Future<KvStore> open() async {
     final box = await Hive.openBox<dynamic>(
       boxName,
-      path: await _storagePath(),
+      path: kIsWeb ? null : await _storagePath(),
     );
     return KvStore.installForTesting(HiveKvStore(box));
   }
 
+  /// File-system location of the box directory. Never called on web.
   static Future<String> _storagePath() async {
-    final dir = await getApplicationDocumentsDirectory();
+    final dir = await getApplicationSupportDirectory();
     final boxDir = Directory(p.join(dir.path, 'kv'));
     await boxDir.create(recursive: true);
     return boxDir.path;

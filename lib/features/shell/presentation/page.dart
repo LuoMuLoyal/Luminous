@@ -1,25 +1,18 @@
 import 'dart:async';
-import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/app/composition/notification/unread_count.dart';
-import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/providers/session/session_snapshot.dart';
-import 'package:luminous/core/theme/preference.dart';
-import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
-import 'package:luminous/core/widgets/common/control/brand_icon.dart';
 import 'package:luminous/core/widgets/common/feedback/connectivity_banner.dart';
-import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/shell/presentation/sidebar/desktop.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:window_manager/window_manager.dart';
 
+/// 桌面外壳四周的留白。侧边栏卡片与内容区共用这一档，二者之间才留得住
+/// 视觉缝隙；侧边栏的右边缘不再另加内边距——卡片自己就是边界。
 const _shellInset = 16.0;
 
 class ShellPage extends ConsumerWidget {
@@ -54,9 +47,8 @@ class ShellPage extends ConsumerWidget {
                     _shellInset / 2,
                     _shellInset,
                   ),
-                  child: _DesktopSidebar(
+                  child: DesktopSidebar(
                     currentIndex: currentIndex,
-                    l10n: l10n,
                     onSelectTab: onSelectTab,
                   ),
                 ),
@@ -109,241 +101,6 @@ class _MobileBottomNavigationBar extends StatelessWidget {
             icon: Icon(currentIndex == tab.index ? tab.activeIcon : tab.icon),
             label: Text(tab.label(l10n)),
           ),
-      ],
-    );
-  }
-}
-
-class _DesktopSidebar extends ConsumerWidget {
-  const _DesktopSidebar({
-    required this.currentIndex,
-    required this.l10n,
-    required this.onSelectTab,
-  });
-
-  final int currentIndex;
-  final AppLocalizations l10n;
-  final ValueChanged<int> onSelectTab;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.theme;
-    final session = ref.watch(authSessionProvider);
-
-    FSidebarItem tabItem(ShellTab tab) {
-      final selected = currentIndex == tab.index;
-      return FSidebarItem(
-        key: tab.testKey(),
-        icon: Icon(selected ? tab.activeIcon : tab.icon),
-        label: Text(tab.label(l10n)),
-        selected: selected,
-        onPress: () => onSelectTab(tab.index),
-      );
-    }
-
-    return FSidebar(
-      style: FSidebarStyle(
-        // 用主题下发的侧边栏底色，而不是 colors.background。
-        // 这里曾写死 colors.background（与页面底色同值），
-        // 让 scaffoldStyle.sidebarBackgroundColor 那一档失效——
-        // 结果是侧边栏与内容区同色，整屏层次只剩 1px 边框。
-        decoration: BoxDecoration(
-          color: theme.scaffoldStyle.sidebarBackgroundColor,
-        ),
-        groupStyle: theme.sidebarStyle.groupStyle,
-      ),
-      header: _WindowTitleBar(session: session),
-      footer: const _SidebarFooter(),
-      children: [
-        // 按「用户要做什么」分组，不按功能模块分组——后者会做成数据库
-        // 管理工具的目录树，不是工作台。
-        //
-        // 分组标签只在桌面侧边栏出现：它是 16rem 宽导航里唯一的层级信号。
-        // 手机端是底部 tab 栏，没有分组概念。
-        FSidebarGroup(
-          label: Text(l10n.desktopSidebarGroupToday),
-          children: [tabItem(ShellTab.today), tabItem(ShellTab.record)],
-        ),
-        FSidebarGroup(
-          label: Text(l10n.desktopSidebarGroupKnowledge),
-          children: [tabItem(ShellTab.medicine), tabItem(ShellTab.review)],
-        ),
-        FSidebarGroup(
-          label: Text(l10n.desktopSidebarGroupAccount),
-          children: [tabItem(ShellTab.mine)],
-        ),
-      ],
-    );
-  }
-}
-
-/// Sidebar header with drag-to-move support.
-///
-/// Wraps the header content with [DragToMoveArea] so the user can drag
-/// the sidebar header to move the window. Window control buttons (min/max/close)
-/// are rendered separately by [DesktopWindowChrome] at the window's top-right.
-///
-/// On macOS, the system renders traffic-light buttons automatically;
-/// we add left padding so the header content doesn't overlap them.
-class _WindowTitleBar extends StatelessWidget {
-  const _WindowTitleBar({required this.session});
-
-  final AuthSessionState session;
-
-  @override
-  Widget build(BuildContext context) {
-    final headerContent = _SidebarHeaderContent(session: session);
-
-    // On macOS, the traffic lights are at the top-left and overlap the
-    // sidebar. Add left padding so the header content is not hidden.
-    final macPadding = !kIsWeb && Platform.isMacOS
-        ? const EdgeInsets.only(left: 70)
-        : EdgeInsets.zero;
-
-    return DragToMoveArea(
-      child: Padding(padding: macPadding, child: headerContent),
-    );
-  }
-}
-
-/// The sidebar header content (logo or user info).
-class _SidebarHeaderContent extends StatelessWidget {
-  const _SidebarHeaderContent({required this.session});
-
-  final AuthSessionState session;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    final l10n = AppLocalizations.of(context)!;
-
-    // User info row if authenticated, otherwise logo + app title.
-    if (session.isAuthenticated && session.user is AuthUser) {
-      final user = session.user as AuthUser;
-      final displayName = user.nickname ?? user.email ?? '';
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        child: GestureDetector(
-          onTap: () => context.push(Routes.mine),
-          child: Row(
-            children: [
-              AvatarView(
-                avatarUrl: user.avatar,
-                size: IconSizeTokens.xl2,
-                iconSize: IconSizeTokens.sm,
-                semanticLabel: l10n.profileAvatarLabel,
-                borderWidth: 0,
-              ),
-              const SizedBox(width: Spacing.sm),
-              Expanded(
-                child: Text(
-                  displayName,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.typography.body.sm.copyWith(
-                    color: theme.colors.foreground,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        children: [
-          const BrandIcon(size: IconSizeTokens.lg),
-          const SizedBox(width: Spacing.sm),
-          Expanded(
-            child: Text(
-              l10n.appTitle,
-              overflow: TextOverflow.ellipsis,
-              style: theme.typography.body.sm.copyWith(
-                color: theme.colors.foreground,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Sidebar footer with settings, help, theme toggle, and notifications.
-class _SidebarFooter extends ConsumerWidget {
-  const _SidebarFooter();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    final themePref = ref
-        .watch(themeControllerProvider)
-        .maybeWhen(data: (p) => p, orElse: () => const ThemePreference());
-    final unreadAsync = ref.watch(notificationUnreadCountProvider);
-    final hasUnread =
-        unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
-
-    // Determine the next theme mode for the quick toggle.
-    final nextMode = switch (themePref.mode) {
-      AppThemeModePreference.system => AppThemeModePreference.light,
-      AppThemeModePreference.light => AppThemeModePreference.dark,
-      AppThemeModePreference.dark => AppThemeModePreference.system,
-    };
-    final themeIcon = switch (themePref.mode) {
-      AppThemeModePreference.system => SemanticIcons.actionExternalLink,
-      AppThemeModePreference.light => SemanticIcons.actionThemeLight,
-      AppThemeModePreference.dark => SemanticIcons.actionThemeDark,
-    };
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        FTooltip(
-          tipBuilder: (context, controller) =>
-              Text(l10n.desktopSidebarNotifications),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              FSidebarItem(
-                icon: const Icon(SemanticIcons.notificationBell),
-                label: Text(l10n.desktopSidebarNotifications),
-                onPress: () => context.push(Routes.notifications),
-              ),
-              if (hasUnread)
-                Positioned(
-                  right: Spacing.lg,
-                  top: Spacing.md,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: SemanticColor.destructive.solid(context),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const SizedBox.square(dimension: Spacing.sm),
-                  ),
-                ),
-            ],
-          ),
-        ),
-        FSidebarItem(
-          icon: Icon(themeIcon),
-          label: Text(l10n.desktopSidebarThemeToggle),
-          onPress: () =>
-              ref.read(themeControllerProvider.notifier).setMode(nextMode),
-        ),
-        FSidebarItem(
-          icon: const Icon(SemanticIcons.actionSettings),
-          label: Text(l10n.desktopSidebarSettings),
-          onPress: () => context.push(Routes.settings),
-        ),
-        FSidebarItem(
-          icon: const Icon(SemanticIcons.actionHelp),
-          label: Text(l10n.desktopSidebarHelp),
-          onPress: () => context.push(Routes.assistant),
-        ),
       ],
     );
   }
