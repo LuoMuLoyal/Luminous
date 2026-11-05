@@ -10,6 +10,8 @@ review / mine)移动端渲染 `FBottomNavigationBar`、桌面端渲染 `FSidebar
   内容 maxWidth 约束 + 可选下拉刷新/滚动位置保持);`DesktopDetailPane` 与
   `detail_pane_state.dart`(桌面右侧详情面板及其开关状态);`ShellDeferredContent`;
   `ShellTabBranchContainer`(替换默认 `IndexedStack` 的 branch 容器)。
+  `presentation/sidebar/desktop.dart`(桌面侧边栏:`FSidebar` 结构 + 收敛后的
+  `FSidebarStyle`/`FSidebarItemStyle`)。
 - 不管:路由表、redirect guard、branch 声明(在 `lib/app/router.dart`);tab 内容页
   (各 feature presentation);登录鉴权(core/auth + app 层 redirect);面板里渲染的
   详情内容本身(归各自 feature,本目录只提供容器与状态)。
@@ -56,3 +58,9 @@ review / mine)移动端渲染 `FBottomNavigationBar`、桌面端渲染 `FSidebar
 - 桌面侧栏 header 是窗口拖动区(`DragToMoveArea`),macOS 需为系统红绿灯按钮预留左侧
   空间;窗口控制按钮由 `DesktopWindowChrome`
   (core/widgets/common/control/desktop_window_chrome.dart)另行渲染,不在本目录。
+- 桌面侧栏的层次**只用色差**,不画描边/阴影/分组卡片:侧边栏底色取
+  `scaffoldStyle.sidebarBackgroundColor`,条目默认**无底色**(`FSidebarItemStyle` 的默认值
+  是 `colors.background`,每条各自成块,正是「每个标题都像单独的」的来源),只有选中
+  (`colors.card`)与悬停(`colors.muted`)才出现浅色圆角底。分组由标题的
+  `headerPadding` 表达(上方 `Spacing.xl3`、下方 `Spacing.xs`),并把
+  `childrenPadding` 归零——它的默认值给每组末尾垫 16px,会把分组节奏整个带偏。
