@@ -32,6 +32,21 @@ set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_RELEASE}")
 # Use Unicode for all projects.
 add_definitions(-DUNICODE -D_UNICODE)
 
+# MSVC 14.51 (VS 2026 / windows-latest) turned <experimental/coroutine> into an
+# unconditional `#error` (STL1011). `permission_handler_windows` still builds with
+# `/await` + `co_await`, so the Windows build fails on the CI image while passing
+# on MSVC 14.50, whose guard only fires for Clang with /std:c++20.
+#
+# This is the opt-out Microsoft documented in the error message itself. It is a
+# directory-scope definition, so plugin subdirectories added below inherit it —
+# the plugin's own `target_compile_definitions(... PRIVATE ...)` only carries
+# FLUTTER_PLUGIN_IMPL. APPLY_STANDARD_SETTINGS repeats it for app targets, which
+# may be configured before this directory property propagates.
+#
+# Drop this once permission_handler_windows migrates off /await.
+# Tracking: https://github.com/microsoft/cppwinrt/issues/1520
+add_definitions(-D_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS)
+
 # Compilation settings that should be applied to most targets.
 #
 # Be cautious about adding new options here, as plugins use this function by
@@ -43,6 +58,10 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_options(${TARGET} PRIVATE /EHsc)
   target_compile_definitions(${TARGET} PRIVATE "_HAS_EXCEPTIONS=0")
   target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
+  # Same opt-out as the add_definitions above; repeated per-target so it also
+  # reaches plugins that pass PRIVATE definitions of their own (the directory
+  # property alone is not enough for those).
+  target_compile_definitions(${TARGET} PRIVATE "_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS")
 endfunction()
 
 # Flutter library and tool build rules.
