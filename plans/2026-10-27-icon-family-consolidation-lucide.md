@@ -8,7 +8,7 @@ updated: 2026-10-27
 
 Created: 2026-10-27
 
-> 状态：**P0 / P1 / 去重已完成**（见 `docs/logs/migration-log/2026-10-27.md`）；
+> 状态：**P0 / P1 / 去重已完成**（见 `docs/archive/2026-10-27/2026-10-27.md`）；
 > **P2 尺寸刻度收敛、P3 衬底清理、P4 混合族清理未开工**。
 
 ## 执行进度
@@ -269,7 +269,7 @@ Ant Design「同风格细节/透视/描边一致」。其中 `statusInfoCircle =
   「全部图标走 `SemanticIcons`（Lucide）」；补充尺寸档位与「禁止用 `Spacing` 当图标尺寸」的约定。
 - `docs/explanation/iconmind-assistant-icons.md`：**归档到 `docs/archive/`**（该文档记录的是已废弃的技术选型，
   且含与现状相反的结论；不要直接删除，历史决策有价值）。
-- `docs/logs/migration-log/2026-10-27.md`：追加本次变更条目。
+- `docs/archive/2026-10-27/2026-10-27.md`：追加本次变更条目。
 - `plans/README.md`：本计划执行完毕后删除本文件，并在「已执行完毕、文件已删的计划」段追加记录。
 
 ## 8. 风险

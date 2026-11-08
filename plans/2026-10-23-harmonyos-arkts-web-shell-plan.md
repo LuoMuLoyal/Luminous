@@ -27,7 +27,7 @@ Created: 2026-10-23
 **放弃「用鸿蒙 Flutter SDK（`3.47.7-ohos-1.0.1`）直接构建 Luminous」**。原因是**上游包不兼容，不是本项目代码问题**：
 - 鸿蒙 SDK 的 `TargetPlatform` 枚举新增了 `ohos`（V，`D:\flutter-ohos\packages\flutter\lib\src\foundation\platform.dart:85`；上游 stable 的同名文件无此值），
   导致所有未覆盖该值的 `switch` 穷尽性检查失败。
-- 实测编译报错 **35 处，分布在 6 个包**（V，`docs/logs/migration-log/2026-10-23.md:9-13`）：
+- 实测编译报错 **35 处，分布在 6 个包**（V，`docs/archive/2026-10-23/2026-10-23.md:9-13`）：
   `cupertino_ui`（16 处）、`material_ui`（11 处）—— **Flutter 官方把 material/cupertino 拆出的包，官方版不支持 `ohos`**，
   这是最致命的一条，无法靠项目侧打补丁绕过；`flutter_math_fork`（4 处）、`forui`（2 处，本项目全部 UI 的设计系统）、  `gpt_markdown`（1 处）、`flutter_gen_ai_chat_ui`（间接）。
 - 另有 `Abi.ohosArm` 在 Dart SDK 的 `dart:ffi` 中缺失（`code_assets` / `native_toolchain_c` 需定制 Dart SDK 才能编译）。

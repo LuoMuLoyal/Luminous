@@ -30,7 +30,7 @@ Lucent controller/DTO + zod
 ```
 
 2025-09-05 曾评估 OAS 3.1/3.2 升级并**放弃**，理由记录在
-`Lucent/docs/logs/migration-log/2026-09-05.md`、`Luminous/docs/logs/migration-log/2026-09-05.md`，
+`Lucent/docs/archive/2026-09-05/2026-09-05.md`、`Luminous/docs/archive/2026-09-05/2026-09-05.md`，
 结论固化在 `Lucent/AGENTS.md`「Working Rules」：*"OpenAPI spec stays OAS 3.0 direct output —
 3.1/3.2 upgrade is deferred (upstream dart-dio bugs + validator gaps)"*。
 
