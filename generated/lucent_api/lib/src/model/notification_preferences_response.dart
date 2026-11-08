@@ -18,13 +18,13 @@ part 'notification_preferences_response.g.dart';
 class NotificationPreferencesResponse {
   /// Returns a new [NotificationPreferencesResponse] instance.
   NotificationPreferencesResponse({
-    required this.healthAlertsEnabled,
+    required this.isHealthAlertsEnabled,
 
-    required this.weeklyInsightEnabled,
+    required this.isWeeklyInsightEnabled,
 
-    required this.waterRemindersEnabled,
+    required this.isWaterRemindersEnabled,
 
-    required this.sleepReminderEnabled,
+    required this.isSleepReminderEnabled,
 
     required this.sleepBedtimeMinutes,
 
@@ -35,17 +35,29 @@ class NotificationPreferencesResponse {
     required this.updatedAt,
   });
 
-  @JsonKey(name: r'healthAlertsEnabled', required: true, includeIfNull: false)
-  final bool healthAlertsEnabled;
+  @JsonKey(name: r'isHealthAlertsEnabled', required: true, includeIfNull: false)
+  final bool isHealthAlertsEnabled;
 
-  @JsonKey(name: r'weeklyInsightEnabled', required: true, includeIfNull: false)
-  final bool weeklyInsightEnabled;
+  @JsonKey(
+    name: r'isWeeklyInsightEnabled',
+    required: true,
+    includeIfNull: false,
+  )
+  final bool isWeeklyInsightEnabled;
 
-  @JsonKey(name: r'waterRemindersEnabled', required: true, includeIfNull: false)
-  final bool waterRemindersEnabled;
+  @JsonKey(
+    name: r'isWaterRemindersEnabled',
+    required: true,
+    includeIfNull: false,
+  )
+  final bool isWaterRemindersEnabled;
 
-  @JsonKey(name: r'sleepReminderEnabled', required: true, includeIfNull: false)
-  final bool sleepReminderEnabled;
+  @JsonKey(
+    name: r'isSleepReminderEnabled',
+    required: true,
+    includeIfNull: false,
+  )
+  final bool isSleepReminderEnabled;
 
   // minimum: -9007199254740991
   // maximum: 9007199254740991
@@ -68,10 +80,10 @@ class NotificationPreferencesResponse {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is NotificationPreferencesResponse &&
-          other.healthAlertsEnabled == healthAlertsEnabled &&
-          other.weeklyInsightEnabled == weeklyInsightEnabled &&
-          other.waterRemindersEnabled == waterRemindersEnabled &&
-          other.sleepReminderEnabled == sleepReminderEnabled &&
+          other.isHealthAlertsEnabled == isHealthAlertsEnabled &&
+          other.isWeeklyInsightEnabled == isWeeklyInsightEnabled &&
+          other.isWaterRemindersEnabled == isWaterRemindersEnabled &&
+          other.isSleepReminderEnabled == isSleepReminderEnabled &&
           other.sleepBedtimeMinutes == sleepBedtimeMinutes &&
           other.sleepWakeTimeMinutes == sleepWakeTimeMinutes &&
           other.configured == configured &&
@@ -79,10 +91,10 @@ class NotificationPreferencesResponse {
 
   @override
   int get hashCode =>
-      healthAlertsEnabled.hashCode +
-      weeklyInsightEnabled.hashCode +
-      waterRemindersEnabled.hashCode +
-      sleepReminderEnabled.hashCode +
+      isHealthAlertsEnabled.hashCode +
+      isWeeklyInsightEnabled.hashCode +
+      isWaterRemindersEnabled.hashCode +
+      isSleepReminderEnabled.hashCode +
       (sleepBedtimeMinutes == null ? 0 : sleepBedtimeMinutes.hashCode) +
       (sleepWakeTimeMinutes == null ? 0 : sleepWakeTimeMinutes.hashCode) +
       configured.hashCode +

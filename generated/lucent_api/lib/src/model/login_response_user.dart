@@ -26,7 +26,7 @@ class LoginResponseUser {
 
     required this.avatar,
 
-    required this.emailVerified,
+    required this.isEmailVerified,
 
     required this.emailVerifiedAt,
 
@@ -52,8 +52,8 @@ class LoginResponseUser {
   final String? avatar;
 
   /// 邮箱是否已验证
-  @JsonKey(name: r'emailVerified', required: true, includeIfNull: false)
-  final bool emailVerified;
+  @JsonKey(name: r'isEmailVerified', required: true, includeIfNull: false)
+  final bool isEmailVerified;
 
   /// 邮箱验证时间 (ISO 8601)
   @JsonKey(name: r'emailVerifiedAt', required: true, includeIfNull: true)
@@ -75,7 +75,7 @@ class LoginResponseUser {
           other.email == email &&
           other.nickname == nickname &&
           other.avatar == avatar &&
-          other.emailVerified == emailVerified &&
+          other.isEmailVerified == isEmailVerified &&
           other.emailVerifiedAt == emailVerifiedAt &&
           other.createdAt == createdAt &&
           other.updatedAt == updatedAt;
@@ -86,7 +86,7 @@ class LoginResponseUser {
       (email == null ? 0 : email.hashCode) +
       (nickname == null ? 0 : nickname.hashCode) +
       (avatar == null ? 0 : avatar.hashCode) +
-      emailVerified.hashCode +
+      isEmailVerified.hashCode +
       (emailVerifiedAt == null ? 0 : emailVerifiedAt.hashCode) +
       createdAt.hashCode +
       updatedAt.hashCode;

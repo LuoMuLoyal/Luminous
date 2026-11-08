@@ -24,7 +24,7 @@ class RegisterResponseUser {
 
     required this.nickname,
 
-    required this.emailVerified,
+    required this.isEmailVerified,
 
     required this.emailVerifiedAt,
 
@@ -44,8 +44,8 @@ class RegisterResponseUser {
   final String? nickname;
 
   /// 邮箱是否已验证
-  @JsonKey(name: r'emailVerified', required: true, includeIfNull: false)
-  final bool emailVerified;
+  @JsonKey(name: r'isEmailVerified', required: true, includeIfNull: false)
+  final bool isEmailVerified;
 
   /// 邮箱验证时间 (ISO 8601)
   @JsonKey(name: r'emailVerifiedAt', required: true, includeIfNull: true)
@@ -62,7 +62,7 @@ class RegisterResponseUser {
           other.id == id &&
           other.email == email &&
           other.nickname == nickname &&
-          other.emailVerified == emailVerified &&
+          other.isEmailVerified == isEmailVerified &&
           other.emailVerifiedAt == emailVerifiedAt &&
           other.createdAt == createdAt;
 
@@ -71,7 +71,7 @@ class RegisterResponseUser {
       id.hashCode +
       (email == null ? 0 : email.hashCode) +
       (nickname == null ? 0 : nickname.hashCode) +
-      emailVerified.hashCode +
+      isEmailVerified.hashCode +
       (emailVerifiedAt == null ? 0 : emailVerifiedAt.hashCode) +
       createdAt.hashCode;
 

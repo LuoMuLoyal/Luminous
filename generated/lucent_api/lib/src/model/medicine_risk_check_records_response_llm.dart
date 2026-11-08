@@ -27,7 +27,7 @@ class MedicineRiskCheckRecordsResponseLlm {
 
     required this.riskLevel,
 
-    required this.stale,
+    required this.isStale,
 
     required this.createdAt,
 
@@ -62,8 +62,8 @@ class MedicineRiskCheckRecordsResponseLlm {
   final MedicineRiskCheckRecordsResponseLlmRiskLevelEnum riskLevel;
 
   /// Whether the record is stale.
-  @JsonKey(name: r'stale', required: true, includeIfNull: false)
-  final bool stale;
+  @JsonKey(name: r'isStale', required: true, includeIfNull: false)
+  final bool isStale;
 
   /// Created at (ISO 8601).
   @JsonKey(name: r'createdAt', required: true, includeIfNull: false)
@@ -81,7 +81,7 @@ class MedicineRiskCheckRecordsResponseLlm {
           other.result == result &&
           other.riskScore == riskScore &&
           other.riskLevel == riskLevel &&
-          other.stale == stale &&
+          other.isStale == isStale &&
           other.createdAt == createdAt &&
           other.updatedAt == updatedAt;
 
@@ -91,7 +91,7 @@ class MedicineRiskCheckRecordsResponseLlm {
       result.hashCode +
       riskScore.hashCode +
       riskLevel.hashCode +
-      stale.hashCode +
+      isStale.hashCode +
       createdAt.hashCode +
       updatedAt.hashCode;
 

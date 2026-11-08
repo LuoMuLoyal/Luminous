@@ -20,6 +20,7 @@ class MedicineCascadePathsResponse {
   /// Returns a new [MedicineCascadePathsResponse] instance.
   MedicineCascadePathsResponse({required this.status, this.cascades});
 
+  /// Whether the graph could answer the query.
   @JsonKey(
     name: r'status',
     required: true,
@@ -53,6 +54,7 @@ class MedicineCascadePathsResponse {
   }
 }
 
+/// Whether the graph could answer the query.
 enum MedicineCascadePathsResponseStatusEnum {
   @JsonValue(r'ok')
   ok(r'ok'),

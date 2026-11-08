@@ -20,6 +20,7 @@ class MedicineTargetDrugsResponse {
   /// Returns a new [MedicineTargetDrugsResponse] instance.
   MedicineTargetDrugsResponse({required this.status, this.drugs});
 
+  /// Whether the graph could answer the query.
   @JsonKey(
     name: r'status',
     required: true,
@@ -53,6 +54,7 @@ class MedicineTargetDrugsResponse {
   }
 }
 
+/// Whether the graph could answer the query.
 enum MedicineTargetDrugsResponseStatusEnum {
   @JsonValue(r'ok')
   ok(r'ok'),

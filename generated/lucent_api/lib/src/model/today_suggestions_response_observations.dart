@@ -52,7 +52,7 @@ class TodaySuggestionsResponseObservations {
 
     required this.lifecycleState,
 
-    this.notificationEligible,
+    this.isNotificationEligible,
 
     this.feedbackOptions,
 
@@ -152,8 +152,12 @@ class TodaySuggestionsResponseObservations {
   final TodaySuggestionsResponseObservationsLifecycleStateEnum lifecycleState;
 
   /// Whether this card can trigger a notification
-  @JsonKey(name: r'notificationEligible', required: false, includeIfNull: false)
-  final bool? notificationEligible;
+  @JsonKey(
+    name: r'isNotificationEligible',
+    required: false,
+    includeIfNull: false,
+  )
+  final bool? isNotificationEligible;
 
   /// Available feedback options for this card
   @JsonKey(name: r'feedbackOptions', required: false, includeIfNull: false)
@@ -186,7 +190,7 @@ class TodaySuggestionsResponseObservations {
           other.ruleVersion == ruleVersion &&
           other.triggerType == triggerType &&
           other.lifecycleState == lifecycleState &&
-          other.notificationEligible == notificationEligible &&
+          other.isNotificationEligible == isNotificationEligible &&
           other.feedbackOptions == feedbackOptions &&
           other.subtype == subtype &&
           other.observedMetric == observedMetric;
@@ -208,7 +212,7 @@ class TodaySuggestionsResponseObservations {
       ruleVersion.hashCode +
       triggerType.hashCode +
       lifecycleState.hashCode +
-      notificationEligible.hashCode +
+      isNotificationEligible.hashCode +
       feedbackOptions.hashCode +
       subtype.hashCode +
       observedMetric.hashCode;

@@ -26,7 +26,7 @@ class AdminUserListResponseItems {
 
     required this.status,
 
-    required this.emailVerified,
+    required this.isEmailVerified,
 
     required this.createdAt,
 
@@ -53,8 +53,8 @@ class AdminUserListResponseItems {
   )
   final AdminUserListResponseItemsStatusEnum status;
 
-  @JsonKey(name: r'emailVerified', required: true, includeIfNull: false)
-  final bool emailVerified;
+  @JsonKey(name: r'isEmailVerified', required: true, includeIfNull: false)
+  final bool isEmailVerified;
 
   @JsonKey(name: r'createdAt', required: true, includeIfNull: false)
   final DateTime createdAt;
@@ -79,7 +79,7 @@ class AdminUserListResponseItems {
           other.email == email &&
           other.nickname == nickname &&
           other.status == status &&
-          other.emailVerified == emailVerified &&
+          other.isEmailVerified == isEmailVerified &&
           other.createdAt == createdAt &&
           other.lastLoginAt == lastLoginAt &&
           other.adminRole == adminRole;
@@ -90,7 +90,7 @@ class AdminUserListResponseItems {
       email.hashCode +
       (nickname == null ? 0 : nickname.hashCode) +
       status.hashCode +
-      emailVerified.hashCode +
+      isEmailVerified.hashCode +
       createdAt.hashCode +
       (lastLoginAt == null ? 0 : lastLoginAt.hashCode) +
       (adminRole == null ? 0 : adminRole.hashCode);

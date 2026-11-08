@@ -18,13 +18,13 @@ part 'patch_request.g.dart';
 class PatchRequest {
   /// Returns a new [PatchRequest] instance.
   PatchRequest({
-    this.healthAlertsEnabled,
+    this.isHealthAlertsEnabled,
 
-    this.weeklyInsightEnabled,
+    this.isWeeklyInsightEnabled,
 
-    this.waterRemindersEnabled,
+    this.isWaterRemindersEnabled,
 
-    this.sleepReminderEnabled,
+    this.isSleepReminderEnabled,
 
     this.sleepBedtimeMinutes,
 
@@ -32,24 +32,36 @@ class PatchRequest {
   });
 
   /// Enable health-rule notifications.
-  @JsonKey(name: r'healthAlertsEnabled', required: false, includeIfNull: false)
-  final bool? healthAlertsEnabled;
-
-  /// Enable weekly longitudinal insights.
-  @JsonKey(name: r'weeklyInsightEnabled', required: false, includeIfNull: false)
-  final bool? weeklyInsightEnabled;
-
-  /// Enable water shortfall notifications.
   @JsonKey(
-    name: r'waterRemindersEnabled',
+    name: r'isHealthAlertsEnabled',
     required: false,
     includeIfNull: false,
   )
-  final bool? waterRemindersEnabled;
+  final bool? isHealthAlertsEnabled;
+
+  /// Enable weekly longitudinal insights.
+  @JsonKey(
+    name: r'isWeeklyInsightEnabled',
+    required: false,
+    includeIfNull: false,
+  )
+  final bool? isWeeklyInsightEnabled;
+
+  /// Enable water shortfall notifications.
+  @JsonKey(
+    name: r'isWaterRemindersEnabled',
+    required: false,
+    includeIfNull: false,
+  )
+  final bool? isWaterRemindersEnabled;
 
   /// Enable local bedtime sleep reminders.
-  @JsonKey(name: r'sleepReminderEnabled', required: false, includeIfNull: false)
-  final bool? sleepReminderEnabled;
+  @JsonKey(
+    name: r'isSleepReminderEnabled',
+    required: false,
+    includeIfNull: false,
+  )
+  final bool? isSleepReminderEnabled;
 
   /// Bedtime as minutes after local midnight.
   // minimum: 0
@@ -67,19 +79,19 @@ class PatchRequest {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is PatchRequest &&
-          other.healthAlertsEnabled == healthAlertsEnabled &&
-          other.weeklyInsightEnabled == weeklyInsightEnabled &&
-          other.waterRemindersEnabled == waterRemindersEnabled &&
-          other.sleepReminderEnabled == sleepReminderEnabled &&
+          other.isHealthAlertsEnabled == isHealthAlertsEnabled &&
+          other.isWeeklyInsightEnabled == isWeeklyInsightEnabled &&
+          other.isWaterRemindersEnabled == isWaterRemindersEnabled &&
+          other.isSleepReminderEnabled == isSleepReminderEnabled &&
           other.sleepBedtimeMinutes == sleepBedtimeMinutes &&
           other.sleepWakeTimeMinutes == sleepWakeTimeMinutes;
 
   @override
   int get hashCode =>
-      healthAlertsEnabled.hashCode +
-      weeklyInsightEnabled.hashCode +
-      waterRemindersEnabled.hashCode +
-      sleepReminderEnabled.hashCode +
+      isHealthAlertsEnabled.hashCode +
+      isWeeklyInsightEnabled.hashCode +
+      isWaterRemindersEnabled.hashCode +
+      isSleepReminderEnabled.hashCode +
       (sleepBedtimeMinutes == null ? 0 : sleepBedtimeMinutes.hashCode) +
       (sleepWakeTimeMinutes == null ? 0 : sleepWakeTimeMinutes.hashCode);
 
