@@ -111,7 +111,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
     var count = 0;
     if (settings.medicationReminders) count += 1;
     if (settings.waterReminders) count += 1;
-    if (settings.sleepReminderEnabled) count += 1;
+    if (settings.isSleepReminderEnabled) count += 1;
     return count;
   }
 

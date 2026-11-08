@@ -96,7 +96,7 @@ class GeneralSection extends ConsumerWidget {
     final enabledCount = [
       settings.medicationReminders,
       settings.waterReminders,
-      settings.sleepReminderEnabled,
+      settings.isSleepReminderEnabled,
       settings.healthAlerts,
       settings.weeklySummary,
     ].where((v) => v).length;

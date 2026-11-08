@@ -23,14 +23,14 @@ void main() {
     MedicineRiskCheckType checkType = MedicineRiskCheckType.static_,
     int riskScore = 50,
     MedicineRiskLevel riskLevel = MedicineRiskLevel.caution,
-    bool stale = false,
+    bool isStale = false,
   }) {
     return MedicineRiskCheckRecord(
       checkType: checkType,
       result: result ?? const MedicineRiskCheckResult(),
       riskScore: riskScore,
       riskLevel: riskLevel,
-      stale: stale,
+      isStale: isStale,
       createdAt: DateTime(2026, 7, 28, 10, 0),
       updatedAt: DateTime(2026, 7, 28, 10, 0),
     );
@@ -220,7 +220,10 @@ void main() {
       await pumpContent(
         tester,
         checkType: MedicineRiskCheckType.llm,
-        record: buildRecord(checkType: MedicineRiskCheckType.llm, stale: true),
+        record: buildRecord(
+          checkType: MedicineRiskCheckType.llm,
+          isStale: true,
+        ),
       );
       expect(find.text(l10n.medicineRiskCheckStaleBanner), findsOneWidget);
     });

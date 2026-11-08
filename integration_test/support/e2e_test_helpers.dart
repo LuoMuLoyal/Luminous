@@ -764,7 +764,7 @@ class E2eMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
         ),
         riskScore: 0,
         riskLevel: MedicineRiskLevel.safe,
-        stale: false,
+        isStale: false,
         createdAt: DateTime.fromMillisecondsSinceEpoch(0),
         updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
       ),

@@ -91,7 +91,7 @@ abstract final class PrefKeys {
   static const settingsNotificationsSleepReminders =
       'settings.notifications.sleepReminders';
   static const settingsNotificationsSleepReminderEnabled =
-      'settings.notifications.sleepReminderEnabled';
+      'settings.notifications.isSleepReminderEnabled';
   static const settingsNotificationsSleepBedtime =
       'settings.notifications.sleepBedtime';
   static const settingsNotificationsSleepWakeTime =

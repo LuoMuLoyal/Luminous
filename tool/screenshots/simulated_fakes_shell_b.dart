@@ -590,7 +590,7 @@ TodaySuggestionBundle buildSimulatedSuggestionBundle() {
       ruleVersion: '1.4.0',
       triggerType: TodaySuggestionTriggerType.timer,
       lifecycleState: TodaySuggestionLifecycleState.active,
-      notificationEligible: true,
+      isNotificationEligible: true,
       feedbackOptions: <TodaySuggestionFeedback>[
         TodaySuggestionFeedback.accepted,
         TodaySuggestionFeedback.later,

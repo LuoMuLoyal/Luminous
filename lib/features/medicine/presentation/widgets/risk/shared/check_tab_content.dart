@@ -105,7 +105,7 @@ class _CheckTabContentState extends State<CheckTabContent> {
           ),
           const SizedBox(height: Spacing.lg),
           // Stale banner (LLM only, when stale).
-          if (_isLlm && record.stale) ...[
+          if (_isLlm && record.isStale) ...[
             StaleBanner(l10n: l10n),
             const SizedBox(height: Spacing.lg),
           ],

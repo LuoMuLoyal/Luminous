@@ -46,11 +46,11 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                       enabled: !settingsAsync.isLoading,
                       onPress: !settingsAsync.isLoading
                           ? () => controller.setSleepReminderEnabled(
-                              !settings.sleepReminderEnabled,
+                              !settings.isSleepReminderEnabled,
                             )
                           : null,
                       suffix: FSwitch(
-                        value: settings.sleepReminderEnabled,
+                        value: settings.isSleepReminderEnabled,
                         enabled: !settingsAsync.isLoading,
                         onChange: settingsAsync.isLoading
                             ? null
@@ -61,7 +61,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                if (settings.sleepReminderEnabled)
+                if (settings.isSleepReminderEnabled)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [

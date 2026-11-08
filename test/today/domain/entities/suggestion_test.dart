@@ -311,7 +311,7 @@ void main() {
       expect(card.type, TodaySuggestionType.compliance);
       expect(card.confidence, TodaySuggestionConfidence.high);
       expect(card.secondaryActions, isNull);
-      expect(card.notificationEligible, isNull);
+      expect(card.isNotificationEligible, isNull);
       expect(card.feedbackOptions, isNull);
       expect(card.subtype, isNull);
     });

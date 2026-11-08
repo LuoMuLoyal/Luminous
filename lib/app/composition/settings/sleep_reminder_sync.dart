@@ -106,7 +106,7 @@ final sleepReminderNotificationSyncProvider = FutureProvider<void>((ref) async {
   await coordinator.resync(
     // The coordinator enforces the permission/bedtime gates itself; the
     // session gate is the only piece that lives here.
-    enabled: auth.canAccessProtectedData && preferences.sleepReminderEnabled,
+    enabled: auth.canAccessProtectedData && preferences.isSleepReminderEnabled,
     bedtimeMinutes: preferences.sleepBedtimeMinutes,
     permissionState: preferences.permissionState,
     dndEnabled: preferences.dndEnabled,

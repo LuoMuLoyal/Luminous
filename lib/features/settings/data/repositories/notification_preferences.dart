@@ -47,10 +47,10 @@ class LucentNotificationPreferencesRepository
             )
           : await api.callPatch(
               patchRequest: PatchRequest(
-                healthAlertsEnabled: patch.healthAlertsEnabled,
-                weeklyInsightEnabled: patch.weeklyInsightEnabled,
-                waterRemindersEnabled: patch.waterRemindersEnabled,
-                sleepReminderEnabled: patch.sleepReminderEnabled,
+                isHealthAlertsEnabled: patch.isHealthAlertsEnabled,
+                isWeeklyInsightEnabled: patch.isWeeklyInsightEnabled,
+                isWaterRemindersEnabled: patch.isWaterRemindersEnabled,
+                isSleepReminderEnabled: patch.isSleepReminderEnabled,
                 sleepBedtimeMinutes: patch.sleepBedtimeMinutes,
                 sleepWakeTimeMinutes: patch.sleepWakeTimeMinutes,
               ),
@@ -92,10 +92,10 @@ class LucentNotificationPreferencesRepository
 
   NotificationPreferences _map(NotificationPreferencesResponse data) {
     return NotificationPreferences(
-      healthAlertsEnabled: data.healthAlertsEnabled,
-      weeklyInsightEnabled: data.weeklyInsightEnabled,
-      waterRemindersEnabled: data.waterRemindersEnabled,
-      sleepReminderEnabled: data.sleepReminderEnabled,
+      isHealthAlertsEnabled: data.isHealthAlertsEnabled,
+      isWeeklyInsightEnabled: data.isWeeklyInsightEnabled,
+      isWaterRemindersEnabled: data.isWaterRemindersEnabled,
+      isSleepReminderEnabled: data.isSleepReminderEnabled,
       sleepBedtimeMinutes: data.sleepBedtimeMinutes?.toInt(),
       sleepWakeTimeMinutes: data.sleepWakeTimeMinutes?.toInt(),
       configured: data.configured,

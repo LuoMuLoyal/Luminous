@@ -225,7 +225,7 @@ String _sleepReminderSummary(
   NotificationSettingsState settings,
   Locale locale,
 ) {
-  if (!settings.sleepReminderEnabled) {
+  if (!settings.isSleepReminderEnabled) {
     return l10n.settingsNotificationsTimeUnset;
   }
   final bedtime = _formatTimeOfDay(settings.sleepBedtime, locale);

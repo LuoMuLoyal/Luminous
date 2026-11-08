@@ -40,7 +40,7 @@ class _FakeRiskCheckRepository implements MedicineRiskCheckRepository {
 
 MedicineRiskCheckRecord _record(
   MedicineRiskCheckType type, {
-  bool stale = false,
+  bool isStale = false,
   MedicineRiskCheckResult? result,
 }) {
   return MedicineRiskCheckRecord(
@@ -48,7 +48,7 @@ MedicineRiskCheckRecord _record(
     result: result ?? const MedicineRiskCheckResult(),
     riskScore: 0,
     riskLevel: MedicineRiskLevel.safe,
-    stale: stale,
+    isStale: isStale,
     createdAt: DateTime(2026, 7, 1),
     updatedAt: DateTime(2026, 7, 1),
   );
@@ -101,7 +101,7 @@ void main() {
         staticRecord: _record(MedicineRiskCheckType.static_),
         llmRecord: _record(
           MedicineRiskCheckType.llm,
-          stale: true,
+          isStale: true,
           result: const MedicineRiskCheckResult(overallRiskScore: 30),
         ),
       );
@@ -110,7 +110,10 @@ void main() {
       final best = await c.read(medicineRiskCheckBestRecordProvider.future);
       expect(best?.checkType, MedicineRiskCheckType.llm);
       expect(best?.result.overallRiskScore, 30);
-      expect(c.read(medicineRiskCheckRecordsProvider).value?.isStale, isTrue);
+      expect(
+        c.read(medicineRiskCheckRecordsProvider).value?.bestRecordIsStale,
+        isTrue,
+      );
     });
 
     test('returns null when no records', () async {

@@ -34,7 +34,7 @@ class MedicineRiskCheckMapper {
       result: recordResultDtoToDomain(dto.result),
       riskScore: dto.riskScore.toInt(),
       riskLevel: _mapRiskLevelValue(dto.riskLevel.value),
-      stale: dto.stale,
+      isStale: dto.isStale,
       createdAt: dto.createdAt,
       updatedAt: dto.updatedAt,
     );
@@ -234,7 +234,7 @@ class MedicineRiskCheckMapper {
       result: resultDtoToDomain(dto.result),
       riskScore: dto.riskScore.toInt(),
       riskLevel: _mapRiskLevelValue(dto.riskLevel.value),
-      stale: dto.stale,
+      isStale: dto.isStale,
       createdAt: dto.createdAt,
       updatedAt: dto.updatedAt,
     );
@@ -248,7 +248,7 @@ class MedicineRiskCheckMapper {
       result: llmResultDtoToDomain(dto.result),
       riskScore: dto.riskScore.toInt(),
       riskLevel: _mapRiskLevelValue(dto.riskLevel.value),
-      stale: dto.stale,
+      isStale: dto.isStale,
       createdAt: dto.createdAt,
       updatedAt: dto.updatedAt,
     );
@@ -259,7 +259,7 @@ class MedicineRiskCheckMapper {
     required MedicineRiskCheckResult result,
     required int riskScore,
     required MedicineRiskLevel riskLevel,
-    required bool stale,
+    required bool isStale,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) {
@@ -268,7 +268,7 @@ class MedicineRiskCheckMapper {
       result: result,
       riskScore: riskScore,
       riskLevel: riskLevel,
-      stale: stale,
+      isStale: isStale,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );

@@ -25,7 +25,7 @@ abstract class NotificationSettingsState with _$NotificationSettingsState {
     @Default(false) bool weeklySummary,
     @Default(true) bool waterReminders,
     @Default(true) bool sleepReminders,
-    @Default(false) bool sleepReminderEnabled,
+    @Default(false) bool isSleepReminderEnabled,
     @Default(TimeOfDay(hour: 23, minute: 0)) TimeOfDay? sleepBedtime,
     @Default(TimeOfDay(hour: 7, minute: 0)) TimeOfDay? sleepWakeTime,
     @Default(NotificationPermissionState.unsupported)
@@ -187,10 +187,10 @@ abstract class NotificationSettingsControllerCore
     NotificationPreferences remote,
   ) {
     return local.copyWith(
-      healthAlerts: remote.healthAlertsEnabled,
-      weeklySummary: remote.weeklyInsightEnabled,
-      waterReminders: remote.waterRemindersEnabled,
-      sleepReminderEnabled: remote.sleepReminderEnabled,
+      healthAlerts: remote.isHealthAlertsEnabled,
+      weeklySummary: remote.isWeeklyInsightEnabled,
+      waterReminders: remote.isWaterRemindersEnabled,
+      isSleepReminderEnabled: remote.isSleepReminderEnabled,
       sleepBedtime: NotificationUtils.fromMinutes(remote.sleepBedtimeMinutes),
       sleepWakeTime: NotificationUtils.fromMinutes(remote.sleepWakeTimeMinutes),
     );
@@ -215,7 +215,7 @@ abstract class NotificationSettingsControllerCore
     await scoped.set(_healthAlertsKey, value.healthAlerts);
     await scoped.set(_weeklySummaryKey, value.weeklySummary);
     await scoped.set(_waterRemindersKey, value.waterReminders);
-    await scoped.set(_sleepReminderEnabledKey, value.sleepReminderEnabled);
+    await scoped.set(_sleepReminderEnabledKey, value.isSleepReminderEnabled);
     if (value.sleepBedtime == null) {
       await scoped.remove(_sleepBedtimeKey);
     } else {
@@ -275,7 +275,7 @@ class NotificationSettingsController extends NotificationSettingsControllerCore
               : null) ??
           true,
       sleepReminders: legacy.getOrNull<bool>(_sleepRemindersKey) ?? true,
-      sleepReminderEnabled:
+      isSleepReminderEnabled:
           scoped.getBool(_sleepReminderEnabledKey) ??
           (canConsumeLegacy
               ? legacy.getOrNull<bool>(_sleepReminderEnabledKey)
@@ -329,7 +329,7 @@ class NotificationSettingsController extends NotificationSettingsControllerCore
                   healthAlerts: local.healthAlerts,
                   weeklySummary: local.weeklySummary,
                   waterReminders: local.waterReminders,
-                  sleepReminderEnabled: local.sleepReminderEnabled,
+                  isSleepReminderEnabled: local.isSleepReminderEnabled,
                   sleepBedtime: local.sleepBedtime,
                   sleepWakeTime: local.sleepWakeTime,
                 ),

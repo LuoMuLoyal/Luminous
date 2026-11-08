@@ -10,21 +10,21 @@ part of 'notification.dart';
 mixin NotificationRemoteSync on NotificationSettingsControllerCore {
   Future<void> setHealthAlerts(bool enabled) async {
     await _saveRemotePreference(
-      patch: NotificationPreferencesPatch(healthAlertsEnabled: enabled),
+      patch: NotificationPreferencesPatch(isHealthAlertsEnabled: enabled),
       update: (current) => current.copyWith(healthAlerts: enabled),
     );
   }
 
   Future<void> setWeeklySummary(bool enabled) async {
     await _saveRemotePreference(
-      patch: NotificationPreferencesPatch(weeklyInsightEnabled: enabled),
+      patch: NotificationPreferencesPatch(isWeeklyInsightEnabled: enabled),
       update: (current) => current.copyWith(weeklySummary: enabled),
     );
   }
 
   Future<void> setWaterReminders(bool enabled) async {
     await _saveRemotePreference(
-      patch: NotificationPreferencesPatch(waterRemindersEnabled: enabled),
+      patch: NotificationPreferencesPatch(isWaterRemindersEnabled: enabled),
       update: (current) => current.copyWith(waterReminders: enabled),
     );
   }
@@ -42,12 +42,12 @@ mixin NotificationRemoteSync on NotificationSettingsControllerCore {
     }
     await _saveRemotePreference(
       patch: NotificationPreferencesPatch(
-        sleepReminderEnabled: enabled,
+        isSleepReminderEnabled: enabled,
         sleepBedtimeMinutes: _toMinutes(bedtime),
         sleepWakeTimeMinutes: _toMinutes(wakeTime),
       ),
       update: (value) => value.copyWith(
-        sleepReminderEnabled: enabled,
+        isSleepReminderEnabled: enabled,
         sleepBedtime: bedtime,
         sleepWakeTime: wakeTime,
       ),

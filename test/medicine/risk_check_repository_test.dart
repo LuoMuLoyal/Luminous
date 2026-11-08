@@ -31,7 +31,7 @@ MedicineRiskCheckRecordResponse _record() {
     result: _recordResult(),
     riskScore: 0,
     riskLevel: MedicineRiskCheckRecordResponseRiskLevelEnum.safe,
-    stale: false,
+    isStale: false,
     createdAt: DateTime(2026, 7, 1),
     updatedAt: DateTime(2026, 7, 1),
   );
@@ -323,7 +323,7 @@ void main() {
         repository.runCheck(MedicineRiskCheckType.static_),
       );
       expect(record.riskScore, 0);
-      expect(record.stale, isFalse);
+      expect(record.isStale, isFalse);
     });
 
     test('runPrecheck delegates to the data source', () async {

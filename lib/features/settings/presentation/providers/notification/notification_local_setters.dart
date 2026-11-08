@@ -129,10 +129,10 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
     if (auth.canAccessProtectedData && auth.userId != null) {
       await _saveRemotePreference(
         patch: const NotificationPreferencesPatch(
-          healthAlertsEnabled: true,
-          weeklyInsightEnabled: false,
-          waterRemindersEnabled: true,
-          sleepReminderEnabled: false,
+          isHealthAlertsEnabled: true,
+          isWeeklyInsightEnabled: false,
+          isWaterRemindersEnabled: true,
+          isSleepReminderEnabled: false,
           clearSleepBedtime: true,
           clearSleepWakeTime: true,
         ),
@@ -140,7 +140,7 @@ mixin NotificationLocalSetters on NotificationSettingsControllerCore {
           healthAlerts: true,
           weeklySummary: false,
           waterReminders: true,
-          sleepReminderEnabled: false,
+          isSleepReminderEnabled: false,
           sleepBedtime: null,
           sleepWakeTime: null,
         ),

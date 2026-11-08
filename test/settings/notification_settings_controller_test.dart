@@ -42,7 +42,7 @@ void main() {
       expect(state.weeklySummary, isFalse);
       expect(state.waterReminders, isTrue);
       expect(state.sleepReminders, isTrue);
-      expect(state.sleepReminderEnabled, isFalse);
+      expect(state.isSleepReminderEnabled, isFalse);
       // Times are null until the user enables the feature — this is what
       // lets the list page render "未设置" and the sub-page show a
       // placeholder instead of a phantom 22:00.
@@ -53,7 +53,7 @@ void main() {
     test('loads persisted sleep reminder values', () async {
       container = buildContainer(
         initialValues: const <String, Object>{
-          'settings.notifications.sleepReminderEnabled': true,
+          'settings.notifications.isSleepReminderEnabled': true,
           'settings.notifications.sleepBedtime': '22:30',
           'settings.notifications.sleepWakeTime': '06:45',
         },
@@ -63,7 +63,7 @@ void main() {
         notificationSettingsControllerProvider.future,
       );
 
-      expect(state.sleepReminderEnabled, isTrue);
+      expect(state.isSleepReminderEnabled, isTrue);
       expect(state.sleepBedtime, const TimeOfDay(hour: 22, minute: 30));
       expect(state.sleepWakeTime, const TimeOfDay(hour: 6, minute: 45));
     });
@@ -96,12 +96,12 @@ void main() {
           .setSleepReminderEnabled(true);
 
       final state = container.read(notificationSettingsControllerProvider);
-      expect(state.value?.sleepReminderEnabled, isTrue);
+      expect(state.value?.isSleepReminderEnabled, isTrue);
 
       final preferences = KvStore.instance;
       expect(
         preferences.get<bool>(
-          'settings.notifications.sleepReminderEnabled',
+          'settings.notifications.isSleepReminderEnabled',
           fallback: false,
         ),
         isTrue,
@@ -274,7 +274,7 @@ void main() {
           'settings.notifications.weeklySummary': true,
           'settings.notifications.waterReminders': false,
           'settings.notifications.sleepReminders': false,
-          'settings.notifications.sleepReminderEnabled': true,
+          'settings.notifications.isSleepReminderEnabled': true,
           'settings.notifications.sleepBedtime': '22:00',
           'settings.notifications.sleepWakeTime': '07:00',
         },
@@ -292,7 +292,7 @@ void main() {
       expect(state.value?.weeklySummary, isFalse);
       expect(state.value?.waterReminders, isTrue);
       expect(state.value?.sleepReminders, isTrue);
-      expect(state.value?.sleepReminderEnabled, isFalse);
+      expect(state.value?.isSleepReminderEnabled, isFalse);
       expect(state.value?.sleepBedtime, isNull);
       expect(state.value?.sleepWakeTime, isNull);
       expect(state.value?.dndStartTime, isNull);
@@ -320,7 +320,9 @@ void main() {
         isFalse,
       );
       expect(
-        preferences.containsKey('settings.notifications.sleepReminderEnabled'),
+        preferences.containsKey(
+          'settings.notifications.isSleepReminderEnabled',
+        ),
         isFalse,
       );
       expect(

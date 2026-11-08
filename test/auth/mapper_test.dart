@@ -7,7 +7,7 @@ LoginResponse _loginData({
   String userId = 'u-1',
   String email = 'test@example.com',
   String? nickname,
-  bool emailVerified = false,
+  bool isEmailVerified = false,
   String? emailVerifiedAt,
   String accessToken = 'at-1',
   String refreshToken = 'rt-1',
@@ -20,7 +20,7 @@ LoginResponse _loginData({
       email: email,
       nickname: nickname ?? email.split('@').first,
       avatar: null,
-      emailVerified: emailVerified,
+      isEmailVerified: isEmailVerified,
       emailVerifiedAt: emailVerifiedAt,
       createdAt: createdAt,
       updatedAt: updatedAt,
@@ -38,7 +38,7 @@ RegisterResponse _registerData({
   String userId = 'u-1',
   String email = 'test@example.com',
   String? nickname,
-  bool emailVerified = false,
+  bool isEmailVerified = false,
   String? emailVerifiedAt,
   String accessToken = 'at-1',
   String refreshToken = 'rt-1',
@@ -49,7 +49,7 @@ RegisterResponse _registerData({
       id: userId,
       email: email,
       nickname: nickname ?? email.split('@').first,
-      emailVerified: emailVerified,
+      isEmailVerified: isEmailVerified,
       emailVerifiedAt: emailVerifiedAt,
       createdAt: createdAt,
     ),
@@ -79,7 +79,7 @@ void main() {
     test('maps emailVerifiedAt when present', () {
       final session = AuthMapper.toSessionFromLogin(
         _loginData(
-          emailVerified: true,
+          isEmailVerified: true,
           emailVerifiedAt: '2026-06-10T08:00:00.000Z',
         ),
       );
@@ -93,7 +93,7 @@ void main() {
 
     test('handles null emailVerifiedAt', () {
       final session = AuthMapper.toSessionFromLogin(
-        _loginData(emailVerified: false, emailVerifiedAt: null),
+        _loginData(isEmailVerified: false, emailVerifiedAt: null),
       );
 
       expect(session.user.emailVerifiedAt, isNull);
@@ -107,7 +107,7 @@ void main() {
 
     test('maps malformed emailVerifiedAt to null instead of crashing', () {
       final session = AuthMapper.toSessionFromLogin(
-        _loginData(emailVerified: true, emailVerifiedAt: 'not-a-date'),
+        _loginData(isEmailVerified: true, emailVerifiedAt: 'not-a-date'),
       );
 
       expect(session.user.emailVerifiedAt, isNull);
@@ -143,7 +143,7 @@ void main() {
 
     test('handles null emailVerifiedAt', () {
       final session = AuthMapper.toSessionFromRegister(
-        _registerData(emailVerified: false, emailVerifiedAt: null),
+        _registerData(isEmailVerified: false, emailVerifiedAt: null),
       );
 
       expect(session.user.emailVerifiedAt, isNull);

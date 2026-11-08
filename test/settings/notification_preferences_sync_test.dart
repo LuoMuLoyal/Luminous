@@ -44,7 +44,7 @@ void main() {
       expect(first.healthAlerts, isFalse);
       expect(first.weeklySummary, isTrue);
       expect(first.waterReminders, isFalse);
-      expect(first.sleepReminderEnabled, isTrue);
+      expect(first.isSleepReminderEnabled, isTrue);
       expect(first.sleepBedtimeMinutes, 1350);
       expect(first.sleepWakeTimeMinutes, 405);
       expect(repository.patches, hasLength(1));
@@ -74,10 +74,10 @@ void main() {
     );
     final repository = _FakeNotificationPreferencesRepository(
       const NotificationPreferences(
-        healthAlertsEnabled: true,
-        weeklyInsightEnabled: false,
-        waterRemindersEnabled: true,
-        sleepReminderEnabled: true,
+        isHealthAlertsEnabled: true,
+        isWeeklyInsightEnabled: false,
+        isWaterRemindersEnabled: true,
+        isSleepReminderEnabled: true,
         sleepBedtimeMinutes: 1380,
         sleepWakeTimeMinutes: 420,
         configured: true,
@@ -140,11 +140,11 @@ void main() {
       expect(repository.patchesByUser['user-a'], hasLength(1));
       expect(repository.patchesByUser['user-b'], hasLength(1));
       expect(
-        repository.patchesByUser['user-b']!.single.healthAlertsEnabled,
+        repository.patchesByUser['user-b']!.single.isHealthAlertsEnabled,
         isTrue,
       );
       expect(
-        repository.patchesByUser['user-b']!.single.weeklyInsightEnabled,
+        repository.patchesByUser['user-b']!.single.isWeeklyInsightEnabled,
         isFalse,
       );
     },

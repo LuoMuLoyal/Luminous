@@ -19,10 +19,10 @@ void main() {
     final dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
     dio.httpClientAdapter = _JsonAdapter(
       responseData: {
-        'healthAlertsEnabled': false,
-        'weeklyInsightEnabled': true,
-        'waterRemindersEnabled': true,
-        'sleepReminderEnabled': true,
+        'isHealthAlertsEnabled': false,
+        'isWeeklyInsightEnabled': true,
+        'isWaterRemindersEnabled': true,
+        'isSleepReminderEnabled': true,
         'sleepBedtimeMinutes': 1380,
         'sleepWakeTimeMinutes': 420,
         'configured': true,
@@ -36,8 +36,8 @@ void main() {
 
     final result = await expectTaskRight(repository.getPreferences());
 
-    expect(result.healthAlertsEnabled, isFalse);
-    expect(result.weeklyInsightEnabled, isTrue);
+    expect(result.isHealthAlertsEnabled, isFalse);
+    expect(result.isWeeklyInsightEnabled, isTrue);
     expect(result.sleepBedtimeMinutes, 1380);
     expect(result.configured, isTrue);
   });
@@ -48,10 +48,10 @@ void main() {
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
       final adapter = _JsonAdapter(
         responseData: const {
-          'healthAlertsEnabled': true,
-          'weeklyInsightEnabled': false,
-          'waterRemindersEnabled': true,
-          'sleepReminderEnabled': false,
+          'isHealthAlertsEnabled': true,
+          'isWeeklyInsightEnabled': false,
+          'isWaterRemindersEnabled': true,
+          'isSleepReminderEnabled': false,
           'sleepBedtimeMinutes': null,
           'sleepWakeTimeMinutes': null,
           'configured': true,

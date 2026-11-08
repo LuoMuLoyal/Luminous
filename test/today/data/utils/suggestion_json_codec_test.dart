@@ -20,7 +20,7 @@ void main() {
       TodaySuggestionTriggerType triggerType = TodaySuggestionTriggerType.event,
       TodaySuggestionLifecycleState lifecycleState =
           TodaySuggestionLifecycleState.active,
-      bool? notificationEligible = true,
+      bool? isNotificationEligible = true,
       String? subtype,
       List<TodaySuggestionAction>? secondaryActions,
       List<TodaySuggestionFeedback>? feedbackOptions,
@@ -54,7 +54,7 @@ void main() {
         ruleVersion: ruleVersion,
         triggerType: triggerType,
         lifecycleState: lifecycleState,
-        notificationEligible: notificationEligible,
+        isNotificationEligible: isNotificationEligible,
         feedbackOptions: feedbackOptions,
         subtype: subtype,
       );
@@ -170,7 +170,7 @@ void main() {
           ruleVersion: 'v2.1',
           triggerType: TodaySuggestionTriggerType.timer,
           lifecycleState: TodaySuggestionLifecycleState.fading,
-          notificationEligible: false,
+          isNotificationEligible: false,
           subtype: 'medication',
           secondaryActions: [
             const TodaySuggestionAction(
@@ -212,7 +212,7 @@ void main() {
           restoredCard.lifecycleState,
           TodaySuggestionLifecycleState.fading,
         );
-        expect(restoredCard.notificationEligible, false);
+        expect(restoredCard.isNotificationEligible, false);
         expect(restoredCard.subtype, 'medication');
         expect(restoredCard.secondaryActions, hasLength(1));
         expect(restoredCard.secondaryActions![0].actionId, 'act-002');
@@ -318,7 +318,7 @@ void main() {
           triggerType: TodaySuggestionTriggerType.timer,
           lifecycleState: TodaySuggestionLifecycleState.active,
           secondaryActions: null,
-          notificationEligible: null,
+          isNotificationEligible: null,
           feedbackOptions: null,
           subtype: null,
         );
@@ -332,7 +332,7 @@ void main() {
         final restored = TodaySuggestionJsonCodec.bundleFromJson(json);
 
         expect(restored.primary!.secondaryActions, isNull);
-        expect(restored.primary!.notificationEligible, isNull);
+        expect(restored.primary!.isNotificationEligible, isNull);
         expect(restored.primary!.feedbackOptions, isNull);
         expect(restored.primary!.subtype, isNull);
         expect(restored.primary!.evidence, isEmpty);
@@ -434,7 +434,7 @@ void main() {
         expect(cardMap, containsPair('confidence', 'high'));
         expect(cardMap, containsPair('triggerType', 'event'));
         expect(cardMap, containsPair('lifecycleState', 'active'));
-        expect(cardMap, containsPair('notificationEligible', true));
+        expect(cardMap, containsPair('isNotificationEligible', true));
         expect(cardMap, containsPair('ruleId', 'rule-001'));
         expect(cardMap, containsPair('ruleVersion', 'v1.0'));
       });

@@ -124,10 +124,10 @@ void main() {
       return SleepReminderSettingsSnapshot(
         canAccessProtectedData: signedIn,
         preferences: NotificationPreferences(
-          healthAlertsEnabled: true,
-          weeklyInsightEnabled: false,
-          waterRemindersEnabled: true,
-          sleepReminderEnabled: enabled,
+          isHealthAlertsEnabled: true,
+          isWeeklyInsightEnabled: false,
+          isWaterRemindersEnabled: true,
+          isSleepReminderEnabled: enabled,
           sleepBedtimeMinutes: bedtime,
           sleepWakeTimeMinutes: 420,
           configured: true,

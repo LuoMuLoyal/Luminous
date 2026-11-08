@@ -35,14 +35,14 @@ MedicineRiskCheckRecordResponse _record({
       MedicineRiskCheckRecordResponseRiskLevelEnum.safe,
   MedicineRiskCheckRecordResponseResult? result,
   int score = 10,
-  bool stale = false,
+  bool isStale = false,
 }) {
   return MedicineRiskCheckRecordResponse(
     checkType: checkType,
     result: result ?? _recordResult(score: score),
     riskScore: score,
     riskLevel: riskLevel,
-    stale: stale,
+    isStale: isStale,
     createdAt: DateTime(2026, 7, 1),
     updatedAt: DateTime(2026, 7, 2),
   );
@@ -77,14 +77,14 @@ MedicineRiskCheckRecordsResponseStatic _listRecord({
       MedicineRiskCheckRecordsResponseStaticRiskLevelEnum.safe,
   MedicineRiskCheckRecordsResponseStaticResult? result,
   int score = 10,
-  bool stale = false,
+  bool isStale = false,
 }) {
   return MedicineRiskCheckRecordsResponseStatic(
     checkType: checkType,
     result: result ?? _response(score: score),
     riskScore: score,
     riskLevel: riskLevel,
-    stale: stale,
+    isStale: isStale,
     createdAt: DateTime(2026, 7, 1),
     updatedAt: DateTime(2026, 7, 2),
   );
@@ -97,14 +97,14 @@ MedicineRiskCheckRecordsResponseLlm _listLlmRecord({
       MedicineRiskCheckRecordsResponseLlmRiskLevelEnum.safe,
   MedicineRiskCheckRecordsResponseLlmResult? result,
   int score = 10,
-  bool stale = false,
+  bool isStale = false,
 }) {
   return MedicineRiskCheckRecordsResponseLlm(
     checkType: checkType,
     result: result ?? _llmResult(score: score),
     riskScore: score,
     riskLevel: riskLevel,
-    stale: stale,
+    isStale: isStale,
     createdAt: DateTime(2026, 7, 1),
     updatedAt: DateTime(2026, 7, 2),
   );
@@ -164,7 +164,7 @@ void main() {
       expect(records.llmRecord, isNull);
       expect(records.isEmpty, isTrue);
       expect(records.bestRecord, isNull);
-      expect(records.isStale, isFalse);
+      expect(records.bestRecordIsStale, isFalse);
     });
   });
 
@@ -175,14 +175,14 @@ void main() {
           checkType: MedicineRiskCheckRecordResponseCheckTypeEnum.llm,
           riskLevel: MedicineRiskCheckRecordResponseRiskLevelEnum.danger,
           score: 88,
-          stale: true,
+          isStale: true,
         ),
       );
 
       expect(record.checkType, MedicineRiskCheckType.llm);
       expect(record.riskScore, 88);
       expect(record.riskLevel, MedicineRiskLevel.danger);
-      expect(record.stale, isTrue);
+      expect(record.isStale, isTrue);
       expect(record.createdAt, DateTime(2026, 7, 1));
       expect(record.updatedAt, DateTime(2026, 7, 2));
     });

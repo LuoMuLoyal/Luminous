@@ -93,7 +93,7 @@ class TodaySuggestionJsonCodec {
       'ruleVersion': c.ruleVersion,
       'triggerType': c.triggerType.name,
       'lifecycleState': c.lifecycleState.name,
-      'notificationEligible': c.notificationEligible,
+      'isNotificationEligible': c.isNotificationEligible,
       'feedbackOptions': c.feedbackOptions?.map((f) => f.toJson()).toList(),
       'subtype': c.subtype,
     };
@@ -126,8 +126,8 @@ class TodaySuggestionJsonCodec {
       lifecycleState: TodaySuggestionLifecycleState.fromJson(
         _asString(m['lifecycleState']) ?? '',
       ),
-      notificationEligible: m['notificationEligible'] is bool
-          ? m['notificationEligible'] as bool
+      isNotificationEligible: m['isNotificationEligible'] is bool
+          ? m['isNotificationEligible'] as bool
           : null,
       feedbackOptions: _asList(
         m['feedbackOptions'],

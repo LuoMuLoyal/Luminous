@@ -185,7 +185,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
       lifecycleState: TodaySuggestionLifecycleState.fromJson(
         dto.lifecycleState.value,
       ),
-      notificationEligible: dto.notificationEligible,
+      isNotificationEligible: dto.isNotificationEligible,
       feedbackOptions: dto.feedbackOptions
           ?.map((option) => _mapFeedbackFromString(option.value))
           .toList(),

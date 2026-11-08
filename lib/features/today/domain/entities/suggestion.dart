@@ -211,7 +211,7 @@ abstract class TodaySuggestionCard with _$TodaySuggestionCard {
     required TodaySuggestionTriggerType triggerType,
     required TodaySuggestionLifecycleState lifecycleState,
     List<TodaySuggestionAction>? secondaryActions,
-    bool? notificationEligible,
+    bool? isNotificationEligible,
     List<TodaySuggestionFeedback>? feedbackOptions,
     String? subtype,
   }) = _TodaySuggestionCard;

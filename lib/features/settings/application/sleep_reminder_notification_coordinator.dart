@@ -197,7 +197,7 @@ class SleepReminderSettingsSnapshot {
   /// is configured.
   bool get enabled =>
       canAccessProtectedData &&
-      preferences.sleepReminderEnabled &&
+      preferences.isSleepReminderEnabled &&
       permissionState == NotificationPermissionState.granted &&
       preferences.sleepBedtimeMinutes != null;
 }

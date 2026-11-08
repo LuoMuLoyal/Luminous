@@ -466,7 +466,7 @@ class _FakeRiskCheckRepository implements MedicineRiskCheckRepository {
         ),
         riskScore: 0,
         riskLevel: MedicineRiskLevel.safe,
-        stale: false,
+        isStale: false,
         createdAt: DateTime(2026, 7, 27),
         updatedAt: DateTime(2026, 7, 27),
       ),

@@ -109,7 +109,7 @@ abstract class MedicineRiskCheckRecord with _$MedicineRiskCheckRecord {
     required MedicineRiskCheckResult result,
     required int riskScore,
     required MedicineRiskLevel riskLevel,
-    required bool stale,
+    required bool isStale,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _MedicineRiskCheckRecord;
@@ -136,7 +136,7 @@ abstract class MedicineRiskCheckRecords with _$MedicineRiskCheckRecords {
   MedicineRiskCheckRecord? get bestRecord => llmRecord ?? staticRecord;
 
   /// True if the best available record is marked stale.
-  bool get isStale => bestRecord?.stale ?? false;
+  bool get bestRecordIsStale => bestRecord?.isStale ?? false;
 
   /// True if there are no records at all.
   bool get isEmpty => staticRecord == null && llmRecord == null;

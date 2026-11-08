@@ -3,10 +3,10 @@ import 'package:meta/meta.dart';
 @immutable
 class NotificationPreferences {
   const NotificationPreferences({
-    required this.healthAlertsEnabled,
-    required this.weeklyInsightEnabled,
-    required this.waterRemindersEnabled,
-    required this.sleepReminderEnabled,
+    required this.isHealthAlertsEnabled,
+    required this.isWeeklyInsightEnabled,
+    required this.isWaterRemindersEnabled,
+    required this.isSleepReminderEnabled,
     required this.sleepBedtimeMinutes,
     required this.sleepWakeTimeMinutes,
     required this.configured,
@@ -14,39 +14,42 @@ class NotificationPreferences {
   });
 
   const NotificationPreferences.defaults({required this.configured})
-    : healthAlertsEnabled = true,
-      weeklyInsightEnabled = false,
-      waterRemindersEnabled = true,
-      sleepReminderEnabled = false,
+    : isHealthAlertsEnabled = true,
+      isWeeklyInsightEnabled = false,
+      isWaterRemindersEnabled = true,
+      isSleepReminderEnabled = false,
       sleepBedtimeMinutes = null,
       sleepWakeTimeMinutes = null,
       updatedAt = null;
 
-  final bool healthAlertsEnabled;
-  final bool weeklyInsightEnabled;
-  final bool waterRemindersEnabled;
-  final bool sleepReminderEnabled;
+  final bool isHealthAlertsEnabled;
+  final bool isWeeklyInsightEnabled;
+  final bool isWaterRemindersEnabled;
+  final bool isSleepReminderEnabled;
   final int? sleepBedtimeMinutes;
   final int? sleepWakeTimeMinutes;
   final bool configured;
   final String? updatedAt;
 
   NotificationPreferences copyWith({
-    bool? healthAlertsEnabled,
-    bool? weeklyInsightEnabled,
-    bool? waterRemindersEnabled,
-    bool? sleepReminderEnabled,
+    bool? isHealthAlertsEnabled,
+    bool? isWeeklyInsightEnabled,
+    bool? isWaterRemindersEnabled,
+    bool? isSleepReminderEnabled,
     Object? sleepBedtimeMinutes = _keep,
     Object? sleepWakeTimeMinutes = _keep,
     bool? configured,
     Object? updatedAt = _keep,
   }) {
     return NotificationPreferences(
-      healthAlertsEnabled: healthAlertsEnabled ?? this.healthAlertsEnabled,
-      weeklyInsightEnabled: weeklyInsightEnabled ?? this.weeklyInsightEnabled,
-      waterRemindersEnabled:
-          waterRemindersEnabled ?? this.waterRemindersEnabled,
-      sleepReminderEnabled: sleepReminderEnabled ?? this.sleepReminderEnabled,
+      isHealthAlertsEnabled:
+          isHealthAlertsEnabled ?? this.isHealthAlertsEnabled,
+      isWeeklyInsightEnabled:
+          isWeeklyInsightEnabled ?? this.isWeeklyInsightEnabled,
+      isWaterRemindersEnabled:
+          isWaterRemindersEnabled ?? this.isWaterRemindersEnabled,
+      isSleepReminderEnabled:
+          isSleepReminderEnabled ?? this.isSleepReminderEnabled,
       sleepBedtimeMinutes: identical(sleepBedtimeMinutes, _keep)
           ? this.sleepBedtimeMinutes
           : sleepBedtimeMinutes as int?,
@@ -62,10 +65,10 @@ class NotificationPreferences {
 
   NotificationPreferences apply(NotificationPreferencesPatch patch) {
     return copyWith(
-      healthAlertsEnabled: patch.healthAlertsEnabled,
-      weeklyInsightEnabled: patch.weeklyInsightEnabled,
-      waterRemindersEnabled: patch.waterRemindersEnabled,
-      sleepReminderEnabled: patch.sleepReminderEnabled,
+      isHealthAlertsEnabled: patch.isHealthAlertsEnabled,
+      isWeeklyInsightEnabled: patch.isWeeklyInsightEnabled,
+      isWaterRemindersEnabled: patch.isWaterRemindersEnabled,
+      isSleepReminderEnabled: patch.isSleepReminderEnabled,
       sleepBedtimeMinutes: patch.clearSleepBedtime
           ? null
           : patch.sleepBedtimeMinutes ?? sleepBedtimeMinutes,
@@ -81,20 +84,20 @@ class NotificationPreferences {
 @immutable
 class NotificationPreferencesPatch {
   const NotificationPreferencesPatch({
-    this.healthAlertsEnabled,
-    this.weeklyInsightEnabled,
-    this.waterRemindersEnabled,
-    this.sleepReminderEnabled,
+    this.isHealthAlertsEnabled,
+    this.isWeeklyInsightEnabled,
+    this.isWaterRemindersEnabled,
+    this.isSleepReminderEnabled,
     this.sleepBedtimeMinutes,
     this.sleepWakeTimeMinutes,
     this.clearSleepBedtime = false,
     this.clearSleepWakeTime = false,
   });
 
-  final bool? healthAlertsEnabled;
-  final bool? weeklyInsightEnabled;
-  final bool? waterRemindersEnabled;
-  final bool? sleepReminderEnabled;
+  final bool? isHealthAlertsEnabled;
+  final bool? isWeeklyInsightEnabled;
+  final bool? isWaterRemindersEnabled;
+  final bool? isSleepReminderEnabled;
   final int? sleepBedtimeMinutes;
   final int? sleepWakeTimeMinutes;
   final bool clearSleepBedtime;
@@ -102,17 +105,17 @@ class NotificationPreferencesPatch {
 
   Map<String, Object?> toJson() {
     final json = <String, Object?>{};
-    if (healthAlertsEnabled != null) {
-      json['healthAlertsEnabled'] = healthAlertsEnabled;
+    if (isHealthAlertsEnabled != null) {
+      json['isHealthAlertsEnabled'] = isHealthAlertsEnabled;
     }
-    if (weeklyInsightEnabled != null) {
-      json['weeklyInsightEnabled'] = weeklyInsightEnabled;
+    if (isWeeklyInsightEnabled != null) {
+      json['isWeeklyInsightEnabled'] = isWeeklyInsightEnabled;
     }
-    if (waterRemindersEnabled != null) {
-      json['waterRemindersEnabled'] = waterRemindersEnabled;
+    if (isWaterRemindersEnabled != null) {
+      json['isWaterRemindersEnabled'] = isWaterRemindersEnabled;
     }
-    if (sleepReminderEnabled != null) {
-      json['sleepReminderEnabled'] = sleepReminderEnabled;
+    if (isSleepReminderEnabled != null) {
+      json['isSleepReminderEnabled'] = isSleepReminderEnabled;
     }
     if (clearSleepBedtime || sleepBedtimeMinutes != null) {
       json['sleepBedtimeMinutes'] = clearSleepBedtime

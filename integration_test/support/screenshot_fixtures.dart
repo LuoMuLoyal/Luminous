@@ -183,7 +183,7 @@ TodaySuggestionCard fixturePrimarySuggestion() {
     ruleVersion: '2.1.0',
     triggerType: TodaySuggestionTriggerType.timer,
     lifecycleState: TodaySuggestionLifecycleState.active,
-    notificationEligible: true,
+    isNotificationEligible: true,
     feedbackOptions: const [
       TodaySuggestionFeedback.accepted,
       TodaySuggestionFeedback.later,

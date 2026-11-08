@@ -110,7 +110,7 @@ void main() {
               const NotificationSettingsState(
                 medicationReminders: true,
                 waterReminders: true,
-                sleepReminderEnabled: true,
+                isSleepReminderEnabled: true,
                 sleepBedtime: TimeOfDay(hour: 23, minute: 0),
                 sleepWakeTime: TimeOfDay(hour: 7, minute: 0),
                 dndEnabled: true,

@@ -12,15 +12,15 @@ NotificationPreferencesPatch buildRemotePatch({
   required bool healthAlerts,
   required bool weeklySummary,
   required bool waterReminders,
-  required bool sleepReminderEnabled,
+  required bool isSleepReminderEnabled,
   required TimeOfDay? sleepBedtime,
   required TimeOfDay? sleepWakeTime,
 }) {
   return NotificationPreferencesPatch(
-    healthAlertsEnabled: healthAlerts,
-    weeklyInsightEnabled: weeklySummary,
-    waterRemindersEnabled: waterReminders,
-    sleepReminderEnabled: sleepReminderEnabled,
+    isHealthAlertsEnabled: healthAlerts,
+    isWeeklyInsightEnabled: weeklySummary,
+    isWaterRemindersEnabled: waterReminders,
+    isSleepReminderEnabled: isSleepReminderEnabled,
     sleepBedtimeMinutes: NotificationUtils.toMinutes(sleepBedtime),
     sleepWakeTimeMinutes: NotificationUtils.toMinutes(sleepWakeTime),
   );
