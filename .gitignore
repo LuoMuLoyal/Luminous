@@ -112,3 +112,6 @@ dart_devtools_*.json
 
 # Windows null-device artifact (Bash writes to "nul" as a file)
 nul
+
+# graphify 代码结构图谱（本机生成，不入库）
+graphify-out/
