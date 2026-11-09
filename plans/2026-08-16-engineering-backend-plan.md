@@ -9,11 +9,14 @@ Created: 2026-08-16
 
 ## 一、目标与范围
 
-本计划覆盖后端平台与工程基础设施域:`Lucent/src/admin/`、`src/mail/`、`src/modules/files/`、`src/llm-runtime/`、`src/common/queue/`、`src/common/metrics/`、`src/modules/product-events/`、`src/modules/testing-support/`、`Lucent/deploy/`,以及客户端埋点 `Luminous/lib/core/analytics/` 与四份计划态投入(Worker 分离、rnacos 热配置、SaaS 模块、Node monorepo 合并)、Flutter 3.47 升级、桌面 SaaS 路线。
+本计划覆盖后端平台与工程基础设施域:`Lucent/src/admin/`、`src/mail/`、`src/modules/files/`、`src/llm-runtime/`、`src/common/queue/`、`src/common/metrics/`、`src/modules/product-events/`、`src/modules/testing-support/`、`Lucent/deploy/`,以及客户端埋点 `Luminous/lib/core/analytics/` 与四份计划态投入(Worker 分离、rnacos 热配置、SaaS 模块、Node monorepo 合并)、桌面端形态。Flutter 3.47 升级已落地，不再属于本计划范围。
 
 评估基准:`Luminous/docs/product/Product_Vision.md`——手机端是当前首发与验证表面;平台/工程能力按"对 C 端真实用户的支撑作用"与"投入是否与单产品 0.1.0 前阶段匹配"两条线审判。
 
-核心结论:已实现的工程底座(F-1~F-7、F-10)全部为真实现、保留不动,本计划几乎不产生代码改造;所有计划态投入(F-11~F-14)统一判定为「阶段错配、暂缓启用」,本计划的主要产出是**写清各自的启用触发条件**;F-15 走保守跟进;F-16 保留方向、暂缓执行。
+核心结论:已实现的工程底座(F-1~F-7、F-10)全部为真实现、保留不动,本计划几乎不产生代码改造;所有计划态投入(F-11~F-14)统一判定为「阶段错配、暂缓启用」,本计划的主要产出是**写清各自的启用触发条件**;F-15 已落地；F-16 方向已被 ADR-0008 2026-11-01/11-02 修订取代。
+
+> **2026-11-09 复核**：其余 9 份 08-16 计划中，0.1.0 前任务已完成的部分已随各计划一并清理；
+> 本计划保留的 F-11~F-16 全部为 0.1.0 后、由触发条件控制的暂缓项，与 `docs/TODO.md` 口径一致。
 
 ## 二、保留不动(清单)
 
@@ -38,14 +41,14 @@ Created: 2026-08-16
 
 **P1-A F-16 桌面 SaaS 差异化路线——工程侧触发条件登记（0.1.0 后）**
 
-- 现状:手机端继续承担当前首发；ADR-0012 已接受，0.1.0 后采用 Next.js + Tauri 同步交付独立桌面 MVP。Flutter Desktop 与 PC Flutter Web 停止产品扩展。
+- 现状:手机端继续承担当前首发；ADR-0008 现行版本（2026-11-01/11-02 修订）规定桌面端与手机端地位平等，共享 Flutter + KMP 客户端。
 - 方向决策与产品侧内容:统一引用 [`2026-08-14-product-surface-route.md`](2026-08-14-product-surface-route.md)，本文不展开。
 - 本文档只登记**工程侧触发条件**(满足前不动工):
   1. 0.1.0 移动端验证完成；
   2. 认证、离线、隐私、同步、分发约束完成验证；
   3. 在已接受的 Next.js + Tauri 路线上启动独立桌面 MVP。
 - 工程纪律:不建 `apps/saas` 空壳,不重写现有 Flutter 桌面。
-- 依赖:ADR-0012 决策;F-13(OAuth + dashboard)是其动工后的前置依赖。
+- 依赖:ADR-0008;F-13(OAuth + dashboard)是其动工后的前置依赖。
 
 ### P2
 
@@ -77,11 +80,12 @@ Created: 2026-08-16
 - 启用触发条件:`apps/saas` 出现第一行真实代码。
 - 依赖:F-16 方向决策、F-13 动工。
 
-**P2-E F-15 Flutter 3.47 升级——不作为 0.1.0 门槛，按上游 3.47.1 可用性触发**
+**P2-E F-15 Flutter 3.47 升级——已落地**
 
-- 现状:SDK/AGP 9/Gradle 9/iOS 部署目标跟进,fluwx 6.x 等高风险依赖逐项验证,当前被上游语义层回归(flutter/flutter#191095)阻塞。
-- 方案:执行细节见 [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md)(含 V/U 标注、回退预案、CI release APK 作 AGP 9 验证门禁),本文不重复展开。本文档只固化策略惯例:stable 发布后不立即跟,**等第一个 patch**(本次等 3.47.1,被 flutter/flutter#191095 阻塞恰好验证了该策略);暂缓清单(drift/flutter_local_notifications 等 breaking 依赖)维持独立排期,不混入 SDK 升级。
-- 触发条件:Flutter 3.47.1 发布。
+- 配置类改动已合入（AGP 9.1.0 + Gradle 9.3.1、iOS 16.0 / macOS 12.0、fluwx 6.x /
+  health 13.3.2 / jpush 3.5.x、CI `flutter-version: 3.47.1`），analyze、Android release、
+  Web release 已通过。
+- 策略惯例固化：stable 发布后不立即跟，**等第一个 patch**。计划文件已按生命周期删除（实施完毕文件已删）。
 
 ## 四、跨计划引用与依赖
 
@@ -89,20 +93,20 @@ Created: 2026-08-16
 
 - **队列与 LLM 底座被全域共用**:F-1 的 12 条队列(6 条 `BaseAsyncQueueService`、4 条业务直建、2 条调度)承载 Today 建议卡、餐食识别、药品识别、报告总结、就诊 PDF、数据导出、邮件;F-3 LLM Runtime 是所有 AI 产物的统一模型入口。medicine、scan-search、today、assistant、record、health-event、report 各计划中涉及的慢任务/AI 产物均运行在此底座上,各计划无需也不应改造底座本身。
 - **离线评测集归属**:P2-B 提到餐食识别离线评测集是 scan-search/识别域的建设内容,本计划只登记它是 F-12 热配置的启用前置,不重复展开建设方案。
-- **桌面/Web 形态**:ADR-0012 已接受；独立 Next.js + Tauri MVP 在 0.1.0 后启动，本计划只登记工程侧触发条件(P1-A)。
-- **Flutter 3.47 升级**:执行方案全文引用 [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md),本计划只固化「跟次版本等 patch」的策略惯例(P2-E)。
+- **桌面/Web 形态**:ADR-0008 现行版本已修订；本计划只登记工程侧触发条件(P1-A)。
+- **Flutter 3.47 升级**:已落地（见 P2-E），本计划只固化「跟次版本等 patch」的策略惯例。
 - **被引用的 Lucent 侧计划**(评估对象,不在本仓):`Lucent/plans/2026-07-24-worker-separation-and-cron-repeatable.md`、`2026-08-02-rnacos-runtime-config-tuning.md`——均维持暂缓,触发条件见本文 P2-A/B/C/D。原列的 `Lucent/plans/2026-08-14-saas-modules-and-node-monorepo.md` 已于 2026-09-30 废置删除;曾接替它的 `Lucent/plans/2026-09-30-admin-console.md` 也已在 2026-10-07 随 AdminJS 退役而删除(实施完毕文件已删),monorepo 形态当前无活跃计划。
 - **隐私横切约束**:90 天事件删除由 F-2 每日数据保留清理执行、F-7 枚举-only 埋点遵守,均为保留项,其他计划涉及埋点/事件时不得破坏该约束。
 
 ## 五、本计划内执行顺序
 
 1. **P2-A/B/C/D（0.1.0 后）**——按触发条件恢复，不提前投入。
-2. **P2-E** 在 Flutter 3.47.1 可用后跟进，不作为 0.1.0 门槛。
-3. **P1-A F-16（0.1.0 后）**——按已接受 ADR-0012 启动独立 Next.js + Tauri MVP。
+2. **P2-E** F-15 已落地，不作为 0.1.0 门槛。
+3. **P1-A F-16（0.1.0 后）**——桌面端形态按 ADR-0008 现行版本（2026-11-01/11-02 修订）执行。
 
 ## 六、已决边界与延期项
 
 - 队列权威口径为 12 条 Queue 实例：6 条继承 `BaseAsyncQueueService`、4 条业务直建、2 条调度队列；仅修正文档/注释，不做队列重构。
-- Worker 分离、rnacos、SaaS 与 Node monorepo 均为 0.1.0 后、由既有触发条件控制的事项；Flutter 3.47 仅在上游 3.47.1 可用后跟进，不作为发布门槛。
-- 漏斗消费面为 0.1.0 后 TODO，仅做受保护周报或简表，不建设实时 Admin Dashboard。独立桌面 MVP 采用 Next.js + Tauri 同步交付；桌面高级能力仍冻结。
+- Worker 分离、rnacos、SaaS 与 Node monorepo 均为 0.1.0 后、由既有触发条件控制的事项；Flutter 3.47 升级已落地。
+- 漏斗消费面为 0.1.0 后 TODO，仅做受保护周报或简表，不建设实时 Admin Dashboard。桌面端形态按 ADR-0008 现行版本（2026-11-01/11-02 修订）执行。
 - 新增医疗判断、外部供应商、用户数据结构或部署成本时，另建任务计划并重新 grill。

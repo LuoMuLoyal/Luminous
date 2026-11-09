@@ -1,14 +1,15 @@
 ---
 status: active
 owner: frontend
-updated: 2026-10-27
+updated: 2026-11-09
 ---
 
 # 本地存储三层整改：缓存优先、KV 换 Hive、SQLCipher 加密
 
 Created: 2026-10-27
 
-> 状态：**未开工**。本计划取代并修订 `docs/reference/adr/0006-local-persistence-drift.md`
+> 状态：**P1（Hive）与 P2（加密）已落地，仅剩 P0（缓存优先）未完成。**
+> 本计划取代并修订 `docs/reference/adr/0006-local-persistence-drift.md`
 > 中的两项既有结论（§4 缓存覆盖面、§5 不加密），ADR 正文随本计划一并更新。
 
 - 范围：`Luminous`（Flutter 客户端）
@@ -127,107 +128,12 @@ P0.1/P0.2 之后已是 cache-first，聚合整体即可在首帧返回本地数�
 
 ---
 
-## P1 shared_preferences → Hive（破坏性，不迁移旧数据）
-
-### P1.1 选型
-
-采用 **`hive_ce`**（community edition）：原 `hive` 已停止维护（`hive` 2.2.3 之后无更新），
-`hive_ce` 是社区接管版，API 兼容、继续维护、支持全部平台。
-
-**明文写入**：本计划的 Hive 只存偏好与开关，**不存任何凭据**；token 仍在
-`flutter_secure_storage`。因此 Hive box 不使用加密 box，避免再引入一把需要托管的密钥。
-
-### P1.2 破坏性变更口径（用户明确指示）
-
-**完全不管旧版本与老用户，不做数据迁移。**
-
-- 不写 `SharedPreferences` → Hive 的一次性导入逻辑。
-- 不保留旧 key 的读取兜底。
-- 升级后用户的偏好（主题、语言、无障碍、通知开关、快速记录排序等）**重置为默认值**。
-- 在 `docs/logs/migration-log/` 记明这是有意的破坏性变更及其影响面。
-
-### P1.3 结构
-
-新增 `lib/core/storage/`：
-
-- `hive_boxes.dart` —— box 名与 `Hive.initFlutter` 装配（`main.dart` 启动时打开）。
-- `kv_store.dart` —— 统一读写门面：`get<T>(key)` / `put<T>(key, value)` / `remove(key)`，
-  取代各处直接取 `SharedPreferences.getInstance()`。
-- `pref_keys.dart` 保留，但**改为 Hive box 内的 key**，并补上每个 key 的类型
-  （`bool` / `int` / `String` / `List<String>` / `Map`），让读写的类型与 key 一一对应。
-
-### P1.4 需要重点改造的嵌套对象
-
-以下 4 处目前是手写 JSON 编解码，改为 Hive 原生支持的 `Map`/`List` 存储，
-或用 `freezed` + `TypeAdapter`：
-
-- `record.quickEntry.customIcons`
-- `record.quickEntry.customOrder`
-- `medicine.reminder.scheduledNotificationIds`
-- `record.quickEntry.symptom.enabledChoices`
-
-### P1.5 顺带清理误导性 key
-
-`PrefKeys.accessToken` / `PrefKeys.refreshToken` 与 `SharedPrefsLucentSessionStore`
-一并删除：
-
-- 二者已不承载实际 token 存储（真实存储在 `flutter_secure_storage`），
-  名字极易让人误判「token 明文落在 SharedPreferences」。
-- 删除 `SharedPrefsLucentSessionStore` 整个类与其迁移分支，
-  `session_store.dart` 只保留 `SecureLucentSessionStore`。
-- `core/network/client/client_providers.dart` 的装配已是 `SecureLucentSessionStore`，
-  无需改动。
-
-### P1.6 验收标准
-
-- `pubspec.yaml` 移除 `shared_preferences` 及其实现在全部平台的传递依赖。
-- 全仓 `SharedPreferences` 引用为 0。
-- 全仓 `PrefKeys.accessToken` / `PrefKeys.refreshToken` / `SharedPrefsLucentSessionStore` 引用为 0。
-- 偏好读写行为由 widget/unit 测试覆盖（主题切换、语言切换、通知开关、快速记录排序）。
-
----
-
-## P2 本地数据库加密（SQLCipher）
-
-### P2.1 方案
-
-- 依赖：`sqlcipher_flutter_libs` + drift 已有的 `sqlite3` 绑定，
-  通过 `NativeDatabase(file, setup: (db) => db.execute("PRAGMA key = '...'"))` 注入密钥。
-- 密钥来源：`flutter_secure_storage`（iOS Keychain / Android Keystore）。
-  首次启动生成 32 字节随机密钥并写入 secure storage，之后每次打开库时读出。
-- 密钥读取失败：不静默降级为明文。走明确的错误态（提示用户重装或清数据），
-  并把失败原因写日志——静默明文落盘比打不开更糟。
-
-### P2.2 破坏性口径
-
-与 P1 一致：**不做明文库到加密库的迁移**。
-
-- 首次以加密方式打开时，若检测到旧明文 `luminous.db`，直接删除并重建空库。
-- 代价：升级后本地缓存与未同步的 pending sync 队列清空（其中未同步的写入会丢失）。
-- 因 P1 已接受破坏性变更，这里保持同一口径；在 migration log 里写明连带影响。
-
-### P2.3 Web 端
-
-`connection_web.dart` 走的是 `WasmDatabase`（IndexedDB 后端），
-SQLCipher 不适用于该路径。Web 端保持现状，并在此 ADR 中写明「加密仅覆盖原生平台」。
-
-### P2.4 验收标准
-
-- Android/iOS/Windows/macOS/Linux 上生成的 `luminous.db` 用明文 SQLite 打开失败。
-- 同一设备二次启动能正常解密打开，数据保留。
-- 密钥在 secure storage 中只存在一份。
-- 已有 DAO / SyncWorker 测试在 `NativeDatabase.memory()` 下仍全绿
-  （内存库不走加密路径，需确认注入点不破坏测试装配）。
-
 ---
 
 ## 执行顺序与依赖
 
-1. **P0**（缓存优先）—— 无破坏性，可单独发布，收益最大。
-2. **P1**（Hive）—— 破坏性，需在 P0 之后，避免两组变更同时排查问题。
-3. **P2**（加密）—— 破坏性，放最后；与 P1 同批发布可以减少一次「重置偏好」的用户感知。
-
-P1 与 P2 都是破坏性的，若同批发布，用户只经历一次数据重置。
+1. **P0**（缓存优先）—— 无破坏性，可单独发布，收益最大。**唯一剩余项。**
+2. ~~P1（Hive）~~、~~P2（加密）~~ 已同批落地（破坏性重置一次完成），条目已删。
 
 ## 风险
 
@@ -235,13 +141,9 @@ P1 与 P2 都是破坏性的，若同批发布，用户只经历一次数据重�
 | --- | --- |
 | P0 新增 6 张缓存表，migration 复杂化 | 每张表独立 migration 步骤，drift schema 版本号逐次递增 |
 | P0 聚合层「部分命中」导致指标长期显示「—」 | 后台刷新成功后 invalidate 对应 provider，用现有 `DataChangeBus` 触发 |
-| P1 破坏性重置偏好引发用户反馈 | 发布说明写明；首次启动偏好为默认值属预期 |
-| P2 密钥丢失导致库打不开 | 密钥存 secure storage，不参与任何清理；提供「清空本地数据」入口作为兜底 |
-| P2 明文库检测误删用户数据 | 删除前明确判断文件头是否为 SQLite 明文格式，并记日志 |
 
 ## 不做的事
 
 - 不引入第三套存储引擎（Hive 只替代 SharedPreferences，不碰 drift）。
-- 不给 Hive box 加密（不存凭据）。
 - 不做旧数据迁移（用户明确要求）。
 - 不改 `SecureLucentSessionStore` 的 token 存储（已正确）。

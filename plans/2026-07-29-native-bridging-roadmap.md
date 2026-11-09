@@ -1,16 +1,16 @@
 # Luminous 原生桥接路线图
 
 > 创建日期：2026-07-29
-> 状态：规划中，尚未开始执行
+> 状态：**剩余 Phase 3–7**（健康数据自动同步、生物识别、快捷方式、Live Activity、桌面热键）
 > 涉及仓库：Luminous（部分需 Lucent 后端配合）
 > 完成后删除本文件，将稳定决策更新到 `docs/reference/architecture.md` 及相关文档。
 
 ---
 
-> **2026-10-16 状态：Phase 1（后台同步）与 Phase 2（推送通知）的方案已由
-> [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md) 接管并落地
-> （本地通知 + JPush 回退）；本文件剩余 Phase 3–7（健康数据手动导入已落地、生物识别、快捷方式、
-> Live Activity、桌面热键）中，未落地项均依赖平台资质或 0.1.0 后排期。
+> **2026-11-09 复核：Phase 1（后台同步）与 Phase 2（推送通知）已由
+> [`2026-08-16-platform-notification-crosscutting-plan.md`](2026-08-16-platform-notification-crosscutting-plan.md)
+> 接管并落地（本地通知 + JPush 回退），对应章节与「§3.1 / §3.2 详细方案」已删。
+> 健康数据**手动导入**已落地，自动同步仍未开工。剩余未落地项均依赖平台资质或 0.1.0 后排期。**
 
 ## 1. 背景与目标
 
@@ -35,131 +35,17 @@ Luminous 当前大部分功能通过纯 Dart + Flutter 插件实现，已有的�
 
 | 优先级 | 需求 | 核心痛点 | 依赖方 |
 |--------|------|---------|--------|
-| P0 | 后台同步 (Background Sync) | 离线写入的 `pending_sync` 队列在 app 被杀后无法重放 | Luminous 独立 |
-| P0 | 推送通知 (Remote Push) | 服务端通知无法触达离线用户 | Luminous + Lucent |
 | P1 | 健康数据集成 (HealthKit / Health Connect) | 步数、睡眠、心率等 vital 数据全靠手动录入 | Luminous 独立 |
 | P1 | 生物识别认证 (Biometric Auth) | 安全提权仅支持 6 位 PIN | Luminous 独立 |
 | P2 | 应用快捷方式 (App Shortcuts) | 快速录入入口需先打开 app | Luminous 独立 |
 | P2 | iOS Live Activity / Android Widget | 用药提醒锁屏可见性不足 | Luminous 独立 |
 | P3 | 桌面全局热键 | 后台时无法通过快捷键触发 | Luminous 独立 |
 
+> 原 P0 两项（后台同步、推送通知）已落地，条目已删。
+
 ---
 
 ## 3. 详细方案
-
-### 3.1 后台同步 (Background Sync) — P0
-
-#### 现状
-
-`SyncWorker` (`core/database/sync/worker.dart`) 监听 `connectivity_plus` 的网络变化事件，
-在 app 前台时自动重放 `pending_sync` 队列。一旦 app 被系统杀死，队列中的离线写入
-（如快速记录的饮水/用药/饮食）将无限期滞留，直到用户下次手动打开 app。
-
-#### 方案
-
-**Android — WorkManager**
-
-使用 `workmanager` 插件（或自定义 MethodChannel 调用原生 WorkManager API）：
-
-- 注册一个 **周期性 Worker**（每 15 分钟），约束 `NetworkType.CONNECTED`
-- Worker 启动时在 Dart isolate 中执行 `SyncWorker.flush()`
-- 需要处理 isolate 生命周期：Dart isolate 在后台入口点冷启动，需要初始化最小
-  依赖（Drift database connection + Dio instance + pending_sync DAO）
-
-关键文件变更：
-- `lib/core/database/sync/background_sync_entry.dart` — 新增，后台 isolate 入口点
-- `lib/core/database/sync/worker.dart` — 提取 `flush()` 为可独立调用的静态方法
-- `android/app/src/main/kotlin/.../MainActivity.kt` — 注册 WorkManager
-- `pubspec.yaml` — 添加 `workmanager` 依赖
-
-**iOS — BGProcessingTaskRequest**
-
-通过自定义 MethodChannel 在 `AppDelegate.swift` 中注册后台处理任务：
-
-- `BGTaskScheduler.shared.register` 注册 `BGProcessingTask`
-- 在 info.plist 声明 `BGTaskSchedulerPermittedIdentifiers`
-- 后台任务触发时通过 MethodChannel 调用 Dart 端的 `flush()`
-- iOS 后台执行时间有限（约 30s），需做好超时保护
-
-关键文件变更：
-- `ios/Runner/AppDelegate.swift` — 注册 BGTaskScheduler
-- `ios/Runner/Info.plist` — 声明后台任务标识符
-- `lib/core/database/sync/background_sync_entry.dart` — 共用入口点
-
-**两端共用逻辑**
-
-```
-lib/core/database/sync/
-├── worker.dart                 ← 现有 SyncWorker（保持不变）
-├── background_sync_entry.dart  ← 新增：后台入口点，初始化最小依赖后调用 flush
-└── background_sync_coordinator.dart ← 新增：注册/取消后台任务的平台抽象
-```
-
-`BackgroundSyncCoordinator` 接口：
-
-```dart
-abstract interface class BackgroundSyncCoordinator {
-  bool get isSupported;
-  Future<void> registerPeriodicSync({Duration interval = const Duration(minutes: 15)});
-  Future<void> unregister();
-}
-```
-
-实现两个版本：`WorkManagerSyncCoordinator` (Android) 和 `BgTaskSyncCoordinator` (iOS)，
-在 `core/providers/` 中按 `Platform` 选择注入。
-
-#### 验证
-
-- Android: 关闭 app → 断网写入记录 → 连网 → 等待 15 分钟 → 检查后端是否收到
-- iOS: 同上，但需手动触发后台任务（Xcode → Debug → Simulate Background Fetch）
-- `flutter test` 覆盖 `flush()` 静态入口点的单元测试
-
----
-
-### 3.2 推送通知 (Remote Push Notifications) — P0
-
-#### 现状
-
-`notification` feature 的 unread count (`notificationUnreadCountProvider`) 只在 app
-前台时拉取。后端 Lucent 有 BullMQ 队列可以生成服务端通知，但无法推送到离线设备。
-
-#### 方案
-
-**Android — FCM**
-
-- 添加 `firebase_messaging` 插件
-- 在 `MainActivity.kt` 中获取 FCM token
-- 通过 `POST /api/v1/user/devices` 将 token 注册到 Lucent
-- Lucent 的通知服务在推送时调用 FCM API
-
-**iOS — APNs**
-
-- 在 `AppDelegate.swift` 中注册远程通知
-- 获取 device token 后发送给 Lucent
-- Lucent 的通知服务调用 APNs provider
-
-**Lucent 后端需配合**
-
-- 新增 `devices` 模块：`POST /api/v1/user/devices` (register), `DELETE /api/v1/user/devices/:token` (unregister)
-- 通知发送服务增加 FCM/APNs 推送逻辑
-- `environment.md` 补充 FCM/APNs 配置项
-
-关键文件变更（Luminous 端）：
-- `lib/core/network/push/` — 新增目录
-  - `push_token_service.dart` — 获取 + 注册 token
-  - `push_message_handler.dart` — 处理收到的推送消息（前台/后台/终止态）
-- `lib/app/bootstrap.dart` — 在 app 启动时初始化推送
-- `ios/Runner/AppDelegate.swift` — 注册远程通知
-- `android/app/build.gradle` — 添加 Google Services 依赖
-- `pubspec.yaml` — 添加 `firebase_messaging`
-
-#### 验证
-
-- 前台收推送：app 打开时后端发推送 → app 内显示
-- 后台收推送：app 在后台 → 通知栏显示系统通知
-- 终止态收推送：app 被杀 → 通知栏显示 → 点击打开 app → 跳转到对应页面
-
----
 
 ### 3.3 健康数据集成 (HealthKit / Health Connect) — P1
 
@@ -420,37 +306,6 @@ iOS Live Activity 需要单独的 Widget Extension target，增加了项目复�
 ---
 
 ## 4. 执行计划
-
-### Phase 1: 后台同步 (P0)
-
-| 步骤 | 内容 | 预计工作量 |
-|------|------|-----------|
-| 1.1 | 设计 `BackgroundSyncCoordinator` 抽象接口 | 0.5h |
-| 1.2 | 提取 `SyncWorker.flush()` 为可独立调用的方法 | 1h |
-| 1.3 | 实现 `WorkManagerSyncCoordinator` (Android) | 3h |
-| 1.4 | 实现 `BgTaskSyncCoordinator` (iOS) | 3h |
-| 1.5 | 后台 isolate 入口点 + 最小依赖初始化 | 3h |
-| 1.6 | 单元测试 + 集成测试 | 2h |
-| 1.7 | 文档更新 | 0.5h |
-
-**前置条件**：无
-**风险**：后台 isolate 的 Drift database 连接可能与前台 isolate 的连接冲突，需验证
-
-### Phase 2: 推送通知 (P0)
-
-| 步骤 | 内容 | 预计工作量 |
-|------|------|-----------|
-| 2.1 | Lucent 后端新增 devices 模块 + API | 1 天 (后端) |
-| 2.2 | Lucent 通知服务集成 FCM/APNs | 1 天 (后端) |
-| 2.3 | Luminous `PushTokenService` 实现 | 3h |
-| 2.4 | Luminous `PushMessageHandler` 实现 | 3h |
-| 2.5 | iOS APNs 注册 (`AppDelegate.swift`) | 2h |
-| 2.6 | Android FCM 集成 | 3h |
-| 2.7 | 推送消息路由到对应页面 | 2h |
-| 2.8 | 测试 + 文档 | 2h |
-
-**前置条件**：需要 Firebase 项目 + APNs 证书
-**风险**：Firebase 项目配置可能需要额外审批
 
 ### Phase 3: 健康数据集成 (P1)
 

@@ -1,32 +1,35 @@
-# 产品表面路线:手机核心 + 桌面 SaaS 差异化 + Web 第三客户端
+# 产品表面路线:手机核心 + 桌面视图 + Web 形态
 
 Created: 2026-08-14
-Updated: 2026-08-16
+Updated: 2026-11-09
 
 > 状态:方向已决策(ADR-0008 accepted),0.1.0 后启动执行。背景源于产品定位讨论:项目从大学竞赛产物转向正式产品。
+> **2026-11-09 复核**：ADR-0008 已两次修订（2026-11-01 桌面端恢复为一等客户端，2026-11-02 桌面与手机地位平等），
+> 本文件原「Flutter Desktop 与 PC Flutter Web 冻结」及相关动作已删除，以 ADR-0008 现行正文为准。
+> 本文件只保留**尚未启动**的工作台与移动 web 降级清单。
 > 权威决策:`docs/reference/adr/0008-desktop-independent-web-product-route.md`(accepted)。
 > 相关讨论草稿 `plans/adr-015-luminous-desktop-deprecation-and-monorepo-evolution.md` 已随计划清理删除(临时草稿,非正式 ADR)。
-> 配套后端计划:`Lucent/plans/2026-09-30-admin-console.md`(原 `Lucent/plans/2026-08-14-saas-modules-and-node-monorepo.md` 于 2026-09-30 废置删除)已于 2026-10-07 随 AdminJS 退役而删除(实施完毕文件已删);桌面工作台动工前需另立子计划。
+> 配套后端计划:原 `Lucent/plans/2026-09-30-admin-console.md` 已于 2026-10-07 随 AdminJS 退役而删除(实施完毕文件已删);桌面工作台动工前需另立子计划。
 > 本文档为方向性计划;具体执行细节在执行前按任务拆分子计划。
 
 ## 一、目标
 
 1. 0.1.0 移动端发布验证**不阻塞、零重构**——本计划的所有动作都不得挡住发布门禁。
-2. 把「桌面端冻结」决策升级为「桌面端 SaaS 差异化独立路线」:不再追求与手机端功能对等,
-   桌面工作台走**Next.js + Tauri**形态,不复刻五大 Tab。
-3. Web 端承担两个形态:移动 web(Flutter,鸿蒙过渡)与桌面工作台(Next.js + Tauri),
-   由各自技术栈维护,不做「电脑浏览器跑 Flutter Web」的尴尬形态。
+2. 桌面端按 ADR-0008 现行版本与手机端地位平等，共享 Flutter + KMP 客户端；
+   工作台形态（Next.js + Tauri）作为候选方向保留，启动前需按 ADR-0008 重新裁决。
+3. Web 端承担两个形态:移动 web(Flutter,鸿蒙过渡)与桌面视图;桌面端按 ADR-0008 现行版本与手机端地位平等。
+   （原「不做电脑浏览器跑 Flutter Web」的强制分流已被 ADR-0008 修订取代。）
 
 ## 二、已决路线(2026-08-16)
 
-- **Flutter 只做手机 App + 移动 web**:Android/iOS 与 Flutter Web(手机浏览器,鸿蒙过渡)继续维护;
-  **Flutter Desktop 与 Flutter Web(PC)冻结**(`git tag desktop-final-frozen` / `web-pc-final-frozen`),
-  代码不删、不再维护。
+- **Flutter 只做手机 App + 移动 web**:Android/iOS 与 Flutter Web(手机浏览器,鸿蒙过渡)继续维护。
+  （原「Flutter Desktop 与 Flutter Web(PC)冻结」已被 ADR-0008 2026-11-01/11-02 修订取代，条目已删。）
 - **桌面工作台 = 独立 Next.js 客户端 + Tauri 桌面壳**(Lucent monorepo 的 `apps/saas`),与营销站同生态,二者从 MVP 起同步交付;
   技术选型依据:桌面端核心能力是复杂数据表/筛选/趋势图表,web 生态(TanStack Table/AG Grid + ECharts)
   对此碾压 Flutter;WebView 性能顾虑经调研澄清(WebView2=Chromium,瓶颈在数据层工程,不在引擎);
   Flutter→web 全量重写的成本不再承担；Tauri 壳与工作台一同维护。
 - 手机端是**当前核心产品表面**:当前发布结构仍为今日 / 记录 / 用药 / 回顾 / 我的;长期 Tab 结构由 ADR-0012 另行决策。
+  桌面端按 ADR-0008 现行版本（2026-11-01/11-02 修订）与手机端地位平等，共享 Flutter + KMP 客户端。
 - 工作台定位一句话:**手机负责「记」,电脑负责「看和分析」**——历史趋势大屏、就诊资料整理、
   报告生成与预览、批量导入、健康事件深度复盘。
 - 路由边界:Flutter Web 检测屏幕宽度 > 768px 时跳转 SaaS 登录页,手机浏览器 → Flutter Web,
@@ -61,8 +64,7 @@ Updated: 2026-08-16
 
 ## 四、架构动作
 
-- [ ] Flutter 侧:冻结 Desktop / Web(PC)目标,标记冻结点;清理 `Platform.isWindows` 等条件编译
-      作为长期事项(不设 deadline,「什么时候成了拖后腿的维护负担,什么时候动手」)
+- [ ] Flutter 侧条件编译清理(`Platform.isWindows` 等)作为长期事项(不设 deadline,「什么时候成了拖后腿的维护负担,什么时候动手」)
 - [ ] Flutter Web(手机)保留响应式层现状(`breakpoints.dart` / `responsive_sizing.dart` 不重构),
       新增 >768px 跳转 SaaS 登录页的边界逻辑
 - [ ] 移动端独占插件抽象层维持现状(fluwx、mobile_scanner、paddle_ocr 已有 stub/条件导入,不推倒)
@@ -70,15 +72,14 @@ Updated: 2026-08-16
 
 ## 五、文档同步(发布前完成)
 
-- [ ] `docs/explanation/Project_Governance.md` 产品表面一节:桌面端由「冻结」改写为「SaaS 差异化定位」
+- [ ] `docs/explanation/Project_Governance.md` 产品表面一节:桌面端定位按 ADR-0008 现行版本改写
 - [ ] 桌面端新定位落点(原 `Desktop_UI.md` 已归档于 `docs/archive/2026-08-31-doc-governance/`,执行时以 feature README 与测试承接)
 - [ ] 延后清单更新落点(原 `Next_Plan.md` 已归档,现由 `docs/TODO.md` 承接)
-- [ ] 迁移日志:追加本计划修订条目(范围:方向计划,无代码变更)
 
 ## 六、执行顺序
 
 1. [ ] 0.1.0 移动端发布验证(当前门禁,零重构,只修阻断项)
-2. [ ] 文档同步 + 冻结点标记(Phase 0)
+2. [ ] 文档同步(Phase 0)
 3. [ ] 0.1.0 发布后，依赖 Lucent `apps/saas` 落地，开始 Next.js + Tauri 工作台 MVP(Phase 1 单页 Dashboard)
 4. [ ] 工作台完善(Phase 2:就诊摘要管理 / 事件复盘 / 导出)
 5. [ ] 移动 web 按第三节清单做能力降级与 >768px 跳转边界
