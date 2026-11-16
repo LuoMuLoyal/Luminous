@@ -34,7 +34,7 @@ class GenerativeComposeEntry extends ConsumerWidget {
     final state = ref.watch(generativeStateProvider);
     final typography = context.theme.typography;
 
-    // `tab_chrome` 是底部栏，不是页面，服务端会以 400
+    // `tab` 是底部栏，不是页面，服务端会以 400
     // `GENERATIVE_SURFACE_UNSUPPORTED` 拒绝。客户端在这里就不给入口。
     if (!isComposableSurface(surface)) return const SizedBox.shrink();
 

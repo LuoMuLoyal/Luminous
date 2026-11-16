@@ -110,7 +110,7 @@ class CustomizerPalette extends ConsumerWidget {
     // 每个 surface 可挂、当前还没挂上的组件——这就是跨 tab 的候选集。
     final groups = <SurfaceId, List<ComponentId>>{};
     for (final definition in catalog.definitions) {
-      if (definition.surface == SurfaceId.tabChrome) continue;
+      if (definition.surface == SurfaceId.tab) continue;
       final ids = [
         for (final id in definition.owned)
           if (!mounted.contains(id)) id,
@@ -187,7 +187,7 @@ String surfaceTitle(AppLocalizations l10n, SurfaceId surface) {
     SurfaceId.medicine => l10n.tabMedicine,
     SurfaceId.review => l10n.tabReview,
     SurfaceId.mine => l10n.tabMine,
-    SurfaceId.tabChrome => l10n.customizerTitle,
+    SurfaceId.tab => l10n.customizerTitle,
   };
 }
 

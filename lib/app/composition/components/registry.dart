@@ -79,7 +79,7 @@ SurfaceCatalog buildSurfaceCatalog({bool registerGenerative = false}) {
         surface: base.surface,
         owned: [
           ...base.owned,
-          if (base.surface != SurfaceId.tabChrome)
+          if (base.surface != SurfaceId.tab)
             generativeSurfaceComponentId(base.surface),
         ],
         defaultLayout: base.defaultLayout,

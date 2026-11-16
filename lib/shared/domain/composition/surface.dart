@@ -10,16 +10,17 @@ import 'layout.dart';
 
 /// Surfaces the app knows about: the five tabs plus the tab bar itself.
 ///
-/// `tabChrome` shares the layout machinery with the pages: it is "the surface
-/// whose components are the bottom tabs", so tab reordering/renaming needs no
-/// second model.
+/// `tab` shares the layout machinery with the pages: it is "the surface whose
+/// components are the bottom tabs", so tab reordering/renaming needs no second
+/// model. The wire value is exactly `tab` — the resource is the tab preferences,
+/// with no extra prefix or qualifier.
 enum SurfaceId {
   today,
   record,
   medicine,
   review,
   mine,
-  tabChrome;
+  tab;
 
   /// Value used in persisted layouts and backend payloads.
   String get wireValue => switch (this) {
@@ -28,7 +29,7 @@ enum SurfaceId {
     SurfaceId.medicine => 'medicine',
     SurfaceId.review => 'review',
     SurfaceId.mine => 'mine',
-    SurfaceId.tabChrome => 'tab_chrome',
+    SurfaceId.tab => 'tab',
   };
 
   static SurfaceId? fromWire(String raw) {
@@ -89,10 +90,10 @@ final class SurfaceCatalog {
   /// putting the dose risk card on Today, the water trend on Record. Ownership
   /// ([ownedBy]) only decides default order and grouping.
   ///
-  /// A surface that does not exist cannot host anything, and `tabChrome` is not
+  /// A surface that does not exist cannot host anything, and `tab` is not
   /// a page — neither takes page components.
   bool mountableOn(SurfaceId surface, ComponentId id) {
-    if (surface == SurfaceId.tabChrome) return false;
+    if (surface == SurfaceId.tab) return false;
     return _bySurface.containsKey(surface);
   }
 

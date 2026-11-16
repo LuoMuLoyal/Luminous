@@ -53,7 +53,7 @@ abstract final class GenerativeSseEvents {
 /// `Future<Response<...>>`，拿不到逐帧事件。这与 assistant / today-analysis /
 /// review 三处 SSE 的处置相同（见 `LucentApiPaths` 头注释）。
 ///
-/// 开流前的校验（空 prompt / `tab_chrome` / 超长）是普通 HTTP 400/422，会在
+/// 开流前的校验（空 prompt / `tab` / 超长）是普通 HTTP 400/422，会在
 /// `postJson` 里以 `DioException` 抛出，经 `LucentErrorMapper` 变成 failure；
 /// 只有开流之后的失败才走 `event: error`。
 abstract interface class GenerationRemote {
@@ -131,7 +131,7 @@ final class LucentGenerationRemote implements GenerationRemote {
         }
       }
     } on DioException catch (error) {
-      // 开流前的 400 / 422（空 prompt、`tab_chrome`、超长）就是这样到达的：
+      // 开流前的 400 / 422（空 prompt、`tab`、超长）就是这样到达的：
       // 它们没有机会变成 `event: error`，只能以 HTTP 错误抛出。映射必须在
       // `data/` 完成——上层拿到的要么是值，要么是 [LucentFailure]。
       final failure = LucentErrorMapper.fromObject(error);

@@ -74,7 +74,7 @@ void main() {
     final draft = baseDraft();
     final next = applyEdit(
       draft,
-      const LayoutEdit.add(surface: SurfaceId.tabChrome, id: fresh, toIndex: 0),
+      const LayoutEdit.add(surface: SurfaceId.tab, id: fresh, toIndex: 0),
       catalog,
     );
 

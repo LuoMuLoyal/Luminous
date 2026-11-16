@@ -109,7 +109,7 @@ void main() {
         if (isSurfaceScopedGenerativeId(component.id)) continue;
         final domain = component.id.value.split('.').first;
         expect(
-          {'today', 'record', 'medicine', 'review', 'mine', 'tab_chrome'},
+          {'today', 'record', 'medicine', 'review', 'mine', 'tab'},
           isNot(contains(domain)),
           reason:
               '${component.id}: the first segment names what the component '
@@ -151,7 +151,7 @@ void main() {
         reason: '默认构建里不应出现 generative.<surface>',
       );
 
-      // 打开开关后必须完整出现：五个可生成 surface 各一个（tab_chrome 除外）。
+      // 打开开关后必须完整出现：五个可生成 surface 各一个（tab 除外）。
       final enabled = buildComponentRegistry(registerGenerative: true);
       final generativeIds = {
         for (final c in enabled.components)

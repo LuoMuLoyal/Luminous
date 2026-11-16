@@ -101,7 +101,7 @@ provider 读取时求值并 `watch(genUiEnabledProvider)`，所以用户一开�
 
 | 何时 | 形态 | 处理 |
 | --- | --- | --- |
-| 开流**前**（空 prompt / `tab_chrome` / 超长） | 普通 HTTP 400/422 | `DioException` → `LucentErrorMapper` |
+| 开流**前**（空 prompt / `tab` / 超长） | 普通 HTTP 400/422 | `DioException` → `LucentErrorMapper` |
 | 开流**后**（模型输出被拒、LLM 未配置、熔断） | `event: error` + 完整 Problem Details | `mapSseStreamError` |
 
 `chunk` 只作渐进反馈，**`result` 才是权威序列**：落盘与重放都用后者。没有 `result`

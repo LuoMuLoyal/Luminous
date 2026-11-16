@@ -37,7 +37,7 @@ class SaveLayoutRequest {
   @JsonKey(name: r'schemaVersion', required: true, includeIfNull: false)
   final int schemaVersion;
 
-  /// Client-owned layout document. Stored verbatim; the server never interprets it. An object for page layouts, an array for tab_chrome.
+  /// Client-owned layout document. Stored verbatim; the server never interprets it. An object for page layouts, an array for tab.
   @JsonKey(name: r'payload', required: true, includeIfNull: true)
   final Object? payload;
 

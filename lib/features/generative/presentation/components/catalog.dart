@@ -15,8 +15,8 @@ import 'package:luminous/features/generative/presentation/widgets/generative_sur
 /// `SizedBox.shrink()` 表达——`ComponentHost` 的 `null` 语义是「跳过我并连带
 /// 跳过间距」，而生成式 UI 的结果通常要占满整行，由它自己决定间距更合适。
 ///
-/// **注意**：`ComponentId` 只接受 `[a-z0-9_]`，`SurfaceId.tabChrome` 的 wire
-/// 值是 `tab_chrome`，合法；但 tab 栏本身不是页面，生成式 UI 不挂它
+/// **注意**：`ComponentId` 只接受 `[a-z0-9_]`，`SurfaceId.tab` 的 wire
+/// 值是 `tab`，合法；但 tab 栏本身不是页面，生成式 UI 不挂它
 /// （见 [generativeSurfaces]）。
 void registerGenerativeComponents(ComponentRegistry registry) {
   for (final surface in generativeSurfaces) {
