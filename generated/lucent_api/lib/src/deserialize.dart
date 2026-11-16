@@ -218,6 +218,11 @@ import 'package:lucent_api/src/model/medicine_enzyme_duels_response.dart';
 import 'package:lucent_api/src/model/medicine_enzyme_duels_response_duels.dart';
 import 'package:lucent_api/src/model/medicine_mechanism_paths_response.dart';
 import 'package:lucent_api/src/model/medicine_mechanism_paths_response_paths.dart';
+import 'package:lucent_api/src/model/medicine_network_response.dart';
+import 'package:lucent_api/src/model/medicine_network_response_center.dart';
+import 'package:lucent_api/src/model/medicine_network_response_degree.dart';
+import 'package:lucent_api/src/model/medicine_network_response_edges.dart';
+import 'package:lucent_api/src/model/medicine_network_response_neighbours.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job_result.dart';
 import 'package:lucent_api/src/model/medicine_recognition_response.dart';
@@ -1325,6 +1330,29 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MedicineMechanismPathsResponsePaths':
       return MedicineMechanismPathsResponsePaths.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineNetworkResponse':
+      return MedicineNetworkResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineNetworkResponseCenter':
+      return MedicineNetworkResponseCenter.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineNetworkResponseDegree':
+      return MedicineNetworkResponseDegree.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineNetworkResponseEdges':
+      return MedicineNetworkResponseEdges.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineNetworkResponseNeighbours':
+      return MedicineNetworkResponseNeighbours.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;

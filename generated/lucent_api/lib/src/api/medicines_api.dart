@@ -16,6 +16,7 @@ import 'package:lucent_api/src/model/medicine_detail_response.dart';
 import 'package:lucent_api/src/model/medicine_drug_actions_response.dart';
 import 'package:lucent_api/src/model/medicine_enzyme_duels_response.dart';
 import 'package:lucent_api/src/model/medicine_mechanism_paths_response.dart';
+import 'package:lucent_api/src/model/medicine_network_response.dart';
 import 'package:lucent_api/src/model/medicine_recognition_job.dart';
 import 'package:lucent_api/src/model/medicine_recognition_response.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_response.dart';
@@ -272,6 +273,96 @@ class MedicinesApi {
     }
 
     return Response<MedicationOverviewResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Neighbourhood graph of one drug (targets + truncated interaction partners)
+  /// Facts only: no inferred edges. Neighbours are capped (default 30, max 100) and taken in index order by partner id, NOT ranked by importance; the response always states how many were omitted (&#x60;truncated&#x60;) and which ordering was used.
+  ///
+  /// Parameters:
+  /// * [id] - DrugBank id of the centre drug
+  /// * [source_] - Knowledge source. Only drugbank has a relation graph; cn returns an empty graph.
+  /// * [depth] - Neighbourhood depth. Only 1 is supported: depth 2 on the interaction graph is quadratic and unreadable.
+  /// * [limit] - Maximum neighbour nodes (1-100, default 30). Deterministic index order, not importance-ranked.
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [MedicineNetworkResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<MedicineNetworkResponse>> getMedicineNetwork({
+    required String id,
+    String? source_,
+    num? depth,
+    int? limit = 30,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/medicines/{id}/network'.replaceAll(
+      '{'
+      r'id'
+      '}',
+      id.toString(),
+    );
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _queryParameters = <String, dynamic>{
+      if (source_ != null) r'source': source_,
+      if (depth != null) r'depth': depth,
+      if (limit != null) r'limit': limit,
+    };
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      queryParameters: _queryParameters,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    MedicineNetworkResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<MedicineNetworkResponse, MedicineNetworkResponse>(
+              rawData,
+              'MedicineNetworkResponse',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<MedicineNetworkResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
