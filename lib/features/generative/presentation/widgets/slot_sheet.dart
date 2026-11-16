@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -27,6 +27,23 @@ import 'package:luminous/shared/domain/composition/surface.dart';
 /// 用户可能「恢复默认布局」之后仍想保留这个区块，所以声明独立于布局持久化
 /// （`genui.<surface>.spec`），不跟着布局一起被重置。而「清掉」是明确放弃
 /// 这份声明：清完那一行回到「未配置」，下次再配就是重新开始。
+/// 打开「自定义生成式区块」的编辑面板。
+///
+/// 与添加组件用的 sheet 同一套外观（半屏、可滚、跟随键盘），但内容是
+/// 两个文本框：区块名称与让 agent 渲染什么。保存后这一行的名字就变成
+/// 用户填的标题——编排页因此能直接看出这块地方放的是什么。
+///
+/// 放在本文件而不是编排页：面板属于生成式区块本身，编排页只是它的入口。
+Future<void> showGenerativeSlotSheet(BuildContext context, SurfaceId surface) {
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    backgroundColor: context.theme.scaffoldStyle.backgroundColor,
+    builder: (_) => GenerativeSlotSheet(surface: surface),
+  );
+}
+
 class GenerativeSlotSheet extends HookConsumerWidget {
   const GenerativeSlotSheet({super.key, required this.surface});
 

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/composition/generative/generation_repository.dart';
 import 'package:luminous/features/generative/domain/entities/slot_spec.dart';
@@ -21,20 +19,15 @@ class GenerativeSlotSpecController extends Notifier<GenerativeSlotSpec?> {
 
   final SurfaceId surface;
 
+  /// 首次读取把声明从本地读出来：KV 是同步接口，首帧就能决定标题与入口是否
+  /// 显示，不需要异步状态。仓储把坏数据收敛成 `Right(null)`，读失败与
+  /// 「没配过」在这里是同一种结果。
   @override
-  GenerativeSlotSpec? build() {
-    // 声明是本地 KV 上的读模型：首帧就要决定标题与入口是否显示，不能等一个
-    // Future。仓储的坏数据分支已收敛成 `Right(null)`，这里只剩读成功与「读不
-    // 出来当作没配过」两种结果。
-    unawaited(_hydrate());
-    return null;
-  }
-
-  Future<void> _hydrate() async {
-    final result = await ref.read(slotSpecRepositoryProvider).read(surface);
-    if (!ref.mounted) return;
-    state = result.getRight().toNullable();
-  }
+  GenerativeSlotSpec? build() => ref
+      .watch(slotSpecRepositoryProvider)
+      .read(surface)
+      .getRight()
+      .toNullable();
 
   /// 保存（或覆盖）声明。
   ///

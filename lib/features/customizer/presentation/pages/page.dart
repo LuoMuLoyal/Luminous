@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:luminous/app/composition/generative/slot_editor.dart';
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/customizer/domain/entities/edit.dart';
@@ -13,7 +14,6 @@ import 'package:luminous/features/customizer/presentation/providers/draft.dart';
 import 'package:luminous/features/customizer/presentation/widgets/palette.dart';
 import 'package:luminous/features/generative/design/ids.dart';
 import 'package:luminous/features/generative/presentation/providers/slot_spec.dart';
-import 'package:luminous/features/generative/presentation/widgets/slot_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 编排页：编辑**一个** surface 的组件列表，并可把别的 surface 的组件加入。
@@ -434,21 +434,6 @@ class _Header extends StatelessWidget {
   }
 }
 
-/// 打开「自定义生成式区块」的编辑面板。
-///
-/// 与添加组件用的 sheet 同一套外观（半屏、可滚、跟随键盘），但内容是
-/// 两个文本框：区块名称与让 agent 渲染什么。保存后这一行的名字就变成
-/// 用户填的标题——编排页因此能直接看出这块地方放的是什么。
-Future<void> showGenerativeSlotSheet(BuildContext context, SurfaceId surface) {
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
-    backgroundColor: context.theme.scaffoldStyle.backgroundColor,
-    builder: (_) => GenerativeSlotSheet(surface: surface),
-  );
-}
-
 /// 列表里的一行：把手 + 名称 + 显隐 + 移除。
 class _PlacementTile extends ConsumerWidget {
   const _PlacementTile({
@@ -555,7 +540,7 @@ class _PlacementTile extends ConsumerWidget {
             child: FButton.icon(
               variant: FButtonVariant.ghost,
               size: FButtonSizeVariant.xs,
-              onPress: () => showGenerativeSlotSheet(context, surface),
+              onPress: () => showSlotEditor(context, surface),
               semanticsLabel: l10n.generativeSlotEditAction,
               child: const Icon(SemanticIcons.actionEdit),
             ),

@@ -28,9 +28,7 @@ final class CachedSlotSpecRepository implements SlotSpecRepository {
   ///
   /// 解不开当作「没写过」而不是失败：一份坏掉的数据不该让编排页打不开。
   @override
-  Future<Either<LucentFailure, GenerativeSlotSpec?>> read(
-    SurfaceId surface,
-  ) async {
+  Either<LucentFailure, GenerativeSlotSpec?> read(SurfaceId surface) {
     final raw = _store.get<String>(_key(surface), fallback: '');
     if (raw.isEmpty) return const Right(null);
     try {
