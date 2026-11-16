@@ -4,7 +4,7 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/medicine/data/datasources/risk_check_remote.dart';
 import 'package:luminous/features/medicine/data/mappers/risk_check.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/shared/domain/failure.dart';
 import 'package:mocktail/mocktail.dart';
 

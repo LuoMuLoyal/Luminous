@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
-import 'package:luminous/features/medicine/domain/entities/reminder.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/reminder.dart';
 import 'package:luminous/features/record/domain/services/quick_entry.dart';
 import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 

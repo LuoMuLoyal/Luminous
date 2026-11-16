@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/features/medicine/domain/entities/reminder.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/reminder.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 /// Domain interface for reading and writing medicine reminders.

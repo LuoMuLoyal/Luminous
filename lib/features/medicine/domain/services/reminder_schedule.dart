@@ -5,7 +5,7 @@
 /// `core/utils/reminder_format.dart`.
 library;
 
-import 'package:luminous/features/medicine/domain/entities/reminder.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/reminder.dart';
 
 /// How a reminder repeats; used by the edit form and the slot planner.
 enum ReminderFrequency { daily, weekly, custom }

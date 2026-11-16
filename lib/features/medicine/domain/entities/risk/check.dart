@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'risk_check.freezed.dart';
-part 'risk_check.g.dart';
+part 'check.freezed.dart';
+part 'check.g.dart';
 
 // ─── Enums ──────────────────────────────────────────────────────────────────
 

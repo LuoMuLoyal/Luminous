@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/coverage/coverage_tab_section.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/findings/findings_tab_section.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/overview/overview_recommendation.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/sound.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_payload.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
 

@@ -1,6 +1,6 @@
 import 'package:clock/clock.dart';
-import 'package:luminous/features/medicine/domain/entities/reminder.dart';
-import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/reminder.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/sound.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_payload.dart';
 import 'package:meta/meta.dart';
 

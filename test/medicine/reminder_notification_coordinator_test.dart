@@ -13,7 +13,7 @@ import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/sound.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';

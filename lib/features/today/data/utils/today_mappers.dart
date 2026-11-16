@@ -1,4 +1,4 @@
-import 'package:luminous/features/medicine/domain/entities/reminder.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/reminder.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 

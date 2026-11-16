@@ -184,7 +184,8 @@ void main() {
       expect(
         checkImportPath(
           importer: 'lib/features/today/data/repositories/lucent.dart',
-          target: 'lib/features/medicine/domain/entities/reminder.dart',
+          target:
+              'lib/features/medicine/domain/entities/reminder/reminder.dart',
         ),
         isNull,
       );

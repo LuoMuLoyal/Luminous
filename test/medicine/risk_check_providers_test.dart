@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/risk_check.dart';
 import 'package:luminous/shared/domain/failure.dart';

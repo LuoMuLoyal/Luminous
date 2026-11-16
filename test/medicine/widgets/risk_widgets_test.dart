@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/coverage/coverage_issue_tile.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/findings/finding_tile.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/shared/metric_chip.dart';

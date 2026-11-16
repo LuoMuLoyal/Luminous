@@ -14,7 +14,7 @@ import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/router/medicine/routes.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/features/search/presentation/providers/add_precheck.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

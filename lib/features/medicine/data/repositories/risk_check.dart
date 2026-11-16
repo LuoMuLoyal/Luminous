@@ -3,7 +3,7 @@ import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/medicine/data/datasources/risk_check_remote.dart';
 import 'package:luminous/features/medicine/data/mappers/risk_check.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

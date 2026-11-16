@@ -4,10 +4,10 @@ import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/core/network/map_utils.dart';
-import 'package:luminous/features/medicine/domain/entities/reminder.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/reminder.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
 
-export 'package:luminous/features/medicine/domain/entities/reminder.dart'
+export 'package:luminous/features/medicine/domain/entities/reminder/reminder.dart'
     show
         MedicineReminderItem,
         MedicineReminderWriteInput,

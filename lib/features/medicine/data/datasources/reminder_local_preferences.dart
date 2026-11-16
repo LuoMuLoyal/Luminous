@@ -1,6 +1,6 @@
 import 'package:luminous/core/network/config/pref_keys.dart';
 import 'package:luminous/core/storage/kv_store.dart';
-import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/sound.dart';
 
 /// Data-layer service for medicine reminder KvStore access.
 ///

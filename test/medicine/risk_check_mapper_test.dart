@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/medicine/data/mappers/risk_check.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 
 MedicineRiskCheckRecordsResponseStaticResult _response({
   MedicineRiskCheckRecordsResponseStaticResultOverallRiskLevelEnum level =

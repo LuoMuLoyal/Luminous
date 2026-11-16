@@ -1,5 +1,5 @@
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 
 /// Maps generated OpenAPI DTOs to domain entities for the risk check feature.
 ///

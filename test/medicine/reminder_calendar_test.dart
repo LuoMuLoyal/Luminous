@@ -1,6 +1,6 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/medicine/domain/entities/reminder.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/reminder.dart';
 import 'package:luminous/features/medicine/presentation/controllers/reminder_calendar.dart';
 import 'package:luminous/shared/domain/failure.dart';
 

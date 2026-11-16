@@ -5,7 +5,7 @@ import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
-import 'package:luminous/features/medicine/domain/entities/reminder.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder/reminder.dart';
 import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
 import 'package:luminous/features/notification/domain/repositories/notification.dart';

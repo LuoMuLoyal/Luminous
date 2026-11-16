@@ -22,7 +22,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/errors/network_error_l10n.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/pages/risk_check.dart';
 import 'package:luminous/l10n/app_localizations.dart';
