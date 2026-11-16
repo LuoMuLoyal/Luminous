@@ -3,18 +3,19 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/medicine/risk_check.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
+import 'package:luminous/core/router/medicine/routes.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
-import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
-import 'package:luminous/features/medicine/presentation/routes.dart';
-import 'package:luminous/features/search/presentation/widgets/shared/medicine_add_precheck_dialog.dart';
+import 'package:luminous/features/search/presentation/entry/medicine_add_precheck_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Shared "add to drugbox" closed loop (F-9), the single implementation used
@@ -135,11 +136,7 @@ Future<void> addMedicineToBoxWithPrecheck(
           // `_dependents.isEmpty` assertion as the login action above).
           () {
             if (!context.mounted) return;
-            unawaited(
-              MedicineRemindersNewRoute(
-                medicineId: newMedicine.id,
-              ).push(context),
-            );
+            unawaited(context.push(MedicineRoutes.reminder(newMedicine.id)));
           },
         ),
       );

@@ -4,7 +4,9 @@ import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/generative/data/datasources/generation_cache.dart';
 import 'package:luminous/features/generative/data/datasources/generation_remote.dart';
 import 'package:luminous/features/generative/data/repositories/cached_generation.dart';
+import 'package:luminous/features/generative/data/repositories/cached_slot_spec.dart';
 import 'package:luminous/features/generative/domain/repositories/generation.dart';
+import 'package:luminous/features/generative/domain/repositories/slot_spec.dart';
 
 /// 生成式 UI 的远端数据源装配。
 ///
@@ -24,4 +26,12 @@ final generationRepositoryProvider = Provider<GenerationRepository>((ref) {
     GenerativeMessageCache(KvStore.instance),
     ref.watch(generationRemoteProvider),
   );
+});
+
+/// 自定义 genui 区块声明的仓储装配点（只在 `KvStore` 上读写）。
+///
+/// 与 [generationRepositoryProvider] 并列而不是合一：声明与生成结果的生命周期
+/// 相反——清生成结果不动声明，清声明才连带作废结果。
+final slotSpecRepositoryProvider = Provider<SlotSpecRepository>((ref) {
+  return CachedSlotSpecRepository(KvStore.instance);
 });

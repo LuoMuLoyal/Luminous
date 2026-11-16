@@ -13,7 +13,7 @@ import 'package:luminous/core/router/medicine/routes.dart';
 import 'package:luminous/core/widgets/common/photo_viewer.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
-import 'package:luminous/features/search/presentation/widgets/shared/add_to_box.dart';
+import 'package:luminous/features/search/presentation/entry/add_to_box.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRecognizeDialog extends ConsumerStatefulWidget {

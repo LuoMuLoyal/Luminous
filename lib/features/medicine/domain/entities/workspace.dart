@@ -31,8 +31,8 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
     ),
     quickActions: <MedicineQuickAction>[
       MedicineQuickAction(
-        titleKey: MedicineCopyKey.quickActionSearchTitle,
-        subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
+        titleKey: MedicineCopy.quickActionSearchTitle,
+        subtitleKey: MedicineCopy.quickActionSearchSubtitle,
       ),
     ],
     plan: MedicinePlanSurface(items: <MedicinePlanItem>[]),
@@ -57,8 +57,8 @@ abstract class MedicineHero with _$MedicineHero {
 @freezed
 abstract class MedicineQuickAction with _$MedicineQuickAction {
   const factory MedicineQuickAction({
-    required MedicineCopyKey titleKey,
-    required MedicineCopyKey subtitleKey,
+    required MedicineCopy titleKey,
+    required MedicineCopy subtitleKey,
   }) = _MedicineQuickAction;
 
   factory MedicineQuickAction.fromJson(Map<String, dynamic> json) =>
@@ -78,11 +78,11 @@ abstract class MedicinePlanSurface with _$MedicinePlanSurface {
 abstract class MedicinePlanItem with _$MedicinePlanItem {
   const factory MedicinePlanItem({
     required SemanticColor color,
-    required MedicineCopyKey nameKey,
-    required MedicineCopyKey dosageKey,
-    required MedicineCopyKey scheduleKey,
+    required MedicineCopy nameKey,
+    required MedicineCopy dosageKey,
+    required MedicineCopy scheduleKey,
     required List<MedicineDoseSlot> slots,
-    required MedicineCopyKey stateKey,
+    required MedicineCopy stateKey,
     required SemanticColor stateColor,
     MedicineDoseStatus? todayStatus,
 
@@ -107,9 +107,9 @@ abstract class MedicineDoseSlot with _$MedicineDoseSlot {
   const factory MedicineDoseSlot({
     String? reminderId,
     String? scheduledTime,
-    MedicineCopyKey? timeKey,
+    MedicineCopy? timeKey,
     String? rawTime,
-    required MedicineCopyKey statusKey,
+    required MedicineCopy statusKey,
     required MedicineDoseStatus status,
     // F-5 P1: status 仍为 pending 的槽，若已过其 HH:mm 时刻则 isOverdue 为 true
     // （「已超时未确认」），不新增 MedicineDoseStatus 枚举值；overdue 槽仍可补卡。
@@ -151,10 +151,10 @@ enum MedicineAlertIcon {
 abstract class MedicineAlert with _$MedicineAlert {
   const factory MedicineAlert({
     required MedicineAlertIcon iconKey,
-    MedicineCopyKey? titleKey,
-    MedicineCopyKey? bodyKey,
-    MedicineCopyKey? detailKey,
-    MedicineCopyKey? actionKey,
+    MedicineCopy? titleKey,
+    MedicineCopy? bodyKey,
+    MedicineCopy? detailKey,
+    MedicineCopy? actionKey,
     required SemanticColor color,
     required SemanticColor softColor,
     String? rawTitle,
@@ -170,14 +170,14 @@ abstract class MedicineAlert with _$MedicineAlert {
 // TODO(archive): 历史 dashboard 原型残留，无渲染消费方，保留为兼容；若复用需先确认 UI 出口。
 @freezed
 abstract class MedicinePromisePoint with _$MedicinePromisePoint {
-  const factory MedicinePromisePoint({required MedicineCopyKey copyKey}) =
+  const factory MedicinePromisePoint({required MedicineCopy copyKey}) =
       _MedicinePromisePoint;
 
   factory MedicinePromisePoint.fromJson(Map<String, dynamic> json) =>
       _$MedicinePromisePointFromJson(json);
 }
 
-enum MedicineCopyKey {
+enum MedicineCopy {
   quickActionCameraTitle,
   quickActionCameraSubtitle,
   quickActionBarcodeTitle,

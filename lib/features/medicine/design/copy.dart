@@ -1,78 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/medicine/design/visuals.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
-import 'package:luminous/features/medicine/presentation/utils/medicine_visuals.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-String medicineCopy(AppLocalizations l10n, MedicineCopyKey key) {
+String medicineCopy(AppLocalizations l10n, MedicineCopy key) {
   return switch (key) {
-    MedicineCopyKey.quickActionCameraTitle =>
-      l10n.medicineQuickActionCameraTitle,
-    MedicineCopyKey.quickActionCameraSubtitle =>
+    MedicineCopy.quickActionCameraTitle => l10n.medicineQuickActionCameraTitle,
+    MedicineCopy.quickActionCameraSubtitle =>
       l10n.medicineQuickActionCameraSubtitle,
-    MedicineCopyKey.quickActionBarcodeTitle =>
+    MedicineCopy.quickActionBarcodeTitle =>
       l10n.medicineQuickActionBarcodeTitle,
-    MedicineCopyKey.quickActionBarcodeSubtitle =>
+    MedicineCopy.quickActionBarcodeSubtitle =>
       l10n.medicineQuickActionBarcodeSubtitle,
-    MedicineCopyKey.quickActionSearchTitle =>
-      l10n.medicineQuickActionSearchTitle,
-    MedicineCopyKey.quickActionSearchSubtitle =>
+    MedicineCopy.quickActionSearchTitle => l10n.medicineQuickActionSearchTitle,
+    MedicineCopy.quickActionSearchSubtitle =>
       l10n.medicineQuickActionSearchSubtitle,
-    MedicineCopyKey.genericName => l10n.medicineGenericName,
-    MedicineCopyKey.genericDosage => l10n.medicineGenericDosage,
-    MedicineCopyKey.genericSchedule => l10n.medicineGenericSchedule,
-    MedicineCopyKey.doseStatusTaken => l10n.medicineDoseStatusTaken,
-    MedicineCopyKey.doseStatusSkipped => l10n.medicineDoseStatusSkipped,
-    MedicineCopyKey.doseStatusPending => l10n.medicineDoseStatusPending,
-    MedicineCopyKey.statusStable => l10n.medicineStatusStable,
-    MedicineCopyKey.statusNeedsCheckin => l10n.medicineStatusNeedsCheckin,
-    MedicineCopyKey.alertInteractionTitle => l10n.medicineAlertInteractionTitle,
-    MedicineCopyKey.alertInteractionBody => l10n.medicineAlertInteractionBody,
-    MedicineCopyKey.alertInteractionDetail =>
-      l10n.medicineAlertInteractionDetail,
-    MedicineCopyKey.alertInteractionAction =>
-      l10n.medicineAlertInteractionAction,
-    MedicineCopyKey.alertOtherTitle => l10n.medicineAlertOtherTitle,
-    MedicineCopyKey.alertOtherBody => l10n.medicineAlertOtherBody,
-    MedicineCopyKey.alertOtherDetail => l10n.medicineAlertOtherDetail,
-    MedicineCopyKey.alertOtherAction => l10n.medicineAlertOtherAction,
-    MedicineCopyKey.alertAlcoholRiskTitle => l10n.medicineAlertAlcoholRiskTitle,
-    MedicineCopyKey.alertAlcoholRiskBody => l10n.medicineAlertAlcoholRiskBody,
-    MedicineCopyKey.alertAlcoholRiskDetail =>
-      l10n.medicineAlertAlcoholRiskDetail,
-    MedicineCopyKey.alertAlcoholRiskStatus =>
-      l10n.medicineAlertAlcoholRiskStatus,
-    MedicineCopyKey.alertCoffeeReminderTitle =>
+    MedicineCopy.genericName => l10n.medicineGenericName,
+    MedicineCopy.genericDosage => l10n.medicineGenericDosage,
+    MedicineCopy.genericSchedule => l10n.medicineGenericSchedule,
+    MedicineCopy.doseStatusTaken => l10n.medicineDoseStatusTaken,
+    MedicineCopy.doseStatusSkipped => l10n.medicineDoseStatusSkipped,
+    MedicineCopy.doseStatusPending => l10n.medicineDoseStatusPending,
+    MedicineCopy.statusStable => l10n.medicineStatusStable,
+    MedicineCopy.statusNeedsCheckin => l10n.medicineStatusNeedsCheckin,
+    MedicineCopy.alertInteractionTitle => l10n.medicineAlertInteractionTitle,
+    MedicineCopy.alertInteractionBody => l10n.medicineAlertInteractionBody,
+    MedicineCopy.alertInteractionDetail => l10n.medicineAlertInteractionDetail,
+    MedicineCopy.alertInteractionAction => l10n.medicineAlertInteractionAction,
+    MedicineCopy.alertOtherTitle => l10n.medicineAlertOtherTitle,
+    MedicineCopy.alertOtherBody => l10n.medicineAlertOtherBody,
+    MedicineCopy.alertOtherDetail => l10n.medicineAlertOtherDetail,
+    MedicineCopy.alertOtherAction => l10n.medicineAlertOtherAction,
+    MedicineCopy.alertAlcoholRiskTitle => l10n.medicineAlertAlcoholRiskTitle,
+    MedicineCopy.alertAlcoholRiskBody => l10n.medicineAlertAlcoholRiskBody,
+    MedicineCopy.alertAlcoholRiskDetail => l10n.medicineAlertAlcoholRiskDetail,
+    MedicineCopy.alertAlcoholRiskStatus => l10n.medicineAlertAlcoholRiskStatus,
+    MedicineCopy.alertCoffeeReminderTitle =>
       l10n.medicineAlertCoffeeReminderTitle,
-    MedicineCopyKey.alertCoffeeReminderBody =>
+    MedicineCopy.alertCoffeeReminderBody =>
       l10n.medicineAlertCoffeeReminderBody,
-    MedicineCopyKey.alertCoffeeReminderDetail =>
+    MedicineCopy.alertCoffeeReminderDetail =>
       l10n.medicineAlertCoffeeReminderDetail,
-    MedicineCopyKey.alertCoffeeReminderStatus =>
+    MedicineCopy.alertCoffeeReminderStatus =>
       l10n.medicineAlertCoffeeReminderStatus,
-    MedicineCopyKey.alertDuplicateCheckTitle =>
+    MedicineCopy.alertDuplicateCheckTitle =>
       l10n.medicineAlertDuplicateCheckTitle,
-    MedicineCopyKey.alertDuplicateCheckBody =>
+    MedicineCopy.alertDuplicateCheckBody =>
       l10n.medicineAlertDuplicateCheckBody,
-    MedicineCopyKey.alertDuplicateCheckDetail =>
+    MedicineCopy.alertDuplicateCheckDetail =>
       l10n.medicineAlertDuplicateCheckDetail,
-    MedicineCopyKey.alertDuplicateCheckStatus =>
+    MedicineCopy.alertDuplicateCheckStatus =>
       l10n.medicineAlertDuplicateCheckStatus,
-    MedicineCopyKey.alertSpecialGroupSafetyTitle =>
+    MedicineCopy.alertSpecialGroupSafetyTitle =>
       l10n.medicineAlertSpecialGroupSafetyTitle,
-    MedicineCopyKey.alertSpecialGroupSafetyBody =>
+    MedicineCopy.alertSpecialGroupSafetyBody =>
       l10n.medicineAlertSpecialGroupSafetyBody,
-    MedicineCopyKey.alertSpecialGroupSafetyDetail =>
+    MedicineCopy.alertSpecialGroupSafetyDetail =>
       l10n.medicineAlertSpecialGroupSafetyDetail,
-    MedicineCopyKey.alertSpecialGroupSafetyStatus =>
+    MedicineCopy.alertSpecialGroupSafetyStatus =>
       l10n.medicineAlertSpecialGroupSafetyStatus,
     // promisePoint* 文案无 UI 消费方（死字段保留）。
-    MedicineCopyKey.promisePointBoundary => l10n.medicinePromisePointBoundary,
-    MedicineCopyKey.promisePointSpecialGroup =>
+    MedicineCopy.promisePointBoundary => l10n.medicinePromisePointBoundary,
+    MedicineCopy.promisePointSpecialGroup =>
       l10n.medicinePromisePointSpecialGroup,
-    MedicineCopyKey.promisePointPrivacy => l10n.medicinePromisePointPrivacy,
-    MedicineCopyKey.promisePointDiagnosis => l10n.medicinePromisePointDiagnosis,
+    MedicineCopy.promisePointPrivacy => l10n.medicinePromisePointPrivacy,
+    MedicineCopy.promisePointDiagnosis => l10n.medicinePromisePointDiagnosis,
   };
 }
 

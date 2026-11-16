@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/medicine/design/copy.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/overview/score_ring.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/shared/metric_chip.dart';
-import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Tab header showing last-updated time and run/re-run button.

@@ -4,8 +4,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/medicine/design/copy.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
-import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 
 /// A circular progress ring that visualises the overall risk score (0–100).
 ///

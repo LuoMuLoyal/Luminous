@@ -22,11 +22,11 @@ void main() {
       expect(ws.quickActions.length, 1);
       expect(
         ws.quickActions.first.titleKey,
-        MedicineCopyKey.quickActionSearchTitle,
+        MedicineCopy.quickActionSearchTitle,
       );
       expect(
         ws.quickActions.first.subtitleKey,
-        MedicineCopyKey.quickActionSearchSubtitle,
+        MedicineCopy.quickActionSearchSubtitle,
       );
     });
 
@@ -55,22 +55,16 @@ void main() {
     });
   });
 
-  group('MedicineCopyKey enum', () {
+  group('MedicineCopy enum', () {
     test('has all expected values', () {
       // Spot-check a few critical keys
       expect(
-        MedicineCopyKey.values,
-        contains(MedicineCopyKey.quickActionSearchTitle),
+        MedicineCopy.values,
+        contains(MedicineCopy.quickActionSearchTitle),
       );
-      expect(MedicineCopyKey.values, contains(MedicineCopyKey.doseStatusTaken));
-      expect(
-        MedicineCopyKey.values,
-        contains(MedicineCopyKey.alertInteractionTitle),
-      );
-      expect(
-        MedicineCopyKey.values,
-        contains(MedicineCopyKey.promisePointBoundary),
-      );
+      expect(MedicineCopy.values, contains(MedicineCopy.doseStatusTaken));
+      expect(MedicineCopy.values, contains(MedicineCopy.alertInteractionTitle));
+      expect(MedicineCopy.values, contains(MedicineCopy.promisePointBoundary));
     });
   });
 

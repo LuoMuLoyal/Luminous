@@ -18,7 +18,7 @@ import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:luminous/features/scan/presentation/widgets/scan_corner_painter.dart';
 import 'package:luminous/features/scan/presentation/widgets/scan_result_sheet.dart';
-import 'package:luminous/features/search/presentation/widgets/shared/add_to_box.dart';
+import 'package:luminous/features/search/presentation/entry/add_to_box.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';

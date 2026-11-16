@@ -46,10 +46,7 @@ void main() {
       expect(workspace.plan.items[0].slots, hasLength(1));
       expect(workspace.plan.items[0].slots.single.rawTime, '07:45');
       expect(workspace.plan.items[0].slots.single.isOverdue, isFalse);
-      expect(
-        workspace.plan.items[0].stateKey,
-        MedicineCopyKey.doseStatusPending,
-      );
+      expect(workspace.plan.items[0].stateKey, MedicineCopy.doseStatusPending);
     },
   );
 
@@ -87,10 +84,7 @@ void main() {
       expect(workspace.hero.metricNextDose, '19:00');
       expect(workspace.plan.items, hasLength(1));
       expect(workspace.plan.items[0].todayStatus, MedicineDoseStatus.pending);
-      expect(
-        workspace.plan.items[0].stateKey,
-        MedicineCopyKey.doseStatusPending,
-      );
+      expect(workspace.plan.items[0].stateKey, MedicineCopy.doseStatusPending);
       expect(workspace.plan.items[0].slots, hasLength(2));
       expect(workspace.plan.items[0].slots[0].reminderId, 'reminder-1');
       expect(workspace.plan.items[0].slots[0].scheduledTime, '07:45');
@@ -270,7 +264,7 @@ void main() {
 
     expect(workspace.hero.metricAdherence, '0%');
     expect(workspace.hero.metricNextDose, '--');
-    expect(workspace.plan.items[0].stateKey, MedicineCopyKey.doseStatusSkipped);
+    expect(workspace.plan.items[0].stateKey, MedicineCopy.doseStatusSkipped);
     expect(workspace.plan.items[0].todayStatus, MedicineDoseStatus.skipped);
     expect(
       workspace.plan.items[0].slots.single.status,

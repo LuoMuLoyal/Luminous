@@ -21,6 +21,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
+import 'package:luminous/features/medicine/design/copy.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
@@ -31,7 +32,6 @@ import 'package:luminous/features/medicine/presentation/providers/risk_check.dar
 import 'package:luminous/features/medicine/presentation/providers/safety_tips.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/overview/red_flag.dart';
-import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -1328,20 +1328,20 @@ const _completedWorkspace = MedicineWorkspace(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
         color: SemanticColor.primary,
-        nameKey: MedicineCopyKey.genericName,
-        dosageKey: MedicineCopyKey.genericDosage,
-        scheduleKey: MedicineCopyKey.genericSchedule,
+        nameKey: MedicineCopy.genericName,
+        dosageKey: MedicineCopy.genericDosage,
+        scheduleKey: MedicineCopy.genericSchedule,
         rawName: 'Metformin',
         rawDosage: '0.5 g',
         rawSchedule: 'Once daily',
         slots: <MedicineDoseSlot>[
           MedicineDoseSlot(
             rawTime: '20:00',
-            statusKey: MedicineCopyKey.doseStatusSkipped,
+            statusKey: MedicineCopy.doseStatusSkipped,
             status: MedicineDoseStatus.skipped,
           ),
         ],
-        stateKey: MedicineCopyKey.doseStatusSkipped,
+        stateKey: MedicineCopy.doseStatusSkipped,
         stateColor: SemanticColor.primary,
         todayStatus: MedicineDoseStatus.skipped,
         currentMedicineId: 'med-1',
@@ -1365,9 +1365,9 @@ const _allOverdueWorkspace = MedicineWorkspace(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
         color: SemanticColor.primary,
-        nameKey: MedicineCopyKey.genericName,
-        dosageKey: MedicineCopyKey.genericDosage,
-        scheduleKey: MedicineCopyKey.genericSchedule,
+        nameKey: MedicineCopy.genericName,
+        dosageKey: MedicineCopy.genericDosage,
+        scheduleKey: MedicineCopy.genericSchedule,
         rawName: 'Metformin',
         rawDosage: '500 mg',
         rawSchedule: 'Once daily',
@@ -1375,12 +1375,12 @@ const _allOverdueWorkspace = MedicineWorkspace(
           MedicineDoseSlot(
             rawTime: '08:00',
             scheduledTime: '08:00',
-            statusKey: MedicineCopyKey.doseStatusPending,
+            statusKey: MedicineCopy.doseStatusPending,
             status: MedicineDoseStatus.pending,
             isOverdue: true,
           ),
         ],
-        stateKey: MedicineCopyKey.doseStatusPending,
+        stateKey: MedicineCopy.doseStatusPending,
         stateColor: SemanticColor.warning,
         todayStatus: MedicineDoseStatus.pending,
         currentMedicineId: 'med-1',
@@ -1402,9 +1402,9 @@ final _coverageGapWorkspace = MedicineWorkspace(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
         color: SemanticColor.primary,
-        nameKey: MedicineCopyKey.genericName,
-        dosageKey: MedicineCopyKey.genericDosage,
-        scheduleKey: MedicineCopyKey.genericSchedule,
+        nameKey: MedicineCopy.genericName,
+        dosageKey: MedicineCopy.genericDosage,
+        scheduleKey: MedicineCopy.genericSchedule,
         rawName: 'Metformin',
         rawDosage: '0.5 g',
         rawSchedule: 'Twice daily',
@@ -1412,11 +1412,11 @@ final _coverageGapWorkspace = MedicineWorkspace(
           MedicineDoseSlot(
             rawTime: '08:00',
             scheduledTime: '08:00',
-            statusKey: MedicineCopyKey.doseStatusPending,
+            statusKey: MedicineCopy.doseStatusPending,
             status: MedicineDoseStatus.pending,
           ),
         ],
-        stateKey: MedicineCopyKey.doseStatusPending,
+        stateKey: MedicineCopy.doseStatusPending,
         stateColor: SemanticColor.primary,
         todayStatus: MedicineDoseStatus.pending,
         currentMedicineId: 'med-1',
@@ -1461,20 +1461,20 @@ final _alertsWorkspace = MedicineWorkspace(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
         color: SemanticColor.primary,
-        nameKey: MedicineCopyKey.genericName,
-        dosageKey: MedicineCopyKey.genericDosage,
-        scheduleKey: MedicineCopyKey.genericSchedule,
+        nameKey: MedicineCopy.genericName,
+        dosageKey: MedicineCopy.genericDosage,
+        scheduleKey: MedicineCopy.genericSchedule,
         rawName: 'Metformin',
         rawDosage: '0.5 g',
         rawSchedule: 'Once daily',
         slots: <MedicineDoseSlot>[
           MedicineDoseSlot(
             rawTime: '08:00',
-            statusKey: MedicineCopyKey.doseStatusPending,
+            statusKey: MedicineCopy.doseStatusPending,
             status: MedicineDoseStatus.pending,
           ),
         ],
-        stateKey: MedicineCopyKey.doseStatusPending,
+        stateKey: MedicineCopy.doseStatusPending,
         stateColor: SemanticColor.primary,
         todayStatus: MedicineDoseStatus.pending,
         currentMedicineId: 'med-1',
@@ -1556,14 +1556,14 @@ const _noReminderWorkspace = MedicineWorkspace(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
         color: SemanticColor.primary,
-        nameKey: MedicineCopyKey.genericName,
-        dosageKey: MedicineCopyKey.genericDosage,
-        scheduleKey: MedicineCopyKey.genericSchedule,
+        nameKey: MedicineCopy.genericName,
+        dosageKey: MedicineCopy.genericDosage,
+        scheduleKey: MedicineCopy.genericSchedule,
         rawName: 'Metformin',
         rawDosage: '500 mg',
         rawSchedule: 'Once daily',
         slots: <MedicineDoseSlot>[],
-        stateKey: MedicineCopyKey.doseStatusPending,
+        stateKey: MedicineCopy.doseStatusPending,
         stateColor: SemanticColor.primary,
         todayStatus: MedicineDoseStatus.pending,
         currentMedicineId: 'med-1',
@@ -1585,9 +1585,9 @@ const _singlePendingSlotWorkspace = MedicineWorkspace(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
         color: SemanticColor.primary,
-        nameKey: MedicineCopyKey.genericName,
-        dosageKey: MedicineCopyKey.genericDosage,
-        scheduleKey: MedicineCopyKey.genericSchedule,
+        nameKey: MedicineCopy.genericName,
+        dosageKey: MedicineCopy.genericDosage,
+        scheduleKey: MedicineCopy.genericSchedule,
         rawName: 'Metformin',
         rawDosage: '500 mg',
         rawSchedule: 'Once daily',
@@ -1596,11 +1596,11 @@ const _singlePendingSlotWorkspace = MedicineWorkspace(
             reminderId: 'rem-1',
             scheduledTime: '08:00',
             rawTime: '08:00',
-            statusKey: MedicineCopyKey.doseStatusPending,
+            statusKey: MedicineCopy.doseStatusPending,
             status: MedicineDoseStatus.pending,
           ),
         ],
-        stateKey: MedicineCopyKey.doseStatusPending,
+        stateKey: MedicineCopy.doseStatusPending,
         stateColor: SemanticColor.primary,
         todayStatus: MedicineDoseStatus.pending,
         currentMedicineId: 'med-1',

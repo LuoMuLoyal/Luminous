@@ -11,17 +11,17 @@ import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 /// entities stay pure data.
 abstract final class MedicineVisuals {
   /// Icon + accent for a quick action, keyed by its title copy key.
-  static (IconData, SemanticColor) quickAction(MedicineCopyKey titleKey) {
+  static (IconData, SemanticColor) quickAction(MedicineCopy titleKey) {
     return switch (titleKey) {
-      MedicineCopyKey.quickActionSearchTitle => (
+      MedicineCopy.quickActionSearchTitle => (
         SemanticIcons.actionSearch,
         SemanticColor.primary,
       ),
-      MedicineCopyKey.quickActionBarcodeTitle => (
+      MedicineCopy.quickActionBarcodeTitle => (
         SemanticIcons.actionScan,
         SemanticColor.primary,
       ),
-      MedicineCopyKey.quickActionCameraTitle => (
+      MedicineCopy.quickActionCameraTitle => (
         SemanticIcons.actionCamera,
         SemanticColor.primary,
       ),

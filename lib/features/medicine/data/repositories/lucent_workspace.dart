@@ -184,9 +184,9 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       final stateColor = style.stateColor(todayStatus);
       return MedicinePlanItem(
         color: style.planAccent,
-        nameKey: MedicineCopyKey.genericName,
-        dosageKey: MedicineCopyKey.genericDosage,
-        scheduleKey: MedicineCopyKey.genericSchedule,
+        nameKey: MedicineCopy.genericName,
+        dosageKey: MedicineCopy.genericDosage,
+        scheduleKey: MedicineCopy.genericSchedule,
         stateKey: stateKey,
         stateColor: stateColor,
         slots: slots,
@@ -259,8 +259,8 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   static List<MedicineQuickAction> _defaultQuickActions() => [
     const MedicineQuickAction(
-      titleKey: MedicineCopyKey.quickActionSearchTitle,
-      subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
+      titleKey: MedicineCopy.quickActionSearchTitle,
+      subtitleKey: MedicineCopy.quickActionSearchSubtitle,
     ),
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
       ..._mobileScanQuickActions,
@@ -270,21 +270,21 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   // 处方导入入口已删除；OCR 处方识别为未来能力不排期（F-19）。
   static final _mobileScanQuickActions = <MedicineQuickAction>[
     const MedicineQuickAction(
-      titleKey: MedicineCopyKey.quickActionCameraTitle,
-      subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
+      titleKey: MedicineCopy.quickActionCameraTitle,
+      subtitleKey: MedicineCopy.quickActionCameraSubtitle,
     ),
     const MedicineQuickAction(
-      titleKey: MedicineCopyKey.quickActionBarcodeTitle,
-      subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
+      titleKey: MedicineCopy.quickActionBarcodeTitle,
+      subtitleKey: MedicineCopy.quickActionBarcodeSubtitle,
     ),
   ];
 
   // TODO(archive): 历史 dashboard 原型残留，无渲染消费方，保留为兼容；若复用需先确认 UI 出口。
   static List<MedicinePromisePoint> _defaultPromisePoints() => const [
-    MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointBoundary),
-    MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointSpecialGroup),
-    MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointPrivacy),
-    MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointDiagnosis),
+    MedicinePromisePoint(copyKey: MedicineCopy.promisePointBoundary),
+    MedicinePromisePoint(copyKey: MedicineCopy.promisePointSpecialGroup),
+    MedicinePromisePoint(copyKey: MedicineCopy.promisePointPrivacy),
+    MedicinePromisePoint(copyKey: MedicineCopy.promisePointDiagnosis),
   ];
 
   @override
@@ -340,11 +340,11 @@ MedicineDoseStatus _aggregateSlotStatuses(List<MedicineDoseSlot> slots) {
   return MedicineDoseStatus.skipped;
 }
 
-MedicineCopyKey _slotStateKey(MedicineDoseStatus status) {
+MedicineCopy _slotStateKey(MedicineDoseStatus status) {
   return switch (status) {
-    MedicineDoseStatus.taken => MedicineCopyKey.doseStatusTaken,
-    MedicineDoseStatus.skipped => MedicineCopyKey.doseStatusSkipped,
-    MedicineDoseStatus.pending => MedicineCopyKey.doseStatusPending,
+    MedicineDoseStatus.taken => MedicineCopy.doseStatusTaken,
+    MedicineDoseStatus.skipped => MedicineCopy.doseStatusSkipped,
+    MedicineDoseStatus.pending => MedicineCopy.doseStatusPending,
   };
 }
 
