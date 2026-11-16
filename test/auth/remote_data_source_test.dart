@@ -25,11 +25,17 @@ class _MockAdapter implements HttpClientAdapter {
     Future<dynamic>? cancelFuture,
   ) async {
     final json = body != null ? utf8.encode(jsonEncode(body)) : <int>[];
+    // Lucent 的错误响应走 RFC 9457 Problem Details，媒体类型必须是
+    // `application/problem+json`；成功响应是普通 JSON。按状态码分开声明，
+    // 否则 `LucentErrorMapper` 会在契约校验这一步直接抛 FormatException。
+    final isError = statusCode >= 400;
     return ResponseBody(
       Stream.value(Uint8List.fromList(json)),
       statusCode,
       headers: <String, List<String>>{
-        Headers.contentTypeHeader: <String>['application/json'],
+        Headers.contentTypeHeader: <String>[
+          isError ? 'application/problem+json' : 'application/json',
+        ],
       },
     );
   }
@@ -75,9 +81,8 @@ Map<String, dynamic> _loginResponse({
       'email': email,
       'nickname': 'TestUser',
       'avatar': null,
-      'emailVerified': false,
+      'isEmailVerified': false,
       'emailVerifiedAt': null,
-      'hasPassword': true,
       'lastLoginAt': null,
       'linkedIdentities': <dynamic>[],
       'createdAt': '2026-06-10T08:00:00.000Z',
@@ -164,9 +169,8 @@ void main() {
             'email': 'new@example.com',
             'nickname': 'NewUser',
             'avatar': null,
-            'emailVerified': false,
+            'isEmailVerified': false,
             'emailVerifiedAt': null,
-            'hasPassword': true,
             'lastLoginAt': null,
             'linkedIdentities': <dynamic>[],
             'createdAt': '2026-06-10T08:00:00.000Z',
