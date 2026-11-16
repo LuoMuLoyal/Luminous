@@ -95,10 +95,10 @@ import 'package:luminous/features/review/presentation/providers/review.dart'
 import 'package:luminous/features/review/presentation/providers/trend.dart'
     show reviewTrendDimensionProvider;
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
-import 'package:luminous/features/scan/presentation/pages/box_scan.dart'
-    show showMedicineBoxScanSheet;
 import 'package:luminous/features/scan/presentation/providers/data_access.dart'
     show scanRepositoryProvider;
+import 'package:luminous/features/scan/presentation/providers/entry.dart'
+    show showMedicineBoxScanSheet;
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart'
     show MedicineRecognizeDialog;
 import 'package:luminous/features/search/presentation/providers/data_access.dart'

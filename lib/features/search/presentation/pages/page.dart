@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
-import 'package:luminous/features/search/presentation/entry/add_to_box.dart';
+import 'package:luminous/features/search/presentation/providers/add_to_box.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/search/presentation/widgets/views/content.dart';
 import 'package:luminous/l10n/app_localizations.dart';

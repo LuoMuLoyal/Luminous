@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/features/scan/presentation/pages/box_scan.dart';
+import 'package:luminous/features/scan/presentation/providers/entry.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/utils/search_visuals.dart';
 import 'package:luminous/l10n/app_localizations.dart';

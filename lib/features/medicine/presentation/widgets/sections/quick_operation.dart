@@ -7,7 +7,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
-import 'package:luminous/features/scan/presentation/pages/box_scan.dart';
+import 'package:luminous/features/scan/presentation/providers/entry.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 快捷操作区块：加药 / 搜索 / 扫码 / 拍照识药 / 新建提醒 / 安全自查。

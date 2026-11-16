@@ -20,8 +20,9 @@ class SimulatedMedicineRelationsRepository
   static const _ok = GraphQueryStatus.ok;
 
   @override
-  Future<Either<LucentFailure, GraphQueryResult<MechanismPath>>>
-  mechanismPaths(List<String> drugbankIds) async {
+  Future<Either<LucentFailure, GraphQueryResult<MechanismPath>>> mechanismPaths(
+    List<String> drugbankIds,
+  ) async {
     return const Right(
       GraphQueryResult<MechanismPath>(
         status: _ok,
@@ -53,8 +54,9 @@ class SimulatedMedicineRelationsRepository
   }
 
   @override
-  Future<Either<LucentFailure, GraphQueryResult<SharedTarget>>>
-  sharedTargets(List<String> drugbankIds) async {
+  Future<Either<LucentFailure, GraphQueryResult<SharedTarget>>> sharedTargets(
+    List<String> drugbankIds,
+  ) async {
     return const Right(
       GraphQueryResult<SharedTarget>(
         status: _ok,
@@ -149,7 +151,8 @@ class SimulatedMedicineRelationsRepository
   }
 
   @override
-  Future<Either<LucentFailure, GraphQueryResult<ShortestRoute>>> shortestRoutes({
+  Future<Either<LucentFailure, GraphQueryResult<ShortestRoute>>>
+  shortestRoutes({
     required String fromDrugbankId,
     required String toDrugbankId,
   }) async {
