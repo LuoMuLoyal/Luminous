@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/surface.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/dashboard/date_bar.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/dashboard/date/bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 记录页顶部的日期条区块。

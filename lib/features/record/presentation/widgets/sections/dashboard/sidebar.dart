@@ -4,5 +4,5 @@
 /// to maintain backward compatibility with existing imports.
 library;
 
-export 'package:luminous/features/record/presentation/widgets/sections/dashboard/calendar_panel.dart';
-export 'package:luminous/features/record/presentation/widgets/sections/dashboard/filter_panel.dart';
+export 'package:luminous/features/record/presentation/widgets/sections/dashboard/calendar/panel.dart';
+export 'package:luminous/features/record/presentation/widgets/sections/dashboard/filter/panel.dart';

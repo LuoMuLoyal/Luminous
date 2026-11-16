@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/surface.dart';
-import 'package:luminous/features/record/presentation/widgets/sections/dashboard/filter_panel.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/dashboard/filter/panel.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 记录页的桌面筛选面板区块。
