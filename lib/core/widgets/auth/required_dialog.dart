@@ -6,7 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/router/routes.dart';
+import 'package:luminous/core/router/login/path.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -125,7 +125,7 @@ const double _higAlertWidth = 270;
 /// authenticated) or shows the auth-required dialog (if not).
 ///
 /// This is a cross-cutting concern, so it lives in core rather than in the
-/// auth feature. The login route is built via [loginRouteLocation], which
+/// auth feature. The login route is built from [loginPath], which
 /// mirrors the auth feature's typed `LoginRoute` — keep the two in sync
 /// (drift is guarded by test/core/router/routes_test.dart).
 Future<void> pushAuthRequiredRoute(BuildContext context, String route) async {
@@ -194,7 +194,7 @@ void _pushLogin(BuildContext context, String location) {
 String _currentLocationLoginRoute(BuildContext context) {
   final location = GoRouterState.of(context).uri.toString();
   if (location.isEmpty || !location.startsWith('/')) {
-    return loginRouteForReturnTo(CoreRoutes.home);
+    return loginRouteForReturnTo('/');
   }
   return loginRouteForReturnTo(location);
 }
@@ -202,7 +202,7 @@ String _currentLocationLoginRoute(BuildContext context) {
 /// Builds the login route location carrying [returnTo] as a `return-to`
 /// query hint.
 String loginRouteForReturnTo(String returnTo) {
-  return loginRouteLocation(returnTo);
+  return '$loginPath?return-to=${Uri.encodeQueryComponent(returnTo)}';
 }
 
 /// Builds the login route location that returns to the current location after

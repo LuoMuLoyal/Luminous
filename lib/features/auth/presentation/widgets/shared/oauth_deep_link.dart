@@ -1,4 +1,4 @@
-import 'package:luminous/core/router/routes.dart';
+import 'package:luminous/features/auth/presentation/routes.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/oauth_callback_parser.dart';
 
 /// OAuth provider identified by an incoming callback deep link.
@@ -72,10 +72,10 @@ OAuthDeepLinkProvider? _providerForPath(String path) {
       ? path.substring(0, path.length - 1)
       : path;
 
-  return switch (normalized) {
-    CoreRoutes.loginOauthWechat => OAuthDeepLinkProvider.wechat,
-    CoreRoutes.loginOauthQq => OAuthDeepLinkProvider.qq,
-    CoreRoutes.loginOauthGoogle => OAuthDeepLinkProvider.google,
-    _ => null,
+  final providers = <String, OAuthDeepLinkProvider>{
+    const LoginOauthWechatRoute().location: OAuthDeepLinkProvider.wechat,
+    const LoginOauthQqRoute().location: OAuthDeepLinkProvider.qq,
+    const LoginOauthGoogleRoute().location: OAuthDeepLinkProvider.google,
   };
+  return providers[normalized];
 }

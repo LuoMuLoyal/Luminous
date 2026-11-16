@@ -9,11 +9,11 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/router/medicine/routes.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:luminous/features/scan/presentation/widgets/scan_corner_painter.dart';
@@ -322,19 +322,14 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                 onViewInstructions: () {
                   Navigator.pop(ctx);
                   unawaited(
-                    MedicineDetailRoute(
-                      source: 'cn',
-                      id: item.id,
-                    ).push(context),
+                    context.push(
+                      MedicineRoutes.detail(source: 'cn', id: item.id),
+                    ),
                   );
                 },
                 onOpenReminder: (boxItem) {
                   Navigator.pop(ctx);
-                  unawaited(
-                    MedicineReminderDetailRoute(
-                      medicineId: boxItem.id,
-                    ).push(context),
-                  );
+                  unawaited(context.push(MedicineRoutes.reminder(boxItem.id)));
                 },
               ),
             ],

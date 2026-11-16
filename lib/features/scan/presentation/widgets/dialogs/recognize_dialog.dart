@@ -5,12 +5,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
+import 'package:luminous/core/router/medicine/routes.dart';
 import 'package:luminous/core/widgets/common/photo_viewer.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/search/presentation/widgets/shared/add_to_box.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -392,11 +393,7 @@ class _MedicineRecognizeDialogState
               FButton(
                 onPress: () {
                   Navigator.of(context).pop();
-                  unawaited(
-                    MedicineReminderDetailRoute(
-                      medicineId: boxItem.id,
-                    ).push(context),
-                  );
+                  unawaited(context.push(MedicineRoutes.reminder(boxItem.id)));
                 },
                 child: Text(l10n.scanViewReminderAction),
               )
@@ -417,10 +414,9 @@ class _MedicineRecognizeDialogState
                 onPress: () {
                   Navigator.of(context).pop();
                   unawaited(
-                    MedicineDetailRoute(
-                      source: 'cn',
-                      id: res.id!,
-                    ).push(context),
+                    context.push(
+                      MedicineRoutes.detail(source: 'cn', id: res.id!),
+                    ),
                   );
                 },
                 child: Text(l10n.scanViewInstructionsAction),
