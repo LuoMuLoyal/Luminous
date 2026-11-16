@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class DndSettingsPage extends ConsumerWidget {
@@ -35,7 +35,7 @@ class DndSettingsPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     FTile(
                       title: Text(l10n.settingsNotificationsDndEnabled),

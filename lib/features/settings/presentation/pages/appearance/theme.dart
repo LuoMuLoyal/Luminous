@@ -4,13 +4,13 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
+import 'package:luminous/core/widgets/common/control/settings/selected.dart';
+import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
 import 'package:luminous/features/settings/presentation/utils/theme_preference_labels.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ThemeSettingsPage extends ConsumerWidget {
@@ -34,16 +34,16 @@ class ThemeSettingsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SettingsSectionLabel(label: l10n.settingsThemeModeSectionTitle),
+                SectionLabel(label: l10n.settingsThemeModeSectionTitle),
                 SizedBox(height: context.titleContentGap),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     FTile(
                       key: const Key('theme-row-system'),
                       title: Text(l10n.mineThemeModeSystem),
-                      suffix: SettingsSelectionIcon(
-                        selected:
+                      suffix: SelectedMark(
+                        isSelected:
                             currentPreference.mode ==
                             AppThemeModePreference.system,
                       ),
@@ -55,8 +55,8 @@ class ThemeSettingsPage extends ConsumerWidget {
                     FTile(
                       key: const Key('theme-row-light'),
                       title: Text(l10n.mineThemeModeLight),
-                      suffix: SettingsSelectionIcon(
-                        selected:
+                      suffix: SelectedMark(
+                        isSelected:
                             currentPreference.mode ==
                             AppThemeModePreference.light,
                       ),
@@ -68,8 +68,8 @@ class ThemeSettingsPage extends ConsumerWidget {
                     FTile(
                       key: const Key('theme-row-dark'),
                       title: Text(l10n.mineThemeModeDark),
-                      suffix: SettingsSelectionIcon(
-                        selected:
+                      suffix: SelectedMark(
+                        isSelected:
                             currentPreference.mode ==
                             AppThemeModePreference.dark,
                       ),
@@ -79,20 +79,18 @@ class ThemeSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SettingsSectionLabel(
-                  label: l10n.settingsThemeFamilySectionTitle,
-                ),
+                SectionLabel(label: l10n.settingsThemeFamilySectionTitle),
                 const SizedBox(height: Spacing.md),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     for (final family in AppThemeFamily.values)
                       FTile(
                         key: Key('theme-family-row-${family.storageValue}'),
                         title: Text(themeFamilyLabel(l10n, family)),
                         prefix: _ThemeFamilyDot(family: family),
-                        suffix: SettingsSelectionIcon(
-                          selected: currentPreference.family == family,
+                        suffix: SelectedMark(
+                          isSelected: currentPreference.family == family,
                         ),
                         onPress: () => _handleThemeFamilyTap(ref, family),
                       ),

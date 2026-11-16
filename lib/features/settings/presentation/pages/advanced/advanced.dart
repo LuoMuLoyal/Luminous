@@ -13,6 +13,9 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
+import 'package:luminous/core/widgets/common/control/settings/selected.dart';
+import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -22,9 +25,6 @@ import 'package:luminous/features/settings/presentation/providers/notification/n
 import 'package:luminous/features/settings/presentation/providers/profile_sync.dart';
 import 'package:luminous/features/settings/presentation/routes.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AdvancedSettingsPage extends ConsumerWidget {
@@ -46,7 +46,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     FTile(
                       key: const Key('advanced-settings-row-clear-cache'),
@@ -65,7 +65,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: Spacing.xl),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     FTile(
                       key: const Key('advanced-settings-row-reset-defaults'),
@@ -146,7 +146,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SettingsSectionLabel(label: l10n.settingsDeveloperSectionTitle),
+                SectionLabel(label: l10n.settingsDeveloperSectionTitle),
                 const SizedBox(height: Spacing.md),
                 _DeveloperOptionsGroup(),
               ],
@@ -168,7 +168,7 @@ class _DeveloperOptionsGroup extends ConsumerWidget {
     final flags = flagsAsync.asData?.value ?? const FeatureFlagsState();
 
     return FTileGroup(
-      style: settingsSubpageTileGroupStyle(context.theme),
+      style: settingsTileGroup(context.theme),
       children: [
         FTile(
           key: const Key('dev-settings-row-api-endpoint'),
@@ -368,15 +368,13 @@ class _EndpointSheetState extends State<_EndpointSheet> {
               ),
             ),
             FTileGroup(
-              style: settingsSubpageTileGroupStyle(context.theme),
+              style: settingsTileGroup(context.theme),
               children: [
                 for (final endpoint in ApiEndpoint.values)
                   FTile(
                     title: Text(_endpointLabel(widget.l10n, endpoint)),
                     subtitle: Text(_urlLabel(endpoint)),
-                    suffix: SettingsSelectionIcon(
-                      selected: endpoint == _selected,
-                    ),
+                    suffix: SelectedMark(isSelected: endpoint == _selected),
                     onPress: () => setState(() {
                       _selected = endpoint;
                       _errorText = null;
@@ -480,12 +478,12 @@ class _LogLevelSheet extends StatelessWidget {
               ),
             ),
             FTileGroup(
-              style: settingsSubpageTileGroupStyle(context.theme),
+              style: settingsTileGroup(context.theme),
               children: [
                 for (final level in LogLevel.values)
                   FTile(
                     title: Text(_levelLabel(l10n, level)),
-                    suffix: SettingsSelectionIcon(selected: level == current),
+                    suffix: SelectedMark(isSelected: level == current),
                     onPress: () => onSelect(level),
                   ),
               ],

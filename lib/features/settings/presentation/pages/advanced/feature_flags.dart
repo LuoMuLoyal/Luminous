@@ -6,13 +6,13 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/config/feature_flags.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/experiments/runtime/config.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
+import 'package:luminous/core/widgets/common/control/settings/selected.dart';
+import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class FeatureFlagsSettingsPage extends ConsumerWidget {
@@ -61,10 +61,10 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                     ],
                   ),
                 ),
-                SettingsSectionLabel(label: l10n.settingsFeatureFlagsAiSection),
+                SectionLabel(label: l10n.settingsFeatureFlagsAiSection),
                 SizedBox(height: context.titleContentGap),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     FTile(
                       title: Text(l10n.settingsFeatureFlagsRuntimeEnabled),
@@ -101,12 +101,10 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SettingsSectionLabel(
-                  label: l10n.settingsFeatureFlagsAssistantSection,
-                ),
+                SectionLabel(label: l10n.settingsFeatureFlagsAssistantSection),
                 const SizedBox(height: Spacing.md),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     FTile(
                       title: Text(l10n.settingsFeatureFlagsStreamMode),
@@ -124,12 +122,10 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SettingsSectionLabel(
-                  label: l10n.settingsFeatureFlagsMedicineSection,
-                ),
+                SectionLabel(label: l10n.settingsFeatureFlagsMedicineSection),
                 const SizedBox(height: Spacing.md),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     FTile(
                       title: Text(l10n.settingsFeatureFlagsBarcodeScan),
@@ -147,12 +143,10 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SettingsSectionLabel(
-                  label: l10n.settingsFeatureFlagsReportSection,
-                ),
+                SectionLabel(label: l10n.settingsFeatureFlagsReportSection),
                 const SizedBox(height: Spacing.md),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     FTile(
                       title: Text(l10n.settingsFeatureFlagsPdfExport),
@@ -223,12 +217,12 @@ class _ProviderSheet extends ConsumerWidget {
               ),
             ),
             FTileGroup(
-              style: settingsSubpageTileGroupStyle(context.theme),
+              style: settingsTileGroup(context.theme),
               children: [
                 for (final kind in RuntimeProviderKind.values)
                   FTile(
                     title: Text(kind.name),
-                    suffix: SettingsSelectionIcon(selected: kind == current),
+                    suffix: SelectedMark(isSelected: kind == current),
                     onPress: () {
                       Navigator.of(context).pop();
                       unawaited(onSelect(kind));

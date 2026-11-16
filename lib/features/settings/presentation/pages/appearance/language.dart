@@ -5,11 +5,11 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/widgets/common/control/settings/selected.dart';
+import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/profile_sync.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class LanguageSettingsPage extends ConsumerWidget {
@@ -31,7 +31,7 @@ class LanguageSettingsPage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FTileGroup(
-              style: settingsSubpageTileGroupStyle(context.theme),
+              style: settingsTileGroup(context.theme),
               children: [
                 FTile(
                   key: const Key('language-row-system'),
@@ -41,8 +41,8 @@ class LanguageSettingsPage extends ConsumerWidget {
                       _resolveCurrentLanguageName(l10n, currentLocale),
                     ),
                   ),
-                  suffix: SettingsSelectionIcon(
-                    selected: currentLocale == AppLocale.system,
+                  suffix: SelectedMark(
+                    isSelected: currentLocale == AppLocale.system,
                   ),
                   onPress: () =>
                       _handleLocaleTap(context, ref, l10n, AppLocale.system),
@@ -50,8 +50,8 @@ class LanguageSettingsPage extends ConsumerWidget {
                 FTile(
                   key: const Key('language-row-zh'),
                   title: Text(l10n.settingsLanguageChineseLabel),
-                  suffix: SettingsSelectionIcon(
-                    selected: currentLocale == AppLocale.zhCn,
+                  suffix: SelectedMark(
+                    isSelected: currentLocale == AppLocale.zhCn,
                   ),
                   onPress: () =>
                       _handleLocaleTap(context, ref, l10n, AppLocale.zhCn),
@@ -59,8 +59,8 @@ class LanguageSettingsPage extends ConsumerWidget {
                 FTile(
                   key: const Key('language-row-en'),
                   title: Text(l10n.settingsLanguageEnglishLabel),
-                  suffix: SettingsSelectionIcon(
-                    selected: currentLocale == AppLocale.en,
+                  suffix: SelectedMark(
+                    isSelected: currentLocale == AppLocale.en,
                   ),
                   onPress: () =>
                       _handleLocaleTap(context, ref, l10n, AppLocale.en),

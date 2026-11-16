@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
+import 'package:luminous/core/widgets/common/control/settings/selected.dart';
+import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/data_access.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class DataStorageSettingsPage extends ConsumerWidget {
@@ -34,20 +34,18 @@ class DataStorageSettingsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SettingsSectionLabel(
-                  label: l10n.settingsDataStorageRetentionSection,
-                ),
+                SectionLabel(label: l10n.settingsDataStorageRetentionSection),
                 const SizedBox(height: Spacing.md),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     for (final period in DataRetentionPeriod.values)
                       FTile(
                         key: Key('data-retention-row-${period.storageValue}'),
                         title: Text(_retentionLabel(l10n, period)),
                         subtitle: Text(_retentionSubtitle(l10n, period)),
-                        suffix: SettingsSelectionIcon(
-                          selected: settings.retentionPeriod == period,
+                        suffix: SelectedMark(
+                          isSelected: settings.retentionPeriod == period,
                         ),
                         onPress: () async {
                           if (_isShortening(settings.retentionPeriod, period)) {
@@ -67,40 +65,38 @@ class DataStorageSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SettingsSectionLabel(
+                SectionLabel(
                   label: l10n.settingsDataStorageImageQualitySection,
                 ),
                 const SizedBox(height: Spacing.md),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     for (final quality in ImageQualityPreference.values)
                       FTile(
                         key: Key('image-quality-row-${quality.storageValue}'),
                         title: Text(_imageQualityLabel(l10n, quality)),
                         subtitle: Text(_imageQualitySubtitle(l10n, quality)),
-                        suffix: SettingsSelectionIcon(
-                          selected: settings.imageQuality == quality,
+                        suffix: SelectedMark(
+                          isSelected: settings.imageQuality == quality,
                         ),
                         onPress: () => controller.setImageQuality(quality),
                       ),
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SettingsSectionLabel(
-                  label: l10n.settingsDataStorageSyncSection,
-                ),
+                SectionLabel(label: l10n.settingsDataStorageSyncSection),
                 const SizedBox(height: Spacing.md),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     for (final pref in SyncPreference.values)
                       FTile(
                         key: Key('sync-pref-row-${pref.storageValue}'),
                         title: Text(_syncLabel(l10n, pref)),
                         subtitle: Text(_syncSubtitle(l10n, pref)),
-                        suffix: SettingsSelectionIcon(
-                          selected: settings.syncPreference == pref,
+                        suffix: SelectedMark(
+                          isSelected: settings.syncPreference == pref,
                         ),
                         onPress: () => controller.setSyncPreference(pref),
                       ),

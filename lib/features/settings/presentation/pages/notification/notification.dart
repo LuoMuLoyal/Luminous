@@ -7,14 +7,14 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
+import 'package:luminous/core/widgets/common/control/settings/selected.dart';
+import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
 import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class NotificationSettingsPage extends ConsumerWidget {
@@ -58,10 +58,10 @@ class NotificationSettingsPage extends ConsumerWidget {
                 },
               ),
             const SizedBox(height: Spacing.xl),
-            SettingsSectionLabel(label: l10n.settingsNotificationsGeneralGroup),
+            SectionLabel(label: l10n.settingsNotificationsGeneralGroup),
             SizedBox(height: context.titleContentGap),
             FTileGroup(
-              style: settingsSubpageTileGroupStyle(context.theme),
+              style: settingsTileGroup(context.theme),
               children: [
                 FTile(
                   key: const Key('notification-switch-health-alerts'),
@@ -133,12 +133,10 @@ class NotificationSettingsPage extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: Spacing.xl),
-            SettingsSectionLabel(
-              label: l10n.settingsNotificationsReminderGroup,
-            ),
+            SectionLabel(label: l10n.settingsNotificationsReminderGroup),
             const SizedBox(height: Spacing.md),
             FTileGroup(
-              style: settingsSubpageTileGroupStyle(context.theme),
+              style: settingsTileGroup(context.theme),
               children: [
                 FTile(
                   key: const Key('notification-switch-medication'),
@@ -426,7 +424,7 @@ class _AdvancePickerSheet extends StatelessWidget {
               ),
             ),
             FTileGroup(
-              style: settingsSubpageTileGroupStyle(context.theme),
+              style: settingsTileGroup(context.theme),
               children: [
                 for (final minutes in options)
                   FTile(
@@ -435,9 +433,7 @@ class _AdvancePickerSheet extends StatelessWidget {
                           ? l10n.settingsNotificationsAdvanceOff
                           : l10n.settingsNotificationsAdvanceMinutes(minutes),
                     ),
-                    suffix: SettingsSelectionIcon(
-                      selected: selected == minutes,
-                    ),
+                    suffix: SelectedMark(isSelected: selected == minutes),
                     onPress: () => onSelect(minutes),
                   ),
               ],

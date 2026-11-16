@@ -3,12 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/accessibility/settings.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
+import 'package:luminous/core/widgets/common/control/settings/selected.dart';
+import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AccessibilitySettingsPage extends ConsumerWidget {
@@ -36,12 +36,10 @@ class AccessibilitySettingsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SettingsSectionLabel(
-                  label: l10n.settingsAccessibilityFontSizeSection,
-                ),
+                SectionLabel(label: l10n.settingsAccessibilityFontSizeSection),
                 const SizedBox(height: Spacing.md),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     for (final option in FontSizePreference.values)
                       FTile(
@@ -54,18 +52,18 @@ class AccessibilitySettingsPage extends ConsumerWidget {
                                 option.scaleFactor,
                           ),
                         ),
-                        suffix: SettingsSelectionIcon(
-                          selected: settings.fontSize == option,
+                        suffix: SelectedMark(
+                          isSelected: settings.fontSize == option,
                         ),
                         onPress: () => controller.setFontSize(option),
                       ),
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SettingsSectionLabel(label: l10n.settingsGeneralSectionTitle),
+                SectionLabel(label: l10n.settingsGeneralSectionTitle),
                 SizedBox(height: context.titleContentGap),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     FTile(
                       key: const Key('accessibility-switch-reduce-animations'),

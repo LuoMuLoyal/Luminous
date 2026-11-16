@@ -8,6 +8,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -19,7 +20,6 @@ import 'package:luminous/features/settings/presentation/widgets/master_detail.da
 import 'package:luminous/features/settings/presentation/widgets/navigation_tile.dart';
 import 'package:luminous/features/settings/presentation/widgets/privacy_section.dart';
 import 'package:luminous/features/settings/presentation/widgets/quick_entry_section.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/features/settings/presentation/widgets/sign_out_tile.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -136,7 +136,7 @@ class SettingsPage extends ConsumerWidget {
       accountHeader,
       const SizedBox(height: _kGroupSpacing),
       // -- 账号与安全 --
-      SettingsSectionLabel(label: l10n.settingsAccountSecuritySectionTitle),
+      SectionLabel(label: l10n.settingsAccountSecuritySectionTitle),
       SizedBox(height: context.titleContentGap),
       buildAccountSecurityGroup(),
       const SizedBox(height: _kGroupSpacing),

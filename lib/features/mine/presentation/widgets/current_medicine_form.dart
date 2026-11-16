@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// The editable form for a current medicine entry.
@@ -44,7 +44,7 @@ class CurrentMedicineForm extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Group 1 — 药品信息
-        SettingsSectionLabel(label: l10n.mineEditMedicineSectionInfo),
+        SectionLabel(label: l10n.mineEditMedicineSectionInfo),
         FCard(
           child: Padding(
             padding: const EdgeInsets.all(Spacing.lg),
@@ -73,7 +73,7 @@ class CurrentMedicineForm extends StatelessWidget {
         const SizedBox(height: Spacing.xl),
 
         // Group 2 — 用法用量
-        SettingsSectionLabel(label: l10n.mineEditMedicineSectionDosage),
+        SectionLabel(label: l10n.mineEditMedicineSectionDosage),
         FCard(
           child: Padding(
             padding: const EdgeInsets.all(Spacing.lg),
@@ -136,7 +136,7 @@ class CurrentMedicineForm extends StatelessWidget {
         const SizedBox(height: Spacing.xl),
 
         // Group 3 — 时间与备注
-        SettingsSectionLabel(label: l10n.mineEditMedicineSectionTimeline),
+        SectionLabel(label: l10n.mineEditMedicineSectionTimeline),
         FCard(
           child: Padding(
             padding: const EdgeInsets.all(Spacing.lg),

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
-/// Section label text for settings sub-pages.
-class SettingsSectionLabel extends StatelessWidget {
-  const SettingsSectionLabel({super.key, required this.label});
+/// Group heading above a run of tiles.
+///
+/// Domain-neutral: owns only the typography/padding decision, so any feature
+/// may label a section with it.
+class SectionLabel extends StatelessWidget {
+  const SectionLabel({super.key, required this.label});
 
   final String label;
 

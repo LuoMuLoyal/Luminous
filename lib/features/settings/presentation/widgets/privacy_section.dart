@@ -7,11 +7,11 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_auto_sync.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/settings/presentation/widgets/navigation_tile.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Privacy settings section: AI, data sharing consent, and data export.
@@ -45,7 +45,7 @@ class PrivacySection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SettingsSectionLabel(label: l10n.settingsPrivacySectionTitle),
+        SectionLabel(label: l10n.settingsPrivacySectionTitle),
         SizedBox(height: context.titleContentGap),
         FTileGroup(
           physics: const NeverScrollableScrollPhysics(),

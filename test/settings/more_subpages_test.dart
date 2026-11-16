@@ -488,7 +488,7 @@ void main() {
       expect(find.byIcon(SemanticIcons.actionNext), findsNWidgets(4));
     });
 
-    testWidgets('renders SettingsSectionLabel for developer section', (
+    testWidgets('renders AppSectionLabel for developer section', (
       tester,
     ) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));

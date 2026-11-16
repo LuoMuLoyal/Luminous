@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -12,6 +13,7 @@ import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/control/desktop/tile_value.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -19,7 +21,6 @@ import 'package:luminous/features/auth/presentation/pages/account/account_identi
 import 'package:luminous/features/auth/presentation/pages/account/manage/helpers.dart';
 import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/auth_scroll_body.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 账号概要卡片：头像 + 昵称 + 邮箱，点击进入个人信息页。
@@ -135,9 +136,7 @@ class SecurityCenterPage extends ConsumerWidget {
             const SizedBox(height: Spacing.xl2),
 
             // 敏感操作记录
-            SettingsSectionLabel(
-              label: l10n.securityCenterSensitiveOperationsTitle,
-            ),
+            SectionLabel(label: l10n.securityCenterSensitiveOperationsTitle),
             const SizedBox(height: Spacing.md),
             _EmptyRecordCard(
               message: l10n.securityCenterSensitiveOperationsEmpty,
@@ -145,7 +144,7 @@ class SecurityCenterPage extends ConsumerWidget {
             const SizedBox(height: Spacing.xl2),
 
             // 登录记录
-            SettingsSectionLabel(label: l10n.securityCenterLoginHistoryTitle),
+            SectionLabel(label: l10n.securityCenterLoginHistoryTitle),
             SizedBox(height: context.titleContentGap),
             FTileGroup(
               physics: const NeverScrollableScrollPhysics(),
@@ -172,9 +171,7 @@ class SecurityCenterPage extends ConsumerWidget {
             const SizedBox(height: Spacing.xl2),
 
             // 账号保护（预留）
-            SettingsSectionLabel(
-              label: l10n.securityCenterAccountProtectionTitle,
-            ),
+            SectionLabel(label: l10n.securityCenterAccountProtectionTitle),
             const SizedBox(height: Spacing.md),
             FTileGroup(
               physics: const NeverScrollableScrollPhysics(),

@@ -13,10 +13,10 @@ import 'package:luminous/core/network/config/env_keys.dart';
 import 'package:luminous/core/network/config/env_reader.dart';
 import 'package:luminous/core/providers/network/network_client.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class HelpSettingsPage extends ConsumerWidget {
@@ -141,7 +141,7 @@ class _FaqSectionState extends State<_FaqSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SettingsSectionLabel(label: l10n.settingsHelpFaqSectionTitle),
+        SectionLabel(label: l10n.settingsHelpFaqSectionTitle),
         SizedBox(height: context.titleContentGap),
         // 收窄问答区并让内容左缘与下方「意见反馈」卡片的内容列对齐。
         Padding(
@@ -318,7 +318,7 @@ class _FeedbackSection extends ConsumerWidget {
         // Diagnostic block — shows the latest request Trace ID when present
         // so users can attach it to their feedback for backend correlation.
         if (lastTraceId != null && lastTraceId.isNotEmpty) ...[
-          SettingsSectionLabel(label: l10n.settingsHelpTraceIdTitle),
+          SectionLabel(label: l10n.settingsHelpTraceIdTitle),
           SizedBox(height: context.titleContentGap),
           FTileGroup(
             children: [
@@ -341,7 +341,7 @@ class _FeedbackSection extends ConsumerWidget {
           ),
           const SizedBox(height: Spacing.xl2),
         ],
-        SettingsSectionLabel(label: l10n.settingsHelpFeedbackSectionTitle),
+        SectionLabel(label: l10n.settingsHelpFeedbackSectionTitle),
         SizedBox(height: context.titleContentGap),
         FTileGroup(
           children: [

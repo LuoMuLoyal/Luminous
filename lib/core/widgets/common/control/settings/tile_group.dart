@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
-FTileGroupStyle settingsSubpageTileGroupStyle(FThemeData theme) {
+/// Tile-group style for grouped sub-pages: card-coloured rows on the page
+/// background instead of the default tile fill.
+FTileGroupStyle settingsTileGroup(FThemeData theme) {
   final base = theme.tileGroupStyle;
 
   return base.copyWith(

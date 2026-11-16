@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/pill_chip.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
@@ -18,7 +19,6 @@ import 'package:luminous/features/record/presentation/utils/quick_entry_settings
 import 'package:luminous/features/record/presentation/widgets/dialogs/water_custom_amount_dialog.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class QuickEntrySettingsPage extends ConsumerWidget {
@@ -48,7 +48,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SettingsSectionLabel(label: l10n.recordQuickSettingsSorting),
+              SectionLabel(label: l10n.recordQuickSettingsSorting),
               SizedBox(height: context.titleContentGap),
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),
@@ -126,7 +126,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: Spacing.xl2),
-              SettingsSectionLabel(label: l10n.recordQuickSettingsDisplay),
+              SectionLabel(label: l10n.recordQuickSettingsDisplay),
               SizedBox(height: context.titleContentGap),
               FSelect<QuickEntryWaterBadgeMode>.rich(
                 key: const Key('record-quick-settings-water-badge'),
@@ -173,9 +173,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: Spacing.xl2),
-              SettingsSectionLabel(
-                label: l10n.recordQuickSettingsSymptomChoices,
-              ),
+              SectionLabel(label: l10n.recordQuickSettingsSymptomChoices),
               const SizedBox(height: Spacing.md),
               FSelect<String>.rich(
                 key: const Key('record-quick-settings-symptom-severity'),
@@ -239,7 +237,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: Spacing.xl2),
-              SettingsSectionLabel(label: l10n.recordQuickSettingsIcons),
+              SectionLabel(label: l10n.recordQuickSettingsIcons),
               SizedBox(height: context.titleContentGap),
               Text(
                 l10n.recordQuickSettingsCustomIconHint,
@@ -276,7 +274,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: Spacing.xl2),
-              SettingsSectionLabel(label: l10n.recordQuickSettingsRules),
+              SectionLabel(label: l10n.recordQuickSettingsRules),
               SizedBox(height: context.titleContentGap),
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),

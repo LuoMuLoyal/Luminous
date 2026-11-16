@@ -8,13 +8,13 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
+import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AiSettingsPage extends ConsumerStatefulWidget {
@@ -53,7 +53,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     _buildToggleTile(
                       context: context,
@@ -112,7 +112,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SettingsSectionLabel(label: l10n.settingsAiContextSectionTitle),
+                SectionLabel(label: l10n.settingsAiContextSectionTitle),
                 SizedBox(height: context.titleContentGap),
                 if (!assistantEnabled)
                   Padding(
@@ -129,7 +129,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                     ),
                   ),
                 FTileGroup(
-                  style: settingsSubpageTileGroupStyle(context.theme),
+                  style: settingsTileGroup(context.theme),
                   children: [
                     _buildContextTile(
                       context: context,
@@ -175,7 +175,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SettingsSectionLabel(label: l10n.settingsAiPrivacySectionTitle),
+                SectionLabel(label: l10n.settingsAiPrivacySectionTitle),
                 SizedBox(height: context.titleContentGap),
                 // Carded like every other block on this page: as bare text the
                 // paragraph had no boundary against the switch group above it.

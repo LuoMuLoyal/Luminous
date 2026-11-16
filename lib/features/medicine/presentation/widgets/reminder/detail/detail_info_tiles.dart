@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Detail info tile group for a reminder — shows frequency, times, dose,
@@ -31,7 +31,7 @@ class ReminderDetailInfoTiles extends StatelessWidget {
     final firstReminder = reminders.firstOrNull;
 
     return FTileGroup(
-      style: settingsSubpageTileGroupStyle(context.theme),
+      style: settingsTileGroup(context.theme),
       physics: const NeverScrollableScrollPhysics(),
       divider: FItemDivider.full,
       children: [

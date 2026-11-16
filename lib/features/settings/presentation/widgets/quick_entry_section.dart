@@ -3,8 +3,8 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
 import 'package:luminous/features/settings/presentation/widgets/navigation_tile.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Quick entry settings section.
@@ -18,7 +18,7 @@ class QuickEntrySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SettingsSectionLabel(label: l10n.settingsQuickEntrySection),
+        SectionLabel(label: l10n.settingsQuickEntrySection),
         SizedBox(height: context.titleContentGap),
         FTileGroup(
           physics: const NeverScrollableScrollPhysics(),

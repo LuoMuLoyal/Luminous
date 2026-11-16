@@ -12,6 +12,7 @@ import 'package:luminous/core/network/config/env_reader.dart';
 import 'package:luminous/core/providers/session/sensitive_action_password.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/control/desktop/tile_value.dart';
+import 'package:luminous/core/widgets/common/control/settings/label.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -20,7 +21,6 @@ import 'package:luminous/features/auth/presentation/pages/account/account_identi
 import 'package:luminous/features/auth/presentation/pages/account/account_security.dart';
 import 'package:luminous/features/auth/presentation/pages/account/manage/helpers.dart';
 import 'package:luminous/features/auth/presentation/providers/account/account.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -84,7 +84,7 @@ class AccountManageSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 账号信息分组
-        SettingsSectionLabel(label: l10n.authAccountManageSectionAccount),
+        SectionLabel(label: l10n.authAccountManageSectionAccount),
         SizedBox(height: context.titleContentGap),
         FTileGroup(
           physics: const NeverScrollableScrollPhysics(),
@@ -145,7 +145,7 @@ class AccountManageSection extends ConsumerWidget {
         const SizedBox(height: Spacing.xl2),
 
         // 账号安全分组
-        SettingsSectionLabel(label: l10n.authAccountManageSectionSecurity),
+        SectionLabel(label: l10n.authAccountManageSectionSecurity),
         SizedBox(height: context.titleContentGap),
         FTileGroup(
           physics: const NeverScrollableScrollPhysics(),
@@ -348,7 +348,7 @@ class SupportLinksSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SettingsSectionLabel(label: l10n.authAccountManageBottomSupport),
+        SectionLabel(label: l10n.authAccountManageBottomSupport),
         SizedBox(height: context.titleContentGap),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
