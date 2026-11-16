@@ -39,6 +39,13 @@ abstract final class PrefKeys {
       'featureFlags.medicineBarcodeScan';
   static const featureFlagsReportExportPdf = 'featureFlags.reportExportPdf';
 
+  // ── Shell / Navigation ─────────────────────────────────────────────────
+
+  /// 底部导航的用户配置（`NavConfig.toJson()`）。
+  ///
+  /// 键不存在 = 全部跟随注册表默认；存在即整份快照，不是补丁。
+  static const shellNavConfig = 'shell.navConfig';
+
   // ── Medicine ───────────────────────────────────────────────────────────
 
   static const medicineReminderSound = 'medicine.reminder.sound';
