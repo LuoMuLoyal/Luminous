@@ -223,6 +223,9 @@ is the machine projection; the interpretive contract lives in
 | `actionMenu` | `` | `FLucideIcons.menu` |  |
 | `actionNext` | `` | `FLucideIcons.chevronRight` |  |
 | `actionPrev` | `` | `FLucideIcons.chevronLeft` |  |
+| `actionUp` | `` | `FLucideIcons.chevronUp` |  |
+| `actionDown` | `` | `FLucideIcons.chevronDown` |  |
+| `actionBottomNavigation` | `` | `FLucideIcons.panelBottom` | 底部导航（外壳）入口。 |
 | `actionExpand` | `` | `FLucideIcons.chevronDown` |  |
 | `actionCollapse` | `` | `FLucideIcons.chevronUp` |  |
 | `actionRefresh` | `` | `FLucideIcons.refreshCw` |  |
