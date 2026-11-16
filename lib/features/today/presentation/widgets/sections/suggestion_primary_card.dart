@@ -9,7 +9,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart'
+import 'package:luminous/features/medicine/presentation/providers/data_access.dart'
     show doseLogRepositoryProvider;
 import 'package:luminous/features/today/application/usecases/skip_dose.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
