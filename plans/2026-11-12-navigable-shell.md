@@ -116,6 +116,13 @@ class NavConfig {
 - 测试：`nav_config_test`（JSON 与坏数据）、`nav_rules_test`（规则与补全）、
   `cached_nav_config_test`（降级语义）、`nav_render_test`（顺序 / 名称 / 隐藏 /
   坏数据 / 编排往返的端到端行为）
+- **N2 编排 UI**：`/customize/nav`（`nav_customizer.dart`），入口
+  `mine → settings → 常规 → 底部导航`。每行图标 + 名称 + 路由路径 + 换图标 +
+  上移/下移 + 显隐；编辑走 `navDraftProvider` 草稿（取消即丢弃、完成才写回），
+  非法编辑逐次拒绝并 toast，恢复默认带二次确认。用按钮而非拖拽——5 项、
+  顺序长期生效，按钮更可预期。测试：`nav_draft_test`、`nav_customizer_page_test`
+- 跨层：编排页的上下留白就地用 `Spacing` 令牌算，没有复用 settings 的
+  `page_padding.dart`（`cross_feature_import` 禁止）
 
 ## 4. 明确不做
 
@@ -127,17 +134,6 @@ class NavConfig {
 | 兼容层 | 未发版，旧枚举与旧断言直接删除 |
 
 ## 5. 待做
-
-### N2 编排 UI
-
-- `/customize/nav` 编排页（Forui 原语）：列表拖拽排序 + 名称编辑（`characters` 计数、
-  非法字符提示）+ 图标选择（`showAppIconPicker` + `LucideIconBridge`）+ 显隐开关 +
-  「恢复默认」
-- 入口：`mine → settings → 界面 → 底部导航`
-- 拒绝语义直接复用 `nav_rules`：`commit()` 返回 `NavResolution`，UI 读 `rejection`
-  出提示，底栏保持原样
-- ARB 文案已就位（`shellNav*` 前缀，见 `common_en.arb` / `common_zh.arb`）
-- 估：3–4 天
 
 ### N3 同步
 

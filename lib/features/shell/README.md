@@ -43,6 +43,10 @@
   `resolveTabs` / `shellTabKey`
 - `presentation/providers/nav_config.dart` — `navConfigProvider` / `resolvedNavProvider`
   / `visibleNavProvider`
+- `presentation/providers/nav_draft.dart` — `navDraftProvider` / `navDraftRowsProvider`
+  （编排页草稿）
+- `presentation/pages/nav_customizer.dart` — `NavCustomizerPage`（底部导航编排页）
+- `presentation/routes.dart` — `/customize/nav`
 - `presentation/providers/data_access.dart` — presentation 访问 data 的唯一接缝
 - 其余导出:`ShellPage` / `DesktopTabShell` / `DesktopDetailPane` / `detailPaneProvider` /
   `ShellDeferredContent` / `ShellTabBranchContainer`
@@ -69,11 +73,27 @@
 - 不承载业务数据读写;新数据需求走对应 feature 的 domain/repository。
 - 不 import 其他 feature 的 presentation provider;侧栏未读徽标经 notification 的
   data provider,主题/会话经 core 层 provider。
+- **不 import 其他 feature 的 `presentation/**`**：编排页的上下留白就地用
+  `Spacing` 令牌算（`_pageVerticalPadding`），没有复用 settings 的
+  `page_padding.dart`——两行令牌运算不值得为它改分层口径。
 - `presentation/` **不许** import `lib/features/shell/data/**`,一律经
   `presentation/providers/data_access.dart`(`--clean-layers` 的 `presentation_layer`
   是 error 级、无白名单)。
 
 ## 陷阱与决策
+- **编排入口**：`mine → settings → 常规 → 底部导航`（`settings-row-nav`），
+  路由 `/customize/nav`。页面改的是**配置**，注册表不在页面上——所以没有
+  「添加 tab」入口，只有既有 tab 的重排 / 改名 / 换图标 / 显隐。
+- **编辑走草稿**（`navDraftProvider`）：进页面 `begin()` 以补全后的配置为起点，
+  改动只进内存，「取消」丢弃。不在改动时立即写 KV——否则两次写之间进程被杀，
+  用户回不到原样。
+- **非法编辑逐次拒绝**：`move`/`rename`/`setIcon`/`setVisible` 都返回 `NavResolution`，
+  被拒绝时草稿不变、`AppToast` 提示。用户拖出第 6 个可见 tab 时立刻知道，
+  而不是点完成才发现。
+- **用上移/下移按钮而不是拖拽**：只有 5 项，且改的是跨设备长期生效的顺序——
+  按钮点击可预期、可自动化。组件编排页（`features/customizer`）用拖拽是因为
+  那里有几十个组件、顺序是探索性的。首项的上移与末项的下移**置灰不隐藏**，
+  否则行宽随位置跳动；越界移动是无操作，不报错。
 - **`ShellTab` 枚举已删除**,由 `TabId` + `shellTabRegistry` 取代。`enum` 把身份、顺序、
   分支索引三合一压在 `index` 上,三者任一变非常量就全塌。测试改用 `shellTabKey(TabId.x)`
   按**身份**查找,不按位置。
