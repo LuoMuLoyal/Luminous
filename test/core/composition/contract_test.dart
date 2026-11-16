@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/app/composition/components/registry.dart';
 import 'package:luminous/core/composition/composition.dart';
-import 'package:luminous/features/generative/presentation/components/catalog.dart'
-    show generativeSurfaces;
+import 'package:luminous/features/generative/presentation/gates/surfaces.dart';
 
 /// Contract checks for the component system.
 ///

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/features/generative/presentation/gates/surfaces.dart';
 import 'package:luminous/features/generative/presentation/providers/generation.dart';
 import 'package:luminous/features/generative/presentation/providers/surface_state.dart';
 import 'package:luminous/features/generative/presentation/widgets/compose_entry.dart';
@@ -17,20 +18,6 @@ import 'package:luminous/features/generative/presentation/widgets/generative_sur
 /// 是它唯一的区分维度。
 ComponentId generativeSurfaceComponentId(SurfaceId surface) =>
     ComponentId('generative.${surface.wireValue}');
-
-/// 可以挂生成式组件的 surface。
-///
-/// 排除 `tab_chrome`：它是底部栏（图标、名称、顺序），不是页面，客户端用另
-/// 一套模型渲染。服务端也在 `GENERATIVE_SURFACES` 里做了同样的排除，两边的
-/// 差集必须一致——否则打开实验开关后，客户端会给一个服务端拒绝生成的 surface
-/// 注册入口，用户点下去必然拿到 400 `GENERATIVE_SURFACE_UNSUPPORTED`。
-///
-/// 导出成常量而不是在各处重复 `surface != SurfaceId.tabChrome`：注册逻辑与
-/// 契约测试必须基于**同一份**清单，各写一份迟早漂移。
-final List<SurfaceId> generativeSurfaces = [
-  for (final surface in SurfaceId.values)
-    if (surface != SurfaceId.tabChrome) surface,
-];
 
 /// 注册 `generative.<surface>` 组件。
 ///

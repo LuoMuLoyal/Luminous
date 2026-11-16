@@ -5,8 +5,7 @@ import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/config/feature_flags.dart';
 import 'package:luminous/core/network/config/env_reader.dart';
 import 'package:luminous/core/network/config/pref_keys.dart';
-import 'package:luminous/features/generative/presentation/components/catalog.dart'
-    show generativeSurfaces;
+import 'package:luminous/features/generative/presentation/gates/surfaces.dart';
 
 import '../../helpers/kv_test_store.dart';
 

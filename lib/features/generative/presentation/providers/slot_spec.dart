@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/features/generative/data/datasources/slot_cache.dart';
+import 'package:luminous/app/composition/generative/generation_repository.dart';
 import 'package:luminous/features/generative/domain/entities/slot_spec.dart';
 import 'package:luminous/shared/domain/composition/surface.dart';
 
@@ -20,8 +22,19 @@ class GenerativeSlotSpecController extends Notifier<GenerativeSlotSpec?> {
   final SurfaceId surface;
 
   @override
-  GenerativeSlotSpec? build() =>
-      ref.watch(generativeSlotCacheProvider).read(surface);
+  GenerativeSlotSpec? build() {
+    // 声明是本地 KV 上的读模型：首帧就要决定标题与入口是否显示，不能等一个
+    // Future。仓储的坏数据分支已收敛成 `Right(null)`，这里只剩读成功与「读不
+    // 出来当作没配过」两种结果。
+    unawaited(_hydrate());
+    return null;
+  }
+
+  Future<void> _hydrate() async {
+    final result = await ref.read(slotSpecRepositoryProvider).read(surface);
+    if (!ref.mounted) return;
+    state = result.getRight().toNullable();
+  }
 
   /// 保存（或覆盖）声明。
   ///
@@ -30,7 +43,7 @@ class GenerativeSlotSpecController extends Notifier<GenerativeSlotSpec?> {
   /// LLM 调用藏进写操作里，失败时用户看到的是「保存失败」而不是「生成失败」，
   /// 语义就混了。
   Future<void> save(GenerativeSlotSpec spec) async {
-    await ref.read(generativeSlotCacheProvider).write(surface, spec);
+    await ref.read(slotSpecRepositoryProvider).write(surface, spec);
     state = spec;
   }
 
@@ -39,7 +52,7 @@ class GenerativeSlotSpecController extends Notifier<GenerativeSlotSpec?> {
   /// 结果一并清掉是有意的：没有声明的结果是一块**无主**的区块——编排页上
   /// 它没有名字，用户也没法再生成一次，留着只会让人困惑。
   Future<void> clear() async {
-    await ref.read(generativeSlotCacheProvider).clear(surface);
+    await ref.read(slotSpecRepositoryProvider).clear(surface);
     state = null;
   }
 }

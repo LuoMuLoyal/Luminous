@@ -4,14 +4,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/features/generative/domain/entities/generation.dart';
-import 'package:luminous/features/generative/presentation/components/catalog.dart'
-    show generativeSurfaces;
+import 'package:luminous/features/generative/presentation/gates/surfaces.dart';
 import 'package:luminous/features/generative/presentation/providers/generation.dart';
 import 'package:luminous/features/generative/presentation/providers/slot_spec.dart';
 import 'package:luminous/features/generative/presentation/providers/surface_state.dart';
 import 'package:luminous/features/generative/presentation/widgets/slot_preview.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/shared/domain/composition/surface.dart';
 
 /// 生成式区块在**页面上**的呈现：标题 + 内容。
 ///
@@ -105,13 +103,6 @@ class GenerativeComposeEntry extends ConsumerWidget {
     );
   }
 }
-
-/// surface 是否还能继续生成（`tab_chrome` 不是页面，不参与生成）。
-///
-/// 与服务端 `GENERATIVE_SURFACES` 对齐，判定依据是 [generativeSurfaces] 这份
-/// 共享清单——不在这里重复写 `surface != SurfaceId.tabChrome`。
-bool isComposableSurface(SurfaceId surface) =>
-    generativeSurfaces.contains(surface);
 
 /// 生成中的骨架：三行递减宽度的色块。
 ///
