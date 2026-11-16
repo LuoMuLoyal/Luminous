@@ -24,6 +24,17 @@ abstract interface class LayoutSyncQueue {
     required SurfaceLayout layout,
     int? ifVersion,
   });
+
+  /// 入队一份**已经是最终 payload** 的文档。
+  ///
+  /// 给不走 `SurfaceLayout` 的 surface 用（如 `tab`，它的载荷是 `NavConfig`）。
+  /// 队列本身的语义不变：同一 `entityType + entityId` 只保留最后一次。
+  Future<void> enqueueRaw({
+    required SurfaceId surface,
+    required int schemaVersion,
+    required String payload,
+    int? ifVersion,
+  });
 }
 
 /// 把布局编码成可重放的 payload：surface、schemaVersion、payload 文档、
@@ -36,10 +47,29 @@ String encodeLayoutPayload({
   required SurfaceLayout layout,
   int? ifVersion,
 }) {
+  return encodeRawPayload(
+    surface: surface,
+    schemaVersion: layout.schemaVersion,
+    payload: jsonEncode(layout.toJson()),
+    ifVersion: ifVersion,
+  );
+}
+
+/// 同 [encodeLayoutPayload]，但接受已经编码好的 payload 字符串。
+///
+/// 不走 `SurfaceLayout` 的 surface（如 `tab`）用它；两者共用同一套信封，
+/// 重放侧因此只有一条解码路径。
+String encodeRawPayload({
+  required SurfaceId surface,
+  required int schemaVersion,
+  required String payload,
+  int? ifVersion,
+}) {
   return jsonEncode({
     'surface': surface.wireValue,
-    'schemaVersion': layout.schemaVersion,
-    'payload': layout.toJson(),
+    'schemaVersion': schemaVersion,
+    // 已经是 JSON 文本，原样放进信封；解码侧统一按字符串取出。
+    'payload': payload,
     if (ifVersion != null) 'ifVersion': ifVersion,
   });
 }
@@ -54,10 +84,14 @@ LayoutSyncPayload? decodeLayoutPayload(PendingSyncEntry entry) {
     final schemaVersion = json['schemaVersion'];
     if (schemaVersion is! int) return null;
     final ifVersion = json['ifVersion'];
+    final rawPayload = json['payload'];
     return LayoutSyncPayload(
       surface: surface,
       schemaVersion: schemaVersion,
-      payload: jsonEncode(json['payload']),
+      // 两种入队路径的信封不同：`encodeLayoutPayload` 放的是对象，
+      // `encodeRawPayload` 放的是已经编好的 JSON 文本。统一成字符串交给
+      // `LayoutRemote.put`（它的参数本来就是 `String`）。
+      payload: rawPayload is String ? rawPayload : jsonEncode(rawPayload),
       ifVersion: ifVersion is int ? ifVersion : null,
     );
   } on FormatException {
@@ -82,7 +116,22 @@ final class PendingLayoutSyncQueue implements LayoutSyncQueue {
     required SurfaceId surface,
     required SurfaceLayout layout,
     int? ifVersion,
-  }) async {
+  }) {
+    return enqueueRaw(
+      surface: surface,
+      schemaVersion: layout.schemaVersion,
+      payload: jsonEncode(layout.toJson()),
+      ifVersion: ifVersion,
+    );
+  }
+
+  @override
+  Future<void> enqueueRaw({
+    required SurfaceId surface,
+    required int schemaVersion,
+    required String payload,
+    int? ifVersion,
+  }) {
     // 串行化：调用方是 fire-and-forget 的，同一次写入会话里可能连续触发多次
     // `write`。并发跑「查旧项 → 删 → 入队」会让两次都读到空表，结果留下两条。
     _tail = _tail.then((_) async {
@@ -92,9 +141,10 @@ final class PendingLayoutSyncQueue implements LayoutSyncQueue {
         entityType: LayoutSyncQueue.entityType,
         entityId: surface.wireValue,
         operation: operation,
-        payload: encodeLayoutPayload(
+        payload: encodeRawPayload(
           surface: surface,
-          layout: layout,
+          schemaVersion: schemaVersion,
+          payload: payload,
           ifVersion: ifVersion,
         ),
       );

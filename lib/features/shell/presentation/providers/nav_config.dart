@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/app/composition/shell/nav_config_sync.dart';
 import 'package:luminous/features/shell/domain/entities/nav_config.dart';
 import 'package:luminous/features/shell/domain/services/nav_rules.dart';
 import 'package:luminous/features/shell/presentation/providers/data_access.dart';
@@ -33,13 +34,25 @@ class NavConfigController extends Notifier<NavConfig> {
     state = next;
     // 乐观写：先改内存态让界面立刻响应，落盘失败也只影响下次启动。
     unawaited(ref.read(navConfigRepositoryProvider).write(next));
+    // 远端同步是旁路：本地已生效，推不上去就进离线队列。
+    unawaited(ref.read(navConfigSyncProvider).push(next));
     return resolution;
+  }
+
+  /// 采纳一份来自远端的配置（登录后 / 跨设备拉取）。
+  ///
+  /// 不经过 `commit`：远端文档已经过服务端 `schemaVersion` 区间校验，但仍是
+  /// 客户端写的，所以本地再跑一次补全——注册表可能多了 tab。
+  void adoptRemote(NavConfig remote) {
+    state = remote;
+    unawaited(ref.read(navConfigRepositoryProvider).write(remote));
   }
 
   /// 恢复默认配置。
   Future<void> reset() async {
     state = state.resetToDefault();
     await ref.read(navConfigRepositoryProvider).write(state);
+    unawaited(ref.read(navConfigSyncProvider).push(state));
   }
 }
 

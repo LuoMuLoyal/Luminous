@@ -9,6 +9,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/settings/cache_cleanup.dart';
 import 'package:luminous/app/composition/settings/sleep_reminder_sync.dart';
+import 'package:luminous/app/composition/shell/nav_config_sync.dart';
 import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/accessibility/settings.dart';
@@ -25,6 +26,8 @@ import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/widgets/common/control/desktop/window_chrome.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder/delivery_reporter.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder/notification_coordinator.dart';
+import 'package:luminous/features/shell/presentation/providers/data_access.dart';
+import 'package:luminous/features/shell/presentation/providers/nav_config.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -200,6 +203,12 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       // Keep cache cleanup startup work in the same post-frame bootstrap.
       ref.read(cacheCleanupProvider);
 
+      // tab 配置的远端副本只有登录用户才有。放在 restore 之后：匿名启动时
+      // 拉取必然 401，白白多一次失败日志。
+      if (ref.read(authSessionProvider).isAuthenticated) {
+        _pullNavConfig();
+      }
+
       final coordinator = ref.read(pushCoordinatorProvider);
       await coordinator.start();
       final session = ref.read(authSessionProvider);
@@ -209,6 +218,27 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
     } catch (error) {
       ref.read(talkerProvider).error('Push startup failed: $error');
     }
+  }
+
+  /// 拉一次远端的 tab 配置。
+  ///
+  /// 独立 fire-and-forget：底栏已经用本地配置渲染好了，远端是**增量修正**，
+  /// 不该让启动流程等它。失败由 `NavConfigSync.pull` 静默处理。
+  void _pullNavConfig() {
+    unawaited(
+      ref
+          .read(navConfigSyncProvider)
+          .pull()
+          .then((adopted) {
+            if (!adopted || !mounted) return;
+            ref
+                .read(navConfigProvider.notifier)
+                .adoptRemote(ref.read(navConfigRepositoryProvider).read());
+          })
+          .catchError((Object error) {
+            ref.read(talkerProvider).error('Nav config pull failed: $error');
+          }),
+    );
   }
 
   Future<void> _syncPushAuth(String? userId) async {

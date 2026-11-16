@@ -27,6 +27,13 @@ abstract interface class LayoutRemote {
     required int schemaVersion,
     int? ifVersion,
   });
+
+  /// 读单个 surface 的 payload（JSON 字符串）；404 映射成 `Right(null)`。
+  ///
+  /// 与 [fetchAll] 的区别不是性能，而是**语义**：`fetchAll` 是「把全部布局拿来
+  /// 覆盖本地缓存」的一次性动作，而这里的调用方（tab 配置）只关心自己那一份，
+  /// 且要在拿到 409 的 `current` 时单独再取一次。
+  TaskEither<LucentFailure, String?> fetch(SurfaceId surface);
 }
 
 /// 走生成客户端（LayoutsApi）的实现。
@@ -95,5 +102,26 @@ final class LucentLayoutRemote implements LayoutRemote {
     if (payload == null) return null;
     if (payload is String) return payload.isEmpty ? null : payload;
     return jsonEncode(payload);
+  }
+
+  @override
+  TaskEither<LucentFailure, String?> fetch(SurfaceId surface) {
+    return TaskEither(() async {
+      try {
+        final response = await _client.layouts.getLayout(
+          surface: surface.wireValue,
+        );
+        return Right<LucentFailure, String?>(
+          _payloadOf(response.data?.payload),
+        );
+      } catch (error) {
+        final failure = LucentErrorMapper.fromObject(error);
+        // 没存过不是错误：调用方据此走「用本地默认」的分支。
+        if (failure.statusCode == 404) {
+          return const Right<LucentFailure, String?>(null);
+        }
+        return Left<LucentFailure, String?>(failure);
+      }
+    });
   }
 }

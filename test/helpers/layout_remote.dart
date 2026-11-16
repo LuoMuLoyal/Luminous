@@ -37,6 +37,15 @@ final class FakeLayoutRemote implements LayoutRemote {
   }
 
   @override
+  TaskEither<LucentFailure, String?> fetch(SurfaceId surface) {
+    return TaskEither(
+      () async => failure != null
+          ? Left<LucentFailure, String?>(failure!)
+          : Right<LucentFailure, String?>(remoteDocs[surface]),
+    );
+  }
+
+  @override
   TaskEither<LucentFailure, int> put(
     SurfaceId surface,
     String payload, {
@@ -63,6 +72,14 @@ final class NoopLayoutSyncQueue implements LayoutSyncQueue {
   Future<void> enqueue({
     required SurfaceId surface,
     required SurfaceLayout layout,
+    int? ifVersion,
+  }) async {}
+
+  @override
+  Future<void> enqueueRaw({
+    required SurfaceId surface,
+    required int schemaVersion,
+    required String payload,
     int? ifVersion,
   }) async {}
 }
