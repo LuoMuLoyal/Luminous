@@ -186,6 +186,11 @@ sanctioned 形态。两组规则对 providers 接缝的口径目前不一致，�
   (`@TypedGoRoute` + `go_router_builder`).
 - Tab roots: `/`, `/record`, `/medicine`, `/review`, `/mine`.
 - Sub-pages are top-level full-screen routes outside the shell.
+- **Tab chrome 是数据驱动的**（`features/shell`）：`shellTabRegistry` 是身份与
+  `branchIndex` 的编译期来源，`NavConfig`（KV `shell.navConfig`）是用户的顺序 /
+  名称 / 图标 / 显隐，`ShellPage` 只消费解析结果。**branch 结构与用户配置解耦**——
+  底栏 index 是「可见列表里的位置」，切换经 `ResolvedTab.branchIndex` 翻译回
+  `goBranch`。路由表不随配置变化；见 `plans/2026-11-12-navigable-shell.md`。
 
 ## Design System
 

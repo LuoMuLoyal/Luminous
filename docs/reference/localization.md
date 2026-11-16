@@ -98,6 +98,20 @@ flutter gen-l10n
   也不要按 `localeName` 硬编码连接词——模板微调即碎，且各语言连接词不同。整句键仅在需要
   完整可读文本时使用（如无障碍 `semanticsLabel`）。
 
+### 显式例外：用户输入的字符串不是文案
+
+下面两类字符串由**用户**填写、随数据持久化，**不进 ARB**——它们是数据，与
+`nickname` 同性质：
+
+| 位置 | 键 | 约束 |
+| --- | --- | --- |
+| 底部 tab 自定义名称 | `NavConfig.tabs[].customLabel`（KV `shell.navConfig`） | 12 字素上限；拒绝零宽字符与 bidi 控制符；留空即回落到 ARB 默认（`tabToday` 等）。规则在 `features/shell/domain/services/nav_rules.dart` 的 `validateTabLabel` |
+| 用户昵称 | Lucent profile `nickname` | 由后端契约约束 |
+
+判定标准是「这个字符串是某一行的某个字段，还是一句界面话术」。前者走数据校验，
+后者走 ARB。**例外不扩展到任何由开发者写的文字**：tab 的默认名称、编排页的字段
+标签、校验失败提示全部是 ARB 键（`shellNav*` 前缀）。
+
 ## Locale 运行时
 
 - `LuminousApp` 读 `appLocaleControllerProvider`，解析结果传入 `MaterialApp.router.locale`；支持 `system` / `zh-CN` / `en`。
