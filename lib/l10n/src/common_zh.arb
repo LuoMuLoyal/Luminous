@@ -12,6 +12,32 @@
   "desktopSidebarGroupToday": "日常",
   "desktopSidebarGroupKnowledge": "知识",
   "desktopSidebarGroupAccount": "账户",
+  "shellNavCustomizeTitle": "底部导航",
+  "shellNavCustomizeDescription": "选择显示哪些 tab，以及它们的顺序、名称和图标。",
+  "shellNavRestoreDefaults": "恢复默认",
+  "shellNavLabelFieldLabel": "tab 名称",
+  "shellNavLabelHint": "留空则使用默认名称",
+  "shellNavIconFieldLabel": "图标",
+  "shellNavVisibilityLabel": "在导航中显示",
+  "shellNavErrorEmpty": "请输入名称",
+  "shellNavErrorTooLong": "最多 {max} 个字符",
+  "@shellNavErrorTooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "shellNavErrorForbiddenCharacters": "名称含不可见或改变书写方向的字符",
+  "shellNavErrorTooFewVisible": "至少保留 {min} 个可见 tab",
+  "@shellNavErrorTooFewVisible": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "shellNavErrorHomeHidden": "首页 tab 不可隐藏",
   "commonBack": "返回",
   "commandPaletteSearchHint": "搜索命令或页面…",
   "commandPaletteEmpty": "未找到匹配的命令",

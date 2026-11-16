@@ -12,6 +12,32 @@
   "desktopSidebarGroupToday": "Daily",
   "desktopSidebarGroupKnowledge": "Knowledge",
   "desktopSidebarGroupAccount": "Account",
+  "shellNavCustomizeTitle": "Bottom navigation",
+  "shellNavCustomizeDescription": "Choose which tabs to show, their order, names and icons.",
+  "shellNavRestoreDefaults": "Restore defaults",
+  "shellNavLabelFieldLabel": "Tab name",
+  "shellNavLabelHint": "Leave blank to use the default name",
+  "shellNavIconFieldLabel": "Icon",
+  "shellNavVisibilityLabel": "Show in navigation",
+  "shellNavErrorEmpty": "Enter a name",
+  "shellNavErrorTooLong": "Use at most {max} characters",
+  "@shellNavErrorTooLong": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "shellNavErrorForbiddenCharacters": "Name contains invisible or direction-changing characters",
+  "shellNavErrorTooFewVisible": "Keep at least {min} tabs visible",
+  "@shellNavErrorTooFewVisible": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "shellNavErrorHomeHidden": "The home tab cannot be hidden",
   "commonBack": "Back",
   "commandPaletteSearchHint": "Search commands or pages…",
   "commandPaletteEmpty": "No matching commands",
