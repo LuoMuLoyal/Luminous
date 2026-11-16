@@ -137,7 +137,7 @@ class NavConfig {
 
 ### N3 同步
 
-- Lucent `/layouts/tab_chrome` 契约落地后接 `pending_sync_queue`
+- Lucent `/layouts/tab` 契约落地后接 `pending_sync_queue`
   （`entityType: 'nav_config'`）。与组件化计划的 `layout.<surface>` 走同一套同步机制
 - 估：1–2 天
 

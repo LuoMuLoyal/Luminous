@@ -210,15 +210,15 @@ lib/core/composition/
   layout/
     cache.dart       本地缓存（drift `ui_layouts` 表，cache-first）
     remote.dart      `GET/PUT /layouts/:surface`（生成客户端，错误走 LucentFailure）
-    sync.dart        乐观写入 + `pending_sync_queue`（entityType `ui_layout`/`tab_chrome`）
+    sync.dart        乐观写入 + `pending_sync_queue`（entityType `ui_layout`/`tab`）
     store.dart       SurfaceLayoutStore：读缓存立即返回 → 后台拉远端 → 差异则更新
-  chrome.dart        TabChromeConfig { tabId, customLabel?, iconName?, orderIndex, visible }
+  chrome.dart        TabConfig { tabId, customLabel?, iconName?, orderIndex, visible }
   host.dart          ComponentHost：按 placement 顺序取 builder + 统一间距 + 未知 id 容错
   data_scope.dart    DataScope：每个 surface 可访问数据的类型化声明（A7 提示词来源）
   catalog/           各 feature 的目录装配清单（只写 id，不写 builder）
   customizer/        编排 UI（A2，Forui 原语）
   genui/             genui 适配层，唯一允许 import genui 的地方（A7）
-  tab_chrome/        tab 配置与图标选择（A6，Forui 原语）
+  tab/        tab 配置与图标选择（A6，Forui 原语）
 ```
 
 ### 2.1 三个互相独立的维度（这是与旧版本最关键的差别）
@@ -357,7 +357,7 @@ Grafana 是 `/dashboards/:uid`、Notion 是 `/blocks/:id`、`/pages/:id`，业�
 `/daily-records`、`/medicine-reminders` 这类扁平资源名，`/ui/layouts` 会同时偏离
 业内惯例与自身风格。
 
-- `surface` 取值：`today` / `record` / `medicine` / `review` / `mine` / `tab_chrome`。
+- `surface` 取值：`today` / `record` / `medicine` / `review` / `mine` / `tab`。
   **tab 配置与页面布局共用资源**，只是 payload 结构不同（少一套端点）
 - 服务端**不解释** `payload`，只校验 `schemaVersion` 在支持区间、`version` 单调递增；
   语义解析全在客户端——契约演进时后端不需要跟着改
@@ -377,7 +377,7 @@ Grafana 是 `/dashboards/:uid`、Notion 是 `/blocks/:id`、`/pages/:id`，业�
 #### 写路径（乐观写入 + 待同步队列）
 
 1. 用户在编辑器里确认 → **立即写本地缓存并刷新 UI**（不等待网络）
-2. 同一份变更入 `pending_sync_queue`：`entityType = 'ui_layout'`（或 `'tab_chrome'`），
+2. 同一份变更入 `pending_sync_queue`：`entityType = 'ui_layout'`（或 `'tab'`），
    `operation = 'upsert'`，`payload = { surface, ifVersion, doc }`
 3. `SyncWorker` 重放 → 成功则更新缓存里的 `version`；失败按既有指数退避重试
    （`backoffForRetryCount`），`permanent` 才提示用户
@@ -558,7 +558,7 @@ Grafana 是 `/dashboards/:uid`、Notion 是 `/blocks/:id`、`/pages/:id`，业�
   - `ownedBy(surface)`（原 `availableOf`）：这个 surface 自己 feature 提供的组件，
     只决定默认顺序与面板分组，**不是**权限表；
   - `mountableOn(surface, id)`：挂载许可。**任何已注册组件都能挂到任何页面**，
-    只排除不存在的 surface 与 `tabChrome`。
+    只排除不存在的 surface 与 `tab`。
 - `SurfaceDefinition.available` 字段同步改名 `owned`，避免继续被当成权限表读。
 - 跨 tab 面板按来源 tab 分组列出全部候选，用户可以把 Record / Review / Mine 的组件
   加到 Today（已在模拟器上实测 `calendar.strip`、`archive.summary`）。
