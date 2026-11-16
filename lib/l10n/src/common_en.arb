@@ -38,6 +38,25 @@
     }
   },
   "shellNavErrorHomeHidden": "The home tab cannot be hidden",
+  "shellNavSectionTabs": "Tabs",
+  "shellNavMoveUp": "Move up",
+  "shellNavMoveDown": "Move down",
+  "shellNavResetConfirmTitle": "Restore default navigation?",
+  "shellNavResetConfirmMessage": "Order, custom names and icons will all be reset.",
+  "shellNavResetConfirmAction": "Restore defaults",
+  "shellNavCancelAction": "Cancel",
+  "shellNavDoneAction": "Done",
+  "shellNavTabCountSummary": "{visible} of {total} visible",
+  "@shellNavTabCountSummary": {
+    "placeholders": {
+      "visible": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "commonBack": "Back",
   "commandPaletteSearchHint": "Search commands or pages…",
   "commandPaletteEmpty": "No matching commands",

@@ -48,6 +48,13 @@ class GeneralSection extends ConsumerWidget {
               onTap: () => context.push(Routes.settingsTheme),
             ),
             SettingsNavigationTile(
+              tileKey: const Key('settings-row-nav'),
+              icon: SemanticIcons.actionBottomNavigation,
+              title: l10n.shellNavCustomizeTitle,
+              subtitle: l10n.shellNavCustomizeDescription,
+              onTap: () => context.push(Routes.customizeNav),
+            ),
+            SettingsNavigationTile(
               tileKey: const Key('settings-row-language'),
               icon: SemanticIcons.settingsLanguage,
               title: l10n.mineSettingsLanguageTitle,

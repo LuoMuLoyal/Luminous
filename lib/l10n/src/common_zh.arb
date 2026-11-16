@@ -38,6 +38,25 @@
     }
   },
   "shellNavErrorHomeHidden": "首页 tab 不可隐藏",
+  "shellNavSectionTabs": "tab",
+  "shellNavMoveUp": "上移",
+  "shellNavMoveDown": "下移",
+  "shellNavResetConfirmTitle": "恢复默认导航？",
+  "shellNavResetConfirmMessage": "顺序、自定义名称和图标都会还原。",
+  "shellNavResetConfirmAction": "恢复默认",
+  "shellNavCancelAction": "取消",
+  "shellNavDoneAction": "完成",
+  "shellNavTabCountSummary": "{visible} / {total} 个可见",
+  "@shellNavTabCountSummary": {
+    "placeholders": {
+      "visible": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "commonBack": "返回",
   "commandPaletteSearchHint": "搜索命令或页面…",
   "commandPaletteEmpty": "未找到匹配的命令",

@@ -77,6 +77,9 @@ class Routes {
   /// 编排页前缀；具体 location 由 `CustomizeRoute(surface: …).location` 生成。
   static const customize = '/customize';
 
+  /// 底部导航编排页（改外壳本身，不是某个表面的布局）。
+  static const customizeNav = '/customize/nav';
+
   static const notifications = '/notifications';
 
   static const assistant = '/assistant';

@@ -277,6 +277,11 @@ abstract final class SemanticIcons {
   static const actionMenu = FLucideIcons.menu;
   static const actionNext = FLucideIcons.chevronRight;
   static const actionPrev = FLucideIcons.chevronLeft;
+  static const actionUp = FLucideIcons.chevronUp;
+  static const actionDown = FLucideIcons.chevronDown;
+
+  /// 底部导航（外壳）入口。
+  static const actionBottomNavigation = FLucideIcons.panelBottom;
   static const actionExpand = FLucideIcons.chevronDown;
   static const actionCollapse = FLucideIcons.chevronUp;
   static const actionRefresh = FLucideIcons.refreshCw;
