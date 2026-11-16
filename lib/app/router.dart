@@ -27,6 +27,8 @@ import 'package:luminous/features/review/presentation/pages/clinic_summary_share
 import 'package:luminous/features/review/presentation/pages/detail.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/scan/presentation/routes.dart' as scan_routes;
+import 'package:luminous/features/search/presentation/providers/search_routes.dart'
+    as search_routes;
 import 'package:luminous/features/settings/presentation/routes.dart'
     as settings_routes;
 import 'package:luminous/features/shell/presentation/page.dart';
@@ -246,6 +248,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
     ...customizer_routes.$appRoutes,
     ...record_routes.$appRoutes,
     ...medicine_routes.$appRoutes,
+    ...search_routes.$appRoutes,
     ...mine_routes.$appRoutes,
     ...settings_routes.$appRoutes,
     ...notification_routes.$appRoutes,

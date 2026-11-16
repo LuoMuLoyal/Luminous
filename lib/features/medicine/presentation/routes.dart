@@ -6,19 +6,8 @@ import 'package:luminous/features/medicine/presentation/pages/detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/edit.dart';
 import 'package:luminous/features/medicine/presentation/pages/risk_check.dart';
-import 'package:luminous/features/search/presentation/pages/page.dart';
 
 part 'routes.g.dart';
-
-@TypedGoRoute<MedicineSearchRoute>(path: '/medicine/search')
-class MedicineSearchRoute extends GoRouteData with $MedicineSearchRoute {
-  const MedicineSearchRoute();
-
-  @override
-  Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return slidePage(key: state.pageKey, child: const SearchPage());
-  }
-}
 
 @TypedGoRoute<MedicineDetailRoute>(path: '/medicine/detail/:source/:id')
 class MedicineDetailRoute extends GoRouteData with $MedicineDetailRoute {

@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
-import 'package:luminous/features/medicine/presentation/pages/detail.dart';
-import 'package:luminous/features/medicine/presentation/pages/medicine_detail_content.dart';
+import 'package:luminous/features/medicine/presentation/providers/detail_view.dart'
+    show MedicineDetailContent, MedicineDetailLoading;
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart';
 import 'package:luminous/features/shell/presentation/detail_pane_state.dart';
 import 'package:luminous/l10n/app_localizations.dart';
