@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router.dart';
+import 'package:luminous/core/router/app_routes.dart';
 import 'package:luminous/core/shortcuts/intents.dart';
 import 'package:luminous/core/widgets/common/dialog/command_palette.dart';
 

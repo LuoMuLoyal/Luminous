@@ -15,7 +15,6 @@ import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/quick_entry/core/quick_entry_providers.dart';
 import 'package:luminous/features/record/presentation/quick_entry/sheets/actions/record_detail_actions.dart';
-import 'package:luminous/features/record/presentation/routes.dart';
 import 'package:luminous/features/record/presentation/utils/detail_labels.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -23,7 +22,10 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// auth-required dialog if the user is not signed in.
 void editRecord(BuildContext context, String recordId) {
   unawaited(
-    pushAuthRequiredRoute(context, RecordEditRoute(id: recordId).location),
+    pushAuthRequiredRoute(
+      context,
+      '/record/${Uri.encodeComponent(recordId)}/edit',
+    ),
   );
 }
 

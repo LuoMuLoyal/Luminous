@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/bootstrap.dart';
-import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';

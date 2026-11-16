@@ -1,6 +1,6 @@
-import 'package:luminous/app/auth_session_adapter.dart';
-import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/mine/data/repositories/lucent.dart';
 import 'package:luminous/features/mine/domain/entities/account.dart';

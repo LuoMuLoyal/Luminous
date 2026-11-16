@@ -4,13 +4,16 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
+import 'package:luminous/core/router/medicine/routes.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -20,7 +23,6 @@ import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart'
 import 'package:luminous/features/medicine/presentation/pages/detail_section_view.dart';
 import 'package:luminous/features/medicine/presentation/pages/detail_sections.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_detail_shared.dart';
-import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Core content widget for medicine detail page.
@@ -121,7 +123,7 @@ class _MedicineDetailContentState extends ConsumerState<MedicineDetailContent> {
               const SizedBox(height: Spacing.xs),
               RiskCheckEntry(
                 l10n: l10n,
-                onTap: () => const MedicineRiskCheckRoute().push(context),
+                onTap: () => context.push(MedicineRoutes.riskCheck),
               ),
               const SizedBox(height: Spacing.lg),
               if (sections.isNotEmpty)
@@ -168,9 +170,8 @@ class _MedicineDetailContentState extends ConsumerState<MedicineDetailContent> {
                 const SizedBox(height: Spacing.sm),
                 FButton(
                   variant: FButtonVariant.outline,
-                  onPress: () => MedicineReminderDetailRoute(
-                    medicineId: currentMedicine.id,
-                  ).push(context),
+                  onPress: () =>
+                      context.push(MedicineRoutes.reminder(currentMedicine.id)),
                   child: Text(l10n.medicineDetailOpenReminderAction),
                 ),
               ],
@@ -237,9 +238,9 @@ class _MedicineDetailContentState extends ConsumerState<MedicineDetailContent> {
             () {
               if (!context.mounted) return;
               unawaited(
-                MedicineRemindersNewRoute(
-                  medicineId: newMedicine.id,
-                ).push(context),
+                context.push(
+                  MedicineRoutes.newReminder(medicineId: newMedicine.id),
+                ),
               );
             },
           ),

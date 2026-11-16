@@ -19,6 +19,7 @@ import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/app/composition/review/review.dart'
     show reviewRepositoryProvider;
 import 'package:luminous/app/composition/settings/notification_permission.dart';
+import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/app/composition/snapshot/legal.dart';
 import 'package:luminous/app/composition/snapshot/record.dart';
 import 'package:luminous/app/composition/today/today_suggestion.dart';

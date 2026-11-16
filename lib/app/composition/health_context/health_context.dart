@@ -12,8 +12,10 @@ import 'package:luminous/features/health_context/data/utils/health_context_snaps
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-export 'package:luminous/app/composition/snapshot/health_context.dart'
-    show healthContextSnapshotProvider;
+// 这里**不** re-export `healthContextSnapshotProvider`：`snapshot/health_context.dart`
+// 需要本文件装配出来的 `healthContextRepositoryProvider`，若本文件再 export 它，
+// 两个文件互指成环（arch_guard）。需要快照 provider 的调用方直接引
+// `package:luminous/app/composition/snapshot/health_context.dart`。
 
 part 'health_context.g.dart';
 

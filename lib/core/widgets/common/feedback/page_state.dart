@@ -4,10 +4,11 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/core/auth/session_state.dart';
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
+import 'package:luminous/core/widgets/common/feedback/state_message.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Unified single-layer page state for root tab pages.

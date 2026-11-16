@@ -2,12 +2,20 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/app/router.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/core/push/event_handlers.dart';
 import 'package:luminous/core/push/jpush_gateway.dart';
+import 'package:luminous/core/router/app_routes.dart';
 
 export 'package:luminous/core/push/event_handlers.dart';
+
+/// 推送跳转动作。默认空实现（不跳），由组合根
+/// （`lib/app/push_handlers.dart`）覆盖成真正的 `appRouterProvider.go`。
+///
+/// 这样 `core/` 不必反向 import `lib/app/router.dart`——那是主依赖环上的一条边。
+final pushNavigateProvider = Provider<void Function(String route)>(
+  (ref) => (_) {},
+);
 
 /// Maps a remote notification to the existing in-app destination.
 String routeForPushEvent(Map<String, dynamic> event) {
@@ -82,7 +90,7 @@ final pushMessageHandlerProvider = Provider<PushMessageHandler>((ref) {
     gateway: ref.watch(jpushGatewayProvider),
     handlers: ref.watch(pushEventHandlersProvider),
     emitAiSummary: (event) => ref.read(aiSummarySinkProvider).add(event),
-    navigate: (route) => ref.read(appRouterProvider).go(route),
+    navigate: (route) => ref.read(pushNavigateProvider)(route),
   );
   handler.start();
   ref.onDispose(handler.dispose);
@@ -118,7 +126,7 @@ final localNotificationRouterProvider = Provider<void>((ref) {
     final action = decoded['action'];
     if (action == PushAction.aiTodaySummary) {
       ref.read(pushEventHandlersProvider).onOpen(decoded);
-      ref.read(appRouterProvider).go(Routes.home);
+      ref.read(pushNavigateProvider)(Routes.home);
     }
   });
 

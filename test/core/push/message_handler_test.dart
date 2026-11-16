@@ -186,7 +186,7 @@ void main() {
         container = ProviderContainer(
           overrides: [
             localNotificationGatewayProvider.overrideWithValue(gateway),
-            appRouterProvider.overrideWithValue(router),
+            pushNavigateProvider.overrideWithValue(router.go),
             pushEventHandlersProvider.overrideWithValue(
               _AppLikePushHandlers(
                 onOpenEvent: () {
@@ -237,7 +237,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           localNotificationGatewayProvider.overrideWithValue(gateway),
-          appRouterProvider.overrideWithValue(router),
+          pushNavigateProvider.overrideWithValue(router.go),
           todayAiAnalysisControllerProvider.overrideWith(
             _FakeTodayAiAnalysisNotifier.new,
           ),

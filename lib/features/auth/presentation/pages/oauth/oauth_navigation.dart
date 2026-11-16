@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router.dart';
+import 'package:luminous/core/router/app_routes.dart';
 
 /// Sanitizes a [value] intended for post-login navigation.
 ///

@@ -142,6 +142,7 @@ final usesTarget = UserSettingsRepository();
     );
     newFile(path, r'''
 import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/snapshot/health_context.dart';
 
 final usesTarget = healthContextSnapshotProvider;
 ''');

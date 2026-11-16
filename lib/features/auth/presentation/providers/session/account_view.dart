@@ -1,4 +1,4 @@
-import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
 /// Typed access to the account entity carried by [AuthSessionState].

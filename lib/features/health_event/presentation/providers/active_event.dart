@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';

@@ -11,6 +11,7 @@ import 'package:lucent_api/lucent_api.dart' as api;
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
+import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/settings/user_settings_cache.dart';
 import 'package:luminous/core/design/design.dart';

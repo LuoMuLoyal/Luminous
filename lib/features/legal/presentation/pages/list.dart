@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
@@ -8,7 +9,6 @@ import 'package:luminous/core/widgets/common/feedback/state_message.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:luminous/features/legal/presentation/providers/legal.dart';
-import 'package:luminous/features/legal/presentation/routes.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class LegalListPage extends ConsumerWidget {
@@ -73,9 +73,8 @@ class LegalListPage extends ConsumerWidget {
                     size: 20,
                   ),
                   suffix: const Icon(SemanticIcons.actionNext),
-                  onPress: () => LegalDetailRoute(
-                    docType: doc.docType.pathSegment,
-                  ).push(context),
+                  onPress: () =>
+                      context.push('/legal/${doc.docType.pathSegment}'),
                 );
               }).toList(),
             ),

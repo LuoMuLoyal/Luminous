@@ -1,7 +1,7 @@
-import 'package:luminous/app/composition/health_context/health_context.dart';
 import 'package:luminous/app/composition/medicine/workspace.dart'
     show reminderRepositoryProvider;
 import 'package:luminous/app/composition/record/record_access.dart';
+import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart'
     show doseLogRepositoryProvider;

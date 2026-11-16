@@ -1,4 +1,4 @@
-import 'package:luminous/app/auth_session_adapter.dart';
+import 'package:luminous/core/auth/session_state.dart';
 import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/features/notification/data/repositories/lucent.dart';

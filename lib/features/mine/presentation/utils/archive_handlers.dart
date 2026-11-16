@@ -1,4 +1,4 @@
-import 'package:luminous/app/router.dart';
+import 'package:luminous/core/router/app_routes.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 
 /// Maps an archive entry's [MineCopyKey] to its default edit route.

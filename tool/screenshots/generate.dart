@@ -56,6 +56,7 @@ import 'package:luminous/app/composition/notification/unread_count.dart'
 import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/app/composition/review/review.dart'
     show reviewDashboardRepositoryProvider;
+import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/app/composition/snapshot/legal.dart';
 import 'package:luminous/app/composition/snapshot/record.dart';
 import 'package:luminous/app/composition/today/today_suggestion.dart'

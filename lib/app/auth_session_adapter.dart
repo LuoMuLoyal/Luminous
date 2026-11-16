@@ -4,53 +4,25 @@ import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/composition/auth/auth.dart';
 import 'package:luminous/app/composition/components/registry.dart';
 import 'package:luminous/app/push_handlers.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/app/settings_adapters.dart';
 import 'package:luminous/app/sync_handlers.dart';
 import 'package:luminous/core/auth/session_gateway.dart';
+import 'package:luminous/core/auth/session_mapping.dart';
 import 'package:luminous/core/auth/session_snapshot.dart';
 import 'package:luminous/core/database/sync/handlers.dart';
-import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/core/push/message_handler.dart'
+    show pushNavigateProvider;
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
+export 'package:luminous/core/auth/session_mapping.dart';
 export 'package:luminous/core/auth/session_provider.dart';
 
 // The app-side auth API (gateway override, snapshot adapters, and the typed
 // `AuthSessionState.user` accessor) is re-exported so feature code has a single
 // import and never needs to know which side of the core/feature seam a piece
 // lives on.
-
-/// Composition-root adapter between feature-owned auth entities and the
-/// feature-free `SessionSnapshot` value types that `lib/core/auth` consumes.
-extension AuthUserSnapshotX on AuthUser {
-  SessionUserSnapshot toSessionSnapshot() => SessionUserSnapshot(
-    id: id,
-    email: email,
-    nickname: nickname,
-    avatar: avatar,
-    emailVerifiedAt: emailVerifiedAt,
-    hasPassword: hasPassword,
-    lastLoginAt: lastLoginAt,
-    linkedIdentities: linkedIdentities
-        .map(
-          (identity) => SessionLinkedIdentity(
-            id: identity.id,
-            provider: identity.provider,
-            email: identity.email,
-            emailVerifiedAt: identity.emailVerifiedAt,
-            linkedAt: identity.linkedAt,
-          ),
-        )
-        .toList(growable: false),
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-  );
-}
-
-extension AuthSessionSnapshotX on AuthSession {
-  SessionSnapshot toSessionSnapshot() =>
-      SessionSnapshot(user: user.toSessionSnapshot());
-}
 
 /// [AuthSessionGateway] backed by the feature auth repository.
 ///
@@ -93,6 +65,10 @@ List<Override> appProviderOverrides(ProviderContainer container) => [
   ),
   syncHandlerRegistrarsProvider.overrideWithValue(appSyncHandlerRegistrars),
   ...pushProviderOverrides(container),
+  // `core/push` 声明一个空的跳转动作，真正的路由跳转在这里接上。
+  pushNavigateProvider.overrideWithValue(
+    (route) => container.read(appRouterProvider).go(route),
+  ),
   ...settingsProviderOverrides(container),
   ...compositionProviderOverrides(),
 ];

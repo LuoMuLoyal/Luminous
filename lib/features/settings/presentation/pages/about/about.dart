@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/composition/support/resources.dart';
-import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
+import 'package:luminous/core/router/app_routes.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/control/brand_icon.dart';
 import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
@@ -13,7 +13,6 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/domain/services/version_check.dart';
 import 'package:luminous/features/settings/presentation/providers/package_info.dart';
-import 'package:luminous/features/settings/presentation/routes.dart';
 import 'package:luminous/features/support/domain/entities/app_info.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -215,7 +214,7 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
                 FTile(
                   title: Text(l10n.settingsAboutOssLicenses),
                   suffix: const Icon(SemanticIcons.actionNext),
-                  onPress: () => const SettingsOssLicensesRoute().push(context),
+                  onPress: () => context.push('/settings/about/oss-licenses'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutCheckUpdate),

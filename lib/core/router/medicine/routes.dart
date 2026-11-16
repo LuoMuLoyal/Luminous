@@ -23,4 +23,17 @@ abstract final class MedicineRoutes {
   /// `/medicine/reminders/:medicineId`.
   static String reminder(String medicineId) =>
       '/medicine/reminders/${_segment(medicineId)}';
+
+  /// `/medicine/reminders/new`，可带 `medicineId` 查询参数。
+  static String newReminder({String? medicineId}) {
+    final query = Uri(
+      queryParameters: {if (medicineId != null) 'medicineId': medicineId},
+    ).query;
+    return query.isEmpty
+        ? '/medicine/reminders/new'
+        : '/medicine/reminders/new?$query';
+  }
+
+  /// `/medicine/risk-check`。
+  static const String riskCheck = '/medicine/risk-check';
 }

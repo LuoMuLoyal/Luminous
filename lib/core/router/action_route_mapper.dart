@@ -1,4 +1,4 @@
-import 'package:luminous/app/router.dart';
+import 'package:luminous/core/router/app_routes.dart';
 
 /// Maps backend action tokens to in-app GoRouter routes.
 ///
