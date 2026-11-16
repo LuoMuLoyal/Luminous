@@ -15,6 +15,7 @@ import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/control/brand_icon.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/shell/domain/entities/nav_config.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:window_manager/window_manager.dart';
@@ -169,14 +170,25 @@ class DesktopSidebarStyle {
 }
 
 /// 侧边栏主体：头部品牌区 + 导航分组 + 底部工具区。
+///
+/// 导航分组**按注册表的默认分组**切分（`_sidebarGroups`），组内条目顺序与
+/// 显隐完全来自用户配置。分组本身不开放编排：跨组拖拽需要一个专门的编辑器，
+/// 而它解决的诉求用顺序就能满足（见 `nav_config.dart` 里 `NavConfig` 的说明）。
 class DesktopSidebar extends ConsumerWidget {
   const DesktopSidebar({
     super.key,
-    required this.currentIndex,
+    required this.tabs,
+    required this.activeBranchIndex,
     required this.onSelectTab,
   });
 
-  final int currentIndex;
+  /// 可见 tab，已按用户配置排序。
+  final List<ResolvedTab> tabs;
+
+  /// 当前 branch 下标（**不是** [tabs] 里的位置）。
+  final int activeBranchIndex;
+
+  /// 回调参数是 [tabs] 里的位置。
   final ValueChanged<int> onSelectTab;
 
   @override
@@ -184,18 +196,23 @@ class DesktopSidebar extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
 
-    FSidebarItem tabItem(ShellTab tab) {
-      final selected = currentIndex == tab.index;
+    final visibleIndexById = <TabId, int>{
+      for (var i = 0; i < tabs.length; i++) tabs[i].id: i,
+    };
+
+    FSidebarItem tabItem(ResolvedTab tab) {
+      final index = visibleIndexById[tab.id]!;
+      final selected = tab.branchIndex == activeBranchIndex;
       return FSidebarItem(
         key: tab.testKey(),
-        icon: Icon(selected ? tab.activeIcon : tab.icon),
+        icon: Icon(selected ? tab.activeIcon() : tab.icon()),
         label: Text(tab.label(l10n)),
         selected: selected,
         onPress: () {
           if (!selected) {
             unawaited(HapticFeedback.selectionClick());
           }
-          onSelectTab(tab.index);
+          onSelectTab(index);
         },
       );
     }
@@ -205,22 +222,40 @@ class DesktopSidebar extends ConsumerWidget {
       header: _WindowTitleBar(session: session),
       footer: const _SidebarFooter(),
       children: [
-        FSidebarGroup(
-          label: Text(l10n.desktopSidebarGroupToday),
-          children: [tabItem(ShellTab.today), tabItem(ShellTab.record)],
-        ),
-        FSidebarGroup(
-          label: Text(l10n.desktopSidebarGroupKnowledge),
-          children: [tabItem(ShellTab.medicine), tabItem(ShellTab.review)],
-        ),
-        FSidebarGroup(
-          label: Text(l10n.desktopSidebarGroupAccount),
-          children: [tabItem(ShellTab.mine)],
-        ),
+        for (final group in _sidebarGroups)
+          if (group.tabIds.any(visibleIndexById.containsKey))
+            FSidebarGroup(
+              label: Text(group.label(l10n)),
+              children: [
+                // 组内保持用户配置的相对顺序：按 tabs 的全局顺序过滤，
+                // 而不是按 group.tabIds 的顺序——后者会把用户拖过的顺序吃掉。
+                for (final tab in tabs)
+                  if (group.tabIds.contains(tab.id)) tabItem(tab),
+              ],
+            ),
       ],
     );
   }
 }
+
+/// 桌面侧栏的分组归属。分组是注册表侧的事实，用户配置改不动；组内顺序可配。
+class _SidebarGroup {
+  const _SidebarGroup({required this.tabIds, required this.label});
+
+  final List<TabId> tabIds;
+  final String Function(AppLocalizations l10n) label;
+}
+
+const List<_SidebarGroup> _sidebarGroups = [
+  _SidebarGroup(tabIds: [TabId.today, TabId.record], label: _labelToday),
+  _SidebarGroup(tabIds: [TabId.medicine, TabId.review], label: _labelKnowledge),
+  _SidebarGroup(tabIds: [TabId.mine], label: _labelAccount),
+];
+
+String _labelToday(AppLocalizations l10n) => l10n.desktopSidebarGroupToday;
+String _labelKnowledge(AppLocalizations l10n) =>
+    l10n.desktopSidebarGroupKnowledge;
+String _labelAccount(AppLocalizations l10n) => l10n.desktopSidebarGroupAccount;
 
 /// Sidebar header with drag-to-move support.
 ///

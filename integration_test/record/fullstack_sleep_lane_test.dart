@@ -1,5 +1,5 @@
 import 'package:integration_test/integration_test.dart';
-import 'package:luminous/features/shell/presentation/tab.dart';
+import 'package:luminous/features/shell/domain/entities/nav_config.dart';
 
 import '../support/e2e_test_helpers.dart';
 import '../support/fullstack_e2e_helpers.dart';
@@ -76,7 +76,7 @@ void main() {
 
     await openShellTab(
       tester,
-      ShellTab.today,
+      TabId.today,
       timeout: const Duration(seconds: 15),
     );
     await pumpUntilFound(
@@ -90,7 +90,7 @@ void main() {
 
     await openShellTab(
       tester,
-      ShellTab.review,
+      TabId.review,
       timeout: const Duration(seconds: 15),
     );
     await pumpUntilFound(

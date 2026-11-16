@@ -14,6 +14,7 @@ import 'package:luminous/features/record/presentation/routes.dart';
 import 'package:luminous/features/review/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
+import 'package:luminous/features/shell/domain/entities/nav_config.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 
 import '../helpers/kv_test_store.dart';
@@ -249,18 +250,19 @@ void main() {
         await tester.pump(const Duration(milliseconds: 300));
         await tester.pump(const Duration(milliseconds: 300));
 
-        // The deep link stays on the shell and selects the report branch
-        // (same branch identity as ShellTab.review).
+        // The deep link stays on the shell and selects the review branch.
+        // 默认配置下 review 在可见列表里排第 4（索引 3），与它的 branch 下标一致；
+        // 用户改了顺序时这两个数会分开，底栏 index 始终是「可见列表里的位置」。
         expect(find.byType(ReviewPage), findsOneWidget);
         final bottomNav = tester.widget<FBottomNavigationBar>(
           find.byType(FBottomNavigationBar),
         );
-        expect(bottomNav.index, ShellTab.review.index);
+        expect(bottomNav.index, 3);
 
         // Fifth tab label shows the user-facing task name 回顾 (zh).
         expect(
           find.descendant(
-            of: find.byKey(ShellTab.review.testKey()),
+            of: find.byKey(shellTabKey(TabId.review)),
             matching: find.text('回顾'),
           ),
           findsOneWidget,

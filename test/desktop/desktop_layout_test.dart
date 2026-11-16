@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/features/shell/domain/entities/nav_config.dart';
 import 'package:luminous/features/shell/presentation/page.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -244,7 +245,7 @@ void main() {
       setScreenSize(tester, 390, 844);
       await pumpShell(tester, router: buildRouter());
 
-      await tester.tap(find.byKey(ShellTab.record.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.record)));
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('tab-record')), findsOneWidget);
     });

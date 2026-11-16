@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/shell/domain/entities/nav_config.dart';
 import 'package:luminous/features/shell/presentation/page.dart';
 import 'package:luminous/features/shell/presentation/sidebar/desktop.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
@@ -120,8 +121,8 @@ void main() {
       setMobileScreenSize(tester);
       await pumpShell(tester, router: buildRouter());
 
-      for (final tab in ShellTab.values) {
-        expect(find.byKey(tab.testKey()), findsOneWidget);
+      for (final tab in shellTabRegistry) {
+        expect(find.byKey(shellTabKey(tab.id)), findsOneWidget);
       }
     });
 
@@ -143,7 +144,7 @@ void main() {
       setMobileScreenSize(tester);
       await pumpShell(tester, router: buildRouter());
 
-      await tester.tap(find.byKey(ShellTab.record.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.record)));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('tab-record')), findsOneWidget);
@@ -153,7 +154,7 @@ void main() {
       setMobileScreenSize(tester);
       await pumpShell(tester, router: buildRouter());
 
-      await tester.tap(find.byKey(ShellTab.medicine.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.medicine)));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('tab-medicine')), findsOneWidget);
@@ -163,7 +164,7 @@ void main() {
       setMobileScreenSize(tester);
       await pumpShell(tester, router: buildRouter());
 
-      await tester.tap(find.byKey(ShellTab.review.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.review)));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('tab-report')), findsOneWidget);
@@ -173,7 +174,7 @@ void main() {
       setMobileScreenSize(tester);
       await pumpShell(tester, router: buildRouter());
 
-      await tester.tap(find.byKey(ShellTab.mine.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.mine)));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('tab-mine')), findsOneWidget);
@@ -187,8 +188,8 @@ void main() {
 
       expect(find.byType(DesktopSidebar), findsOneWidget);
       // 五个 tab 的 test key 都在侧栏里（其余为 footer 的四个工具入口）。
-      for (final tab in ShellTab.values) {
-        expect(find.byKey(tab.testKey()), findsOneWidget);
+      for (final tab in shellTabRegistry) {
+        expect(find.byKey(shellTabKey(tab.id)), findsOneWidget);
       }
       expect(
         find.descendant(
@@ -246,7 +247,7 @@ void main() {
       setDesktopScreenSize(tester);
       await pumpShell(tester, router: buildRouter());
 
-      await tester.tap(find.byKey(ShellTab.medicine.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.medicine)));
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('tab-medicine')), findsOneWidget);

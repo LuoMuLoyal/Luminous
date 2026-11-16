@@ -66,6 +66,7 @@ import 'package:luminous/features/search/presentation/providers/data_access.dart
     show medicineSearchRepositoryProvider;
 import 'package:luminous/features/settings/data/datasources/notification_permission.dart';
 import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
+import 'package:luminous/features/shell/domain/entities/nav_config.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
@@ -262,10 +263,10 @@ Future<void> openTab(WidgetTester tester, String label) async {
 
 Future<void> openShellTab(
   WidgetTester tester,
-  ShellTab tab, {
+  TabId tab, {
   Duration timeout = const Duration(seconds: 5),
 }) async {
-  final tabFinder = find.byKey(tab.testKey());
+  final tabFinder = find.byKey(shellTabKey(tab));
   await pumpUntilFound(tester, tabFinder, timeout: timeout);
   await tester.ensureVisible(tabFinder);
   await settleE2e(tester);
@@ -274,7 +275,7 @@ Future<void> openShellTab(
 }
 
 Future<void> openSettings(WidgetTester tester) async {
-  await openShellTab(tester, ShellTab.mine);
+  await openShellTab(tester, TabId.mine);
   await tester.tap(find.byKey(const Key('mine-settings-action')));
   await settleE2e(tester);
   expect(find.text('设置'), findsWidgets);
@@ -293,7 +294,7 @@ Future<void> tapVisible(WidgetTester tester, Finder finder) async {
 }
 
 Future<void> openLoginFromSignedOutMine(WidgetTester tester) async {
-  await openShellTab(tester, ShellTab.mine);
+  await openShellTab(tester, TabId.mine);
 
   final loginAction = find.byKey(const Key('mine-readiness-action'));
   await tapVisible(tester, loginAction);
@@ -332,7 +333,7 @@ bool readSwitchValue(WidgetTester tester, Finder finder) {
 }
 
 Future<void> openMineProfileEntry(WidgetTester tester, String label) async {
-  await openShellTab(tester, ShellTab.mine);
+  await openShellTab(tester, TabId.mine);
   final archiveSection = find.byKey(const Key('mine-archive-section'));
   await pumpUntilFound(tester, archiveSection);
   expect(archiveSection, findsOneWidget);
@@ -341,13 +342,13 @@ Future<void> openMineProfileEntry(WidgetTester tester, String label) async {
   await tapVisible(tester, entry);
 }
 
-ShellTab? _shellTabForLabel(String label) {
+TabId? _shellTabForLabel(String label) {
   return switch (label.trim().toLowerCase()) {
-    'today' || '今天' || '今日' => ShellTab.today,
-    'record' || '记录' => ShellTab.record,
-    'medicine' || '用药' => ShellTab.medicine,
-    'report' || '报告' => ShellTab.review,
-    'mine' || '我的' || 'account' => ShellTab.mine,
+    'today' || '今天' || '今日' => TabId.today,
+    'record' || '记录' => TabId.record,
+    'medicine' || '用药' => TabId.medicine,
+    'report' || '报告' => TabId.review,
+    'mine' || '我的' || 'account' => TabId.mine,
     _ => null,
   };
 }

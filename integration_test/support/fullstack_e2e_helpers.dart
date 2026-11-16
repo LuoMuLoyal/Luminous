@@ -7,7 +7,7 @@ import 'package:luminous/core/network/config/env_keys.dart';
 import 'package:luminous/core/network/config/env_reader.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
-import 'package:luminous/features/shell/presentation/tab.dart';
+import 'package:luminous/features/shell/domain/entities/nav_config.dart';
 
 import '../../test/helpers/kv_test_store.dart';
 import 'e2e_test_helpers.dart';
@@ -274,7 +274,7 @@ Future<void> openRecordTabForDate(
 }) async {
   await openShellTab(
     tester,
-    ShellTab.record,
+    TabId.record,
     timeout: const Duration(seconds: 15),
   );
   await pumpUntilFound(

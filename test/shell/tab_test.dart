@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/router/app_routes.dart';
+import 'package:luminous/features/shell/domain/entities/nav_config.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
 import '../helpers/kv_test_store.dart';
 
 void main() {
@@ -9,53 +12,88 @@ void main() {
     KvTestStore.install();
   });
 
-  group('ShellTab', () {
-    test('has 5 tabs in correct order', () {
-      expect(ShellTab.values, hasLength(5));
-      expect(ShellTab.values[0], ShellTab.today);
-      expect(ShellTab.values[1], ShellTab.record);
-      expect(ShellTab.values[2], ShellTab.medicine);
-      expect(ShellTab.values[3], ShellTab.review);
-      expect(ShellTab.values[4], ShellTab.mine);
+  group('shellTabRegistry', () {
+    test('has the five tabs in branch order', () {
+      expect(shellTabRegistry, hasLength(5));
+      expect(shellTabRegistry.map((t) => t.id), [
+        TabId.today,
+        TabId.record,
+        TabId.medicine,
+        TabId.review,
+        TabId.mine,
+      ]);
     });
 
-    test('each tab has an icon', () {
-      for (final tab in ShellTab.values) {
-        expect(tab.icon, isNotNull, reason: '$tab should have an icon');
-      }
-    });
-
-    test('each tab has an activeIcon', () {
-      for (final tab in ShellTab.values) {
+    test('branchIndex matches the position in the registry', () {
+      for (var i = 0; i < shellTabRegistry.length; i++) {
         expect(
-          tab.activeIcon,
-          isNotNull,
-          reason: '$tab should have an activeIcon',
+          shellTabRegistry[i].branchIndex,
+          i,
+          reason: '${shellTabRegistry[i].id.value} must own branch $i',
         );
       }
     });
 
-    test('testKey returns ValueKey with shell-tab prefix', () {
-      final key = ShellTab.today.testKey();
-      expect(key, isA<ValueKey<String>>());
-      expect(key.value, 'shell-tab-today');
-
-      expect(ShellTab.record.testKey().value, 'shell-tab-record');
-      expect(ShellTab.medicine.testKey().value, 'shell-tab-medicine');
-      expect(ShellTab.review.testKey().value, 'shell-tab-report');
-      expect(ShellTab.mine.testKey().value, 'shell-tab-mine');
+    test('each tab points at its Routes constant', () {
+      expect(shellTabRegistry[0].path, Routes.home);
+      expect(shellTabRegistry[1].path, Routes.record);
+      expect(shellTabRegistry[2].path, Routes.medicine);
+      expect(shellTabRegistry[3].path, Routes.review);
+      expect(shellTabRegistry[4].path, Routes.mine);
     });
 
-    test('testKey returns unique keys', () {
-      final keys = ShellTab.values.map((t) => t.testKey().value).toSet();
-      expect(keys.length, ShellTab.values.length);
+    test('tab ids are unique', () {
+      final ids = shellTabRegistry.map((t) => t.id).toSet();
+      expect(ids, hasLength(shellTabRegistry.length));
     });
   });
 
-  group('ShellTab.label', () {
-    testWidgets('returns localized string from AppLocalizations', (
-      tester,
-    ) async {
+  group('ShellTabStyle', () {
+    test('every registered tab has a style', () {
+      for (final definition in shellTabRegistry) {
+        expect(
+          ShellTabStyle.of(definition.id),
+          isNotNull,
+          reason: '${definition.id.value} should have a default style',
+        );
+      }
+    });
+
+    test('testKey is prefixed with shell-tab', () {
+      expect(ShellTabStyle.of(TabId.today)!.testKey, 'shell-tab-today');
+      expect(ShellTabStyle.of(TabId.record)!.testKey, 'shell-tab-record');
+      expect(ShellTabStyle.of(TabId.medicine)!.testKey, 'shell-tab-medicine');
+      expect(ShellTabStyle.of(TabId.mine)!.testKey, 'shell-tab-mine');
+    });
+
+    test('review keeps the legacy shell-tab-report key', () {
+      // 从 "report" 改名而来，既有测试与集成脚本仍引用旧 key。
+      expect(ShellTabStyle.of(TabId.review)!.testKey, 'shell-tab-report');
+    });
+
+    test('test keys are unique', () {
+      final keys = {
+        for (final definition in shellTabRegistry)
+          ShellTabStyle.of(definition.id)!.testKey,
+      };
+      expect(keys, hasLength(shellTabRegistry.length));
+    });
+
+    test('unknown id has no style', () {
+      expect(ShellTabStyle.of(const TabId('nonexistent')), isNull);
+    });
+
+    test('every tab has a distinct default icon', () {
+      final icons = {
+        for (final definition in shellTabRegistry)
+          ShellTabStyle.of(definition.id)!.icon,
+      };
+      expect(icons, hasLength(shellTabRegistry.length));
+    });
+  });
+
+  group('ShellTabStyle.defaultLabel', () {
+    testWidgets('reads the ARB strings', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -66,27 +104,41 @@ void main() {
       await tester.pumpAndSettle();
       final l10n = AppLocalizations.of(tester.element(find.byType(SizedBox)))!;
 
-      expect(ShellTab.today.label(l10n), l10n.tabToday);
-      expect(ShellTab.record.label(l10n), l10n.tabRecord);
-      expect(ShellTab.medicine.label(l10n), l10n.tabMedicine);
-      expect(ShellTab.review.label(l10n), l10n.tabReview);
-      expect(ShellTab.mine.label(l10n), l10n.tabMine);
+      expect(ShellTabStyle.of(TabId.today)!.defaultLabel(l10n), l10n.tabToday);
+      expect(
+        ShellTabStyle.of(TabId.record)!.defaultLabel(l10n),
+        l10n.tabRecord,
+      );
+      expect(
+        ShellTabStyle.of(TabId.medicine)!.defaultLabel(l10n),
+        l10n.tabMedicine,
+      );
+      expect(
+        ShellTabStyle.of(TabId.review)!.defaultLabel(l10n),
+        l10n.tabReview,
+      );
+      expect(ShellTabStyle.of(TabId.mine)!.defaultLabel(l10n), l10n.tabMine);
+    });
+
+    test('fifth tab uses the Review task name', () {
+      final zh = lookupAppLocalizations(const Locale('zh'));
+      expect(ShellTabStyle.of(TabId.review)!.defaultLabel(zh), '回顾');
+
+      final en = lookupAppLocalizations(const Locale('en'));
+      expect(ShellTabStyle.of(TabId.review)!.defaultLabel(en), 'Review');
     });
   });
 
-  group('ShellTab.label – fifth tab uses the Review task name', () {
-    test('zh label is 回顾', () {
-      final zh = lookupAppLocalizations(const Locale('zh'));
-      expect(ShellTab.review.label(zh), '回顾');
-    });
-
-    test('en label is Review', () {
-      final en = lookupAppLocalizations(const Locale('en'));
-      expect(ShellTab.review.label(en), 'Review');
-    });
-
-    test('legacy tab key stays shell-tab-report', () {
-      expect(ShellTab.review.testKey().value, 'shell-tab-report');
+  group('shellTabKey', () {
+    test('matches the style test key', () {
+      expect(
+        (shellTabKey(TabId.today) as ValueKey<String>).value,
+        'shell-tab-today',
+      );
+      expect(
+        (shellTabKey(TabId.review) as ValueKey<String>).value,
+        'shell-tab-report',
+      );
     });
   });
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/shell/domain/entities/nav_config.dart';
+import 'package:luminous/features/shell/domain/entities/tab_definition.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/features/shell/presentation/tab_branch_container.dart';
 
@@ -26,7 +28,7 @@ void main() {
   /// is the branch container's own behaviour.
   GoRouter buildRouter() {
     return GoRouter(
-      initialLocation: _paths[ShellTab.today]!,
+      initialLocation: _paths[TabId.today]!,
       routes: [
         StatefulShellRoute(
           // `builder` must hand the shell through untouched — the branch
@@ -41,12 +43,12 @@ void main() {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        for (final tab in ShellTab.values)
+                        for (final tab in shellTabRegistry)
                           TextButton(
-                            key: tab.testKey(),
+                            key: shellTabKey(tab.id),
                             onPressed: () =>
-                                navigationShell.goBranch(tab.index),
-                            child: Text('${tab.index}'),
+                                navigationShell.goBranch(tab.branchIndex),
+                            child: Text('${tab.branchIndex}'),
                           ),
                       ],
                     ),
@@ -60,16 +62,16 @@ void main() {
                 ),
               ),
           branches: [
-            for (final tab in ShellTab.values)
+            for (final tab in shellTabRegistry)
               StatefulShellBranch(
                 routes: [
                   GoRoute(
-                    path: _paths[tab]!,
+                    path: _paths[tab.id]!,
                     pageBuilder: (context, state) => NoTransitionPage(
                       key: state.pageKey,
                       child: SizedBox(
-                        key: ValueKey<String>('page-${tab.name}'),
-                        child: Text('page-${tab.name}'),
+                        key: ValueKey<String>('page-${tab.id.value}'),
+                        child: Text('page-${tab.id.value}'),
                       ),
                     ),
                   ),
@@ -87,8 +89,12 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
   }
 
-  Finder branchRoot(ShellTab tab) =>
-      find.byKey(ValueKey<String>('page-${tab.name}'), skipOffstage: false);
+  Finder branchRoot(TabDefinition tab) =>
+      find.byKey(ValueKey<String>('page-${tab.id.value}'), skipOffstage: false);
+
+  /// 按身份取注册表条目；测试里描述「哪个分支」比「第几条」更稳。
+  TabDefinition tabDef(TabId id) =>
+      shellTabRegistry.firstWhere((tab) => tab.id == id);
 
   /// Walks up from a branch's root element and returns the *innermost* ancestor
   /// of type [T] that was produced by the container.
@@ -98,11 +104,11 @@ void main() {
   /// is the innermost match *below* the next [ShellTabBranchContainer]. Uses the
   /// element tree directly because `find.ancestor` cannot see an offstage
   /// branch's ancestors.
-  T containerWrapper<T extends Widget>(WidgetTester tester, ShellTab tab) {
+  T containerWrapper<T extends Widget>(WidgetTester tester, TabDefinition tab) {
     final elements = branchRoot(tab).evaluate();
     if (elements.length != 1) {
       throw StateError(
-        'branch ${tab.name}: expected 1 element, got ${elements.length}',
+        'branch ${tab.id.value}: expected 1 element, got ${elements.length}',
       );
     }
     final chain = <Widget>[];
@@ -115,7 +121,7 @@ void main() {
     );
     if (containerIndex < 0) {
       throw StateError(
-        'branch ${tab.name}: no ShellTabBranchContainer ancestor',
+        'branch ${tab.id.value}: no ShellTabBranchContainer ancestor',
       );
     }
     final scope = containerIndex == 0
@@ -128,30 +134,31 @@ void main() {
         return widget;
       }
     }
-    throw StateError('branch ${tab.name}: no $T supplied by the container');
+    throw StateError('branch ${tab.id.value}: no $T supplied by the container');
   }
 
   /// The `AnimatedOpacity` the container wraps one branch in.
-  AnimatedOpacity branchOpacity(WidgetTester tester, ShellTab tab) =>
+  AnimatedOpacity branchOpacity(WidgetTester tester, TabDefinition tab) =>
       containerWrapper<AnimatedOpacity>(tester, tab);
 
   /// The `IgnorePointer` the container wraps one branch in.
-  IgnorePointer branchIgnorePointer(WidgetTester tester, ShellTab tab) =>
+  IgnorePointer branchIgnorePointer(WidgetTester tester, TabDefinition tab) =>
       containerWrapper<IgnorePointer>(tester, tab);
 
   /// The branch roots currently laid out (i.e. not offstage).
-  Set<ShellTab> onstageTabs(WidgetTester tester) => ShellTab.values
+  Set<TabId> onstageTabs(WidgetTester tester) => shellTabRegistry
       .where(
         (tab) => tester
             .widgetList<SizedBox>(
               find.byWidgetPredicate(
                 (widget) =>
                     widget is SizedBox &&
-                    widget.key == ValueKey<String>('page-${tab.name}'),
+                    widget.key == ValueKey<String>('page-${tab.id.value}'),
               ),
             )
             .isNotEmpty,
       )
+      .map((tab) => tab.id)
       .toSet();
 
   group('ShellTabBranchContainer', () {
@@ -162,19 +169,19 @@ void main() {
       await pumpShell(tester, buildRouter());
 
       // Only the current tab's branch exists on first paint.
-      expect(onstageTabs(tester), {ShellTab.today});
+      expect(onstageTabs(tester), {TabId.today});
 
-      await tester.tap(find.byKey(ShellTab.record.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.record)));
       await tester.pumpAndSettle();
-      expect(onstageTabs(tester), {ShellTab.record});
+      expect(onstageTabs(tester), {TabId.record});
 
-      await tester.tap(find.byKey(ShellTab.today.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.today)));
       await tester.pumpAndSettle();
 
       // Today is onstage again; Record is still *mounted* (offstage), which is
       // what preserves per-tab state across switches.
-      expect(onstageTabs(tester), {ShellTab.today});
-      expect(branchRoot(ShellTab.record), findsOneWidget);
+      expect(onstageTabs(tester), {TabId.today});
+      expect(branchRoot(tabDef(TabId.record)), findsOneWidget);
       expect(find.text('page-record'), findsNothing);
     });
 
@@ -184,16 +191,16 @@ void main() {
       setMobileScreenSize(tester);
       await pumpShell(tester, buildRouter());
 
-      await tester.tap(find.byKey(ShellTab.record.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.record)));
       await tester.pump();
       // Right after the switch both branches are onstage: the outgoing one is
       // still mid fade-out.
       await tester.pump(const Duration(milliseconds: 32));
-      expect(onstageTabs(tester), {ShellTab.today, ShellTab.record});
+      expect(onstageTabs(tester), {TabId.today, TabId.record});
 
       // Once the fade finishes the outgoing branch is dropped offstage again.
       await tester.pumpAndSettle();
-      expect(onstageTabs(tester), {ShellTab.record});
+      expect(onstageTabs(tester), {TabId.record});
     });
 
     testWidgets('fades the incoming branch up and the outgoing branch down', (
@@ -204,9 +211,9 @@ void main() {
 
       // Only Today is mounted yet (branches load on demand), and it is the
       // current one: full opacity, incoming duration.
-      expect(branchOpacity(tester, ShellTab.today).opacity, 1.0);
+      expect(branchOpacity(tester, tabDef(TabId.today)).opacity, 1.0);
       expect(
-        branchOpacity(tester, ShellTab.today).duration,
+        branchOpacity(tester, tabDef(TabId.today)).duration,
         DurationTokens.tabFadeThrough,
       );
 
@@ -215,35 +222,41 @@ void main() {
       // wrong — with an M3 emphasized curve the outgoing branch is already down
       // to ~0.66 while the incoming one is only at ~0.15, so the switch reads as
       // washed out. `easeOut` keeps the hand-off monotone instead.
-      await tester.tap(find.byKey(ShellTab.record.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.record)));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 16));
 
-      expect(onstageTabs(tester), {ShellTab.today, ShellTab.record});
+      expect(onstageTabs(tester), {TabId.today, TabId.record});
       expect(
-        branchOpacity(tester, ShellTab.today).duration,
+        branchOpacity(tester, tabDef(TabId.today)).duration,
         DurationTokens.tabFadeThroughOut,
       );
       expect(
-        branchOpacity(tester, ShellTab.record).duration,
+        branchOpacity(tester, tabDef(TabId.record)).duration,
         DurationTokens.tabFadeThrough,
       );
       // Neither curve may be the front-loaded M3 emphasized one: that is what
       // made both branches read as washed out in the middle of the hand-off.
-      expect(branchOpacity(tester, ShellTab.today).curve, MotionTokens.snappy);
-      expect(branchOpacity(tester, ShellTab.record).curve, MotionTokens.snappy);
       expect(
-        branchOpacity(tester, ShellTab.record).curve,
+        branchOpacity(tester, tabDef(TabId.today)).curve,
+        MotionTokens.snappy,
+      );
+      expect(
+        branchOpacity(tester, tabDef(TabId.record)).curve,
+        MotionTokens.snappy,
+      );
+      expect(
+        branchOpacity(tester, tabDef(TabId.record)).curve,
         isNot(Curves.easeInOutCubicEmphasized),
       );
       expect(
-        branchOpacity(tester, ShellTab.today).curve,
+        branchOpacity(tester, tabDef(TabId.today)).curve,
         isNot(Curves.easeInOutCubicEmphasized),
       );
 
       await tester.pumpAndSettle();
-      expect(branchOpacity(tester, ShellTab.today).opacity, 0.0);
-      expect(branchOpacity(tester, ShellTab.record).opacity, 1.0);
+      expect(branchOpacity(tester, tabDef(TabId.today)).opacity, 0.0);
+      expect(branchOpacity(tester, tabDef(TabId.record)).opacity, 1.0);
     });
 
     testWidgets('settles on the last branch after rapid consecutive switches', (
@@ -260,24 +273,24 @@ void main() {
       // being dropped offstage early — is not assertable through the element
       // tree here: go_router's branch Navigators live inside an Overlay whose
       // offstage handling is invisible to finders in this harness.)
-      await tester.tap(find.byKey(ShellTab.record.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.record)));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 80));
-      await tester.tap(find.byKey(ShellTab.medicine.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.medicine)));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 80));
-      await tester.tap(find.byKey(ShellTab.review.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.review)));
       await tester.pump();
 
       await tester.pumpAndSettle();
 
-      expect(onstageTabs(tester), {ShellTab.review});
-      expect(branchOpacity(tester, ShellTab.review).opacity, 1.0);
-      for (final tab in [ShellTab.today, ShellTab.record, ShellTab.medicine]) {
+      expect(onstageTabs(tester), {TabId.review});
+      expect(branchOpacity(tester, tabDef(TabId.review)).opacity, 1.0);
+      for (final tab in [TabId.today, TabId.record, TabId.medicine]) {
         expect(
-          branchOpacity(tester, tab).opacity,
+          branchOpacity(tester, tabDef(tab)).opacity,
           0.0,
-          reason: '${tab.name} should have finished fading out',
+          reason: '${tab.value} should have finished fading out',
         );
       }
     });
@@ -288,25 +301,29 @@ void main() {
       setMobileScreenSize(tester);
       await pumpShell(tester, buildRouter());
 
-      expect(branchIgnorePointer(tester, ShellTab.today).ignoring, isFalse);
+      expect(
+        branchIgnorePointer(tester, tabDef(TabId.today)).ignoring,
+        isFalse,
+      );
 
-      await tester.tap(find.byKey(ShellTab.record.testKey()));
+      await tester.tap(find.byKey(shellTabKey(TabId.record)));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 32));
 
       // The outgoing branch is visible but must not accept input.
-      expect(branchIgnorePointer(tester, ShellTab.today).ignoring, isTrue);
-      expect(branchIgnorePointer(tester, ShellTab.record).ignoring, isFalse);
+      expect(branchIgnorePointer(tester, tabDef(TabId.today)).ignoring, isTrue);
+      expect(
+        branchIgnorePointer(tester, tabDef(TabId.record)).ignoring,
+        isFalse,
+      );
 
       await tester.pumpAndSettle();
     });
   });
 }
 
-const Map<ShellTab, String> _paths = <ShellTab, String>{
-  ShellTab.today: '/',
-  ShellTab.record: '/record',
-  ShellTab.medicine: '/medicine',
-  ShellTab.review: '/review',
-  ShellTab.mine: '/mine',
+/// 每个注册 tab 的根路径。直接用注册表的 `.path`，避免测试里再维护一份
+/// 与生产代码同步的常量表——那正是「改了路径测试还是绿的」的来源。
+final Map<TabId, String> _paths = {
+  for (final tab in shellTabRegistry) tab.id: tab.path,
 };
