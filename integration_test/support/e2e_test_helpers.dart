@@ -1005,17 +1005,17 @@ class E2eMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
           items: [
             MedicinePlanItem(
               color: SemanticColor.primary,
-              nameKey: MedicineCopyKey.genericName,
-              dosageKey: MedicineCopyKey.genericDosage,
-              scheduleKey: MedicineCopyKey.genericSchedule,
+              nameKey: MedicineCopy.genericName,
+              dosageKey: MedicineCopy.genericDosage,
+              scheduleKey: MedicineCopy.genericSchedule,
               slots: [
                 MedicineDoseSlot(
                   rawTime: '08:00',
-                  statusKey: MedicineCopyKey.doseStatusPending,
+                  statusKey: MedicineCopy.doseStatusPending,
                   status: MedicineDoseStatus.pending,
                 ),
               ],
-              stateKey: MedicineCopyKey.statusStable,
+              stateKey: MedicineCopy.statusStable,
               stateColor: SemanticColor.primary,
               rawName: 'E2E medicine',
               rawDosage: '1 tablet',
