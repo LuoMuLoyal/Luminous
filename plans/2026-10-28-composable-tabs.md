@@ -410,7 +410,7 @@ Grafana 是 `/dashboards/:uid`、Notion 是 `/blocks/:id`、`/pages/:id`，业�
 | A3 尺寸档 | 响应式三档完成；组件内 sealed 变体未做 |
 | A4 跨表面挂载 | 完成 |
 | A5 各 tab 补组件 | A5-1 用药已完成（10 端点 + 10 组件）；A5-2/3/4 未开始 |
-| A6 底部 tab 可配 | 未开始 |
+| A6 底部 tab 可配 | 已移交 `2026-11-12-navigable-shell.md`（序号 / 名称 / 图标 / 显隐已落地；编排 UI 待做） |
 | A7 生成式 UI | 未开始 |
 
 | 表面 | 组件数 | 默认布局 | 备注 |
@@ -638,25 +638,19 @@ GET /daily-records/month-overview?month=YYYY-MM&kind=<可选>
 
 ### A6 底部 tab 全可配（图标 / 名称 / 顺序）
 
-> 需求第 10 条：图标、名称、顺序全部可自定义。这是 shell + router 的结构改造。
+> 需求第 10 条。**本节已由 [`2026-11-12-navigable-shell.md`](2026-11-12-navigable-shell.md)
+> 接管**：该计划曾主张全仓迁移 `auto_route`，理由是「`go_router` 的编译期固定分支只能
+> 做到「改名 / 换图标 / 组内换序」」。**该判断 2026-11-16 已推翻**——`StatefulShellRoute`
+> 的 `branches` 是运行期可构造的普通列表，且 Material 底栏上限 5、本仓恰好占满，
+> 「运行期增删 tab」不通往任何产品形态。现方案**留在 `go_router`**，靠一层
+> `可见位置 → branchIndex` 映射实现顺序 / 名称 / 图标 / 显隐全可配。
+> 本节仅保留原始需求描述。
 
-- `ShellTab` 从 enum 降级为**数据**：`ShellTabDescriptor { ShellTabId id, String? customLabel, IconData icon }`；
-  `ShellTabId` 保留 enum（tab **身份**不变，只是展示可配），`ShellTabConfig` 持久化到
-  `chrome.tab.<id>`（登记进 `pref_keys.dart`）
-- **不能新增 tab**：Material 导航栏上限 5 个，当前正好 5 个（§0.4.1）。只支持改名/换图标/换顺序/隐藏，
-  且可见数保持 ≥3
-- 名称约束：中文 8 / 拉丁 12 字符，超出截断 + 实时计数；空串/纯空白回退 ARB 默认；
-  禁 RTL/LTR 覆盖字符与零宽字符（`\u202A-\u202E`、`\u200B-\u200F`）；提供「恢复默认」
-- 顺序：`ShellTabId` 映射到 branch index，**顺序变化不改路由 path**（深链稳定）。
-  现有 `test/shell/tab_test.dart` 断言 `ShellTab.values` 顺序与 label，按「默认无自定义」路径保留，
-  新增「自定义后」独立用例
-- **持久化复用 §2.7 同一资源**：`surface = 'tab_chrome'`，`LayoutDoc.payload` 存
-  `[{tabId, customLabel?, iconName, orderIndex, visible}]`；离线走 `pending_sync_queue`
-- 估：8–10 天
+- 需求：底部 tab 的图标、名称、顺序全可自定义。
+- `Lumos` 未发版，因此**不设兼容约束**：旧路径、旧 API、旧断言一律删除。
 
-**排期约束**：A6 与 A1–A5 无代码耦合，但动 `shell/` + `router.dart` + `app.dart`，
-与任何阶段的文件冲突面都大，**需要独占时间窗**。A3 已收口、A5 尚未开始的空档是
-合适窗口。
+**排期约束**：A6 动 `shell/` + `router.dart` + `bootstrap.dart`，与任何阶段的文件冲突面都大，
+**需要独占时间窗**。该时间窗在新计划里以 N0（路由迁移）单独占位。
 
 ### A7 生成式 UI + 轻量 AI 会话
 
