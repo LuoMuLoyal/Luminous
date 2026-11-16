@@ -1,5 +1,5 @@
 import 'package:luminous/core/network/client/client_providers.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder/remote.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

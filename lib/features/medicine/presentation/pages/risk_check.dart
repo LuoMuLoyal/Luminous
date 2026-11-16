@@ -11,7 +11,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
-import 'package:luminous/features/medicine/presentation/providers/risk_check.dart';
+import 'package:luminous/features/medicine/presentation/providers/safety/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/shared/check_loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/shared/check_tab_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';

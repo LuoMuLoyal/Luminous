@@ -21,7 +21,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder/sound.dart';
 import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminder/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/loading.dart';

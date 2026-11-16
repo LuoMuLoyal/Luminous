@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder/remote.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
 
 void main() {

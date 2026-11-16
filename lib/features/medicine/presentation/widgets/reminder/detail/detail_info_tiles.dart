@@ -4,7 +4,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/settings/tile_group.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder/sound.dart';
 import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminder/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

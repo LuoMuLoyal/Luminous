@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/medicine/data/datasources/safety_tips_remote.dart';
+import 'package:luminous/features/medicine/data/datasources/safety/tips_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
-import 'package:luminous/features/medicine/presentation/providers/safety_tips.dart';
+import 'package:luminous/features/medicine/presentation/providers/safety/tips.dart';
 import 'package:mocktail/mocktail.dart';
 import '../../../helpers/kv_test_store.dart';
 

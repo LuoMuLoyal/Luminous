@@ -15,7 +15,7 @@ import 'package:luminous/core/database/database.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder/remote.dart';
 import 'package:luminous/features/notification/data/repositories/lucent.dart';
 import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/features/notification/domain/repositories/notification.dart';

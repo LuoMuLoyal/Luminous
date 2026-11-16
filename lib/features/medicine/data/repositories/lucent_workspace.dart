@@ -13,7 +13,7 @@ import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart'
     show DoseLogItem, DoseLogRemoteDataSource, DoseLogStatus;
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder/remote.dart';
 import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';

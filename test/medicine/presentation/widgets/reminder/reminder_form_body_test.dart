@@ -4,7 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder/sound.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminder/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/form/form_body.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/form/form_fields.dart';

@@ -77,7 +77,7 @@ import 'package:luminous/features/medicine/data/repositories/risk_check.dart'
     show medicineRiskCheckRepositoryProvider;
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart'
     show medicineDetailProvider;
-import 'package:luminous/features/medicine/presentation/providers/reminders.dart'
+import 'package:luminous/features/medicine/presentation/providers/reminder/reminders.dart'
     show
         medicineReminderDeliveryLogProvider,
         medicineReminderListProvider,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder/remote.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder/sound.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminder/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/form/form_fields.dart';
 

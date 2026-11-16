@@ -8,7 +8,7 @@ import 'package:luminous/features/medicine/domain/services/reminder_notification
 import 'package:luminous/features/medicine/presentation/providers/data_access.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'reminder_delivery_reporter.g.dart';
+part 'delivery_reporter.g.dart';
 
 /// Reports local notification delivery receipts to the server so the audit
 /// trail records `channel='local'`, `status='delivered'` rows.

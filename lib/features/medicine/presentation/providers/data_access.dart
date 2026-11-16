@@ -9,8 +9,8 @@ export 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart
 export 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 export 'package:luminous/features/medicine/data/datasources/graph_view_preferences.dart';
 export 'package:luminous/features/medicine/data/datasources/medicine_detail_remote.dart';
-export 'package:luminous/features/medicine/data/datasources/reminder_local_preferences.dart';
-export 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-export 'package:luminous/features/medicine/data/datasources/safety_tips_remote.dart';
+export 'package:luminous/features/medicine/data/datasources/reminder/local_preferences.dart';
+export 'package:luminous/features/medicine/data/datasources/reminder/remote.dart';
+export 'package:luminous/features/medicine/data/datasources/safety/tips_remote.dart';
 export 'package:luminous/features/medicine/data/repositories/relations.dart';
 export 'package:luminous/features/medicine/data/repositories/risk_check.dart';

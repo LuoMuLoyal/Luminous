@@ -23,8 +23,8 @@ import 'package:luminous/core/shortcuts/bindings.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/widgets/common/control/desktop/window_chrome.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminder_delivery_reporter.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminder/delivery_reporter.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminder/notification_coordinator.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 

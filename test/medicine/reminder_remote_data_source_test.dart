@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' show MedicineRemindersApi;
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder/remote.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/task_either.dart';
