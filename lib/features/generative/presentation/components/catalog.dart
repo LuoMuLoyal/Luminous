@@ -1,23 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/features/generative/design/ids.dart';
 import 'package:luminous/features/generative/presentation/gates/surfaces.dart';
 import 'package:luminous/features/generative/presentation/providers/generation.dart';
 import 'package:luminous/features/generative/presentation/providers/surface_state.dart';
 import 'package:luminous/features/generative/presentation/widgets/compose_entry.dart';
 import 'package:luminous/features/generative/presentation/widgets/generative_surface.dart';
-
-/// 生成式 UI 的组件 id：`generative.<surface>`。
-///
-/// 每个 surface 一个（计划 §7 第 2 问的结论）。理由：生成结果是**按 surface
-/// 存的**（`genui.<surface>.surface`），一个全局可挂任意 surface 的组件会让
-/// 「这块结果属于哪个页面」变成运行期才知道的事，而布局层是按 surface 存的。
-///
-/// id 是 `generative.<surface>` 而不是 `generative.<domain>.<view>`：生成式 UI
-/// 没有「域 + 视图」的细分，它就是「这个格子里的东西由 agent 现拼」，`surface`
-/// 是它唯一的区分维度。
-ComponentId generativeSurfaceComponentId(SurfaceId surface) =>
-    ComponentId('generative.${surface.wireValue}');
 
 /// 注册 `generative.<surface>` 组件。
 ///

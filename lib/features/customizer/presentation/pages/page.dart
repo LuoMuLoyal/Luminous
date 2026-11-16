@@ -11,8 +11,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/customizer/domain/entities/edit.dart';
 import 'package:luminous/features/customizer/presentation/providers/draft.dart';
 import 'package:luminous/features/customizer/presentation/widgets/palette.dart';
-import 'package:luminous/features/generative/presentation/components/catalog.dart'
-    show generativeSurfaceComponentId;
+import 'package:luminous/features/generative/design/ids.dart';
 import 'package:luminous/features/generative/presentation/providers/slot_spec.dart';
 import 'package:luminous/features/generative/presentation/widgets/slot_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';

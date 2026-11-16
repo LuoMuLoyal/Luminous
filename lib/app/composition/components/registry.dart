@@ -8,8 +8,10 @@ import 'package:luminous/features/customizer/presentation/providers/layout_store
     show storedSurfaceLayoutProvider;
 import 'package:luminous/features/customizer/presentation/widgets/title/entry.dart'
     show openSurfaceCustomizer;
+import 'package:luminous/features/generative/design/ids.dart'
+    show generativeSurfaceComponentId;
 import 'package:luminous/features/generative/presentation/components/catalog.dart'
-    show generativeSurfaceComponentId, registerGenerativeComponents;
+    show registerGenerativeComponents;
 import 'package:luminous/features/generative/presentation/providers/surface_state.dart'
     show generativeCatalogProvider;
 import 'package:luminous/features/medicine/presentation/components/catalog.dart';

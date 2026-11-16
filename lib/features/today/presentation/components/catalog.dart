@@ -14,6 +14,7 @@ import 'package:luminous/features/today/presentation/widgets/sections/summary.da
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/features/today/presentation/widgets/views/health_event_section.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/composition/ids.dart';
 
 /// Components of the `today` surface.
 ///
@@ -25,7 +26,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 ///
 /// `build` returning `null` means "skip me and my spacing"; this is what removes
 /// the `SizedBox.shrink()` placeholders the hand-written page needed.
-const todayPreviewBannerId = ComponentId('auth.preview_banner');
+const todayPreviewBannerId = authPreviewBannerId;
 const todayGreetingId = ComponentId('daily.greeting');
 const todayPrimarySuggestionId = ComponentId('suggestion.primary');
 const todaySecondarySuggestionsId = ComponentId('suggestion.secondary');

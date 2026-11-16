@@ -31,9 +31,8 @@ import 'package:luminous/features/review/presentation/widgets/sections/preview/m
 import 'package:luminous/features/review/presentation/widgets/sections/preview/preview_locked.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/preview/trend.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:luminous/features/today/presentation/components/catalog.dart'
-    show todayPreviewBannerId;
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/shared/domain/composition/ids.dart';
 
 /// Components of the `review` surface.
 ///
@@ -89,7 +88,7 @@ const reviewSurfaceDefinition = SurfaceDefinition(
   surface: SurfaceId.review,
   owned: [
     reviewPeriodSwitchId,
-    todayPreviewBannerId,
+    authPreviewBannerId,
     reviewTrendId,
     reviewMultiTrendId,
     reviewMetricGridId,
@@ -124,7 +123,7 @@ const reviewSurfaceDefinition = SurfaceDefinition(
       // 尺寸显式写成 `wide`：这是全程满宽的提示条，组件也只声明支持 `wide`。
       // 省略 size 会用默认的 `regular`，再被 `_spanOf` 回退成组件支持的最小
       // 尺寸——结果虽然正确，但依赖的是降级路径而不是声明。
-      ComponentPlacement(id: todayPreviewBannerId, size: ComponentSize.compact),
+      ComponentPlacement(id: authPreviewBannerId, size: ComponentSize.compact),
       // 覆盖率概览行：空列表时不渲染。
       ComponentPlacement(
         id: reviewCoverageStripId,
