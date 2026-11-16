@@ -47,6 +47,9 @@
   （编排页草稿）
 - `presentation/pages/nav_customizer.dart` — `NavCustomizerPage`（底部导航编排页）
 - `presentation/routes.dart` — `/customize/nav`
+- `domain/repositories/nav_config_remote.dart` — `NavConfigRemote` / `NavConfigSyncQueue`
+  （同步端口；实现在 customizer，由组合根注入）
+- `data/sync/nav_config_sync.dart` — `NavConfigSync`（推送 / 拉取 / 离线入队）
 - `presentation/providers/data_access.dart` — presentation 访问 data 的唯一接缝
 - 其余导出:`ShellPage` / `DesktopTabShell` / `DesktopDetailPane` / `detailPaneProvider` /
   `ShellDeferredContent` / `ShellTabBranchContainer`
@@ -62,6 +65,8 @@
 - **非法编辑回退原配置**,不存半成品;`commit()` 返回 `NavResolution`,调用方读
   `rejection` 出提示即可。
 - **配置读不出来即回退默认**,但不清除原始值(留给以后能读懂它的版本)。
+- **本地 KV 是权威读源**:远端同步是旁路,推送失败入 `ui_layout` 队列重放,
+  拉取失败静默保持本地。远端文档解不开时**不覆盖**用户当前能用的配置。
 - `componentHost` 式降级:配置里未知 `tabId` 跳过,**其余 tab 照常渲染**。
 - 桌面/移动形态仅由 `Breakpoints.desktop` 宽度决定;indexedStack 保证各 branch 导航栈
   独立保活(test/shell/shell_page_test.dart、test/app/router_test.dart)。

@@ -133,15 +133,28 @@ class NavConfig {
 | `auto_route` 迁移 | 见 §1：增量能力不足以抵偿 126 文件改写 |
 | 兼容层 | 未发版，旧枚举与旧断言直接删除 |
 
-## 5. 待做
+## 5. 已完成 N3：同步（2026-11-16）
 
-### N3 同步
+- `NavConfigRemote` / `NavConfigSyncQueue`（`domain/repositories/nav_config_remote.dart`）
+  ——同步端口，刻意窄到只够 shell 用
+- `NavConfigSync`（`data/sync/nav_config_sync.dart`）：推送 / 拉取 / 离线入队
+- 与页面布局共用同一条链路：`/layouts/tab` 端点、`ui_layout` 离线队列、409 语义；
+  载荷编解码各一份（`NavConfig` 不是 `SurfaceLayout`——`ComponentPlacement.id` 要求
+  `domain.view` 两段格式，tab id 是单段）
+- 装配在组合根 `lib/app/composition/shell/nav_config_sync.dart`，把 customizer 的
+  `LucentLayoutRemote` / `PendingLayoutSyncQueue` 适配成 shell 的端口
+- 触发：`commit()` / `reset()` 推一次；`bootstrap` 在 `restore()` 之后、**仅已登录**时拉一次
+- 本地 KV 仍是权威读源：同步失败不阻断、不报错、不回滚
 
-- Lucent `/layouts/tab` 契约落地后接 `pending_sync_queue`
-  （`entityType: 'nav_config'`）。与组件化计划的 `layout.<surface>` 走同一套同步机制
-- 估：1–2 天
+## 6. 明确不做（同步部分）
 
-## 6. 验收
+| 项 | 原因 |
+| --- | --- |
+| 409 时自动合并 | tab 顺序没有「正确的合并结果」；以服务端为准，下次拉取采纳 |
+| 拉取失败重试 | 本地可用；下次登录还会拉。为一次可恢复的网络失败加退避不值得 |
+| 匿名用户同步 | 没有远端副本可拉，配置只存本地 |
+
+## 7. 验收
 
 - `flutter analyze lib test integration_test` 无问题
 - `--clean-layers` 零新增违规（已核对：基线 16 条，改动后仍 16 条）
@@ -150,7 +163,7 @@ class NavConfig {
   在顺序被改过之后仍落点正确（路由表未变，由 `test/app/router_test.dart` 覆盖）
 - 冷启动：配置从 KV 同步恢复，首帧不闪烁
 
-## 7. 执行注意
+## 8. 执行注意
 
 - l10n 铁律：改 `lib/l10n/src/` 片段 → `dart scripts/l10n/arb_tools.dart merge` →
   `flutter gen-l10n`，**不碰 `app_*.arb`**
