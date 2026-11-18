@@ -113,48 +113,48 @@ enum AssistantCapabilitiesResponseToolsNameEnum {
   getRecordsByDate(r'get_records_by_date'),
   @JsonValue(r'get_records_by_range')
   getRecordsByRange(r'get_records_by_range'),
-  @JsonValue(r'get_today_summary_by_date')
-  getTodaySummaryByDate(r'get_today_summary_by_date'),
-  @JsonValue(r'get_report_summary_by_range')
-  getReportSummaryByRange(r'get_report_summary_by_range'),
-  @JsonValue(r'get_recent_today_summaries')
-  getRecentTodaySummaries(r'get_recent_today_summaries'),
-  @JsonValue(r'get_recent_report_summaries')
-  getRecentReportSummaries(r'get_recent_report_summaries'),
+  @JsonValue(r'get_today_summary')
+  getTodaySummary(r'get_today_summary'),
+  @JsonValue(r'get_report_summary')
+  getReportSummary(r'get_report_summary'),
+  @JsonValue(r'get_today_summaries')
+  getTodaySummaries(r'get_today_summaries'),
+  @JsonValue(r'get_report_summaries')
+  getReportSummaries(r'get_report_summaries'),
   @JsonValue(r'get_user_profile')
   getUserProfile(r'get_user_profile'),
   @JsonValue(r'get_user_settings')
   getUserSettings(r'get_user_settings'),
-  @JsonValue(r'get_current_medicines')
-  getCurrentMedicines(r'get_current_medicines'),
-  @JsonValue(r'get_sleep_summary_by_range')
-  getSleepSummaryByRange(r'get_sleep_summary_by_range'),
-  @JsonValue(r'get_meal_analysis_digest')
-  getMealAnalysisDigest(r'get_meal_analysis_digest'),
-  @JsonValue(r'search_cn_medicine_products')
-  searchCnMedicineProducts(r'search_cn_medicine_products'),
-  @JsonValue(r'get_cn_medicine_detail')
-  getCnMedicineDetail(r'get_cn_medicine_detail'),
-  @JsonValue(r'search_cn_medicine_knowledge')
-  searchCnMedicineKnowledge(r'search_cn_medicine_knowledge'),
-  @JsonValue(r'resolve_drugbank_entity')
-  resolveDrugbankEntity(r'resolve_drugbank_entity'),
+  @JsonValue(r'get_medicines')
+  getMedicines(r'get_medicines'),
+  @JsonValue(r'get_sleep_summary')
+  getSleepSummary(r'get_sleep_summary'),
+  @JsonValue(r'get_meal_digest')
+  getMealDigest(r'get_meal_digest'),
+  @JsonValue(r'search_cn_products')
+  searchCnProducts(r'search_cn_products'),
+  @JsonValue(r'get_cn_product_detail')
+  getCnProductDetail(r'get_cn_product_detail'),
+  @JsonValue(r'search_cn_knowledge')
+  searchCnKnowledge(r'search_cn_knowledge'),
+  @JsonValue(r'resolve_drugbank')
+  resolveDrugbank(r'resolve_drugbank'),
   @JsonValue(r'get_drugbank_detail')
   getDrugbankDetail(r'get_drugbank_detail'),
-  @JsonValue(r'search_drugbank_passages')
-  searchDrugbankPassages(r'search_drugbank_passages'),
-  @JsonValue(r'reason_over_ontology')
-  reasonOverOntology(r'reason_over_ontology'),
-  @JsonValue(r'reason_over_rules')
-  reasonOverRules(r'reason_over_rules'),
-  @JsonValue(r'propose_create_daily_record')
-  proposeCreateDailyRecord(r'propose_create_daily_record'),
-  @JsonValue(r'propose_update_daily_record')
-  proposeUpdateDailyRecord(r'propose_update_daily_record'),
-  @JsonValue(r'propose_delete_daily_record')
-  proposeDeleteDailyRecord(r'propose_delete_daily_record'),
-  @JsonValue(r'propose_update_user_settings')
-  proposeUpdateUserSettings(r'propose_update_user_settings'),
+  @JsonValue(r'search_drugbank')
+  searchDrugbank(r'search_drugbank'),
+  @JsonValue(r'reason_ontology')
+  reasonOntology(r'reason_ontology'),
+  @JsonValue(r'reason_rules')
+  reasonRules(r'reason_rules'),
+  @JsonValue(r'create_record_draft')
+  createRecordDraft(r'create_record_draft'),
+  @JsonValue(r'update_record_draft')
+  updateRecordDraft(r'update_record_draft'),
+  @JsonValue(r'delete_record_draft')
+  deleteRecordDraft(r'delete_record_draft'),
+  @JsonValue(r'update_settings_draft')
+  updateSettingsDraft(r'update_settings_draft'),
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 
