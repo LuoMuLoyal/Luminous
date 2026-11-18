@@ -1561,7 +1561,7 @@ class _RestoredConversationAssistantRepository
             role: AssistantMessageRole.assistant,
             content: '我看到你最近有睡眠记录，可以先从作息规律开始看。',
             createdAt: DateTime.parse('2026-06-18T01:01:00Z'),
-            usedTools: const <String>['get_sleep_summary_by_range'],
+            usedTools: const <String>['get_sleep_summary'],
           ),
         ],
         lastMessageAt: DateTime.parse('2026-06-18T01:01:00Z'),

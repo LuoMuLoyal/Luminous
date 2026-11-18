@@ -189,13 +189,10 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>[
-              'search_cn_medicine_knowledge',
-              'resolve_drugbank_entity',
-            ],
+            usedTools: <String>['search_cn_knowledge', 'resolve_drugbank'],
             toolDetails: <AssistantToolDetail>[
               AssistantToolDetail(
-                name: 'search_cn_medicine_knowledge',
+                name: 'search_cn_knowledge',
                 sourceTables: <String>['leaflet:lightrag_chunks'],
               ),
             ],
@@ -213,10 +210,10 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>['search_cn_medicine_knowledge'],
+            usedTools: <String>['search_cn_knowledge'],
             toolDetails: <AssistantToolDetail>[
               AssistantToolDetail(
-                name: 'search_cn_medicine_knowledge',
+                name: 'search_cn_knowledge',
                 label: '布洛芬缓释胶囊',
                 sourceTables: <String>['leaflet:lightrag_chunks'],
               ),
@@ -232,17 +229,17 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>['search_cn_medicine_knowledge'],
+            usedTools: <String>['search_cn_knowledge'],
             toolDetails: <AssistantToolDetail>[
               AssistantToolDetail(
-                name: 'search_cn_medicine_knowledge',
+                name: 'search_cn_knowledge',
                 label: '布洛芬缓释胶囊',
                 coverageStatus: 'complete',
                 coverageReason: null,
                 confidenceLevel: 'high',
                 confidenceReason: '向量检索命中',
                 ambiguities: <String>['候选A', '候选B'],
-                sourceTool: 'search_cn_medicine_knowledge',
+                sourceTool: 'search_cn_knowledge',
                 sourceGeneratedAt: '2026-08-17T10:00:00.000Z',
                 sourceTables: <String>['leaflet:lightrag_chunks'],
                 disclaimer: '仅供参考，不构成诊疗建议。',
@@ -272,10 +269,10 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>['reason_over_ontology'],
+            usedTools: <String>['reason_ontology'],
             toolDetails: <AssistantToolDetail>[
               AssistantToolDetail(
-                name: 'reason_over_ontology',
+                name: 'reason_ontology',
                 sourceTables: <String>['lucent_graph (Apache AGE)'],
                 citations: <AssistantToolCitation>[
                   AssistantToolCitation(
@@ -352,13 +349,10 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>[
-              'search_cn_medicine_knowledge',
-              'resolve_drugbank_entity',
-            ],
+            usedTools: <String>['search_cn_knowledge', 'resolve_drugbank'],
             toolDetails: <AssistantToolDetail>[
               AssistantToolDetail(
-                name: 'search_cn_medicine_knowledge',
+                name: 'search_cn_knowledge',
                 sourceTables: <String>['leaflet:lightrag_chunks'],
               ),
             ],
@@ -377,10 +371,10 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>['search_cn_medicine_knowledge'],
+            usedTools: <String>['search_cn_knowledge'],
             toolDetails: <AssistantToolDetail>[
               AssistantToolDetail(
-                name: 'search_cn_medicine_knowledge',
+                name: 'search_cn_knowledge',
                 sourceTables: <String>['qa:lightrag_chunks'],
               ),
             ],
@@ -855,10 +849,10 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>['get_today_summary_by_date'],
+            usedTools: <String>['get_today_summary'],
             toolDetails: <AssistantToolDetail>[
               AssistantToolDetail(
-                name: 'get_today_summary_by_date',
+                name: 'get_today_summary',
                 confidenceNote: '截至 2026-08-17',
               ),
             ],
@@ -878,10 +872,10 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>['get_today_summary_by_date'],
+            usedTools: <String>['get_today_summary'],
             toolDetails: <AssistantToolDetail>[
               AssistantToolDetail(
-                name: 'get_today_summary_by_date',
+                name: 'get_today_summary',
                 sourceVersion: '7',
               ),
             ],
@@ -899,10 +893,10 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>['get_today_summary_by_date'],
+            usedTools: <String>['get_today_summary'],
             toolDetails: <AssistantToolDetail>[
               AssistantToolDetail(
-                name: 'get_today_summary_by_date',
+                name: 'get_today_summary',
                 confidenceNote: '基于持久化摘要',
                 sourceVersion: '3',
               ),
@@ -922,9 +916,9 @@ void main() {
       await tester.pumpWidget(
         _shell(
           const AssistantSourceStrip(
-            usedTools: <String>['get_today_summary_by_date'],
+            usedTools: <String>['get_today_summary'],
             toolDetails: <AssistantToolDetail>[
-              AssistantToolDetail(name: 'get_today_summary_by_date'),
+              AssistantToolDetail(name: 'get_today_summary'),
             ],
           ),
         ),
@@ -973,7 +967,7 @@ void main() {
           disabledReason: 'context_disabled',
         ),
         AssistantToolCapability(
-          id: 'search_drugbank_passages',
+          id: 'search_drugbank',
           requiredContextSources: <String>[],
           permittedByUser: true,
           enabled: false,
@@ -981,7 +975,7 @@ void main() {
           disabledReason: 'not_implemented',
         ),
         AssistantToolCapability(
-          id: 'propose_update_daily_record',
+          id: 'update_record_draft',
           requiredContextSources: <String>['daily_records'],
           permittedByUser: true,
           enabled: false,

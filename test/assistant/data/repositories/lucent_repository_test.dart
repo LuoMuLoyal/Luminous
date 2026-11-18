@@ -317,7 +317,7 @@ void main() {
               _tool(
                 name: lucent
                     .AssistantCapabilitiesResponseToolsNameEnum
-                    .getCurrentMedicines,
+                    .getMedicines,
                 enabled: false,
                 implemented: false,
                 permitted: false,
@@ -347,7 +347,7 @@ void main() {
       expect(caps.tools, hasLength(2));
       expect(caps.tools[0].id, 'get_user_profile');
       expect(caps.tools[0].enabled, isTrue);
-      expect(caps.tools[1].id, 'get_current_medicines');
+      expect(caps.tools[1].id, 'get_medicines');
       expect(caps.tools[1].enabled, isFalse);
       expect(caps.tools[1].disabledReason, 'not_implemented');
       expect(caps.canSendMessages, isTrue);
@@ -446,7 +446,7 @@ void main() {
                 role:
                     lucent.AssistantConversationDataMessagesRoleEnum.assistant,
                 content: 'It is a statin.',
-                usedTools: const ['get_current_medicines'],
+                usedTools: const ['get_medicines'],
                 createdAt: '2026-07-01T10:00:05Z',
               ),
             ],
@@ -465,7 +465,7 @@ void main() {
       expect(conv.messages[0].content, 'What is atorvastatin?');
       expect(conv.messages[1].role, AssistantMessageRole.assistant);
       expect(conv.messages[1].content, 'It is a statin.');
-      expect(conv.messages[1].usedTools, ['get_current_medicines']);
+      expect(conv.messages[1].usedTools, ['get_medicines']);
       expect(conv.messages[1].toolDetails, isEmpty);
       expect(conv.lastMessageAt, DateTime.parse('2026-07-01T10:30:00Z'));
     });
@@ -767,12 +767,12 @@ void main() {
             AssistantRemoteResultEvent(
               conversationId: 'c1',
               content: 'done',
-              usedTools: const ['reason_over_ontology'],
+              usedTools: const ['reason_ontology'],
               generatedAt: DateTime(2026, 9, 19),
               proposedActions: const [],
               toolDetails: [
                 {
-                  'name': 'reason_over_ontology',
+                  'name': 'reason_ontology',
                   'citations': [
                     {
                       'id':
@@ -834,12 +834,12 @@ void main() {
               AssistantRemoteResultEvent(
                 conversationId: 'c1',
                 content: 'done',
-                usedTools: const ['reason_over_ontology'],
+                usedTools: const ['reason_ontology'],
                 generatedAt: DateTime(2026, 9, 19),
                 proposedActions: const [],
                 toolDetails: [
                   {
-                    'name': 'reason_over_ontology',
+                    'name': 'reason_ontology',
                     // 后端把 citations 写成对象(而非列表):引用区不渲染,
                     // 但工具卡本身必须保留。
                     'citations': {'id': 'not-a-list'},
@@ -860,7 +860,7 @@ void main() {
 
         final result = events[0] as AssistantGenerationResultEvent;
         final detail = result.message.toolDetails.single;
-        expect(detail.name, 'reason_over_ontology');
+        expect(detail.name, 'reason_ontology');
         expect(detail.citations, isEmpty);
       },
     );
@@ -874,12 +874,12 @@ void main() {
               AssistantRemoteResultEvent(
                 conversationId: 'c1',
                 content: 'done',
-                usedTools: const ['reason_over_ontology'],
+                usedTools: const ['reason_ontology'],
                 generatedAt: DateTime(2026, 9, 19),
                 proposedActions: const [],
                 toolDetails: [
                   {
-                    'name': 'reason_over_ontology',
+                    'name': 'reason_ontology',
                     'citations': [
                       'not-a-map',
                       {'id': 'kept-1', 'sourceQuote': '保留的引用。'},

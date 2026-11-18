@@ -12,28 +12,27 @@ String localizeToolName(String toolId, BuildContext context) {
     'get_today_records' => l10n.assistantToolTodayRecords,
     'get_records_by_date' => l10n.assistantToolRecordsByDate,
     'get_records_by_range' => l10n.assistantToolRecordsByRange,
-    'get_today_summary_by_date' => l10n.assistantToolTodaySummaryByDate,
-    'get_report_summary_by_range' => l10n.assistantToolReportSummaryByRange,
-    'get_recent_today_summaries' => l10n.assistantToolRecentTodaySummaries,
-    'get_recent_report_summaries' => l10n.assistantToolRecentReportSummaries,
+    'get_today_summary' => l10n.assistantToolTodaySummaryByDate,
+    'get_report_summary' => l10n.assistantToolReportSummaryByRange,
+    'get_today_summaries' => l10n.assistantToolRecentTodaySummaries,
+    'get_report_summaries' => l10n.assistantToolRecentReportSummaries,
     'get_user_profile' => l10n.assistantToolUserProfile,
     'get_user_settings' => l10n.assistantToolUserSettings,
-    'get_current_medicines' => l10n.assistantToolCurrentMedicines,
-    'get_sleep_summary_by_range' => l10n.assistantToolSleepByRange,
-    'get_meal_analysis_digest' => l10n.assistantToolMealAnalysisDigest,
-    'resolve_drugbank_entity' => l10n.assistantToolResolveDrugbankEntity,
-    'search_drugbank_passages' => l10n.assistantToolSearchDrugbankPassages,
-    'reason_over_ontology' => l10n.assistantToolReasonOverOntology,
-    'reason_over_rules' => l10n.assistantToolReasonOverRules,
-    'search_cn_medicine_products' => l10n.assistantToolSearchCnMedicineProducts,
-    'search_cn_medicine_knowledge' =>
-      l10n.assistantToolSearchCnMedicineKnowledge,
-    'get_cn_medicine_detail' => l10n.assistantToolCnMedicineDetail,
+    'get_medicines' => l10n.assistantToolCurrentMedicines,
+    'get_sleep_summary' => l10n.assistantToolSleepByRange,
+    'get_meal_digest' => l10n.assistantToolMealAnalysisDigest,
+    'resolve_drugbank' => l10n.assistantToolResolveDrugbankEntity,
+    'search_drugbank' => l10n.assistantToolSearchDrugbankPassages,
+    'reason_ontology' => l10n.assistantToolReasonOverOntology,
+    'reason_rules' => l10n.assistantToolReasonOverRules,
+    'search_cn_products' => l10n.assistantToolSearchCnMedicineProducts,
+    'search_cn_knowledge' => l10n.assistantToolSearchCnMedicineKnowledge,
+    'get_cn_product_detail' => l10n.assistantToolCnMedicineDetail,
     'get_drugbank_detail' => l10n.assistantToolDrugbankDetail,
-    'propose_create_daily_record' => l10n.assistantToolProposeCreateRecord,
-    'propose_update_daily_record' => l10n.assistantToolProposeUpdateRecord,
-    'propose_delete_daily_record' => l10n.assistantToolProposeDeleteRecord,
-    'propose_update_user_settings' => l10n.assistantToolProposeUpdateSettings,
+    'create_record_draft' => l10n.assistantToolProposeCreateRecord,
+    'update_record_draft' => l10n.assistantToolProposeUpdateRecord,
+    'delete_record_draft' => l10n.assistantToolProposeDeleteRecord,
+    'update_settings_draft' => l10n.assistantToolProposeUpdateSettings,
     _ => toolId,
   };
 }
@@ -239,11 +238,11 @@ AssistantKnowledgeSourceType? knowledgeSourceTypeOf(
   List<String>? sourceTables,
 }) {
   return switch (toolId) {
-    'search_cn_medicine_knowledge' =>
+    'search_cn_knowledge' =>
       _lightragTierOf(sourceTables) ?? AssistantKnowledgeSourceType.medicalQa,
-    'resolve_drugbank_entity' ||
-    'search_drugbank_passages' ||
-    'reason_over_ontology' => AssistantKnowledgeSourceType.drugbank,
+    'resolve_drugbank' ||
+    'search_drugbank' ||
+    'reason_ontology' => AssistantKnowledgeSourceType.drugbank,
     _ => null,
   };
 }

@@ -120,14 +120,14 @@ void main() {
     test('prose tool resolves its tier from the retrieval workspace table', () {
       expect(
         knowledgeSourceTypeOf(
-          'search_cn_medicine_knowledge',
+          'search_cn_knowledge',
           sourceTables: const <String>['leaflet:lightrag_chunks'],
         ),
         AssistantKnowledgeSourceType.leaflet,
       );
       expect(
         knowledgeSourceTypeOf(
-          'search_cn_medicine_knowledge',
+          'search_cn_knowledge',
           sourceTables: const <String>['qa:lightrag_chunks'],
         ),
         AssistantKnowledgeSourceType.medicalQa,
@@ -138,7 +138,7 @@ void main() {
       // 先出现 qa 就会把说明书内容误标为开放语料。以低可信档为准。
       expect(
         knowledgeSourceTypeOf(
-          'search_cn_medicine_knowledge',
+          'search_cn_knowledge',
           sourceTables: const <String>[
             'qa:lightrag_chunks',
             'leaflet:lightrag_chunks',
@@ -148,7 +148,7 @@ void main() {
       );
       expect(
         knowledgeSourceTypeOf(
-          'search_cn_medicine_knowledge',
+          'search_cn_knowledge',
           sourceTables: const <String>[
             'leaflet:lightrag_chunks',
             'qa:lightrag_chunks',
@@ -160,12 +160,12 @@ void main() {
     test('prose tool defaults to the low-trust tier without tables', () {
       // 宁可对说明书内容多显示一次低可信提示,也不能对开放语料漏掉它。
       expect(
-        knowledgeSourceTypeOf('search_cn_medicine_knowledge'),
+        knowledgeSourceTypeOf('search_cn_knowledge'),
         AssistantKnowledgeSourceType.medicalQa,
       );
       expect(
         knowledgeSourceTypeOf(
-          'search_cn_medicine_knowledge',
+          'search_cn_knowledge',
           sourceTables: const <String>['unknown_table'],
         ),
         AssistantKnowledgeSourceType.medicalQa,
@@ -173,17 +173,17 @@ void main() {
     });
     test('drugbank tools → drugbank tier', () {
       expect(
-        knowledgeSourceTypeOf('resolve_drugbank_entity'),
+        knowledgeSourceTypeOf('resolve_drugbank'),
         AssistantKnowledgeSourceType.drugbank,
       );
       expect(
-        knowledgeSourceTypeOf('search_drugbank_passages'),
+        knowledgeSourceTypeOf('search_drugbank'),
         AssistantKnowledgeSourceType.drugbank,
       );
     });
     test('non-knowledge tools → null', () {
       expect(knowledgeSourceTypeOf('get_user_profile'), isNull);
-      expect(knowledgeSourceTypeOf('propose_create_daily_record'), isNull);
+      expect(knowledgeSourceTypeOf('create_record_draft'), isNull);
       expect(knowledgeSourceTypeOf('unknown_tool'), isNull);
     });
   });
