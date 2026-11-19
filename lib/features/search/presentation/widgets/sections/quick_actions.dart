@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/features/scan/presentation/providers/entry.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/utils/search_visuals.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class QuickActions extends StatelessWidget {
   const QuickActions({super.key, required this.actions, required this.l10n});

@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart'
-    hide MaterialApp, Scaffold, ElevatedButton;
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,6 +11,8 @@ import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart'
+    hide MaterialApp, Scaffold, ElevatedButton;
 import 'package:material_ui/material_ui.dart'
     show MaterialApp, Scaffold, ElevatedButton, GlobalMaterialLocalizations;
 
@@ -48,9 +49,9 @@ Widget _toastShell(Widget child) {
       AppLocalizations.delegate,
       FLocalizations.delegate,
       ...GlobalMaterialLocalizations.delegates,
-      fl.GlobalMaterialLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
       fl.GlobalWidgetsLocalizations.delegate,
-      fl.GlobalCupertinoLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
     ],
     supportedLocales: AppLocalizations.supportedLocales,
     home: Scaffold(body: child),

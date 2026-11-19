@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/features/record/presentation/providers/surface.dart';
 import 'package:luminous/features/record/presentation/quick_entry/core/dispatcher.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/new_entry_panel.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 记录页的「新建记录 / 快捷录入」面板区块。
 ///

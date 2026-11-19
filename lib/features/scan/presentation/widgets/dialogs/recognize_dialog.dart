@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +14,7 @@ import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/search/presentation/providers/add_to_box.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MedicineRecognizeDialog extends ConsumerStatefulWidget {
   const MedicineRecognizeDialog({

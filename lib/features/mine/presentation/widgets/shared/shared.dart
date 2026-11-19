@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MineSectionTitle extends StatelessWidget {
   const MineSectionTitle({super.key, required this.title});

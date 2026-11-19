@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/features/settings/presentation/pages/about/about.dart';
@@ -17,6 +16,7 @@ import 'package:luminous/features/settings/presentation/pages/page.dart';
 import 'package:luminous/features/settings/presentation/pages/profile.dart';
 import 'package:luminous/features/settings/presentation/pages/storage/data_export.dart';
 import 'package:luminous/features/settings/presentation/pages/storage/data_storage.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'routes.g.dart';
 

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 全宽动作按钮：让长文案（en / 大字体）在可用宽度内换行或省略，而不是
 /// 撑破 Forui 按钮内容 Row（RenderFlex overflow，Task 9 en / 大字体矩阵

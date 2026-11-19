@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/log_level.dart';
@@ -16,6 +15,7 @@ import 'package:luminous/features/record/presentation/quick_entry/medication.dar
 import 'package:luminous/features/record/presentation/quick_entry/sleep.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/quick_type_settings_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Dispatches a quick entry action to the appropriate handler based on type.
 ///

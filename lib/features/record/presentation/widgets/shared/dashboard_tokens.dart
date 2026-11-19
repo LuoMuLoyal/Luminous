@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/design/tokens/lucide_icon_bridge.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 // ---------------------------------------------------------------------------
 // Helper functions

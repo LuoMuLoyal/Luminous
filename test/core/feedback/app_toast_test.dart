@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -34,9 +35,9 @@ Widget _toastShell(Widget child) {
       AppLocalizations.delegate,
       FLocalizations.delegate,
       ...GlobalMaterialLocalizations.delegates,
-      fl.GlobalMaterialLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
       fl.GlobalWidgetsLocalizations.delegate,
-      fl.GlobalCupertinoLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
     ],
     supportedLocales: AppLocalizations.supportedLocales,
     home: Scaffold(body: child),

@@ -15,7 +15,6 @@
 //
 // Only ever asserts on the collector — it never edits `lib/**`.
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
@@ -102,6 +101,7 @@ import 'package:luminous/features/today/presentation/pages/page.dart' as today;
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/features/review/presentation/utils/icons.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart'
     show reviewMetricTitle;
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 指标网格：每个维度一张小卡，按可用宽度铺成 2 / 3 列。
 ///

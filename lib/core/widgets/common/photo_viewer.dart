@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/core/widgets/common/feedback/state_message.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:photo_view/photo_view.dart';
 
 /// Interactive full-screen image viewer for remote images.

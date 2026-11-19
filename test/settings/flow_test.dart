@@ -1,6 +1,5 @@
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -38,6 +37,7 @@ import 'package:luminous/shared/domain/failure.dart';
 import 'package:material_ui/material_ui.dart'
     as mui
     show MaterialApp, ThemeMode;
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/kv_test_store.dart';
 

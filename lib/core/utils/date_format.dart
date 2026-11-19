@@ -5,8 +5,8 @@
 /// so that locale-specific formatting (AM/PM, month names, etc.) is respected.
 library;
 
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:material_ui/material_ui.dart';
 
 export 'package:luminous/core/network/wire_time.dart'
     show parseDateTimeOrEpoch, parseDateTimeOrNull;

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Renders the bundled app icon at [size].
 ///

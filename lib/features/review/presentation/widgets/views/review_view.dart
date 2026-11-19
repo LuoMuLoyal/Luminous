@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/features/review/presentation/providers/review.dart';
 import 'package:luminous/features/review/presentation/providers/surface.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 洞察优先的回顾首屏（移动端约束布局）。
 ///

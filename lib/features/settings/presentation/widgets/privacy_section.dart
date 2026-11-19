@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +12,7 @@ import 'package:luminous/features/health_data/presentation/providers/health_auto
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/settings/presentation/widgets/navigation_tile.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Privacy settings section: AI, data sharing consent, and data export.
 class PrivacySection extends ConsumerWidget {

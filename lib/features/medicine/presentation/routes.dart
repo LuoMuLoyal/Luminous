@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/core/design/design.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/features/medicine/presentation/pages/detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/edit.dart';
 import 'package:luminous/features/medicine/presentation/pages/risk_check.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'routes.g.dart';
 

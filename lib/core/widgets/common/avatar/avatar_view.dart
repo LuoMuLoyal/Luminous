@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Displays an account avatar with one consistent fallback across the app.
 ///

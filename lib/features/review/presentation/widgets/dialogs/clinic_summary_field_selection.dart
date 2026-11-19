@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/presentation/providers/clinic_summary.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Per-field privacy toggles: 事件概况 / 症状变化 / 用药槽位 / 饮水 / 睡眠 /
 /// 备注. The free-text notes field defaults to off; the last remaining

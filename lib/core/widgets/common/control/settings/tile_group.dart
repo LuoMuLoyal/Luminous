@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Tile-group style for grouped sub-pages: card-coloured rows on the page
 /// background instead of the default tile fill.

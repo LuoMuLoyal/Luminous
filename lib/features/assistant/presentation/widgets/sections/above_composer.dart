@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/accessibility/motion.dart';
@@ -7,6 +6,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Loading/error messages rendered above the composer.
 class AssistantAboveComposer extends StatelessWidget {

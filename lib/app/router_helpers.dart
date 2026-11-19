@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Auth page transition helper — a symmetric page fade.
 ///

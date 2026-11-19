@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MineNotificationsReminderSection extends ConsumerWidget {
   const MineNotificationsReminderSection({super.key});

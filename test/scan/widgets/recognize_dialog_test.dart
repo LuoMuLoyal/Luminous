@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,6 +17,7 @@ import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../auth/test_helpers.dart';
 import '../../helpers/kv_test_store.dart';

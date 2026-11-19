@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/foundation.dart'
     show TargetPlatform, defaultTargetPlatform, kIsWeb;
 import 'package:flutter_localizations/flutter_localizations.dart' as fl;
@@ -186,9 +187,9 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
         AppLocalizations.delegate,
         FLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
-        fl.GlobalMaterialLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
         fl.GlobalWidgetsLocalizations.delegate,
-        fl.GlobalCupertinoLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: widget.routerConfig ?? ref.watch(appRouterProvider),

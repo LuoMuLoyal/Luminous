@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/composition/health_sync/health_sync.dart';
@@ -12,6 +11,7 @@ import 'package:luminous/features/health_data/presentation/providers/health_auto
 import 'package:luminous/features/health_data/presentation/providers/health_sync.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_sync_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class HealthSyncPage extends ConsumerWidget {
   const HealthSyncPage({super.key});

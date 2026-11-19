@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 无事件/未登录时的「开始观察后这里会呈现什么」聚合预告卡。
 ///

@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/utils/review_formatters.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/review_section_card.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 「完成了什么」段落：已确认的服药槽位与结果确认记录。
 ///

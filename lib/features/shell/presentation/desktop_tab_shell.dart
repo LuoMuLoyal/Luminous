@@ -1,13 +1,12 @@
 import 'dart:ui' show ImageFilter;
 
-import 'package:flutter/material.dart';
-
 import 'package:forui/forui.dart';
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/surface_title_button.dart';
 import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/features/shell/presentation/detail_pane.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Desktop tab page unified shell.
 ///

@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/composition/composition.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Minimal descriptor used by the host tests.
 class _Probe extends ComponentDescriptor<NoComponentConfig> {

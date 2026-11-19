@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/features/auth/domain/entities/auth_verification_scene.d
 import 'package:luminous/features/auth/presentation/pages/login/login.dart';
 import 'package:luminous/features/auth/presentation/pages/login/register.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/kv_test_store.dart';
 import 'test_helpers.dart';

@@ -1,3 +1,7 @@
+// GlobalMaterialLocalizations / GlobalCupertinoLocalizations（material_ui /
+// cupertino_ui 版）在此显式保留：forui 的本地化依赖它们；framework 版经 `fl.`
+// 前缀另加（gen_ai 的 TextField 等 framework material 组件需要）。
+// ignore_for_file: deprecated_member_use
 import 'package:flutter_localizations/flutter_localizations.dart' as fl;
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -58,12 +62,14 @@ class TestForuiApp extends StatelessWidget {
       // material_ui's GlobalMaterialLocalizations.delegates covers
       // material_ui's MaterialLocalizations (for forui widgets).
       // fl.* delegates cover Flutter framework's MaterialLocalizations /
-      // WidgetsLocalizations / CupertinoLocalizations (RefreshIndicator etc.).
+      // WidgetsLocalizations / CupertinoLocalizations (RefreshIndicator,
+      // and gen_ai's TextField, which still builds on framework material).
       // Both sets register different interface types — both are needed.
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         FLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
+        GlobalMaterialLocalizations.delegate,
         fl.GlobalMaterialLocalizations.delegate,
         fl.GlobalWidgetsLocalizations.delegate,
         fl.GlobalCupertinoLocalizations.delegate,
@@ -115,12 +121,14 @@ class TestForuiRouterApp extends StatelessWidget {
       // material_ui's GlobalMaterialLocalizations.delegates covers
       // material_ui's MaterialLocalizations (for forui widgets).
       // fl.* delegates cover Flutter framework's MaterialLocalizations /
-      // WidgetsLocalizations / CupertinoLocalizations (RefreshIndicator etc.).
+      // WidgetsLocalizations / CupertinoLocalizations (RefreshIndicator,
+      // and gen_ai's TextField, which still builds on framework material).
       // Both sets register different interface types — both are needed.
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         FLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
+        GlobalMaterialLocalizations.delegate,
         fl.GlobalMaterialLocalizations.delegate,
         fl.GlobalWidgetsLocalizations.delegate,
         fl.GlobalCupertinoLocalizations.delegate,

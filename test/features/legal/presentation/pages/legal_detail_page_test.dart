@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/features/legal/domain/repositories/documents.dart';
 import 'package:luminous/features/legal/presentation/pages/detail.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../../helpers/kv_test_store.dart';
 import '../../../../helpers/test_forui_app.dart';

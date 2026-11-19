@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -24,6 +23,7 @@ import 'package:luminous/features/search/presentation/widgets/shared/results.dar
 import 'package:luminous/features/shell/presentation/detail_pane.dart';
 import 'package:luminous/features/shell/presentation/detail_pane_state.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shimmer/shimmer.dart';
 
 final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))

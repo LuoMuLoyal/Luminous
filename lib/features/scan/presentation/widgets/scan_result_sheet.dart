@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/composition/snapshot/health_context.dart';
@@ -8,6 +7,7 @@ import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Bottom sheet content for a scanned medicine result (F-3).
 ///

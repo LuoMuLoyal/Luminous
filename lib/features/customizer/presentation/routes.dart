@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/customizer/presentation/pages/page.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'routes.g.dart';
 

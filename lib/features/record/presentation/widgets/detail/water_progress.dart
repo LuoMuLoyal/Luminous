@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/presentation/utils/detail_labels.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/surface.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Same-day water progress card for the record detail page.
 ///

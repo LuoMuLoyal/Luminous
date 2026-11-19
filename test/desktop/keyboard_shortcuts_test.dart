@@ -1,5 +1,14 @@
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart' as cui;
+// ignore: deprecated_member_use
 import 'package:flutter/services.dart';
+// ignore: deprecated_member_use
+// 测试对象 AppShortcuts 建立在 framework widgets（Shortcuts/Actions/Intent）
+// 之上，本文件整体使用 framework 类型而非 material_ui。
+import 'package:flutter/widgets.dart';
+// Global*Localizations 在 material_ui/cupertino_ui 与 flutter_localizations
+// 中同名，用前缀区分：这里要的是 flutter_localizations 版（与 gen-l10n 生成
+// 的 localizationsDelegates 语义一致）。
+// ignore: deprecated_member_use
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,6 +19,8 @@ import 'package:luminous/core/shortcuts/intents.dart';
 import 'package:luminous/core/theme/family.dart';
 import 'package:luminous/features/shell/presentation/page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+// ignore: deprecated_member_use
+import 'package:material_ui/material_ui.dart' as mui;
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_helpers.dart';
@@ -96,19 +107,22 @@ void main() {
   Future<void> pumpApp(WidgetTester tester, {required GoRouter router}) async {
     await tester.pumpWidget(
       ProviderScope(
-        child: MaterialApp.router(
+        child: mui.MaterialApp.router(
           routerConfig: router,
           debugShowCheckedModeBanner: false,
           builder: (context, child) => FTheme(
             data: appThemeData(appDefaultThemeFamily, Brightness.light),
             child: AppShortcuts(child: child ?? const SizedBox.shrink()),
           ),
-          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
             AppLocalizations.delegate,
             FLocalizations.delegate,
+            // ignore: deprecated_member_use
             GlobalMaterialLocalizations.delegate,
+            // ignore: deprecated_member_use
             GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
+            // ignore: deprecated_member_use
+            cui.GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
         ),

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/coverage/coverage_tab_section.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/features/medicine/presentation/widgets/risk/overview/ov
 import 'package:luminous/features/medicine/presentation/widgets/risk/overview/overview_tab_section.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/overview/red_flag.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The content shown inside each FTabs entry. Handles both static and LLM
 /// check types, rendering the appropriate layout based on the available

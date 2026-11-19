@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,6 +14,7 @@ import 'package:luminous/features/scan/domain/services/candidate_search.dart';
 import 'package:luminous/features/scan/domain/services/medicine_ocr_extractor.dart';
 import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Processes a captured photo through OCR or AI recognition and returns
 /// matched medicine candidates.

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -72,11 +71,11 @@ import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../test/helpers/feature_mocks.dart';
 import '../../test/helpers/kv_test_store.dart';
 
-export 'package:flutter/material.dart';
 export 'package:flutter_test/flutter_test.dart';
 export 'package:forui/forui.dart';
 export 'package:luminous/app/auth_session_adapter.dart'
@@ -95,6 +94,7 @@ export 'package:luminous/features/record/domain/entities/inputs.dart'
 export 'package:luminous/features/record/domain/entities/record.dart'
     show DailyRecordKind;
 export 'package:luminous/features/settings/data/datasources/notification_permission.dart';
+export 'package:material_ui/material_ui.dart';
 
 export '../../test/helpers/feature_mocks.dart'
     show MockReviewDashboardRepository;

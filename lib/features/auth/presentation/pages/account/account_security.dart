@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/core/router/app_routes.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 密码修改部分 - 用于设置或修改账号密码
 class PasswordSection extends StatefulWidget {

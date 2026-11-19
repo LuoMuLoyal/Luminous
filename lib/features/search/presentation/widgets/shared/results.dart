@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/widgets/sections/source_switch.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SearchResultTile extends StatefulWidget {
   const SearchResultTile({

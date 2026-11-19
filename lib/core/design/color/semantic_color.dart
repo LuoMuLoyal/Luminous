@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/shared/domain/semantic.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'palette.dart';
 import 'theme_extension.dart';

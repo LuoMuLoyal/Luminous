@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/features/medicine/design/copy.dart';
 import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A single coverage-gap item — icon + medicine name + reason label.
 /// No [FCard] wrapper; items are separated by [AppDivider].

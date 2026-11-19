@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Renders a labeled/value row list separated by [AppDivider]s.
 class DetailRows extends StatelessWidget {

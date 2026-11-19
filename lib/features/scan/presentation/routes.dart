@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/features/scan/presentation/pages/barcode_scanner.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'routes.g.dart';
 

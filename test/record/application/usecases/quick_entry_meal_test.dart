@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -16,6 +15,7 @@ import 'package:luminous/features/record/presentation/quick_entry/meal.dart';
 import 'package:luminous/features/record/presentation/quick_entry/meal_flow.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../helpers/kv_test_store.dart';
 import '../../../helpers/test_forui_app.dart';

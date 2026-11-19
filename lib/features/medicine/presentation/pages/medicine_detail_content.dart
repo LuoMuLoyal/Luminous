@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -24,6 +23,7 @@ import 'package:luminous/features/medicine/presentation/pages/detail_section_vie
 import 'package:luminous/features/medicine/presentation/pages/detail_sections.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_detail_shared.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Core content widget for medicine detail page.
 class MedicineDetailContent extends ConsumerStatefulWidget {

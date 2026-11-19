@@ -1,6 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+// gen_ai 尚未迁移 material_ui：其 `InputOptions.decoration` 期望 framework
+// `InputDecoration`，此处 import framework widgets 获取它；其余 UI 符号
+// （Text/Expanded 等）来自未弃用的 framework widgets 层。
+// ignore: deprecated_member_use
+import 'package:flutter/material.dart' show InputDecoration;
+// ignore: deprecated_member_use
+import 'package:flutter/widgets.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

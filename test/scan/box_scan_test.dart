@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -13,6 +12,7 @@ import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:luminous/features/scan/presentation/providers/entry.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../auth/test_helpers.dart';

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/accessibility/motion.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shimmer/shimmer.dart';
 
 /// Full-page skeleton showing a vertical list of shimmer blocks.

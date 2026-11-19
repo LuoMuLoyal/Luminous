@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_reorderable_grid_view/widgets/reorderable_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:luminous/app/composition/generative/slot_editor.dart';
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
@@ -15,6 +13,7 @@ import 'package:luminous/features/customizer/presentation/widgets/palette.dart';
 import 'package:luminous/features/generative/design/ids.dart';
 import 'package:luminous/features/generative/presentation/providers/slot_spec.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 编排页：编辑**一个** surface 的组件列表，并可把别的 surface 的组件加入。
 ///

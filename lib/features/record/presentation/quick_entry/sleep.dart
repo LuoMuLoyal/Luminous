@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/composition/record/record_access.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -12,6 +11,7 @@ import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 import 'package:luminous/features/record/presentation/quick_entry/core/quick_entry_providers.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/sleep_quick_entry_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// One-off sleep quick entry: prefill the sheet → open the sheet → write
 /// **one** complete sleep record.

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Loading skeleton for mine edit forms, used in profile/allergy/condition/current_medicine edit pages.
 class MineEditFormLoading extends StatelessWidget {

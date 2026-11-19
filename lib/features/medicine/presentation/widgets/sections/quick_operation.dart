@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/features/scan/presentation/providers/entry.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 快捷操作区块：加药 / 搜索 / 扫码 / 拍照识药 / 新建提醒 / 安全自查。
 ///

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/router/login/path.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A lightweight widget that shows the auth-required dialog in a post-frame
 /// callback. Used by pages that need to gate access behind authentication.

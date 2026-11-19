@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/quick_entry/core/quick_entry_providers.dart';
 import 'package:luminous/features/record/presentation/quick_entry/sheets/actions/change_record_date.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Moves a record to another day: updates the repository, refreshes the
 /// dashboard, switches the selected day and toasts the result.

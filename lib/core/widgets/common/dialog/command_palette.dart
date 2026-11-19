@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +6,7 @@ import 'package:luminous/core/router/app_routes.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A command palette dialog triggered by Ctrl/Cmd+K.
 ///

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart'
     show TargetPlatform, debugDefaultTargetPlatformOverride;
-import 'package:flutter/material.dart' show Brightness;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/family.dart';
+import 'package:material_ui/material_ui.dart' show Brightness;
 
 /// 行高按平台分支：手机为了密度把 body 行高压成 1.0，桌面必须保留 Forui
 /// 的宽松 leading。

@@ -1,11 +1,11 @@
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/date_picker.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Calendar item weekday text font size (compact design, maps to Forui body.xs2).
 double _weekdayFontSize(BuildContext context) =>

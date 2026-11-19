@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
@@ -7,6 +6,7 @@ import 'package:luminous/features/record/presentation/widgets/sections/quick_ent
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Responsive 3-column grid of quick-entry tiles (non-reorder mode).
 class QuickRecordGrid extends StatelessWidget {

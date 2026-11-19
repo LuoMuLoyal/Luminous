@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The grouped conversation list used inside the assistant conversation drawer.
 ///

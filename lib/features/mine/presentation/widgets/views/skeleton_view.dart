@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Skeleton placeholder for the Mine tab loading state.
 ///

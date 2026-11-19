@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/features/review/presentation/utils/pdf_download.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/clinic_summary_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Public page that displays a shared clinic summary by token.
 ///

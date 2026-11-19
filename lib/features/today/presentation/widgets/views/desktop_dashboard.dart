@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/feedback/refresh_indicator.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/top_bar.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Desktop `today` surface: top bar + pull-to-refresh + the surface's layout on a
 /// multi-column grid.

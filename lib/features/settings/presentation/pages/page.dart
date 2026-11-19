@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -22,6 +21,7 @@ import 'package:luminous/features/settings/presentation/widgets/privacy_section.
 import 'package:luminous/features/settings/presentation/widgets/quick_entry_section.dart';
 import 'package:luminous/features/settings/presentation/widgets/sign_out_tile.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 const _kGroupSpacing = 20.0;
 

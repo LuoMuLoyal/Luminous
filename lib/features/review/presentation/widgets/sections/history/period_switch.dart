@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart' show OrdinalSortKey;
 import 'package:forui/forui.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 周期切换组件：周|月 FTabs，映射 [ReviewDashboardRange.last7Days] /
 /// [ReviewDashboardRange.last30Days]。

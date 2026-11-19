@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class FrequencySegments extends StatelessWidget {
   const FrequencySegments({

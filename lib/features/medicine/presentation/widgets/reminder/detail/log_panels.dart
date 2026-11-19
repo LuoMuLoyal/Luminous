@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/features/medicine/presentation/providers/data_access.da
 import 'package:luminous/features/medicine/presentation/utils/reminder_format.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ReminderTodayLogPanel extends StatelessWidget {
   const ReminderTodayLogPanel({super.key, required this.logs});

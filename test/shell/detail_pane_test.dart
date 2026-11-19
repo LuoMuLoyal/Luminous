@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/features/shell/presentation/detail_pane.dart';
 import 'package:luminous/features/shell/presentation/detail_pane_state.dart';
 import 'package:luminous/features/shell/presentation/page.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
@@ -7,6 +6,7 @@ import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/detail/timeline_item.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class RecordTimelinePanel extends StatelessWidget {

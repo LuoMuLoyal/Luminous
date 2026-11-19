@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_detail_content.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Mobile medication knowledge detail page (F-14).
 ///

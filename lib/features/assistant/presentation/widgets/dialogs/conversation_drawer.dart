@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_header.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_list.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The conversation manager rendered inside the page's opaque push drawer.
 ///

@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/record_time_format.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
-
 import 'package:luminous/features/record/presentation/pages/create.dart';
 import 'package:luminous/features/record/presentation/pages/detail.dart';
 import 'package:luminous/features/record/presentation/pages/edit.dart';
 import 'package:luminous/features/record/presentation/pages/quick_entry_reorder.dart';
 import 'package:luminous/features/record/presentation/pages/quick_entry_settings.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'routes.g.dart';
 

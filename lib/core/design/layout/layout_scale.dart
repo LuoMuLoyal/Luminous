@@ -1,7 +1,7 @@
 import 'package:fluid_adaptive/fluid_adaptive.dart';
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/tokens/breakpoints.dart';
 import 'package:luminous/core/design/tokens/spacing.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Responsive layout scale resolved from the current screen width.
 ///

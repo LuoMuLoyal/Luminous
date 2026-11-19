@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/record/domain/services/sleep_entry.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   const bed2300 = TimeOfDay(hour: 23, minute: 0);

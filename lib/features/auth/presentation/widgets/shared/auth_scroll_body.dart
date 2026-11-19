@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 认证页标准滚动骨架：`SingleChildScrollView → ResponsiveContentFrame →
 /// 垂直 padding（宽屏 xl3 / 窄屏 xl2）→ `Column`。

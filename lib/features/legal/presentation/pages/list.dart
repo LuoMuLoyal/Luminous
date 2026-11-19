@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:luminous/features/legal/presentation/providers/legal.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LegalListPage extends ConsumerWidget {
   const LegalListPage({super.key});

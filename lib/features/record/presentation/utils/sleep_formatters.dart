@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 睡眠类型文案：夜间睡眠 / 午睡。
 String sleepEntryKindLabel(AppLocalizations l10n, SleepEntryKind kind) {

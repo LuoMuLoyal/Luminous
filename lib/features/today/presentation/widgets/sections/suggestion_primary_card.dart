@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderAbstractViewport, RenderBox;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -18,6 +17,7 @@ import 'package:luminous/features/today/presentation/widgets/sections/suggestion
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The primary suggestion card with expandable evidence, AI explain,
 /// and feedback row.

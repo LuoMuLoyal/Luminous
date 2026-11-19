@@ -1,10 +1,10 @@
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/surface.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/detail/mobile_timeline.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 移动端当日时间线区块。
 ///

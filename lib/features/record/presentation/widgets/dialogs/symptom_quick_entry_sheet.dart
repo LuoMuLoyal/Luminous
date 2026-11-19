@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/record_time_format.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
 import 'package:luminous/features/record/presentation/utils/fast_entry_choices.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 症状快速录入的结果：要么带着选中项去落库，要么去完整的创建页。
 sealed class SymptomQuickEntryOutcome {

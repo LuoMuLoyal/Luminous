@@ -1,6 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart' as f;
+// gen_ai 的 composer 建立在 framework material 上，finder 必须对着 framework
+// `TextField` 找（见下方 _assistantInputTextField 注释）。
+// ignore: deprecated_member_use
+import 'package:flutter/material.dart' as fw;
 import 'package:flutter/services.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,7 +40,7 @@ import '../helpers/test_forui_app.dart';
 // lookups below are typed against the framework so they match the composer.
 Finder _assistantInputTextField() => find.descendant(
   of: find.byKey(const Key('assistant-chat-surface')),
-  matching: find.byType(f.TextField),
+  matching: find.byType(fw.TextField),
 );
 
 // Tapping must hit the enabled control: gen_ai's `AnimatedSwitcher` keeps the
@@ -643,7 +646,7 @@ void main() {
     await tester.tap(_assistantSendButton());
     await tester.pumpAndSettle();
 
-    final textField = tester.widget<f.TextField>(_assistantInputTextField());
+    final textField = tester.widget<fw.TextField>(_assistantInputTextField());
     expect(textField.controller?.text, isEmpty);
     expect(repository.sentMessageBatches, hasLength(1));
     expect(repository.sentMessageBatches.single.single.content, '帮我看看睡眠');
@@ -690,7 +693,7 @@ void main() {
     // gen_ai's composer is a framework TextField whose Enter handling is
     // driven by `InputOptions.sendOnEnter` (package default: Enter sends,
     // Shift+Enter makes a newline).
-    final textField = tester.widget<f.TextField>(_assistantInputTextField());
+    final textField = tester.widget<fw.TextField>(_assistantInputTextField());
     expect(textField.maxLines, 5);
     expect(textField.decoration?.hintText, '问问你的健康数据…');
     expect(_assistantSendControl(), findsWidgets);
@@ -775,7 +778,7 @@ void main() {
     const starterPrompt = '总结我今天的记录';
     await tester.tap(find.text(starterPrompt));
     await tester.pump();
-    final composerTextField = tester.widget<f.TextField>(
+    final composerTextField = tester.widget<fw.TextField>(
       _assistantInputTextField(),
     );
     expect(composerTextField.controller?.text, starterPrompt);
@@ -824,10 +827,10 @@ void main() {
     // The gen_ai surface must receive a framework Theme carrying the
     // CustomThemeExtension that maps Forui tokens onto the package widgets.
     final chatThemes = tester
-        .widgetList<f.Theme>(
+        .widgetList<fw.Theme>(
           find.ancestor(
             of: find.byKey(const Key('assistant-chat-surface')),
-            matching: find.byType(f.Theme),
+            matching: find.byType(fw.Theme),
           ),
         )
         .where((theme) => theme.data.extension<CustomThemeExtension>() != null)

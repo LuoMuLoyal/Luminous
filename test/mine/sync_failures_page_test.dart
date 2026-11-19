@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/database/connection_providers.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/features/mine/presentation/pages/sync_failures.dart';
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/kv_test_store.dart';

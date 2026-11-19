@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +17,7 @@ import 'package:luminous/features/notification/domain/entities/notification.dart
 import 'package:luminous/features/notification/presentation/providers/data_access.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class NotificationDetailPage extends ConsumerWidget {
   const NotificationDetailPage({super.key, required this.notificationId});

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -8,6 +7,7 @@ import 'package:luminous/features/medicine/presentation/providers/detail_view.da
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart';
 import 'package:luminous/features/shell/presentation/detail_pane_state.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 面板默认宽度：22rem。与 Lumine 的 Infobar 同档——它是「辅助信息」，
 /// 不是并列主区域；再宽就抢了内容区的主次关系。

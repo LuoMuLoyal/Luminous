@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/router/app_routes.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Unified back button.
 ///

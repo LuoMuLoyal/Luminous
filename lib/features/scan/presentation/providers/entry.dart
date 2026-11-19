@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +16,7 @@ import 'package:luminous/features/scan/presentation/utils/box_scan_handlers.dart
 import 'package:luminous/features/scan/presentation/widgets/box_scan_preview.dart';
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Shows a bottom sheet for medicine box recognition method selection,
 /// then launches the camera, processes the photo, and shows the result dialog.

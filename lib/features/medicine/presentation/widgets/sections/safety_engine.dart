@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/medicine/design/copy.dart';
 import 'package:luminous/features/medicine/presentation/providers/surface.dart';
 import 'package:luminous/features/medicine/presentation/widgets/sections/mobile_safety.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 安全引擎区块：风险检查结论 + 告警。
 ///

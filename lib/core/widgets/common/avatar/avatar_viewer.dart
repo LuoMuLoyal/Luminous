@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Shows an avatar in a focused, pannable surface without changing account data.
 Future<void> showAvatarViewer(

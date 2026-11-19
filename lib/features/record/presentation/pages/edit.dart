@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -29,6 +28,7 @@ import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/dish_editor.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RecordEditPage extends HookConsumerWidget {
   const RecordEditPage({super.key, required this.recordId});

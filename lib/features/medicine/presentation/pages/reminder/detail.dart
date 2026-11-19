@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +26,7 @@ import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/
 import 'package:luminous/features/medicine/presentation/widgets/reminder/detail/log_panels.dart';
 import 'package:luminous/features/today/presentation/providers/user_timezone.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MedicineReminderDetailPage extends ConsumerWidget {
   const MedicineReminderDetailPage({

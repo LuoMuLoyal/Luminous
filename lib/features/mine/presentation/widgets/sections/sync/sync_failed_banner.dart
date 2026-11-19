@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
 import 'package:luminous/features/mine/presentation/routes.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A warning banner shown in the Mine page when there are permanently
 /// failed sync items.

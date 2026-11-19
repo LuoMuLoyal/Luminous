@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/instrumentation/instrumentation.dart';
@@ -14,6 +13,7 @@ import 'package:luminous/features/review/presentation/widgets/sections/overview/
 import 'package:luminous/features/review/presentation/widgets/sections/overview/next_step.dart';
 import 'package:luminous/features/review/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 单个历史事件的完整回顾详情页（`/review/review/:eventId`）。
 ///

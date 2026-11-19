@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/composition/notification/unread_count.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/surface_title_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Mine page top bar. Uses [FHeader.nested], placed at the top of a [Column]
 /// rather than inside a [ListView] to avoid tight width constraint crash

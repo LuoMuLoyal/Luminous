@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/features/record/presentation/providers/data_access.dart
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class QuickEntryReorderPage extends ConsumerStatefulWidget {
   const QuickEntryReorderPage({super.key});

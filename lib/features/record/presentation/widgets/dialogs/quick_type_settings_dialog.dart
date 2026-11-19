@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -13,6 +12,7 @@ import 'package:luminous/features/record/presentation/utils/fast_entry_choices.d
 import 'package:luminous/features/record/presentation/widgets/dialogs/water_custom_amount_dialog.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Long-press dialog for a quick-entry tile (Forui [FDialog]).
 ///

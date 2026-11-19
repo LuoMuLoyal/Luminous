@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 骨架屏:镜像 Review 首屏真实段落的形状——周期切换行 + 覆盖率概览行 +
 /// 值得注意区 + 单维趋势卡 + 事件回顾卡。

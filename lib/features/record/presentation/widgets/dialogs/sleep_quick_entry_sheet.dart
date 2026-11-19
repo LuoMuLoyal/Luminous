@@ -1,5 +1,4 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/pill_chip.dart';
@@ -7,6 +6,7 @@ import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/features/record/presentation/utils/sleep_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 一次性睡眠录入的结果。
 class SleepQuickEntryResult {

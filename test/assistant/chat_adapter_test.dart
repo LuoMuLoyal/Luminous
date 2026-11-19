@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/utils/message_id.dart';
 import 'package:luminous/features/assistant/presentation/widgets/chat_adapter.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';

@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_view_data.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_status_badge.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 餐食分析结果卡(契约 v2)。
 ///

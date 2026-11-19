@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart' show OrdinalSortKey;
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/utils/icons.dart';
 import 'package:luminous/features/review/presentation/utils/review_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// ② 值得注意区：dashboard findings 的结构化摘要卡，最多 2 张。
 ///

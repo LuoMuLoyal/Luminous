@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/oauth/oauth_navigation.dart';
 import 'package:luminous/features/auth/presentation/providers/oauth/oauth_login.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/oauth_deep_link.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Handles OAuth deep-link callbacks on first build (when the browser
 /// redirects back with code/state query parameters).

@@ -1,13 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
-
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Renders the full content of a [ClinicSummaryResponse] — used by both the
 /// preview dialog (authenticated) and the public shared page (no auth).

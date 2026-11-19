@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/nlp_sheet.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../auth/test_helpers.dart';
 import '../helpers/kv_test_store.dart';

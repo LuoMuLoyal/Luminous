@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:graphview/GraphView.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 图视图：把「药物 / 酶 / 靶点」的边列表画成分层图。
 ///

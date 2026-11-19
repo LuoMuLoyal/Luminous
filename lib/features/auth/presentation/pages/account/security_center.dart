@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -22,6 +21,7 @@ import 'package:luminous/features/auth/presentation/pages/account/manage/helpers
 import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/auth_scroll_body.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 账号概要卡片：头像 + 昵称 + 邮箱，点击进入个人信息页。
 class _AccountOverviewCard extends StatelessWidget {

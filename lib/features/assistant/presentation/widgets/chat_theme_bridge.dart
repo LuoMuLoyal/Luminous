@@ -1,3 +1,7 @@
+// gen_ai 尚未迁移 material_ui（其全部源码仍建在 framework material 上），
+// 本桥接文件的职责就是把 Forui token 翻译成 framework `ThemeData`，
+// 因此这里必须用 framework 类型；弃用提示对本文件是预期内豁免。
+// ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 import 'package:forui/forui.dart';

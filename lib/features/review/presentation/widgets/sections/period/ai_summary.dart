@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -7,6 +6,7 @@ import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ReviewPeriodAiSummarySection extends StatelessWidget {
   const ReviewPeriodAiSummarySection({

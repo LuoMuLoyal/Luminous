@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -7,6 +6,7 @@ import 'package:luminous/features/search/presentation/providers/add_to_box.dart'
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/search/presentation/widgets/views/content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SearchPage extends ConsumerWidget {
   const SearchPage({super.key});

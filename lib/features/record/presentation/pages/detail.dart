@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
@@ -13,6 +12,7 @@ import 'package:luminous/features/record/presentation/providers/data_access.dart
 import 'package:luminous/features/record/presentation/widgets/detail/body.dart';
 import 'package:luminous/features/record/presentation/widgets/detail/loading.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RecordDetailPage extends ConsumerWidget {
   const RecordDetailPage({super.key, required this.recordId});

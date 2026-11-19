@@ -1,7 +1,6 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +14,7 @@ import 'package:luminous/features/mine/presentation/providers/surface.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MineAccountSecuritySection extends ConsumerWidget {
   const MineAccountSecuritySection({super.key});

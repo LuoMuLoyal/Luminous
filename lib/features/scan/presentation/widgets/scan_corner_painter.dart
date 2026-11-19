@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Paints L-shaped corner brackets around the scan area.
 class ScanCornerPainter extends CustomPainter {

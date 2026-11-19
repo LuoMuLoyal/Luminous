@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart'
 import 'package:luminous/features/medicine/presentation/pages/detail_sections.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Renders a [MedicineDetailSection] body according to its kind.
 ///

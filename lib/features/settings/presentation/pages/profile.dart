@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -32,6 +31,7 @@ import 'package:luminous/features/health_context/domain/services/unit_conversion
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/quantity_sheet.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 头像上传前的本地字节上限，与 Lucent 的 `maxSizeBytes` 一致，超限提前反馈。
 const _maxAvatarBytes = 5 * 1024 * 1024;

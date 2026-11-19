@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:crop_your_image/crop_your_image.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_draft.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../helpers/kv_test_store.dart';
 import '../../helpers/test_forui_app.dart';

@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/record_time_format.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/timeline_drag_data.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class TimelineDot extends StatelessWidget {
   const TimelineDot({

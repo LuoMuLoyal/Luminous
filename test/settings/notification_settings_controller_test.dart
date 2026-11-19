@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/app/composition/settings/notification_permission.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/features/settings/data/datasources/notification_permission.dart';
 import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
 import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/kv_test_store.dart';
 

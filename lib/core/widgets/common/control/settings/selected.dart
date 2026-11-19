@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:luminous/core/design/design.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The checkmark of a selected row in a single-choice list, or an empty slot
 /// for the unselected ones.

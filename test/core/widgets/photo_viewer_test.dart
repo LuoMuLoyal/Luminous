@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/photo_viewer.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:photo_view/photo_view.dart';
 
 import '../../helpers/kv_test_store.dart';

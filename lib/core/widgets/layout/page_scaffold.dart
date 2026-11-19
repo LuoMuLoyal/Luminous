@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-
 import 'package:luminous/core/widgets/common/control/back_button.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Unified sub-page scaffold.
 ///

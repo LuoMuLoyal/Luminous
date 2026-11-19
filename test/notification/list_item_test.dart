@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/features/notification/presentation/widgets/shared/list_item.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';

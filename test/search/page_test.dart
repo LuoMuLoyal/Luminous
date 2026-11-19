@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -24,6 +23,7 @@ import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/providers/data_access.dart';
 import 'package:luminous/features/search/presentation/widgets/views/content.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../auth/test_helpers.dart';
 // `show` keeps this import from clashing with the `SignedInAuthSessionNotifier`

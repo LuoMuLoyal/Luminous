@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/design/copy.dart';
 import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A red-flag alert item with a left destructive colour bar and a subtle
 /// destructive background. Replaces the old nested banner + inner containers.

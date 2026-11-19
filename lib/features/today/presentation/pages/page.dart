@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -14,6 +13,7 @@ import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Today page.
 class TodayPage extends ConsumerWidget {

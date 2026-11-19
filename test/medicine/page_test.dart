@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -36,6 +35,7 @@ import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_v
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -8,6 +7,7 @@ import 'package:luminous/features/mine/presentation/providers/surface.dart';
 import 'package:luminous/features/mine/presentation/utils/mine_visuals.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Mine「档案提醒」状态卡组（改造项 6, C-3）。
 ///

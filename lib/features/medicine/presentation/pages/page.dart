@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +17,7 @@ import 'package:luminous/features/medicine/presentation/widgets/views/workspace_
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MedicinePage extends ConsumerWidget {
   const MedicinePage({super.key});

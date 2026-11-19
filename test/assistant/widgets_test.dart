@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart' as intl;
@@ -14,6 +13,7 @@ import 'package:luminous/features/assistant/presentation/widgets/shared/chips.da
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
 import 'package:luminous/features/assistant/presentation/widgets/source_strip.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';

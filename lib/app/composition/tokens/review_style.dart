@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/design/tokens/lucide_icon_bridge.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/shared/design/review_dashboard.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Design tokens for the review dashboard view models.
 ///

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Adds a trailing fade to a horizontally scrolling row of chips or cards.
 ///

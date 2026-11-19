@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,6 +16,7 @@ import 'package:luminous/features/auth/presentation/pages/account/manage/section
 import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/auth_scroll_body.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AccountManagePage extends HookConsumerWidget {
   const AccountManagePage({super.key, this.wechatCode, this.wechatState});

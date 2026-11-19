@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/app/composition/snapshot/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../auth/test_helpers.dart';
 import '../helpers/kv_test_store.dart';

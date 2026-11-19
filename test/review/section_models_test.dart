@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   group('reviewStatusColor', () {

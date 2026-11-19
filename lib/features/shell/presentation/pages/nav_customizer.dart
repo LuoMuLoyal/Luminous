@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +15,7 @@ import 'package:luminous/features/shell/domain/services/nav_rules.dart';
 import 'package:luminous/features/shell/presentation/providers/nav_draft.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 底部导航编排页。
 ///

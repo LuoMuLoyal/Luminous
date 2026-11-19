@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -16,6 +15,7 @@ import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/shell/domain/entities/nav_config.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/kv_test_store.dart';
 import '../helpers/test_forui_app.dart';

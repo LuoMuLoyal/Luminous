@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/health_context/domain/services/unit_conversion.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Structured empty state shown when the archive has no signed-in data yet.
 class ArchiveEmpty extends StatelessWidget {

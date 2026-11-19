@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/utils/review_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 回顾首屏的事件头部（被动展示）。
 ///

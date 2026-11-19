@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
+import 'package:material_ui/material_ui.dart';
 
 enum MedicineDoseAction { taken, skipped }
 

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +17,7 @@ import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class HelpSettingsPage extends ConsumerWidget {
   const HelpSettingsPage({super.key});

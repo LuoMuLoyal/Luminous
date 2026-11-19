@@ -1,5 +1,4 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
@@ -8,6 +7,7 @@ import 'package:luminous/features/review/presentation/utils/review_formatters.da
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ReviewTrendSection extends StatelessWidget {
   const ReviewTrendSection({

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -33,6 +32,7 @@ import 'package:luminous/features/review/presentation/widgets/sections/preview/t
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/composition/ids.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Components of the `review` surface.
 ///

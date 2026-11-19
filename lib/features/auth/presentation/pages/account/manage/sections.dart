@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -22,6 +21,7 @@ import 'package:luminous/features/auth/presentation/pages/account/account_securi
 import 'package:luminous/features/auth/presentation/pages/account/manage/helpers.dart';
 import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // 保留账号设置加载状态组件

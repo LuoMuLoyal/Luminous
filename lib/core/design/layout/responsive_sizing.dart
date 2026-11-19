@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/tokens/breakpoints.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Lightweight responsive sizing helpers for cards, sidebars, grid counts, and
 /// scalable dimensions.

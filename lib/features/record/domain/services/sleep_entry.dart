@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 睡眠类型。手动录入由用户显式选择；设备导入路径按时长推断。
 enum SleepEntryKind {

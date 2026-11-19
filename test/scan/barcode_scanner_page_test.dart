@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +18,7 @@ import 'package:luminous/features/scan/presentation/pages/barcode_scanner.dart';
 import 'package:luminous/features/scan/presentation/providers/data_access.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';

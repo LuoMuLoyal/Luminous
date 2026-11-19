@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_actions.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AvatarDraft {
   const AvatarDraft({

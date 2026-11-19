@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/composition/health_context/health_context.dart';
@@ -17,6 +16,7 @@ import 'package:luminous/features/health_context/domain/entities/write_inputs.da
 import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/features/search/presentation/providers/add_precheck.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Shared "add to drugbox" closed loop (F-9), the single implementation used
 /// by both the medicine search page and the barcode scan result sheet (F-3).

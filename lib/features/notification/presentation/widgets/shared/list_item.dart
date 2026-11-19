@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format.dart';
 import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class NotificationListItemWidget extends StatefulWidget {
   const NotificationListItemWidget({

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/providers/quick_entry.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Executes a one-tap water quick-entry from the Today quick-actions surface.
 ///

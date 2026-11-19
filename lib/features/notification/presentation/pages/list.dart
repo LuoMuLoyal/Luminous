@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +15,7 @@ import 'package:luminous/features/notification/domain/entities/notification.dart
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/features/notification/presentation/widgets/shared/list_item.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class NotificationListPage extends ConsumerWidget {
   const NotificationListPage({super.key});

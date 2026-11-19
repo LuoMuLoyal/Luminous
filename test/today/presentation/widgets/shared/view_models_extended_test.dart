@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   // Helper to load Chinese l10n

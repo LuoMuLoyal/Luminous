@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -16,6 +15,7 @@ import 'package:luminous/features/medicine/presentation/widgets/risk/shared/chec
 import 'package:luminous/features/medicine/presentation/widgets/risk/shared/check_tab_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MedicineRiskCheckPage extends ConsumerStatefulWidget {
   const MedicineRiskCheckPage({super.key});

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/features/generative/domain/entities/slot_spec.dart';
 import 'package:luminous/features/generative/presentation/providers/slot_spec.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/composition/surface.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 编排页里「自定义生成式区块」的编辑面板。
 ///

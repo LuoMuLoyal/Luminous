@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Bottom-sheet content for the once-per-day health event check-in.
 class CheckInSheet extends StatefulWidget {

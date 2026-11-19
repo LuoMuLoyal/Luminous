@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Responsive spacing metrics for the quick-entry panel.
 class QuickEntryMetrics {

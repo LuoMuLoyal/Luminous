@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -8,6 +7,7 @@ import 'package:luminous/features/mine/presentation/widgets/sections/archive/arc
 import 'package:luminous/features/mine/presentation/widgets/sections/archive/archive_sections.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Mine「健康档案」区块入口：负责区块编排（标题 + 空态/条目列表），
 /// 各条目交互与空态/元信息组件分别由 [ArchiveRow] 与

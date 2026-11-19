@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/providers/surface.dart';
@@ -8,6 +7,7 @@ import 'package:luminous/features/record/presentation/quick_entry/core/dispatche
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry/quick_entry_panel.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 快速录入面板区块（含 AI 输入行、快捷按钮网格与快捷备注）。
 ///

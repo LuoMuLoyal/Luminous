@@ -1,6 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+// genui 的 A2UI 组件（Card/Text 等）建立在 framework material 上，
+// 类型断言必须对着 framework 类型。
+// ignore: deprecated_member_use
+import 'package:flutter/material.dart' as fw;
+// ignore: deprecated_member_use
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/composition/genui/genui.dart';
@@ -74,7 +79,7 @@ void main() {
   Future<void> pump(WidgetTester tester, Widget child) async {
     await tester.pumpWidget(
       ProviderScope(
-        child: TestForuiApp(home: Scaffold(body: child)),
+        child: TestForuiApp(home: fw.Scaffold(body: child)),
       ),
     );
     await tester.pump();
@@ -116,9 +121,9 @@ void main() {
       expect(find.text('饮水 1800ml'), findsOneWidget);
       expect(find.text('睡眠 7.2h'), findsOneWidget);
       // Card 与 Row 确实参与布局（不是被拍平成一段文本）。
-      expect(find.byType(Card), findsWidgets);
-      expect(find.byType(Row), findsWidgets);
-      expect(find.byType(Column), findsWidgets);
+      expect(find.byType(fw.Card), findsWidgets);
+      expect(find.byType(fw.Row), findsWidgets);
+      expect(find.byType(fw.Column), findsWidgets);
     });
 
     testWidgets('未知 component 降级渲染，不崩溃', (tester) async {
@@ -173,8 +178,8 @@ void main() {
       );
 
       // 核心断言：可写动作没有出现在屏幕上。
-      expect(find.widgetWithText(FilledButton, '删除全部记录'), findsNothing);
-      expect(find.widgetWithText(ElevatedButton, '删除全部记录'), findsNothing);
+      expect(find.widgetWithText(fw.FilledButton, '删除全部记录'), findsNothing);
+      expect(find.widgetWithText(fw.ElevatedButton, '删除全部记录'), findsNothing);
       expect(find.text('删除全部记录'), findsNothing);
       expect(tester.takeException(), isNull);
     });

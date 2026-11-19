@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/assistant_greeting.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/empty_support.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 会话空态:欢迎区(greeting)+ 起始提示 + 记忆提示 + 免责声明。
 ///

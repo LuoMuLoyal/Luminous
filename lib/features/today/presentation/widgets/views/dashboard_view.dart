@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/views/desktop_dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/views/mobile_dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class TodayDashboardView extends ConsumerWidget {
   const TodayDashboardView({

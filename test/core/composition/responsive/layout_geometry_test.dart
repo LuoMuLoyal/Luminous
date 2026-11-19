@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/composition/composition.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 一行里只有一个子项、且该子项跨 [span] 列时它的宽度。
 ///

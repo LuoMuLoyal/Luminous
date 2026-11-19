@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 按 title|reason|type 去重建议历史,保留生命周期状态最高的条目。
 ///

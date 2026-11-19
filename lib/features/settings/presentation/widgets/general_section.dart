@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -12,6 +11,7 @@ import 'package:luminous/features/settings/presentation/providers/data_access.da
 import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 import 'package:luminous/features/settings/presentation/widgets/navigation_tile.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// General settings section: theme, language, data storage, advanced,
 /// accessibility, and notifications.

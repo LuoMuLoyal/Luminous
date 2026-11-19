@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -7,6 +6,7 @@ import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/record/application/usecases/nlp_sheet_intent.dart';
 import 'package:luminous/features/record/presentation/controllers/nlp.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/nlp_sheet.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Opens the NLP input sheet for the given date.
 ///

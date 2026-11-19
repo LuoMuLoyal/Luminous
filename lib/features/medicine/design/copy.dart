@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/design/visuals.dart';
 import 'package:luminous/features/medicine/domain/entities/risk/check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 String medicineCopy(AppLocalizations l10n, MedicineCopy key) {
   return switch (key) {

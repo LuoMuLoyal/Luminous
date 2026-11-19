@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart' show TimeOfDay;
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/services/hour_minute.dart';
 import 'package:luminous/features/record/domain/services/sleep_entry.dart';
 import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
+import 'package:material_ui/material_ui.dart' show TimeOfDay;
 
 /// Fallback bedtime/wake-time when there is no sleep history to prefill from
 /// (the nap window is supplied by the sheet when the user switches type).

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -13,6 +12,7 @@ import 'package:luminous/features/today/presentation/widgets/shared/section.dart
 import 'package:luminous/features/today/presentation/widgets/shared/suggestion_icon_mapping.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class TodayPrimarySuggestionSection extends ConsumerWidget {
   const TodayPrimarySuggestionSection({super.key});

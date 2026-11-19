@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io' show stderr;
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/bootstrap.dart';
@@ -13,6 +12,7 @@ import 'package:luminous/core/network/config/env_keys.dart';
 import 'package:luminous/core/network/config/env_reader.dart';
 import 'package:luminous/core/push/jpush_gateway.dart';
 import 'package:luminous/core/storage/kv_store.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {

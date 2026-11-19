@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/common/avatar/avatar_view.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Account header card shown at the top of the settings page.
 class AccountHeader extends StatelessWidget {

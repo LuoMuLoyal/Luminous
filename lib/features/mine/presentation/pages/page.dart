@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/composition/notification/unread_count.dart';
@@ -17,6 +16,7 @@ import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MinePage extends ConsumerWidget {
   const MinePage({super.key});

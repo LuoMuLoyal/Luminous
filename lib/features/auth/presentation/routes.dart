@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/features/auth/presentation/pages/account/change_email.dart';
@@ -8,6 +7,7 @@ import 'package:luminous/features/auth/presentation/pages/account/sessions.dart'
 import 'package:luminous/features/auth/presentation/pages/login/forgot_password.dart';
 import 'package:luminous/features/auth/presentation/pages/login/login.dart';
 import 'package:luminous/features/auth/presentation/pages/login/register.dart';
+import 'package:material_ui/material_ui.dart';
 
 part 'routes.g.dart';
 

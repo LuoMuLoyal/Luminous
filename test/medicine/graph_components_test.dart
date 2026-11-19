@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/features/medicine/presentation/components/catalog.dart'
 import 'package:luminous/features/medicine/presentation/providers/relations/graph.dart';
 import 'package:luminous/features/medicine/presentation/widgets/sections/graph/drug_set_sections.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/test_forui_app.dart';
 

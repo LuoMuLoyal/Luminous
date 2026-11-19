@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router_helpers.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -37,6 +36,7 @@ import 'package:luminous/features/shell/presentation/routes.dart'
 import 'package:luminous/features/shell/presentation/tab_branch_container.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/core/router/app_routes.dart';
 import 'package:luminous/core/widgets/common/control/settings/label.dart';
 import 'package:luminous/features/settings/presentation/widgets/navigation_tile.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Quick entry settings section.
 class QuickEntrySection extends StatelessWidget {

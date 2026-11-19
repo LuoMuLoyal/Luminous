@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -25,6 +24,7 @@ import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.
 import 'package:luminous/features/settings/presentation/providers/notification/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';

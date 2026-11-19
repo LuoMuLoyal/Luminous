@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RecordDetailLoading extends StatelessWidget {
   const RecordDetailLoading({super.key});

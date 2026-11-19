@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/providers/data_access.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Lets the user change the quick-entry icon for the record [kind] being
 /// created or edited. Only rendered for kinds that back a quick action

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/features/record/presentation/quick_entry/flows/meal_qui
 import 'package:luminous/features/record/presentation/quick_entry/meal_flow.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/meal_confirmation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Opens the meal confirmation dialog for [draft].
 Future<void> showMealConfirmationDialog(

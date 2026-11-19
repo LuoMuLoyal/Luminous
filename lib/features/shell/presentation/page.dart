@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/features/shell/presentation/providers/nav_config.dart';
 import 'package:luminous/features/shell/presentation/sidebar/desktop.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 桌面外壳四周的留白。侧边栏卡片与内容区共用这一档，二者之间才留得住
 /// 视觉缝隙；侧边栏的右边缘不再另加内边距——卡片自己就是边界。

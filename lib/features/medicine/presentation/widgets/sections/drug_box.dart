@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -16,6 +15,7 @@ import 'package:luminous/features/medicine/presentation/widgets/shared/medicatio
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
 import 'package:luminous/features/shell/presentation/detail_pane_state.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Maximum drugbox rows rendered before collapsing the rest into the
 /// "more" footer.

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -18,6 +17,7 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/shell/domain/entities/nav_config.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:window_manager/window_manager.dart';
 
 /// 桌面端侧边栏。

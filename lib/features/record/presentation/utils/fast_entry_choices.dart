@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/features/record/domain/constants/symptom_catalog.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A single quick-entry option shown in the fast record dialog.
 ///

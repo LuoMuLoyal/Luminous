@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/accessibility/motion.dart';
 import 'package:luminous/core/widgets/common/feedback/skeleton.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../helpers/kv_test_store.dart';

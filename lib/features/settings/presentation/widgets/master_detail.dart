@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Data model for a settings group in the master-detail layout.
 class SettingsGroup {

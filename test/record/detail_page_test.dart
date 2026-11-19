@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -18,6 +17,7 @@ import 'package:luminous/features/settings/data/repositories/lucent.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../auth/test_helpers.dart';
 import '../helpers/kv_test_store.dart';

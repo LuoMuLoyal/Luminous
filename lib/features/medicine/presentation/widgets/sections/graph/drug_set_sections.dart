@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/features/medicine/presentation/providers/relations/grap
 import 'package:luminous/features/medicine/presentation/widgets/sections/graph/graph_card.dart';
 import 'package:luminous/features/medicine/presentation/widgets/sections/graph/graph_view_canvas.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 「这组药之间发生了什么」类组件：只依赖当前用药集合，无额外入参。
 ///

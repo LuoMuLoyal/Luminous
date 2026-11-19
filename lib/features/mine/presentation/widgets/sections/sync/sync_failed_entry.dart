@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +6,7 @@ import 'package:luminous/features/mine/presentation/mappers/sync_entry_caption.d
 import 'package:luminous/features/mine/presentation/mappers/sync_error_user_message.dart';
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// One permanently failed sync item, rendered as a white card on the page
 /// canvas.

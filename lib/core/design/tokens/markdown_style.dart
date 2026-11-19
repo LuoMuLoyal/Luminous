@@ -1,7 +1,11 @@
-import 'package:flutter/material.dart';
+// flutter_markdown_plus 尚未迁移 material_ui：`MarkdownStyleSheet.fromTheme`
+// 期望 framework `ThemeData`，本工厂把 Forui token 翻译成该类型，属预期内豁免。
+// ignore: deprecated_member_use
+import 'package:flutter/material.dart' show BuildContext, Theme;
+// ignore: deprecated_member_use
+import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
-
 import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/core/design/tokens/spacing.dart';
 

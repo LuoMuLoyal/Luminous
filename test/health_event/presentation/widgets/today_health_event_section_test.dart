@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
@@ -16,6 +15,7 @@ import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:timezone/data/latest.dart' as timezone_data;
 import 'package:timezone/timezone.dart' as timezone;
 

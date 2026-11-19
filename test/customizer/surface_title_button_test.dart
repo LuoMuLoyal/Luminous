@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/widgets/common/control/surface_title_button.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/test_forui_app.dart';
 

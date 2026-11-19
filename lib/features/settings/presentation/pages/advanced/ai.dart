@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -16,6 +15,7 @@ import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AiSettingsPage extends ConsumerStatefulWidget {
   const AiSettingsPage({super.key});

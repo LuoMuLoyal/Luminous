@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Responsive content container.
 ///

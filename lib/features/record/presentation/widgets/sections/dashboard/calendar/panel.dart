@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/timeline_drag_data.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Desktop-side month calendar with decoupled month navigation.
 ///

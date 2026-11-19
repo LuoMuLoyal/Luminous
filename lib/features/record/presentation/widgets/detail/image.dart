@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/photo_viewer.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 class RecordDetailImage extends StatelessWidget {
   const RecordDetailImage({super.key, required this.attachment});

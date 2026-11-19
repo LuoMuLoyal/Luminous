@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 账号概览部分 - 显示邮箱、验证状态、密码设置状态、最后登录时间
 class AccountStatusSection extends StatelessWidget {

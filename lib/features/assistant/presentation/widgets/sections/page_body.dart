@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,6 +16,7 @@ import 'package:luminous/features/assistant/presentation/widgets/chat_surface.da
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/capabilities_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The main body of the assistant page. It watches the assistant controller
 /// state directly so the parent [AssistantPage] only has to manage input/scroll

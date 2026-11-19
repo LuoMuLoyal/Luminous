@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +12,7 @@ import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/providers/surface.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The account summary card. Reads its own data from [mineSurfaceStateProvider];
 /// the page passes no data slice.

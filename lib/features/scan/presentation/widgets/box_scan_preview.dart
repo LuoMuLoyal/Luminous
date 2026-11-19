@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A tappable tile for the medicine scan method picker (OCR / AI).
 class MethodTile extends StatelessWidget {

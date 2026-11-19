@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/dialog/dialog_shell.dart';
@@ -6,6 +5,7 @@ import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// F-10 能力详情面板入口:桌面用对话框、移动端用底部 sheet(与 report 特征
 /// 的 share 管理入口一致),内容为 [AssistantCapabilitiesPanel]。

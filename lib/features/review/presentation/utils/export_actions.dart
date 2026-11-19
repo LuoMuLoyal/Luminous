@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -15,6 +14,7 @@ import 'package:luminous/features/review/presentation/widgets/dialogs/clinic_sum
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 导出/分享动作的统一处理（Task 8：从旧 dashboard 页装配提取，供
 /// Review 页 More sheet 与 legacy 兼容 dashboard 复用）。

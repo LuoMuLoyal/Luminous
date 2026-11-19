@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/features/record/presentation/widgets/forms/kind_icon_fi
 import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The form body for creating a new daily record.
 ///

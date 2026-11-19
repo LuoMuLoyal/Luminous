@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Defers building [child] until after the current frame.
 ///

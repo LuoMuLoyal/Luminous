@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/features/settings/domain/entities/notification_preferen
 import 'package:luminous/features/settings/presentation/providers/data_access.dart';
 import 'package:luminous/features/settings/presentation/providers/notification/notification_preferences.dart';
 import 'package:luminous/features/settings/presentation/providers/notification/notification_utils.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'notification_mapping.dart';
 

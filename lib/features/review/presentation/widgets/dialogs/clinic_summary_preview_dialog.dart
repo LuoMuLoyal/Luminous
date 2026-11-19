@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -22,6 +21,7 @@ import 'package:luminous/features/review/presentation/widgets/dialogs/clinic_sum
 import 'package:luminous/features/review/presentation/widgets/dialogs/clinic_summary_share_flow.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/clinic_summary_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Shows a dialog (desktop) or bottom sheet (mobile) that previews the
 /// authenticated user's de-identified clinic summary.

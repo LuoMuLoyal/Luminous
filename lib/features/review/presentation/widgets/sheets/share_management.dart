@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/review/presentation/providers/clinic_summary.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Shows the current user's clinic summary shares (desktop dialog / mobile
 /// bottom sheet).

@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/features/auth/presentation/pages/account/account_identi
 import 'package:luminous/features/auth/presentation/providers/account/account.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Starts the WeChat identity link flow — delegates to the account notifier
 /// and shows a toast with the result.

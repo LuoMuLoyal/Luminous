@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -43,6 +42,7 @@ import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/composition.dart';
 import '../helpers/feature_mocks.dart';

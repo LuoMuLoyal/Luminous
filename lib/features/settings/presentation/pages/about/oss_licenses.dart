@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/oss_licenses.dart';
 import 'package:luminous/features/settings/presentation/routes.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Open-source license list for the app's **pub** dependencies.
 ///

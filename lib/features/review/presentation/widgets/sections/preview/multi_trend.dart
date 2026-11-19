@@ -1,11 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/presentation/utils/review_formatters.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 多维度趋势：把多个 [ReviewTrendSeries] 叠在同一张折线图上。
 ///

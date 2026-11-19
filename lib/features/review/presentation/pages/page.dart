@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart' show OrdinalSortKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -26,6 +25,7 @@ import 'package:luminous/features/review/presentation/widgets/views/review_view.
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 第五 Tab 的 Review 页：以纵向洞察为主单位的洞察优先回顾首屏。
 ///

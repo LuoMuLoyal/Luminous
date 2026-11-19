@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/layout/surface.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 桌面端的层次全部来自三层底色的亮度差：
 /// `sidebar < scaffold < card`。边框只是这层关系之上的装饰。

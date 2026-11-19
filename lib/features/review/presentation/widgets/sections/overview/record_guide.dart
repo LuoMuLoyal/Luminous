@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/constrained_action_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// P0-5 冷启动/记录引导卡：无进行中事件且当前周期数据过稀时，引导用户
 /// 去 record 补记，而不是展示「开始观察」动作（事件动作收口 Today）。

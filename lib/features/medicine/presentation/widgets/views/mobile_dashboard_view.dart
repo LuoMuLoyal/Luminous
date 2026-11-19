@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 用药页内容区。
 ///

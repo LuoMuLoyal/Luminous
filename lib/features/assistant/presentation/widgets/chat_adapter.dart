@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen_ai_chat_ui/flutter_gen_ai_chat_ui.dart';
 import 'package:forui/forui.dart';
@@ -14,6 +13,7 @@ import 'package:luminous/features/assistant/presentation/widgets/disclaimer_bar.
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
 import 'package:luminous/features/assistant/presentation/widgets/source_strip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The user and AI identities the assistant thread renders under.
 const ChatUser chatCurrentUser = ChatUser(id: 'user');

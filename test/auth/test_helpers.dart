@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
@@ -12,6 +11,7 @@ import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../helpers/test_forui_app.dart';
 

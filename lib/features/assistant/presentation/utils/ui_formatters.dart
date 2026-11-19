@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 String localizeToolName(String toolId, BuildContext context) {
   final l10n = AppLocalizations.of(context)!;

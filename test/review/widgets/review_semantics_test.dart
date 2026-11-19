@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart'
     show DebugSemanticsDumpOrder, SemanticsNode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +15,7 @@ import 'package:luminous/features/review/presentation/providers/review.dart';
 import 'package:luminous/features/review/presentation/widgets/views/review_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/shared/domain/failure.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../helpers/composition.dart';
 import '../../helpers/kv_test_store.dart';

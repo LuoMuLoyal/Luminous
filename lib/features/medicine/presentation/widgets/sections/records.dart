@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -11,6 +10,7 @@ import 'package:luminous/features/medicine/presentation/widgets/shared/dose_mark
 import 'package:luminous/features/medicine/presentation/widgets/shared/medication_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// 今日用药计划：下一剂提醒 + 待服用剂次列表 + 折叠。
 ///
