@@ -125,6 +125,7 @@ dependencies:
   forui_lucide: ^0.27.0
   forui_phosphor: ^0.27.0
   material_ui: ^1.6.0
+  cupertino_ui: ^1.0.1
   timeline_tile: ^2.0.0
   flutter_slidable: ^4.0.3
   clock: ^1.1.3
