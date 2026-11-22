@@ -162,5 +162,11 @@
   "assistantToolDrugbankDetail": "DrugBank 详情",
   "assistantSourceDataAsOfLabel": "数据截至",
   "assistantSourceVersionLabel": "版本",
-  "assistantSourceCitationsLabel": "溯源引用"
+  "assistantSourceCitationsLabel": "溯源引用",
+  "assistantEnginePillSemantics": "助手引擎：{mode}。点击切换。",
+  "@assistantEnginePillSemantics": {
+    "placeholders": {
+      "mode": { "type": "String" }
+    }
+  }
 }

@@ -162,5 +162,11 @@
   "assistantToolDrugbankDetail": "DrugBank detail",
   "assistantSourceDataAsOfLabel": "Data as of",
   "assistantSourceVersionLabel": "Version",
-  "assistantSourceCitationsLabel": "Citations"
+  "assistantSourceCitationsLabel": "Citations",
+  "assistantEnginePillSemantics": "Assistant engine: {mode}. Activate to change.",
+  "@assistantEnginePillSemantics": {
+    "placeholders": {
+      "mode": { "type": "String" }
+    }
+  }
 }

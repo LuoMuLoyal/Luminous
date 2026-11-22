@@ -814,6 +814,36 @@ void main() {
     expect(find.text('对话会被提炼为要点用于后续会话，可在设置中关闭'), findsOneWidget);
   });
 
+  // The engine capsule expands the choices in place, above the input. This
+  // pins the two properties that matter: the options are absent until tapped,
+  // and tapping does not open a route or a sheet (a modal would cover the text
+  // the user is typing).
+  testWidgets('engine capsule expands the options inline, without a sheet', (
+    tester,
+  ) async {
+    KvTestStore.install(seed: const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _MemoryEnabledAssistantRepository()),
+    );
+    await tester.pumpAndSettle();
+
+    final pill = find.byKey(const Key('assistant-engine-pill'));
+    expect(pill, findsOneWidget);
+    // Collapsed: the "Advanced" caption exists only inside the options row, so
+    // finding it now would mean the options were rendered without a tap.
+    expect(find.text('增强'), findsNothing);
+
+    await tester.tap(pill);
+    await tester.pumpAndSettle();
+
+    // Expanded in place: all three options are on screen. The pill itself also
+    // renders one of these captions, hence `findsWidgets` for that one.
+    expect(find.text('增强'), findsOneWidget);
+    expect(find.text('标准'), findsOneWidget);
+    expect(find.text('服务端默认'), findsWidgets);
+  });
+
   testWidgets('AssistantPage scopes one chat theme bridge below MaterialApp', (
     tester,
   ) async {

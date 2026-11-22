@@ -17,6 +17,7 @@ import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/chat_adapter.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/above_composer.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/engine_pill.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/empty_conversation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -77,6 +78,12 @@ class AssistantChatSurface extends ConsumerStatefulWidget {
 class _AssistantChatSurfaceState extends ConsumerState<AssistantChatSurface> {
   late final ChatMessagesController _chat;
   DateTime? _streamingStartedAt;
+
+  /// Whether the engine options are showing above the composer.
+  ///
+  /// Owned here (not by the pill) because the capsule and the options occupy
+  /// two different slots of the composer, and both need the same flag.
+  bool _engineExpanded = false;
 
   @override
   void initState() {
@@ -219,6 +226,12 @@ class _AssistantChatSurfaceState extends ConsumerState<AssistantChatSurface> {
       readOnly: !capabilities.canSendMessages,
       scrollController: widget.scrollController,
       onSendMessage: (message) {
+        // A send is the end of this composer interaction: leaving the options
+        // expanded would push the next reply off-screen for a control the user
+        // has already stopped looking at.
+        if (_engineExpanded) {
+          setState(() => _engineExpanded = false);
+        }
         // While a reply is generating the controller ignores new sends; keep
         // the user's text so it is not silently dropped by gen_ai's composer
         // (which clears itself before calling back).
@@ -237,6 +250,26 @@ class _AssistantChatSurfaceState extends ConsumerState<AssistantChatSurface> {
           hintText: l10n.assistantComposerPlaceholder,
         ),
         maxLines: 5,
+        // The engine options render *above* the field: `attachmentPreviewBuilder`
+        // is the only slot the package places between the message list and the
+        // text field, so the expanded choices read as part of the composer.
+        attachmentPreviewBuilder: (context) => AnimatedSize(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          alignment: Alignment.bottomLeft,
+          child: _engineExpanded
+              ? const AssistantEngineOptions()
+              : const SizedBox(width: double.infinity),
+        ),
+        // The capsule lives in the row below the field, next to the send
+        // control — the same position ChatGPT/Claude put their model picker.
+        inputToolbarBuilder: (context) => Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: AssistantEnginePill(
+            expanded: _engineExpanded,
+            onToggle: () => setState(() => _engineExpanded = !_engineExpanded),
+          ),
+        ),
       ),
       messageOptions: MessageOptions(
         showUserName: false,
