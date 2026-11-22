@@ -40,6 +40,15 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     final assistantEnabled = settings?.assistantEnabled ?? false;
     final disabled = _isPatching || settingsAsync.isLoading;
     final contextDisabled = !assistantEnabled || disabled;
+    // The server always answers with the *stored* preference (`default` included),
+    // so the selected radio is simply what it sent — the client never guesses
+    // which concrete engine a `default` resolves to. Engine selection is its own
+    // gate: it stays usable while the assistant is off, because it is a
+    // preference for the next time the assistant is used, not a data-permission
+    // toggle that must degrade with it.
+    final effectiveMode =
+        settings?.assistantAgentMode ?? AssistantAgentMode.followOperator;
+    final engineEnabled = !disabled;
 
     return PageScaffold(
       title: l10n.settingsAiTitle,
@@ -108,6 +117,71 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       apply: (next) => ref
                           .read(userSettingsControllerProvider.notifier)
                           .setAssistantMemoryEnabled(next),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: Spacing.xl),
+                SectionLabel(label: l10n.settingsAiEngineSectionTitle),
+                SizedBox(height: context.titleContentGap),
+                FTileGroup(
+                  style: settingsTileGroup(context.theme),
+                  children: [
+                    FTile(
+                      title: FRadio(
+                        value:
+                            effectiveMode == AssistantAgentMode.followOperator,
+                        label: Text(l10n.settingsAiEngineDefault),
+                        description: Text(l10n.settingsAiEngineDefaultSubtitle),
+                        enabled: engineEnabled,
+                        onChange: engineEnabled
+                            ? (_) => unawaited(
+                                _selectAgentMode(
+                                  context: context,
+                                  l10n: l10n,
+                                  signedIn: signedIn,
+                                  mode: AssistantAgentMode.followOperator,
+                                ),
+                              )
+                            : null,
+                      ),
+                    ),
+                    FTile(
+                      title: FRadio(
+                        value: effectiveMode == AssistantAgentMode.graph,
+                        label: Text(l10n.settingsAiEngineGraph),
+                        description: Text(l10n.settingsAiEngineGraphSubtitle),
+                        enabled: engineEnabled,
+                        onChange: engineEnabled
+                            ? (_) => unawaited(
+                                _selectAgentMode(
+                                  context: context,
+                                  l10n: l10n,
+                                  signedIn: signedIn,
+                                  mode: AssistantAgentMode.graph,
+                                ),
+                              )
+                            : null,
+                      ),
+                    ),
+                    FTile(
+                      title: FRadio(
+                        value: effectiveMode == AssistantAgentMode.deepAgents,
+                        label: Text(l10n.settingsAiEngineDeepAgents),
+                        description: Text(
+                          l10n.settingsAiEngineDeepAgentsSubtitle,
+                        ),
+                        enabled: engineEnabled,
+                        onChange: engineEnabled
+                            ? (_) => unawaited(
+                                _selectAgentMode(
+                                  context: context,
+                                  l10n: l10n,
+                                  signedIn: signedIn,
+                                  mode: AssistantAgentMode.deepAgents,
+                                ),
+                              )
+                            : null,
+                      ),
                     ),
                   ],
                 ),
@@ -342,6 +416,37 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
       if (mounted) {
         setState(() => _isPatching = false);
       }
+    }
+  }
+
+  /// Applies the assistant-engine choice.
+  ///
+  /// No-op when the tapped option is already selected: the backend treats a
+  /// PATCH with identical values as a write, which would bump `updatedAt` and
+  /// emit a settings change event for a tap that changed nothing.
+  Future<void> _selectAgentMode({
+    required BuildContext context,
+    required AppLocalizations l10n,
+    required bool signedIn,
+    required AssistantAgentMode mode,
+  }) async {
+    final current = ref.read(userSettingsControllerProvider).value;
+    if (current == null) return;
+    if (current.assistantAgentMode == mode) return;
+
+    final applied = await _guardedApply(
+      context: context,
+      l10n: l10n,
+      signedIn: signedIn,
+      apply: () => ref
+          .read(userSettingsControllerProvider.notifier)
+          .setAssistantAgentMode(mode),
+    );
+    // The runtime is chosen per turn, so a switch does not retroactively
+    // change an in-flight or already-answered conversation. Say so on success
+    // only — on failure `_guardedApply` already showed the error toast.
+    if (applied && context.mounted) {
+      await Toast.show(context, l10n.settingsAiEngineChangeNextTurnToast);
     }
   }
 

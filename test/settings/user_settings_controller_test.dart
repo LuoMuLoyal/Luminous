@@ -472,6 +472,8 @@ UserSettingsResponse _buildResponse({
   bool dataSharingConsent = false,
   bool assistantEnabled = true,
   bool assistantMemoryEnabled = false,
+  UserSettingsResponseAssistantAgentModeEnum assistantAgentMode =
+      UserSettingsResponseAssistantAgentModeEnum.default_,
   UserSettingsResponseAssistantContext? assistantContext,
 }) {
   return UserSettingsResponse(
@@ -479,6 +481,7 @@ UserSettingsResponse _buildResponse({
     dataSharingConsent: dataSharingConsent,
     assistantEnabled: assistantEnabled,
     assistantMemoryEnabled: assistantMemoryEnabled,
+    assistantAgentMode: assistantAgentMode,
     waterTargetCount: 8,
     assistantContext:
         assistantContext ??
@@ -506,6 +509,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     dataSharingConsent: true,
     assistantEnabled: true,
     assistantMemoryEnabled: false,
+    assistantAgentMode: UserSettingsResponseAssistantAgentModeEnum.default_,
     waterTargetCount: 8,
     assistantContext: UserSettingsResponseAssistantContext(
       healthProfile: true,

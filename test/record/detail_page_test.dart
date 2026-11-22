@@ -256,6 +256,7 @@ class _FakeUserSettingsRepository implements UserSettingsRepository {
     required bool assistantMemoryEnabled,
     required int waterTargetCount,
     required AssistantContextPatch assistantContext,
+    required AssistantAgentMode assistantAgentMode,
   }) => getSettings();
 }
 

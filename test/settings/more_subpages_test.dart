@@ -291,6 +291,25 @@ void main() {
       expect(find.text(l10n.settingsAiContextCurrentMedicines), findsOneWidget);
     });
 
+    testWidgets('renders the assistant engine section with 3 options', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await pumpPageWithSettings(
+        tester,
+        const AiSettingsPage(),
+        _buildSettings(),
+      );
+
+      expect(find.text(l10n.settingsAiEngineSectionTitle), findsOneWidget);
+      // Three radios, one per engine. The selected one reflects whatever the
+      // server stored — the client never guesses what `default` resolves to.
+      expect(find.byType(FRadio), findsNWidgets(3));
+      expect(find.text(l10n.settingsAiEngineDefault), findsOneWidget);
+      expect(find.text(l10n.settingsAiEngineGraph), findsOneWidget);
+      expect(find.text(l10n.settingsAiEngineDeepAgents), findsOneWidget);
+    });
+
     testWidgets('shows disabled hint when assistant not enabled', (
       tester,
     ) async {

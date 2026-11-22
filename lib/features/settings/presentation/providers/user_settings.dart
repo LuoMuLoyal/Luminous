@@ -45,6 +45,11 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
     await _patch(assistantContext: patch, current: current);
   }
 
+  Future<void> setAssistantAgentMode(AssistantAgentMode mode) async {
+    final current = state.value!;
+    await _patch(assistantAgentMode: mode, current: current);
+  }
+
   Future<void> setDataSharingConsent(bool consent) async {
     final current = state.value!;
     await _patch(dataSharingConsent: consent, current: current);
@@ -57,6 +62,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
     required bool assistantMemoryEnabled,
     required int waterTargetCount,
     required AssistantContextPatch assistantContext,
+    required AssistantAgentMode assistantAgentMode,
   }) async {
     final repo = ref.read(userSettingsRepositoryProvider);
     final result = await repo
@@ -67,6 +73,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
           assistantMemoryEnabled: assistantMemoryEnabled,
           waterTargetCount: waterTargetCount,
           assistantContext: assistantContext,
+          assistantAgentMode: assistantAgentMode,
         )
         .run();
     final updated = result.fold((failure) => throw failure, (value) => value);
@@ -79,6 +86,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
     bool? dataSharingConsent,
     bool? assistantEnabled,
     bool? assistantMemoryEnabled,
+    AssistantAgentMode? assistantAgentMode,
     AssistantContextPatch? assistantContext,
     required UserSettings current,
   }) async {
@@ -96,6 +104,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
           assistantEnabled: assistantEnabled ?? current.assistantEnabled,
           assistantMemoryEnabled:
               assistantMemoryEnabled ?? current.assistantMemoryEnabled,
+          assistantAgentMode: assistantAgentMode ?? current.assistantAgentMode,
           waterTargetCount: current.waterTargetCount,
           assistantContext:
               assistantContext ??

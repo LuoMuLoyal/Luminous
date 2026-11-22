@@ -25,5 +25,8 @@ abstract interface class UserSettingsRepository {
     required bool assistantMemoryEnabled,
     required int waterTargetCount,
     required AssistantContextPatch assistantContext,
+
+    /// Which agent backend the assistant should use for this user.
+    required AssistantAgentMode assistantAgentMode,
   });
 }

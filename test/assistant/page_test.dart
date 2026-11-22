@@ -1136,6 +1136,7 @@ class _TrackingUserSettingsController extends _ReadyUserSettingsController {
     required bool assistantMemoryEnabled,
     required int waterTargetCount,
     required AssistantContextPatch assistantContext,
+    required AssistantAgentMode assistantAgentMode,
   }) async {
     lastPatch = (
       aiSummariesEnabled: aiSummariesEnabled,

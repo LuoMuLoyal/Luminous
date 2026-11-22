@@ -94,6 +94,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
     required bool assistantMemoryEnabled,
     required int waterTargetCount,
     required AssistantContextPatch assistantContext,
+    required AssistantAgentMode assistantAgentMode,
   }) {
     return TaskEither.tryCatch(() async {
       final response = await api.updateSettings(
@@ -109,6 +110,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
             sleepRecords: assistantContext.sleepRecords,
             currentMedicines: assistantContext.currentMedicines,
           ),
+          assistantAgentMode: _toWireAgentMode(assistantAgentMode),
         ),
       );
       final settings = _mapSettings(
@@ -141,6 +143,9 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
       dataSharingConsent: dto.dataSharingConsent,
       assistantEnabled: dto.assistantEnabled,
       assistantMemoryEnabled: dto.assistantMemoryEnabled,
+      assistantAgentMode: AssistantAgentMode.fromWireValue(
+        dto.assistantAgentMode.value,
+      ),
       waterTargetCount: dto.waterTargetCount.toInt(),
       assistantContext: AssistantContextSettings(
         healthProfile: dto.assistantContext.healthProfile,
@@ -151,5 +156,22 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
       updatedAt: dto.updatedAt,
       passwordReauthenticationRequired: dto.passwordReauthenticationRequired,
     );
+  }
+
+  /// Translates the domain mode into the generated enum.
+  ///
+  /// The maps are explicit rather than `byName` lookups so a new domain value
+  /// fails to compile here instead of silently sending an unknown string.
+  UpdateSettingsRequestAssistantAgentModeEnum _toWireAgentMode(
+    AssistantAgentMode mode,
+  ) {
+    return switch (mode) {
+      AssistantAgentMode.followOperator =>
+        UpdateSettingsRequestAssistantAgentModeEnum.default_,
+      AssistantAgentMode.graph =>
+        UpdateSettingsRequestAssistantAgentModeEnum.graph,
+      AssistantAgentMode.deepAgents =>
+        UpdateSettingsRequestAssistantAgentModeEnum.deepagents,
+    };
   }
 }
