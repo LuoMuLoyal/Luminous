@@ -27,6 +27,8 @@ class UserSettingsResponse {
 
     required this.assistantMemoryEnabled,
 
+    required this.assistantAgentMode,
+
     required this.waterTargetCount,
 
     required this.assistantContext,
@@ -56,6 +58,16 @@ class UserSettingsResponse {
   )
   final bool assistantMemoryEnabled;
 
+  /// Agent backend in effect for this user: \"default\" follows the server operator setting.
+  @JsonKey(
+    name: r'assistantAgentMode',
+    required: true,
+    includeIfNull: false,
+    unknownEnumValue:
+        UserSettingsResponseAssistantAgentModeEnum.unknownDefaultOpenApi,
+  )
+  final UserSettingsResponseAssistantAgentModeEnum assistantAgentMode;
+
   /// Daily water intake target (number of glasses).
   @JsonKey(name: r'waterTargetCount', required: true, includeIfNull: false)
   final num waterTargetCount;
@@ -83,6 +95,7 @@ class UserSettingsResponse {
           other.dataSharingConsent == dataSharingConsent &&
           other.assistantEnabled == assistantEnabled &&
           other.assistantMemoryEnabled == assistantMemoryEnabled &&
+          other.assistantAgentMode == assistantAgentMode &&
           other.waterTargetCount == waterTargetCount &&
           other.assistantContext == assistantContext &&
           other.updatedAt == updatedAt &&
@@ -95,6 +108,7 @@ class UserSettingsResponse {
       dataSharingConsent.hashCode +
       assistantEnabled.hashCode +
       assistantMemoryEnabled.hashCode +
+      assistantAgentMode.hashCode +
       waterTargetCount.hashCode +
       assistantContext.hashCode +
       (updatedAt == null ? 0 : updatedAt.hashCode) +
@@ -109,4 +123,23 @@ class UserSettingsResponse {
   String toString() {
     return toJson().toString();
   }
+}
+
+/// Agent backend in effect for this user: \"default\" follows the server operator setting.
+enum UserSettingsResponseAssistantAgentModeEnum {
+  @JsonValue(r'default')
+  default_(r'default'),
+  @JsonValue(r'graph')
+  graph(r'graph'),
+  @JsonValue(r'deepagents')
+  deepagents(r'deepagents'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const UserSettingsResponseAssistantAgentModeEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }

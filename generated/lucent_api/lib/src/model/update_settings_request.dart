@@ -27,6 +27,8 @@ class UpdateSettingsRequest {
 
     this.assistantMemoryEnabled,
 
+    this.assistantAgentMode,
+
     this.waterTargetCount,
 
     this.assistantContext,
@@ -52,6 +54,16 @@ class UpdateSettingsRequest {
   )
   final bool? assistantMemoryEnabled;
 
+  /// Agent backend preference: \"default\" follows the server operator setting; \"graph\" and \"deepagents\" override it for this user.
+  @JsonKey(
+    name: r'assistantAgentMode',
+    required: false,
+    includeIfNull: false,
+    unknownEnumValue:
+        UpdateSettingsRequestAssistantAgentModeEnum.unknownDefaultOpenApi,
+  )
+  final UpdateSettingsRequestAssistantAgentModeEnum? assistantAgentMode;
+
   /// Daily water intake target (number of glasses).
   // minimum: 1
   // maximum: 30
@@ -69,6 +81,7 @@ class UpdateSettingsRequest {
           other.dataSharingConsent == dataSharingConsent &&
           other.assistantEnabled == assistantEnabled &&
           other.assistantMemoryEnabled == assistantMemoryEnabled &&
+          other.assistantAgentMode == assistantAgentMode &&
           other.waterTargetCount == waterTargetCount &&
           other.assistantContext == assistantContext;
 
@@ -78,6 +91,7 @@ class UpdateSettingsRequest {
       dataSharingConsent.hashCode +
       assistantEnabled.hashCode +
       assistantMemoryEnabled.hashCode +
+      assistantAgentMode.hashCode +
       waterTargetCount.hashCode +
       assistantContext.hashCode;
 
@@ -90,4 +104,23 @@ class UpdateSettingsRequest {
   String toString() {
     return toJson().toString();
   }
+}
+
+/// Agent backend preference: \"default\" follows the server operator setting; \"graph\" and \"deepagents\" override it for this user.
+enum UpdateSettingsRequestAssistantAgentModeEnum {
+  @JsonValue(r'default')
+  default_(r'default'),
+  @JsonValue(r'graph')
+  graph(r'graph'),
+  @JsonValue(r'deepagents')
+  deepagents(r'deepagents'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const UpdateSettingsRequestAssistantAgentModeEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
 }
