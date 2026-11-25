@@ -203,7 +203,7 @@ class LucentAssistantRepository implements AssistantRepository {
       assistantMemoryEnabled: dto.assistantMemoryEnabled,
       assistantContext: AssistantContextAccess(
         healthProfile: dto.assistantContext.healthProfile,
-        dailyRecords: dto.assistantContext.dailyRecords,
+        dailyRecords: dto.assistantContext.records,
         sleepRecords: dto.assistantContext.sleepRecords,
         currentMedicines: dto.assistantContext.currentMedicines,
       ),
@@ -511,7 +511,7 @@ class LucentAssistantRepository implements AssistantRepository {
                 ? null
                 : AssistantContextAccess(
                     healthProfile: context['healthProfile'] as bool? ?? false,
-                    dailyRecords: context['dailyRecords'] as bool? ?? false,
+                    dailyRecords: context['records'] as bool? ?? false,
                     sleepRecords: context['sleepRecords'] as bool? ?? false,
                     currentMedicines:
                         context['currentMedicines'] as bool? ?? false,

@@ -70,12 +70,12 @@ class _FakeUserSettingsController extends UserSettingsController {
   }
 }
 
-DataExportRequestData _request(DataExportRequestDataStatusEnum status) {
-  return DataExportRequestData(
+ExportRequestData _request(ExportRequestDataStatusEnum status) {
+  return ExportRequestData(
     id: 'req-1',
-    kind: DataExportRequestDataKindEnum.monthly,
-    format: DataExportRequestDataFormatEnum.pdf,
-    range: DataExportRequestDataRangeEnum.last30Days,
+    kind: ExportRequestDataKindEnum.monthly,
+    format: ExportRequestDataFormatEnum.pdf,
+    range: ExportRequestDataRangeEnum.last30Days,
     status: status,
     requestedAt: '2026-08-14T08:00:00Z',
     completedAt: null,
@@ -167,8 +167,8 @@ void main() {
     // The export controller's build()/refresh() read the latest request;
     // return a benign response so those reads never throw.
     when(() => api.getLatestRequest()).thenAnswer(
-      (_) async => Response<DataExportRequestData>(
-        data: _request(DataExportRequestDataStatusEnum.completed),
+      (_) async => Response<ExportRequestData>(
+        data: _request(ExportRequestDataStatusEnum.completed),
         requestOptions: RequestOptions(path: '/data-export-requests/latest'),
         statusCode: 200,
       ),
@@ -185,9 +185,9 @@ void main() {
           ),
         ),
       ).thenAnswer(
-        (_) async => Response<DataExportRequestResponse>(
-          data: DataExportRequestResponse.fromJson(
-            _request(DataExportRequestDataStatusEnum.failed).toJson(),
+        (_) async => Response<ExportRequestResponse>(
+          data: ExportRequestResponse.fromJson(
+            _request(ExportRequestDataStatusEnum.failed).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,
@@ -215,9 +215,9 @@ void main() {
           ),
         ),
       ).thenAnswer(
-        (_) async => Response<DataExportRequestResponse>(
-          data: DataExportRequestResponse.fromJson(
-            _request(DataExportRequestDataStatusEnum.completed).toJson(),
+        (_) async => Response<ExportRequestResponse>(
+          data: ExportRequestResponse.fromJson(
+            _request(ExportRequestDataStatusEnum.completed).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,
@@ -243,9 +243,9 @@ void main() {
           ),
         ),
       ).thenAnswer(
-        (_) async => Response<DataExportRequestResponse>(
-          data: DataExportRequestResponse.fromJson(
-            _request(DataExportRequestDataStatusEnum.unavailable).toJson(),
+        (_) async => Response<ExportRequestResponse>(
+          data: ExportRequestResponse.fromJson(
+            _request(ExportRequestDataStatusEnum.unavailable).toJson(),
           ),
           requestOptions: RequestOptions(path: '/data-export-requests'),
           statusCode: 200,

@@ -65,7 +65,7 @@ class DataExportPage extends ConsumerWidget {
   Widget _buildActionButton(
     BuildContext context,
     WidgetRef ref,
-    DataExportRequestData? export,
+    ExportRequestData? export,
     AppLocalizations l10n,
   ) {
     final status = dataExportUiStatusForRequest(export);
@@ -182,7 +182,7 @@ class DataExportPage extends ConsumerWidget {
     );
   }
 
-  String _statusLabel(AppLocalizations l10n, DataExportRequestData? export) {
+  String _statusLabel(AppLocalizations l10n, ExportRequestData? export) {
     return switch (dataExportUiStatusForRequest(export)) {
       DataExportUiStatus.idle => l10n.settingsExportStatusIdle,
       DataExportUiStatus.requested => l10n.mineExportStatusRequested,
@@ -204,7 +204,7 @@ class DataExportPage extends ConsumerWidget {
     final password = await resolveSensitiveActionPassword(ref, context);
     if (password == null || !context.mounted) return;
 
-    final DataExportRequestData? value;
+    final ExportRequestData? value;
     try {
       value = await ref
           .read(dataExportControllerProvider.notifier)

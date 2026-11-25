@@ -44,7 +44,7 @@ ProductEventService _service({
 
 DioException _networkError() {
   return DioException(
-    requestOptions: RequestOptions(path: '/api/v1/user/product-events'),
+    requestOptions: RequestOptions(path: '/api/v1/user/product'),
     type: DioExceptionType.connectionError,
   );
 }
@@ -74,7 +74,7 @@ void main() {
           api.recordBatch(recordBatchRequest: any(named: 'recordBatchRequest')),
     ).thenAnswer(
       (_) async => Response<void>(
-        requestOptions: RequestOptions(path: '/api/v1/user/product-events'),
+        requestOptions: RequestOptions(path: '/api/v1/user/product'),
         statusCode: 200,
       ),
     );

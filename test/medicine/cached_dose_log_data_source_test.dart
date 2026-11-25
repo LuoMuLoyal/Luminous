@@ -63,7 +63,7 @@ class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
   ) async {
     if (writeShouldFail) {
       throw _networkError(
-        '/api/v1/user/medicine-dose-logs',
+        '/api/v1/user/dose',
         data: {
           'currentMedicineId': currentMedicineId,
           'status': status,
@@ -88,7 +88,7 @@ class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
   Future<DoseLogItem> update(String doseLogId, String status) async {
     if (writeShouldFail) {
       throw _networkError(
-        '/api/v1/user/medicine-dose-logs/$doseLogId',
+        '/api/v1/user/dose/$doseLogId',
         data: {'status': status},
       );
     }
@@ -114,7 +114,7 @@ class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
   }) async {
     if (writeShouldFail) {
       throw _networkError(
-        '/api/v1/user/medicine-dose-logs/mark',
+        '/api/v1/user/dose/mark',
         data: {
           'currentMedicineId': currentMedicineId,
           'status': status,
@@ -145,7 +145,7 @@ class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
   @override
   Future<void> delete(String doseLogId) async {
     if (writeShouldFail) {
-      throw _networkError('/api/v1/user/medicine-dose-logs/$doseLogId');
+      throw _networkError('/api/v1/user/dose/$doseLogId');
     }
     lastDeleteId = doseLogId;
   }
@@ -823,10 +823,10 @@ String _cachedItemJson() => jsonEncode({
 /// `application/problem+json` (server business failure).
 DioException _problemDetails404({String code = 'DOSE_LOG_NOT_FOUND'}) {
   return DioException(
-    requestOptions: RequestOptions(path: '/api/v1/user/medicine-dose-logs'),
+    requestOptions: RequestOptions(path: '/api/v1/user/dose'),
     type: DioExceptionType.badResponse,
     response: Response(
-      requestOptions: RequestOptions(path: '/api/v1/user/medicine-dose-logs'),
+      requestOptions: RequestOptions(path: '/api/v1/user/dose'),
       statusCode: 404,
       headers: Headers.fromMap({
         Headers.contentTypeHeader: ['application/problem+json'],

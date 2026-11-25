@@ -54,7 +54,7 @@ void main() {
         'assistantMemoryEnabled': true,
         'assistantContext': {
           'healthProfile': true,
-          'dailyRecords': true,
+          'records': true,
           'sleepRecords': false,
           'currentMedicines': true,
         },

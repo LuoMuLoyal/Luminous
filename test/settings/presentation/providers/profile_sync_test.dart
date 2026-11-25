@@ -41,8 +41,8 @@ class _FakeLocaleController extends LocaleController {
   }
 }
 
-HealthContextResponse _testDto() => HealthContextResponse(
-  summary: HealthContextResponseSummary(
+ContextResponse _testDto() => ContextResponse(
+  summary: ContextResponseSummary(
     age: null,
     onboardingCompleted: false,
     activeAllergyCount: 0,
@@ -50,18 +50,16 @@ HealthContextResponse _testDto() => HealthContextResponse(
     currentMedicineCount: 0,
     missingCoreProfileFields: [],
   ),
-  profile: HealthContextResponseProfile(
+  profile: ContextResponseProfile(
     birthDate: null,
-    sexAtBirth:
-        HealthContextResponseProfileSexAtBirthEnum.unknownDefaultOpenApi,
+    sexAtBirth: ContextResponseProfileSexAtBirthEnum.unknownDefaultOpenApi,
     heightCm: null,
     weightKg: null,
     activityLevel: null,
     dietaryPreferences: null,
     locale: null,
     timezone: null,
-    unitSystem:
-        HealthContextResponseProfileUnitSystemEnum.unknownDefaultOpenApi,
+    unitSystem: ContextResponseProfileUnitSystemEnum.unknownDefaultOpenApi,
     onboardingCompletedAt: null,
     extras: null,
   ),

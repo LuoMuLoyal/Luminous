@@ -49,7 +49,7 @@ class DataExportRequestInput {
     );
   }
 
-  bool matches(DataExportRequestData? request) {
+  bool matches(ExportRequestData? request) {
     if (request == null) {
       return false;
     }
@@ -59,40 +59,39 @@ class DataExportRequestInput {
         request.range == _rangeToResponse(range);
   }
 
-  DataExportRequestDataKindEnum _kindToResponse(
+  ExportRequestDataKindEnum _kindToResponse(
     CreateRequestRequestKindEnum value,
   ) {
     return switch (value) {
       CreateRequestRequestKindEnum.hospital =>
-        DataExportRequestDataKindEnum.hospital,
-      CreateRequestRequestKindEnum.monthly =>
-        DataExportRequestDataKindEnum.monthly,
-      CreateRequestRequestKindEnum.print => DataExportRequestDataKindEnum.print,
+        ExportRequestDataKindEnum.hospital,
+      CreateRequestRequestKindEnum.monthly => ExportRequestDataKindEnum.monthly,
+      CreateRequestRequestKindEnum.print => ExportRequestDataKindEnum.print,
       CreateRequestRequestKindEnum.unknownDefaultOpenApi =>
-        DataExportRequestDataKindEnum.unknownDefaultOpenApi,
+        ExportRequestDataKindEnum.unknownDefaultOpenApi,
     };
   }
 
-  DataExportRequestDataFormatEnum _formatToResponse(
+  ExportRequestDataFormatEnum _formatToResponse(
     CreateRequestRequestFormatEnum value,
   ) {
     return switch (value) {
-      CreateRequestRequestFormatEnum.pdf => DataExportRequestDataFormatEnum.pdf,
+      CreateRequestRequestFormatEnum.pdf => ExportRequestDataFormatEnum.pdf,
       CreateRequestRequestFormatEnum.unknownDefaultOpenApi =>
-        DataExportRequestDataFormatEnum.unknownDefaultOpenApi,
+        ExportRequestDataFormatEnum.unknownDefaultOpenApi,
     };
   }
 
-  DataExportRequestDataRangeEnum _rangeToResponse(
+  ExportRequestDataRangeEnum _rangeToResponse(
     CreateRequestRequestRangeEnum value,
   ) {
     return switch (value) {
       CreateRequestRequestRangeEnum.last7Days =>
-        DataExportRequestDataRangeEnum.last7Days,
+        ExportRequestDataRangeEnum.last7Days,
       CreateRequestRequestRangeEnum.last30Days =>
-        DataExportRequestDataRangeEnum.last30Days,
+        ExportRequestDataRangeEnum.last30Days,
       CreateRequestRequestRangeEnum.unknownDefaultOpenApi =>
-        DataExportRequestDataRangeEnum.unknownDefaultOpenApi,
+        ExportRequestDataRangeEnum.unknownDefaultOpenApi,
     };
   }
 }
@@ -107,24 +106,21 @@ enum DataExportUiStatus {
   unavailable,
 }
 
-DataExportUiStatus dataExportUiStatusForRequest(
-  DataExportRequestData? request,
-) {
+DataExportUiStatus dataExportUiStatusForRequest(ExportRequestData? request) {
   if (request == null) {
     return DataExportUiStatus.idle;
   }
 
   return switch (request.status) {
-    DataExportRequestDataStatusEnum.requested => DataExportUiStatus.requested,
-    DataExportRequestDataStatusEnum.processing => DataExportUiStatus.processing,
-    DataExportRequestDataStatusEnum.completed =>
+    ExportRequestDataStatusEnum.requested => DataExportUiStatus.requested,
+    ExportRequestDataStatusEnum.processing => DataExportUiStatus.processing,
+    ExportRequestDataStatusEnum.completed =>
       request.downloadUrl?.isNotEmpty != true
           ? DataExportUiStatus.completedLinkMissing
           : DataExportUiStatus.completed,
-    DataExportRequestDataStatusEnum.failed => DataExportUiStatus.failed,
-    DataExportRequestDataStatusEnum.unavailable =>
-      DataExportUiStatus.unavailable,
-    DataExportRequestDataStatusEnum.unknownDefaultOpenApi =>
+    ExportRequestDataStatusEnum.failed => DataExportUiStatus.failed,
+    ExportRequestDataStatusEnum.unavailable => DataExportUiStatus.unavailable,
+    ExportRequestDataStatusEnum.unknownDefaultOpenApi =>
       DataExportUiStatus.failed,
   };
 }
@@ -145,15 +141,15 @@ const reviewPrintPdfExportRequest = DataExportRequestInput(
 
 /// Controller for the data-export feature.
 ///
-/// - [fetchLatest] reads `GET /api/v1/user/data-export-requests/latest`.
-/// - [requestExport] posts `POST /api/v1/user/data-export-requests` and
+/// - [fetchLatest] reads `GET /api/v1/user/export-requests/latest`.
+/// - [requestExport] posts `POST /api/v1/user/export-requests` and
 ///   updates the cached latest state.
 ///
 /// The provider is kept alive to avoid disposal/recreation cycles when the
 /// report page transitions between loading and ready states.
-class DataExportController extends AsyncNotifier<DataExportRequestData?> {
+class DataExportController extends AsyncNotifier<ExportRequestData?> {
   @override
-  Future<DataExportRequestData?> build() async {
+  Future<ExportRequestData?> build() async {
     // Keep this provider alive to avoid disposal/recreation cycles when
     // the report page transitions between loading and ready states.
     ref.keepAlive();
@@ -166,7 +162,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestData?> {
 
   /// Wraps [_fetchLatest] with graceful error handling — returns `null`
   /// instead of throwing so the provider never enters an error state.
-  Future<DataExportRequestData?> _fetchLatestSafe() async {
+  Future<ExportRequestData?> _fetchLatestSafe() async {
     try {
       return await _fetchLatest();
     } catch (e, st) {
@@ -181,7 +177,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestData?> {
   /// error). Callers must wrap this call in a try/catch and surface the error
   /// to the user. The [dataExportRequestInFlightProvider] is always reset in
   /// the finally block, regardless of success or failure.
-  Future<DataExportRequestData?> requestExport(
+  Future<ExportRequestData?> requestExport(
     DataExportRequestInput input, {
     required String password,
   }) async {
@@ -201,7 +197,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestData?> {
         response.data,
         operation: 'createDataExportRequest',
       );
-      final data = DataExportRequestData.fromJson(responseData.toJson());
+      final data = ExportRequestData.fromJson(responseData.toJson());
       state = AsyncData(data);
       return data;
     } finally {
@@ -210,13 +206,13 @@ class DataExportController extends AsyncNotifier<DataExportRequestData?> {
     }
   }
 
-  Future<DataExportRequestData?> refresh() async {
+  Future<ExportRequestData?> refresh() async {
     final latest = await _fetchLatest();
     state = AsyncData(latest);
     return latest;
   }
 
-  Future<DataExportRequestData?> _fetchLatest() async {
+  Future<ExportRequestData?> _fetchLatest() async {
     final api = ref.read(lucentClientProvider).dataExport;
     final response = await api.getLatestRequest();
     return requireData(response.data, operation: 'fetchLatestDataExport');
@@ -224,7 +220,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestData?> {
 }
 
 final dataExportControllerProvider =
-    AsyncNotifierProvider<DataExportController, DataExportRequestData?>(
+    AsyncNotifierProvider<DataExportController, ExportRequestData?>(
       DataExportController.new,
     );
 

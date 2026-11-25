@@ -106,7 +106,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
           waterTargetCount: waterTargetCount,
           assistantContext: UpdateSettingsRequestAssistantContext(
             healthProfile: assistantContext.healthProfile,
-            dailyRecords: assistantContext.dailyRecords,
+            records: assistantContext.dailyRecords,
             sleepRecords: assistantContext.sleepRecords,
             currentMedicines: assistantContext.currentMedicines,
           ),
@@ -149,7 +149,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
       waterTargetCount: dto.waterTargetCount.toInt(),
       assistantContext: AssistantContextSettings(
         healthProfile: dto.assistantContext.healthProfile,
-        dailyRecords: dto.assistantContext.dailyRecords,
+        dailyRecords: dto.assistantContext.records,
         sleepRecords: dto.assistantContext.sleepRecords,
         currentMedicines: dto.assistantContext.currentMedicines,
       ),

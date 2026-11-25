@@ -2,7 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'snapshot.freezed.dart';
 
-/// Aggregate health context snapshot fetched from GET /api/v1/user/health-context.
+/// Aggregate health context snapshot fetched from GET /api/v1/user/context.
 @freezed
 abstract class HealthContextSnapshot with _$HealthContextSnapshot {
   const factory HealthContextSnapshot({

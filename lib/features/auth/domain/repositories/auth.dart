@@ -120,7 +120,7 @@ abstract interface class AuthRepository {
     required String password,
   });
 
-  TaskEither<LucentFailure, DataExportRequestData> requestDataExport({
+  TaskEither<LucentFailure, ExportRequestData> requestDataExport({
     required CreateRequestRequestKindEnum kind,
     required CreateRequestRequestFormatEnum format,
     required CreateRequestRequestRangeEnum range,

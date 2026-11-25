@@ -161,15 +161,12 @@ void main() {
         expect(adapter.capturedRequest!.method, 'PATCH');
       });
 
-      test('targets /api/v1/user/health-context/profile endpoint', () async {
+      test('targets /api/v1/user/context/profile endpoint', () async {
         adapter.responseData = _healthContextResponseJson();
 
         await dataSource.updatePreferences(locale: 'zh-CN');
 
-        expect(
-          adapter.capturedRequest!.path,
-          '/api/v1/user/health-context/profile',
-        );
+        expect(adapter.capturedRequest!.path, '/api/v1/user/context/profile');
       });
 
       test('sets JSON content type', () async {
@@ -183,7 +180,7 @@ void main() {
 
     // ── updatePreferences — response parsing ─────────────────
     group('updatePreferences response parsing', () {
-      test('returns parsed HealthContextResponse on success', () async {
+      test('returns parsed ContextResponse on success', () async {
         adapter.responseData = _healthContextResponseJson(
           locale: 'en-US',
           timezone: 'America/New_York',
@@ -196,25 +193,22 @@ void main() {
         expect(result.profile.timezone, 'America/New_York');
         expect(
           result.profile.unitSystem,
-          HealthContextResponseProfileUnitSystemEnum.imperial,
+          ContextResponseProfileUnitSystemEnum.imperial,
         );
       });
 
-      test(
-        'returns parsed HealthContextResponse with zh-CN defaults',
-        () async {
-          adapter.responseData = _healthContextResponseJson();
+      test('returns parsed ContextResponse with zh-CN defaults', () async {
+        adapter.responseData = _healthContextResponseJson();
 
-          final result = await dataSource.updatePreferences();
+        final result = await dataSource.updatePreferences();
 
-          expect(result.profile.locale, 'zh-CN');
-          expect(result.profile.timezone, 'Asia/Shanghai');
-          expect(
-            result.profile.unitSystem,
-            HealthContextResponseProfileUnitSystemEnum.metric,
-          );
-        },
-      );
+        expect(result.profile.locale, 'zh-CN');
+        expect(result.profile.timezone, 'Asia/Shanghai');
+        expect(
+          result.profile.unitSystem,
+          ContextResponseProfileUnitSystemEnum.metric,
+        );
+      });
 
       test('throws emptyResponse failure on an empty success body', () async {
         adapter.responseData = null;

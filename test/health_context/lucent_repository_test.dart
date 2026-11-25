@@ -18,17 +18,17 @@ import '../helpers/task_either.dart';
 
 class _FakeHealthContextRemoteDataSource
     implements HealthContextRemoteDataSource {
-  HealthContextResponse? fetchResult;
-  HealthContextResponse? updateProfileResult;
-  HealthContextResponse? createAllergyResult;
-  HealthContextResponse? updateAllergyResult;
-  HealthContextResponse? deleteAllergyResult;
-  HealthContextResponse? createConditionResult;
-  HealthContextResponse? updateConditionResult;
-  HealthContextResponse? deleteConditionResult;
-  HealthContextResponse? createCurrentMedicineResult;
-  HealthContextResponse? updateCurrentMedicineResult;
-  HealthContextResponse? deleteCurrentMedicineResult;
+  ContextResponse? fetchResult;
+  ContextResponse? updateProfileResult;
+  ContextResponse? createAllergyResult;
+  ContextResponse? updateAllergyResult;
+  ContextResponse? deleteAllergyResult;
+  ContextResponse? createConditionResult;
+  ContextResponse? updateConditionResult;
+  ContextResponse? deleteConditionResult;
+  ContextResponse? createCurrentMedicineResult;
+  ContextResponse? updateCurrentMedicineResult;
+  ContextResponse? deleteCurrentMedicineResult;
 
   Object? fetchError;
   int fetchCallCount = 0;
@@ -47,105 +47,101 @@ class _FakeHealthContextRemoteDataSource
   );
 
   @override
-  Future<HealthContextResponse> fetchHealthContext() async {
+  Future<ContextResponse> fetchHealthContext() async {
     fetchCallCount++;
     if (fetchError != null) throw fetchError!;
     return fetchResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextResponse> updateProfile(
-    HealthProfileUpdateInput input,
-  ) async {
+  Future<ContextResponse> updateProfile(HealthProfileUpdateInput input) async {
     if (writeShouldFail) {
-      throw _networkError('/api/v1/user/health-context/profile');
+      throw _networkError('/api/v1/user/context/profile');
     }
     return updateProfileResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextResponse> createAllergy(
-    HealthAllergyWriteInput input,
-  ) async {
+  Future<ContextResponse> createAllergy(HealthAllergyWriteInput input) async {
     if (writeShouldFail) {
-      throw _networkError('/api/v1/user/health-context/allergies');
+      throw _networkError('/api/v1/user/context/allergies');
     }
     return createAllergyResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextResponse> updateAllergy(
+  Future<ContextResponse> updateAllergy(
     String id,
     HealthAllergyUpdateInput input,
   ) async {
     if (writeShouldFail) {
-      throw _networkError('/api/v1/user/health-context/allergies/$id');
+      throw _networkError('/api/v1/user/context/allergies/$id');
     }
     return updateAllergyResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextResponse> deleteAllergy(String id) async {
+  Future<ContextResponse> deleteAllergy(String id) async {
     if (writeShouldFail) {
-      throw _networkError('/api/v1/user/health-context/allergies/$id');
+      throw _networkError('/api/v1/user/context/allergies/$id');
     }
     return deleteAllergyResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextResponse> createCondition(
+  Future<ContextResponse> createCondition(
     HealthConditionWriteInput input,
   ) async {
     if (writeShouldFail) {
-      throw _networkError('/api/v1/user/health-context/conditions');
+      throw _networkError('/api/v1/user/context/conditions');
     }
     return createConditionResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextResponse> updateCondition(
+  Future<ContextResponse> updateCondition(
     String id,
     HealthConditionUpdateInput input,
   ) async {
     if (writeShouldFail) {
-      throw _networkError('/api/v1/user/health-context/conditions/$id');
+      throw _networkError('/api/v1/user/context/conditions/$id');
     }
     return updateConditionResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextResponse> deleteCondition(String id) async {
+  Future<ContextResponse> deleteCondition(String id) async {
     if (writeShouldFail) {
-      throw _networkError('/api/v1/user/health-context/conditions/$id');
+      throw _networkError('/api/v1/user/context/conditions/$id');
     }
     return deleteConditionResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextResponse> createCurrentMedicine(
+  Future<ContextResponse> createCurrentMedicine(
     CurrentMedicineWriteInput input,
   ) async {
     if (writeShouldFail) {
-      throw _networkError('/api/v1/user/health-context/current-medicines');
+      throw _networkError('/api/v1/user/context/current-medicines');
     }
     return createCurrentMedicineResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextResponse> updateCurrentMedicine(
+  Future<ContextResponse> updateCurrentMedicine(
     String id,
     CurrentMedicineUpdateInput input,
   ) async {
     if (writeShouldFail) {
-      throw _networkError('/api/v1/user/health-context/current-medicines/$id');
+      throw _networkError('/api/v1/user/context/current-medicines/$id');
     }
     return updateCurrentMedicineResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextResponse> deleteCurrentMedicine(String id) async {
+  Future<ContextResponse> deleteCurrentMedicine(String id) async {
     if (writeShouldFail) {
-      throw _networkError('/api/v1/user/health-context/current-medicines/$id');
+      throw _networkError('/api/v1/user/context/current-medicines/$id');
     }
     return deleteCurrentMedicineResult ?? _buildDto();
   }
@@ -170,15 +166,15 @@ class _FakeSyncWorker extends SyncWorker {
 
 // ── DTO builder ─────────────────────────────────────────────────
 
-HealthContextResponse _buildDto({
+ContextResponse _buildDto({
   int? age,
   bool onboardingCompleted = true,
   int activeAllergyCount = 0,
   int conditionCount = 0,
   int currentMedicineCount = 0,
 }) {
-  return HealthContextResponse(
-    summary: HealthContextResponseSummary(
+  return ContextResponse(
+    summary: ContextResponseSummary(
       age: age,
       onboardingCompleted: onboardingCompleted,
       activeAllergyCount: activeAllergyCount,
@@ -186,16 +182,16 @@ HealthContextResponse _buildDto({
       currentMedicineCount: currentMedicineCount,
       missingCoreProfileFields: [],
     ),
-    profile: HealthContextResponseProfile(
+    profile: ContextResponseProfile(
       birthDate: null,
-      sexAtBirth: HealthContextResponseProfileSexAtBirthEnum.unknown,
+      sexAtBirth: ContextResponseProfileSexAtBirthEnum.unknown,
       heightCm: null,
       weightKg: null,
       activityLevel: null,
       dietaryPreferences: null,
       locale: null,
       timezone: null,
-      unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
+      unitSystem: ContextResponseProfileUnitSystemEnum.metric,
       onboardingCompletedAt: null,
       extras: {},
     ),
@@ -288,7 +284,7 @@ void main() {
     test(
       '404 Problem Details keeps its code on an empty-cache fetch',
       () async {
-        const path = '/api/v1/user/health-context';
+        const path = '/api/v1/user/context';
         dataSource.fetchError = DioException(
           requestOptions: RequestOptions(path: path),
           response: Response<Object>(
@@ -661,8 +657,8 @@ void main() {
 
   group('cache JSON round-trip', () {
     test('snapshot with allergies survives cache round-trip', () async {
-      dataSource.createAllergyResult = HealthContextResponse(
-        summary: HealthContextResponseSummary(
+      dataSource.createAllergyResult = ContextResponse(
+        summary: ContextResponseSummary(
           age: 30,
           onboardingCompleted: true,
           activeAllergyCount: 1,
@@ -670,26 +666,26 @@ void main() {
           currentMedicineCount: 0,
           missingCoreProfileFields: [],
         ),
-        profile: HealthContextResponseProfile(
+        profile: ContextResponseProfile(
           birthDate: null,
-          sexAtBirth: HealthContextResponseProfileSexAtBirthEnum.unknown,
+          sexAtBirth: ContextResponseProfileSexAtBirthEnum.unknown,
           heightCm: null,
           weightKg: null,
           activityLevel: null,
           dietaryPreferences: null,
           locale: null,
           timezone: null,
-          unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
+          unitSystem: ContextResponseProfileUnitSystemEnum.metric,
           onboardingCompletedAt: null,
           extras: {},
         ),
         allergies: [
-          HealthContextResponseAllergies(
+          ContextResponseAllergies(
             id: 'allergy-1',
-            kind: HealthContextResponseAllergiesKindEnum.food,
+            kind: ContextResponseAllergiesKindEnum.food,
             label: 'Peanuts',
             reaction: null,
-            severity: HealthContextResponseAllergiesSeverityEnum.severe,
+            severity: ContextResponseAllergiesSeverityEnum.severe,
             isActive: true,
             note: null,
             extras: null,
@@ -723,8 +719,8 @@ void main() {
     });
 
     test('snapshot with conditions survives cache round-trip', () async {
-      dataSource.createConditionResult = HealthContextResponse(
-        summary: HealthContextResponseSummary(
+      dataSource.createConditionResult = ContextResponse(
+        summary: ContextResponseSummary(
           age: null,
           onboardingCompleted: true,
           activeAllergyCount: 0,
@@ -732,25 +728,25 @@ void main() {
           currentMedicineCount: 0,
           missingCoreProfileFields: [],
         ),
-        profile: HealthContextResponseProfile(
+        profile: ContextResponseProfile(
           birthDate: null,
-          sexAtBirth: HealthContextResponseProfileSexAtBirthEnum.unknown,
+          sexAtBirth: ContextResponseProfileSexAtBirthEnum.unknown,
           heightCm: null,
           weightKg: null,
           activityLevel: null,
           dietaryPreferences: null,
           locale: null,
           timezone: null,
-          unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
+          unitSystem: ContextResponseProfileUnitSystemEnum.metric,
           onboardingCompletedAt: null,
           extras: {},
         ),
         allergies: [],
         conditions: [
-          HealthContextResponseConditions(
+          ContextResponseConditions(
             id: 'cond-1',
             label: 'Hypertension',
-            status: HealthContextResponseConditionsStatusEnum.active,
+            status: ContextResponseConditionsStatusEnum.active,
             diagnosedAt: '2026-01-01',
             resolvedAt: null,
             note: 'Under treatment',
@@ -779,8 +775,8 @@ void main() {
     });
 
     test('snapshot with currentMedicines survives cache round-trip', () async {
-      dataSource.createCurrentMedicineResult = HealthContextResponse(
-        summary: HealthContextResponseSummary(
+      dataSource.createCurrentMedicineResult = ContextResponse(
+        summary: ContextResponseSummary(
           age: null,
           onboardingCompleted: true,
           activeAllergyCount: 0,
@@ -788,25 +784,25 @@ void main() {
           currentMedicineCount: 1,
           missingCoreProfileFields: [],
         ),
-        profile: HealthContextResponseProfile(
+        profile: ContextResponseProfile(
           birthDate: null,
-          sexAtBirth: HealthContextResponseProfileSexAtBirthEnum.unknown,
+          sexAtBirth: ContextResponseProfileSexAtBirthEnum.unknown,
           heightCm: null,
           weightKg: null,
           activityLevel: null,
           dietaryPreferences: null,
           locale: null,
           timezone: null,
-          unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
+          unitSystem: ContextResponseProfileUnitSystemEnum.metric,
           onboardingCompletedAt: null,
           extras: {},
         ),
         allergies: [],
         conditions: [],
         currentMedicines: [
-          HealthContextResponseCurrentMedicines(
+          ContextResponseCurrentMedicines(
             id: 'med-1',
-            source_: HealthContextResponseCurrentMedicinesSource_Enum.cn,
+            source_: ContextResponseCurrentMedicinesSource_Enum.cn,
             sourceRefId: 'ref-1',
             displayName: 'Aspirin',
             strengthText: '100mg',
@@ -843,8 +839,8 @@ void main() {
     });
 
     test('snapshot with profile extras survives cache round-trip', () async {
-      dataSource.updateProfileResult = HealthContextResponse(
-        summary: HealthContextResponseSummary(
+      dataSource.updateProfileResult = ContextResponse(
+        summary: ContextResponseSummary(
           age: 35,
           onboardingCompleted: true,
           activeAllergyCount: 0,
@@ -852,16 +848,16 @@ void main() {
           currentMedicineCount: 0,
           missingCoreProfileFields: [],
         ),
-        profile: HealthContextResponseProfile(
+        profile: ContextResponseProfile(
           birthDate: '1991-05-15',
-          sexAtBirth: HealthContextResponseProfileSexAtBirthEnum.female,
+          sexAtBirth: ContextResponseProfileSexAtBirthEnum.female,
           heightCm: 165.0,
           weightKg: null,
           activityLevel: null,
           dietaryPreferences: ['vegetarian'],
           locale: 'zh-CN',
           timezone: 'Asia/Shanghai',
-          unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
+          unitSystem: ContextResponseProfileUnitSystemEnum.metric,
           onboardingCompletedAt: '2026-07-11T08:00:00.000Z',
           extras: {'customKey': 'customValue'},
         ),

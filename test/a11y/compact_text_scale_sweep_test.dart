@@ -1151,7 +1151,7 @@ class _ReadyUserSettingsController extends UserSettingsController {
 
 class _StubExportController extends DataExportController {
   @override
-  Future<DataExportRequestData?> build() async => null;
+  Future<ExportRequestData?> build() async => null;
 }
 
 class _FakeNotificationPermissionService extends NotificationPermissionService {

@@ -160,7 +160,7 @@ lucent.AssistantCapabilitiesResponseAssistantContext _context({
 }) {
   return lucent.AssistantCapabilitiesResponseAssistantContext(
     healthProfile: health,
-    dailyRecords: daily,
+    records: daily,
     sleepRecords: sleep,
     currentMedicines: meds,
   );
@@ -1099,7 +1099,7 @@ void main() {
                       'assistantMemoryEnabled': true,
                       'assistantContext': {
                         'healthProfile': true,
-                        'dailyRecords': true,
+                        'records': true,
                         'sleepRecords': false,
                         'currentMedicines': true,
                       },

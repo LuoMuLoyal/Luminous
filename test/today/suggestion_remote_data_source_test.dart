@@ -524,9 +524,7 @@ void main() {
     test('network timeout maps to a network connectivity Left', () async {
       final adapter = _JsonAdapter(
         error: DioException(
-          requestOptions: RequestOptions(
-            path: '/api/v1/user/today/suggestions',
-          ),
+          requestOptions: RequestOptions(path: '/api/v1/user/suggestion'),
           type: DioExceptionType.connectionTimeout,
         ),
       );

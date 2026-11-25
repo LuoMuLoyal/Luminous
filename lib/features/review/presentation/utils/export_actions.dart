@@ -54,7 +54,7 @@ Future<void> handleReviewExportAction(
   final controller = ref.read(dataExportControllerProvider.notifier);
   final launcher = ref.read(externalUrlLauncherProvider);
 
-  final DataExportRequestData? value;
+  final ExportRequestData? value;
   try {
     value = await controller.requestExport(input, password: password);
   } catch (error) {
@@ -112,7 +112,7 @@ Future<void> _handleExportResult({
   required BuildContext context,
   required WidgetRef ref,
   required ExternalUrlLauncher launcher,
-  required DataExportRequestData? request,
+  required ExportRequestData? request,
 }) async {
   final l10n = AppLocalizations.of(context)!;
   switch (dataExportUiStatusForRequest(request)) {

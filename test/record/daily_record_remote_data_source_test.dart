@@ -45,7 +45,7 @@ void main() {
         ),
       );
 
-      final request = adapter.requestAt('POST', '/api/v1/user/daily-records');
+      final request = adapter.requestAt('POST', '/api/v1/user/record');
       expect(request.jsonBody['kind'], 'meal');
       expect(request.jsonBody['occurredTime'], '09:45');
       expect(request.jsonBody['title'], 'Breakfast');
@@ -67,7 +67,7 @@ void main() {
 
       final request = adapter.requestAt(
         'PATCH',
-        '/api/v1/user/daily-records/record-1',
+        '/api/v1/user/record/record-1',
       );
       expect(request.jsonBody, containsPair('title', 'Updated'));
       expect(request.jsonBody, containsPair('occurredTime', '10:20'));
@@ -84,7 +84,7 @@ void main() {
 
       final request = adapter.requestAt(
         'PATCH',
-        '/api/v1/user/daily-records/record-1',
+        '/api/v1/user/record/record-1',
       );
       expect(request.jsonBody['attachments'], isEmpty);
     });
@@ -105,7 +105,7 @@ void main() {
 
       final request = adapter.requestAt(
         'PATCH',
-        '/api/v1/user/daily-records/record-1',
+        '/api/v1/user/record/record-1',
       );
       final attachments = request.jsonBody['attachments'] as List<Object?>;
       expect(attachments, hasLength(1));
@@ -128,7 +128,7 @@ void main() {
 
       final presign = adapter.requestAt(
         'POST',
-        '/api/v1/user/daily-records/attachments/images/presign-upload',
+        '/api/v1/user/record/attachments/images/presign-upload',
       );
       expect(presign.jsonBody, {
         'contentType': 'image/jpeg',
@@ -195,7 +195,7 @@ void main() {
         // 失败,因为生成客户端序列化 DateTime 会带出时间部分)。
         final request = adapter.requestAt(
           'POST',
-          '/api/v1/user/daily-records/candidate-records/generate',
+          '/api/v1/user/record/candidate-records/generate',
         );
         expect(request.jsonBody, containsPair('text', '喝了一杯水'));
         expect(request.jsonBody, containsPair('occurredAt', '2026-07-12'));
@@ -330,7 +330,7 @@ class _FakeDailyRecordAdapter implements HttpClientAdapter {
       });
     }
 
-    if (options.path == '/api/v1/user/daily-records/summary') {
+    if (options.path == '/api/v1/user/record/summary') {
       return _jsonResponse(<String, Object?>{
         'summaries': <Object?>[
           <String, Object?>{
@@ -343,7 +343,7 @@ class _FakeDailyRecordAdapter implements HttpClientAdapter {
     }
 
     if (options.path.endsWith(
-      '/api/v1/user/daily-records/candidate-records/generate',
+      '/api/v1/user/record/candidate-records/generate',
     )) {
       return _jsonResponse(<String, Object?>{
         'locale': 'zh',
@@ -353,8 +353,7 @@ class _FakeDailyRecordAdapter implements HttpClientAdapter {
       });
     }
 
-    if (options.method == 'GET' &&
-        options.path == '/api/v1/user/daily-records') {
+    if (options.method == 'GET' && options.path == '/api/v1/user/record') {
       return _jsonResponse(<String, Object?>{
         'items': <Object?>[
           _recordJson(attachments: _lastJsonAttachments() ?? const <Object?>[]),

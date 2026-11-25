@@ -31,10 +31,7 @@ void main() {
         ),
       );
 
-      final req = adapter.requestAt(
-        'PATCH',
-        '/api/v1/user/health-context/profile',
-      );
+      final req = adapter.requestAt('PATCH', '/api/v1/user/context/profile');
       expect(req.jsonBody, <String, dynamic>{
         'sexAtBirth': 'female',
         'heightCm': 168,
@@ -51,10 +48,7 @@ void main() {
         ),
       );
 
-      final req = adapter.requestAt(
-        'PATCH',
-        '/api/v1/user/health-context/profile',
-      );
+      final req = adapter.requestAt('PATCH', '/api/v1/user/context/profile');
       expect(req.jsonBody, <String, dynamic>{'locale': 'zh-CN'});
       expect(req.jsonBody.containsKey('heightCm'), isFalse);
       expect(req.jsonBody.containsKey('sexAtBirth'), isFalse);
@@ -72,10 +66,7 @@ void main() {
         ),
       );
 
-      final req = adapter.requestAt(
-        'POST',
-        '/api/v1/user/health-context/allergies',
-      );
+      final req = adapter.requestAt('POST', '/api/v1/user/context/allergies');
       expect(req.jsonBody, <String, dynamic>{
         'kind': 'drug',
         'label': '青霉素',
@@ -93,10 +84,7 @@ void main() {
         ),
       );
 
-      final req = adapter.requestAt(
-        'POST',
-        '/api/v1/user/health-context/allergies',
-      );
+      final req = adapter.requestAt('POST', '/api/v1/user/context/allergies');
       expect(req.jsonBody, <String, dynamic>{'kind': 'food', 'label': '花生'});
       expect(req.jsonBody.containsKey('reaction'), isFalse);
       expect(req.jsonBody.containsKey('severity'), isFalse);
@@ -116,7 +104,7 @@ void main() {
 
         final req = adapter.requestAt(
           'PATCH',
-          '/api/v1/user/health-context/allergies/allergy-1',
+          '/api/v1/user/context/allergies/allergy-1',
         );
         expect(req.jsonBody, <String, dynamic>{
           'severity': 'moderate',
@@ -133,7 +121,7 @@ void main() {
 
       final req = adapter.requestAt(
         'DELETE',
-        '/api/v1/user/health-context/allergies/allergy-1',
+        '/api/v1/user/context/allergies/allergy-1',
       );
       expect(req.jsonBody, isEmpty);
       expect(result.allergies, isEmpty);
@@ -149,10 +137,7 @@ void main() {
         ),
       );
 
-      final req = adapter.requestAt(
-        'POST',
-        '/api/v1/user/health-context/conditions',
-      );
+      final req = adapter.requestAt('POST', '/api/v1/user/context/conditions');
       expect(req.jsonBody, <String, dynamic>{
         'label': '高血压',
         'status': 'active',
@@ -165,10 +150,7 @@ void main() {
         const HealthConditionWriteInput(label: '糖尿病'),
       );
 
-      final req = adapter.requestAt(
-        'POST',
-        '/api/v1/user/health-context/conditions',
-      );
+      final req = adapter.requestAt('POST', '/api/v1/user/context/conditions');
       expect(req.jsonBody, <String, dynamic>{'label': '糖尿病'});
       expect(req.jsonBody.containsKey('status'), isFalse);
       expect(req.jsonBody.containsKey('diagnosedAt'), isFalse);
@@ -186,7 +168,7 @@ void main() {
 
         final req = adapter.requestAt(
           'PATCH',
-          '/api/v1/user/health-context/conditions/cond-1',
+          '/api/v1/user/context/conditions/cond-1',
         );
         expect(req.jsonBody, <String, dynamic>{'status': 'resolved'});
         expect(req.jsonBody.containsKey('label'), isFalse);
@@ -199,7 +181,7 @@ void main() {
 
       final req = adapter.requestAt(
         'DELETE',
-        '/api/v1/user/health-context/conditions/cond-1',
+        '/api/v1/user/context/conditions/cond-1',
       );
       expect(req.jsonBody, isEmpty);
       expect(result.conditions, isEmpty);
@@ -221,7 +203,7 @@ void main() {
 
         final req = adapter.requestAt(
           'POST',
-          '/api/v1/user/health-context/current-medicines',
+          '/api/v1/user/context/current-medicines',
         );
         expect(req.jsonBody, <String, dynamic>{
           'source': 'cn',
@@ -243,7 +225,7 @@ void main() {
 
       final req = adapter.requestAt(
         'POST',
-        '/api/v1/user/health-context/current-medicines',
+        '/api/v1/user/context/current-medicines',
       );
       expect(req.jsonBody, <String, dynamic>{
         'source': 'manual',
@@ -267,7 +249,7 @@ void main() {
 
         final req = adapter.requestAt(
           'PATCH',
-          '/api/v1/user/health-context/current-medicines/med-1',
+          '/api/v1/user/context/current-medicines/med-1',
         );
         expect(req.jsonBody, <String, dynamic>{
           'doseText': '400mg bid',
@@ -284,7 +266,7 @@ void main() {
 
       final req = adapter.requestAt(
         'DELETE',
-        '/api/v1/user/health-context/current-medicines/med-1',
+        '/api/v1/user/context/current-medicines/med-1',
       );
       expect(req.jsonBody, isEmpty);
       expect(result.currentMedicines, isEmpty);

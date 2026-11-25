@@ -644,7 +644,7 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
   }
 
   @override
-  TaskEither<LucentFailure, DataExportRequestData> requestDataExport({
+  TaskEither<LucentFailure, ExportRequestData> requestDataExport({
     required CreateRequestRequestKindEnum kind,
     required CreateRequestRequestFormatEnum format,
     required CreateRequestRequestRangeEnum range,
@@ -672,12 +672,12 @@ class E2eLucentAuthRepository extends LucentAuthRepository {
       }
     }
     return TaskEither.right(
-      DataExportRequestData(
+      ExportRequestData(
         id: 'e2e-export-1',
-        kind: DataExportRequestDataKindEnum.hospital,
-        format: DataExportRequestDataFormatEnum.pdf,
-        range: DataExportRequestDataRangeEnum.last7Days,
-        status: DataExportRequestDataStatusEnum.requested,
+        kind: ExportRequestDataKindEnum.hospital,
+        format: ExportRequestDataFormatEnum.pdf,
+        range: ExportRequestDataRangeEnum.last7Days,
+        status: ExportRequestDataStatusEnum.requested,
         requestedAt: DateTime.now().toUtc().toIso8601String(),
         // Regenerated client marks the nullable trailing fields as required
         // constructor params; the fake's export is only just created.

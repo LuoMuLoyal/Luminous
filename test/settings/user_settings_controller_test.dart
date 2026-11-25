@@ -271,7 +271,7 @@ void main() {
           assistantEnabled: false,
           assistantContext: UserSettingsResponseAssistantContext(
             healthProfile: true,
-            dailyRecords: true,
+            records: true,
             sleepRecords: true,
             currentMedicines: true,
           ),
@@ -302,7 +302,7 @@ void main() {
           assistantMemoryEnabled: true,
           assistantContext: UserSettingsResponseAssistantContext(
             healthProfile: true,
-            dailyRecords: true,
+            records: true,
             sleepRecords: true,
             currentMedicines: true,
           ),
@@ -338,7 +338,7 @@ void main() {
           assistantEnabled: true,
           assistantContext: UserSettingsResponseAssistantContext(
             healthProfile: false,
-            dailyRecords: true,
+            records: true,
             sleepRecords: false,
             currentMedicines: true,
           ),
@@ -357,7 +357,7 @@ void main() {
         final patchDto = fakeApi.lastPatchDto!;
         expect(patchDto.assistantEnabled, isTrue);
         expect(patchDto.assistantContext!.healthProfile, isFalse);
-        expect(patchDto.assistantContext!.dailyRecords, isTrue);
+        expect(patchDto.assistantContext!.records, isTrue);
         expect(patchDto.assistantContext!.sleepRecords, isFalse);
         expect(patchDto.assistantContext!.currentMedicines, isTrue);
       },
@@ -487,7 +487,7 @@ UserSettingsResponse _buildResponse({
         assistantContext ??
         UserSettingsResponseAssistantContext(
           healthProfile: true,
-          dailyRecords: true,
+          records: true,
           sleepRecords: true,
           currentMedicines: true,
         ),
@@ -513,7 +513,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     waterTargetCount: 8,
     assistantContext: UserSettingsResponseAssistantContext(
       healthProfile: true,
-      dailyRecords: true,
+      records: true,
       sleepRecords: true,
       currentMedicines: true,
     ),

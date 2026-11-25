@@ -2,14 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/health_context/data/mappers/health_context.dart';
 
-HealthContextResponseSummary _s({
+ContextResponseSummary _s({
   Object? age,
   bool ob = false,
   num ac = 0,
   num cc = 0,
   num mc = 0,
 }) {
-  return HealthContextResponseSummary(
+  return ContextResponseSummary(
     age: age is num ? age : null,
     onboardingCompleted: ob,
     activeAllergyCount: ac,
@@ -19,13 +19,13 @@ HealthContextResponseSummary _s({
   );
 }
 
-HealthContextResponseProfile _p({
+ContextResponseProfile _p({
   Object? h,
   Object? bd,
-  HealthContextResponseProfileSexAtBirthEnum sx =
-      HealthContextResponseProfileSexAtBirthEnum.male,
+  ContextResponseProfileSexAtBirthEnum sx =
+      ContextResponseProfileSexAtBirthEnum.male,
 }) {
-  return HealthContextResponseProfile(
+  return ContextResponseProfile(
     heightCm: h as num?,
     birthDate: bd as String?,
     sexAtBirth: sx,
@@ -34,7 +34,7 @@ HealthContextResponseProfile _p({
     dietaryPreferences: null,
     locale: null,
     timezone: null,
-    unitSystem: HealthContextResponseProfileUnitSystemEnum.metric,
+    unitSystem: ContextResponseProfileUnitSystemEnum.metric,
     onboardingCompletedAt: null,
     extras: null,
   );
@@ -45,7 +45,7 @@ void main() {
 
   group('fromDto - summary', () {
     test('maps fields', () {
-      final dto = HealthContextResponse(
+      final dto = ContextResponse(
         summary: _s(age: 30, ob: true, ac: 2, cc: 1, mc: 3),
         profile: _p(),
         allergies: const [],
@@ -59,7 +59,7 @@ void main() {
       expect(s.currentMedicineCount, 3);
     });
     test('non-int age → null', () {
-      final dto = HealthContextResponse(
+      final dto = ContextResponse(
         summary: _s(age: 30.5),
         profile: _p(),
         allergies: const [],
@@ -72,12 +72,12 @@ void main() {
 
   group('fromDto - profile', () {
     test('maps fields', () {
-      final dto = HealthContextResponse(
+      final dto = ContextResponse(
         summary: _s(),
         profile: _p(
           h: 175,
           bd: '1990-01-15',
-          sx: HealthContextResponseProfileSexAtBirthEnum.male,
+          sx: ContextResponseProfileSexAtBirthEnum.male,
         ),
         allergies: const [],
         conditions: const [],
@@ -89,7 +89,7 @@ void main() {
       expect(p.sexAtBirth, 'male');
     });
     test('nulls propagate', () {
-      final dto = HealthContextResponse(
+      final dto = ContextResponse(
         summary: _s(),
         profile: _p(),
         allergies: const [],
@@ -104,16 +104,16 @@ void main() {
 
   group('fromDto - allergies', () {
     test('maps fields', () {
-      final dto = HealthContextResponse(
+      final dto = ContextResponse(
         summary: _s(),
         profile: _p(),
         allergies: [
-          HealthContextResponseAllergies(
+          ContextResponseAllergies(
             id: 'a1',
-            kind: HealthContextResponseAllergiesKindEnum.drug,
+            kind: ContextResponseAllergiesKindEnum.drug,
             label: 'Penicillin',
             reaction: null,
-            severity: HealthContextResponseAllergiesSeverityEnum.mild,
+            severity: ContextResponseAllergiesSeverityEnum.mild,
             isActive: true,
             note: null,
             extras: null,
@@ -130,7 +130,7 @@ void main() {
       expect(a.label, 'Penicillin');
     });
     test('empty list', () {
-      final dto = HealthContextResponse(
+      final dto = ContextResponse(
         summary: _s(),
         profile: _p(),
         allergies: const [],
@@ -143,19 +143,16 @@ void main() {
 
   group('fromDto - full integration', () {
     test('complete dto', () {
-      final dto = HealthContextResponse(
+      final dto = ContextResponse(
         summary: _s(age: 42),
-        profile: _p(
-          h: 165,
-          sx: HealthContextResponseProfileSexAtBirthEnum.female,
-        ),
+        profile: _p(h: 165, sx: ContextResponseProfileSexAtBirthEnum.female),
         allergies: [
-          HealthContextResponseAllergies(
+          ContextResponseAllergies(
             id: 'a1',
-            kind: HealthContextResponseAllergiesKindEnum.drug,
+            kind: ContextResponseAllergiesKindEnum.drug,
             label: 'P',
             reaction: null,
-            severity: HealthContextResponseAllergiesSeverityEnum.mild,
+            severity: ContextResponseAllergiesSeverityEnum.mild,
             isActive: true,
             note: null,
             extras: null,
@@ -165,10 +162,10 @@ void main() {
           ),
         ],
         conditions: [
-          HealthContextResponseConditions(
+          ContextResponseConditions(
             id: 'c1',
             label: 'H',
-            status: HealthContextResponseConditionsStatusEnum.active,
+            status: ContextResponseConditionsStatusEnum.active,
             diagnosedAt: null,
             resolvedAt: null,
             note: null,
@@ -178,9 +175,9 @@ void main() {
           ),
         ],
         currentMedicines: [
-          HealthContextResponseCurrentMedicines(
+          ContextResponseCurrentMedicines(
             id: 'm1',
-            source_: HealthContextResponseCurrentMedicinesSource_Enum.manual,
+            source_: ContextResponseCurrentMedicinesSource_Enum.manual,
             sourceRefId: null,
             displayName: 'Aspirin',
             strengthText: null,

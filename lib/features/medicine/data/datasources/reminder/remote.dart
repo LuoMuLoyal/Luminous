@@ -119,7 +119,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
   TaskEither<LucentFailure, List<MedicineReminderItem>> upsertGroup(
     MedicineReminderGroupUpsertInput input,
   ) {
-    // 消费再生契约的生成 API 方法（PUT /api/v1/user/medicine-reminders/group），
+    // 消费再生契约的生成 API 方法（PUT /api/v1/user/reminder/group），
     // 请求/响应均走生成 DTO（UpsertGroupRequest /
     // MedicineReminderListResponse），与 openapi.json 对齐。
     return TaskEither.tryCatch(() async {
@@ -206,7 +206,7 @@ class MedicineReminderRemoteDataSource implements ReminderRepository {
     );
   }
 
-  MedicineReminderItem _fromDto(MedicineReminderListResponseItems dto) {
+  MedicineReminderItem _fromDto(ReminderEntryListResponseItems dto) {
     return MedicineReminderItem(
       id: dto.id,
       currentMedicineId: dto.currentMedicineId,

@@ -19,10 +19,10 @@ DioException _networkException() {
 /// `application/problem+json` (server business failure).
 DioException _problemDetails({required int statusCode, required String code}) {
   return DioException(
-    requestOptions: RequestOptions(path: '/api/v1/legal-documents'),
+    requestOptions: RequestOptions(path: '/api/v1/legal'),
     type: DioExceptionType.badResponse,
     response: Response(
-      requestOptions: RequestOptions(path: '/api/v1/legal-documents'),
+      requestOptions: RequestOptions(path: '/api/v1/legal'),
       statusCode: statusCode,
       headers: Headers.fromMap({
         Headers.contentTypeHeader: ['application/problem+json'],
@@ -41,10 +41,10 @@ DioException _problemDetails({required int statusCode, required String code}) {
 /// invariant violation) — so `.run()` propagates `FormatException`.
 DioException _nonProblemHtml500() {
   return DioException(
-    requestOptions: RequestOptions(path: '/api/v1/legal-documents'),
+    requestOptions: RequestOptions(path: '/api/v1/legal'),
     type: DioExceptionType.badResponse,
     response: Response(
-      requestOptions: RequestOptions(path: '/api/v1/legal-documents'),
+      requestOptions: RequestOptions(path: '/api/v1/legal'),
       statusCode: 500,
       headers: Headers.fromMap({
         Headers.contentTypeHeader: ['text/html'],
@@ -73,14 +73,14 @@ void main() {
     group('findAll', () {
       test('maps API items to LegalDocumentSummary list as Right', () async {
         final response = _response(
-          LegalDocumentListResponse(
+          LegalDocListResponse(
             items: [
-              LegalDocumentListResponseItems(
+              LegalDocListResponseItems(
                 docType: 'terms',
                 title: '服务条款',
                 updatedAt: '2026-07-01T00:00:00Z',
               ),
-              LegalDocumentListResponseItems(
+              LegalDocListResponseItems(
                 docType: 'privacy',
                 title: '隐私政策',
                 updatedAt: '2026-07-02T00:00:00Z',
@@ -106,9 +106,9 @@ void main() {
 
       test('defaults to terms for unknown docType', () async {
         final response = _response(
-          LegalDocumentListResponse(
+          LegalDocListResponse(
             items: [
-              LegalDocumentListResponseItems(
+              LegalDocListResponseItems(
                 docType: 'unknown-type',
                 title: 'Unknown',
                 updatedAt: '',
@@ -130,7 +130,7 @@ void main() {
 
       test('returns empty list when API returns no items', () async {
         final response = _response(
-          LegalDocumentListResponse(items: [], updatedAt: ''),
+          LegalDocListResponse(items: [], updatedAt: ''),
         );
 
         when(
@@ -196,7 +196,7 @@ void main() {
 
       test('empty success body is Left(network/emptyResponse)', () async {
         when(() => api.listLegalDocuments(lang: any(named: 'lang'))).thenAnswer(
-          (_) async => Response<LegalDocumentListResponse>(
+          (_) async => Response<LegalDocListResponse>(
             data: null,
             requestOptions: RequestOptions(path: ''),
             statusCode: 200,
@@ -229,7 +229,7 @@ void main() {
         );
 
         final response = _response(
-          LegalDocumentListResponse(items: [], updatedAt: ''),
+          LegalDocListResponse(items: [], updatedAt: ''),
         );
 
         when(
@@ -246,7 +246,7 @@ void main() {
     group('findOne', () {
       test('maps API response to LegalDocument as Right', () async {
         final response = _response(
-          LegalDocumentDetailResponse(
+          LegalDocDetailResponse(
             docType: 'terms',
             title: '服务条款',
             content: '# 服务条款\n\n正文内容',
@@ -272,7 +272,7 @@ void main() {
       test('passes correct pathSegment for each docType', () async {
         for (final type in LegalDocType.values) {
           final response = _response(
-            LegalDocumentDetailResponse(
+            LegalDocDetailResponse(
               docType: type.pathSegment,
               title: 'T',
               content: 'C',
@@ -337,7 +337,7 @@ void main() {
             lang: any(named: 'lang'),
           ),
         ).thenAnswer(
-          (_) async => Response<LegalDocumentDetailResponse>(
+          (_) async => Response<LegalDocDetailResponse>(
             data: null,
             requestOptions: RequestOptions(path: ''),
             statusCode: 200,
@@ -394,7 +394,7 @@ void main() {
 
     test("passes 'en' to findAll", () async {
       final response = _response(
-        LegalDocumentListResponse(items: [], updatedAt: ''),
+        LegalDocListResponse(items: [], updatedAt: ''),
       );
 
       when(
@@ -408,7 +408,7 @@ void main() {
 
     test("passes 'en' to findOne", () async {
       final response = _response(
-        LegalDocumentDetailResponse(
+        LegalDocDetailResponse(
           docType: 'privacy',
           title: 'Privacy Policy',
           content: '# Privacy',

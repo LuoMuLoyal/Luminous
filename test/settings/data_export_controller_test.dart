@@ -45,7 +45,7 @@ void main() {
 
       expect(state, isNotNull);
       expect(state!.id, 'req-1');
-      expect(state.status, DataExportRequestDataStatusEnum.completed);
+      expect(state.status, ExportRequestDataStatusEnum.completed);
       expect(state.downloadUrl, 'https://example.com/export.csv');
       expect(fakeApi.getLatestCallCount, 1);
     });
@@ -65,7 +65,7 @@ void main() {
         api: _FakeDataExportApi(
           getLatestException: DioException(
             requestOptions: RequestOptions(
-              path: '/api/v1/user/data-export-requests/latest',
+              path: '/api/v1/user/export-requests/latest',
             ),
             type: DioExceptionType.connectionTimeout,
           ),
@@ -95,7 +95,7 @@ void main() {
 
       fakeApi.createResponse = _buildCreateResponse(
         id: 'req-2',
-        status: DataExportRequestDataStatusEnum.requested,
+        status: ExportRequestDataStatusEnum.requested,
       );
 
       await container
@@ -108,7 +108,7 @@ void main() {
       final state = container.read(dataExportControllerProvider).value;
       expect(state, isNotNull);
       expect(state!.id, 'req-2');
-      expect(state.status, DataExportRequestDataStatusEnum.requested);
+      expect(state.status, ExportRequestDataStatusEnum.requested);
       expect(fakeApi.createCallCount, 1);
       expect(
         fakeApi.lastCreateRequest?.kind,
@@ -198,9 +198,7 @@ void main() {
       await container.read(dataExportControllerProvider.future);
 
       fakeApi.createException = DioException(
-        requestOptions: RequestOptions(
-          path: '/api/v1/user/data-export-requests',
-        ),
+        requestOptions: RequestOptions(path: '/api/v1/user/export-requests'),
         type: DioExceptionType.connectionTimeout,
       );
 
@@ -253,7 +251,7 @@ void main() {
         fakeApi.latestReturnsNullData = false;
         fakeApi.createResponse = _buildCreateResponse(
           id: 'req-first',
-          status: DataExportRequestDataStatusEnum.processing,
+          status: ExportRequestDataStatusEnum.processing,
         );
 
         await container
@@ -266,7 +264,7 @@ void main() {
         final state = container.read(dataExportControllerProvider).value;
         expect(state, isNotNull);
         expect(state!.id, 'req-first');
-        expect(state.status, DataExportRequestDataStatusEnum.processing);
+        expect(state.status, ExportRequestDataStatusEnum.processing);
       },
     );
   });
@@ -281,7 +279,7 @@ void main() {
       // Simulate a new request appearing on the server.
       fakeApi.latestResponse = _buildLatestResponse(
         id: 'req-3',
-        status: DataExportRequestDataStatusEnum.processing,
+        status: ExportRequestDataStatusEnum.processing,
       );
 
       await container.read(dataExportControllerProvider.notifier).refresh();
@@ -289,7 +287,7 @@ void main() {
       final state = container.read(dataExportControllerProvider).value;
       expect(state, isNotNull);
       expect(state!.id, 'req-3');
-      expect(state.status, DataExportRequestDataStatusEnum.processing);
+      expect(state.status, ExportRequestDataStatusEnum.processing);
       expect(fakeApi.getLatestCallCount, 2);
     });
 
@@ -314,7 +312,7 @@ void main() {
 
       fakeApi.getLatestException = DioException(
         requestOptions: RequestOptions(
-          path: '/api/v1/user/data-export-requests/latest',
+          path: '/api/v1/user/export-requests/latest',
         ),
         type: DioExceptionType.connectionTimeout,
       );
@@ -340,7 +338,7 @@ void main() {
         // Step 1: Submit export request.
         fakeApi.createResponse = _buildCreateResponse(
           id: 'req-4',
-          status: DataExportRequestDataStatusEnum.requested,
+          status: ExportRequestDataStatusEnum.requested,
         );
         await container
             .read(dataExportControllerProvider.notifier)
@@ -351,30 +349,30 @@ void main() {
 
         expect(
           container.read(dataExportControllerProvider).value?.status,
-          DataExportRequestDataStatusEnum.requested,
+          ExportRequestDataStatusEnum.requested,
         );
 
         // Step 2: Server transitions to processing; refresh picks it up.
         fakeApi.latestResponse = _buildLatestResponse(
           id: 'req-4',
-          status: DataExportRequestDataStatusEnum.processing,
+          status: ExportRequestDataStatusEnum.processing,
         );
         await container.read(dataExportControllerProvider.notifier).refresh();
 
         expect(
           container.read(dataExportControllerProvider).value?.status,
-          DataExportRequestDataStatusEnum.processing,
+          ExportRequestDataStatusEnum.processing,
         );
 
         // Step 3: Server completes; refresh picks it up.
         fakeApi.latestResponse = _buildLatestResponse(
           id: 'req-4',
-          status: DataExportRequestDataStatusEnum.completed,
+          status: ExportRequestDataStatusEnum.completed,
         );
         await container.read(dataExportControllerProvider.notifier).refresh();
 
         final finalState = container.read(dataExportControllerProvider).value;
-        expect(finalState?.status, DataExportRequestDataStatusEnum.completed);
+        expect(finalState?.status, ExportRequestDataStatusEnum.completed);
         expect(fakeApi.createCallCount, 1);
         expect(fakeApi.getLatestCallCount, 3); // build + 2 refreshes
       },
@@ -385,12 +383,12 @@ void main() {
     test(
       'maps completed request without download url to completedLinkMissing',
       () {
-        final request = DataExportRequestData(
+        final request = ExportRequestData(
           id: 'req-link-missing',
-          kind: DataExportRequestDataKindEnum.hospital,
-          format: DataExportRequestDataFormatEnum.pdf,
-          range: DataExportRequestDataRangeEnum.last7Days,
-          status: DataExportRequestDataStatusEnum.completed,
+          kind: ExportRequestDataKindEnum.hospital,
+          format: ExportRequestDataFormatEnum.pdf,
+          range: ExportRequestDataRangeEnum.last7Days,
+          status: ExportRequestDataStatusEnum.completed,
           requestedAt: '2026-06-12T00:00:00.000Z',
           completedAt: '2026-06-12T00:01:00.000Z',
           downloadUrl: '',
@@ -418,50 +416,47 @@ Response<T> _response<T>(T data) => Response<T>(
   statusCode: 200,
 );
 
-DataExportRequestData _buildRequestData({
+ExportRequestData _buildRequestData({
   String id = 'req-1',
-  DataExportRequestDataStatusEnum status =
-      DataExportRequestDataStatusEnum.completed,
+  ExportRequestDataStatusEnum status = ExportRequestDataStatusEnum.completed,
 }) {
-  return DataExportRequestData(
+  return ExportRequestData(
     id: id,
-    kind: DataExportRequestDataKindEnum.hospital,
-    format: DataExportRequestDataFormatEnum.pdf,
-    range: DataExportRequestDataRangeEnum.last7Days,
+    kind: ExportRequestDataKindEnum.hospital,
+    format: ExportRequestDataFormatEnum.pdf,
+    range: ExportRequestDataRangeEnum.last7Days,
     status: status,
     requestedAt: '2026-06-12T00:00:00.000Z',
-    completedAt: status == DataExportRequestDataStatusEnum.completed
+    completedAt: status == ExportRequestDataStatusEnum.completed
         ? '2026-06-12T00:01:00.000Z'
         : null,
-    downloadUrl: status == DataExportRequestDataStatusEnum.completed
+    downloadUrl: status == ExportRequestDataStatusEnum.completed
         ? 'https://example.com/export.csv'
         : null,
-    errorMessage: status == DataExportRequestDataStatusEnum.failed
+    errorMessage: status == ExportRequestDataStatusEnum.failed
         ? 'Export failed'
         : null,
-    fileName: status == DataExportRequestDataStatusEnum.completed
+    fileName: status == ExportRequestDataStatusEnum.completed
         ? 'export.csv'
         : null,
-    fileSizeBytes: status == DataExportRequestDataStatusEnum.completed
+    fileSizeBytes: status == ExportRequestDataStatusEnum.completed
         ? 1024
         : null,
   );
 }
 
-DataExportRequestResponse _buildCreateResponse({
+ExportRequestResponse _buildCreateResponse({
   String id = 'req-2',
-  DataExportRequestDataStatusEnum status =
-      DataExportRequestDataStatusEnum.requested,
+  ExportRequestDataStatusEnum status = ExportRequestDataStatusEnum.requested,
 }) {
-  return DataExportRequestResponse.fromJson(
+  return ExportRequestResponse.fromJson(
     _buildRequestData(id: id, status: status).toJson(),
   );
 }
 
-DataExportRequestData _buildLatestResponse({
+ExportRequestData _buildLatestResponse({
   String id = 'req-1',
-  DataExportRequestDataStatusEnum status =
-      DataExportRequestDataStatusEnum.completed,
+  ExportRequestDataStatusEnum status = ExportRequestDataStatusEnum.completed,
 }) {
   return _buildRequestData(id: id, status: status);
 }
@@ -479,21 +474,21 @@ class _FakeDataExportApi implements DataExportApi {
 
   // GET latest state.
   int getLatestCallCount = 0;
-  DataExportRequestData? latestResponse;
+  ExportRequestData? latestResponse;
   bool latestReturnsNullData = false;
   bool getLatestReturnsNullResponse = false;
   DioException? getLatestException;
 
   // POST create state.
   int createCallCount = 0;
-  DataExportRequestResponse createResponse = _buildCreateResponse();
+  ExportRequestResponse createResponse = _buildCreateResponse();
   bool createReturnsNull = false;
   DioException? createException;
   CreateRequestRequest? lastCreateRequest;
   Duration createDelay;
 
   @override
-  Future<Response<DataExportRequestData>> getLatestRequest({
+  Future<Response<ExportRequestData>> getLatestRequest({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -508,14 +503,14 @@ class _FakeDataExportApi implements DataExportApi {
     if (getLatestReturnsNullResponse) {
       throw DioException(
         requestOptions: RequestOptions(
-          path: '/api/v1/user/data-export-requests/latest',
+          path: '/api/v1/user/export-requests/latest',
         ),
       );
     }
     if (latestReturnsNullData) {
       throw DioException(
         requestOptions: RequestOptions(
-          path: '/api/v1/user/data-export-requests/latest',
+          path: '/api/v1/user/export-requests/latest',
         ),
       );
     }
@@ -523,7 +518,7 @@ class _FakeDataExportApi implements DataExportApi {
   }
 
   @override
-  Future<Response<DataExportRequestResponse>> createRequest({
+  Future<Response<ExportRequestResponse>> createRequest({
     required CreateRequestRequest createRequestRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -542,9 +537,7 @@ class _FakeDataExportApi implements DataExportApi {
     }
     if (createReturnsNull) {
       throw DioException(
-        requestOptions: RequestOptions(
-          path: '/api/v1/user/data-export-requests',
-        ),
+        requestOptions: RequestOptions(path: '/api/v1/user/export-requests'),
       );
     }
     return _response(createResponse);

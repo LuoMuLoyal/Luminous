@@ -76,7 +76,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
     }
   }
 
-  TodayAiAnalysis _mapReadDataDto(lucent.TodayAnalysisReadData dto) {
+  TodayAiAnalysis _mapReadDataDto(lucent.AnalysisReadResponse dto) {
     final analysis = dto.analysis;
     final status = _mapMaterializationStatus(dto.status);
     final sourceVersion = dto.sourceVersion.toInt();
@@ -105,7 +105,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
   }
 
   TodayAiAnalysis _mapAnalysis(
-    lucent.TodayAnalysisReadDataAnalysis dto, {
+    lucent.AnalysisReadResponseAnalysis dto, {
     TodayAiAnalysisMaterializationStatus materializationStatus =
         TodayAiAnalysisMaterializationStatus.ready,
     DateTime? computedAt,
@@ -127,7 +127,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
   }
 
   TodayAiAnalysisBullet _mapBullet(
-    lucent.TodayAnalysisReadDataAnalysisBullets dto,
+    lucent.AnalysisReadResponseAnalysisBullets dto,
   ) {
     return TodayAiAnalysisBullet(
       kind: switch (dto.kind.value) {
@@ -141,20 +141,20 @@ class LucentTodayAiRepository implements TodayAiRepository {
   }
 
   TodayAiAnalysisMaterializationStatus _mapMaterializationStatus(
-    lucent.TodayAnalysisReadDataStatusEnum status,
+    lucent.AnalysisReadResponseStatusEnum status,
   ) {
     return switch (status) {
-      lucent.TodayAnalysisReadDataStatusEnum.empty =>
+      lucent.AnalysisReadResponseStatusEnum.empty =>
         TodayAiAnalysisMaterializationStatus.empty,
-      lucent.TodayAnalysisReadDataStatusEnum.pending =>
+      lucent.AnalysisReadResponseStatusEnum.pending =>
         TodayAiAnalysisMaterializationStatus.pending,
-      lucent.TodayAnalysisReadDataStatusEnum.ready =>
+      lucent.AnalysisReadResponseStatusEnum.ready =>
         TodayAiAnalysisMaterializationStatus.ready,
-      lucent.TodayAnalysisReadDataStatusEnum.stale =>
+      lucent.AnalysisReadResponseStatusEnum.stale =>
         TodayAiAnalysisMaterializationStatus.stale,
-      lucent.TodayAnalysisReadDataStatusEnum.failed =>
+      lucent.AnalysisReadResponseStatusEnum.failed =>
         TodayAiAnalysisMaterializationStatus.failed,
-      lucent.TodayAnalysisReadDataStatusEnum.unknownDefaultOpenApi =>
+      lucent.AnalysisReadResponseStatusEnum.unknownDefaultOpenApi =>
         TodayAiAnalysisMaterializationStatus.empty,
     };
   }

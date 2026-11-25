@@ -41,10 +41,7 @@ void main() {
 
         final reminders = await expectTaskRight(dataSource.fetchActive());
 
-        final request = adapter.requestAt(
-          'GET',
-          '/api/v1/user/medicine-reminders',
-        );
+        final request = adapter.requestAt('GET', '/api/v1/user/reminder');
         expect(request.queryParameters, containsPair('activeOnly', 'true'));
         expect(reminders, hasLength(1));
         expect(reminders.single.id, 'reminder-1');
@@ -92,10 +89,7 @@ void main() {
 
       final reminders = await expectTaskRight(dataSource.fetchAll());
 
-      final request = adapter.requestAt(
-        'GET',
-        '/api/v1/user/medicine-reminders',
-      );
+      final request = adapter.requestAt('GET', '/api/v1/user/reminder');
       expect(request.queryParameters, isNot(contains('activeOnly')));
       expect(reminders.single.id, 'reminder-3');
     });
@@ -116,10 +110,7 @@ void main() {
         ),
       );
 
-      final request = adapter.requestAt(
-        'POST',
-        '/api/v1/user/medicine-reminders',
-      );
+      final request = adapter.requestAt('POST', '/api/v1/user/reminder');
       expect(request.body, containsPair('currentMedicineId', 'med-1'));
       expect(request.body, containsPair('label', 'Morning'));
       expect(request.body, containsPair('scheduledHour', 8));
@@ -154,7 +145,7 @@ void main() {
 
       final request = adapter.requestAt(
         'PATCH',
-        '/api/v1/user/medicine-reminders/reminder-1',
+        '/api/v1/user/reminder/reminder-1',
       );
       expect(request.body, containsPair('currentMedicineId', 'med-1'));
       expect(request.body, containsPair('scheduledHour', 20));
@@ -200,7 +191,7 @@ void main() {
 
       final request = adapter.requestAt(
         'DELETE',
-        '/api/v1/user/medicine-reminders/reminder-1',
+        '/api/v1/user/reminder/reminder-1',
       );
       expect(request.body, isNull);
     });
@@ -237,10 +228,7 @@ void main() {
         ),
       );
 
-      final request = adapter.requestAt(
-        'PUT',
-        '/api/v1/user/medicine-reminders/group',
-      );
+      final request = adapter.requestAt('PUT', '/api/v1/user/reminder/group');
       expect(request.body, containsPair('currentMedicineId', 'med-1'));
       expect(request.body, containsPair('label', '阿托伐他汀钙片'));
       expect(request.body, containsPair('daysOfWeek', [1, 2, 3]));
@@ -294,10 +282,7 @@ void main() {
           ),
         );
 
-        final request = adapter.requestAt(
-          'PUT',
-          '/api/v1/user/medicine-reminders/group',
-        );
+        final request = adapter.requestAt('PUT', '/api/v1/user/reminder/group');
         expect(request.body!.containsKey('startDate'), isFalse);
         expect(request.body!.containsKey('endDate'), isFalse);
       },
@@ -488,7 +473,7 @@ class _FakeReminderAdapter implements HttpClientAdapter {
         },
       );
     }
-    if (options.path == '/api/v1/user/medicine-reminders/group') {
+    if (options.path == '/api/v1/user/reminder/group') {
       final slots = body?['slots'];
       final groupItems = <Map<String, Object?>>[];
       if (slots is List) {

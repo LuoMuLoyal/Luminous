@@ -21,7 +21,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
 
   // ── Suggestions ─────────────────────────────────────────────────────────
 
-  /// GET /api/v1/user/today/suggestions
+  /// GET /api/v1/user/suggestion
   @override
   TaskEither<LucentFailure, TodaySuggestionBundle> fetchSuggestions({
     required String language,
@@ -42,7 +42,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
 
   // ── Feedback ───────────────────────────────────────────────────────────
 
-  /// POST /api/v1/user/today/suggestions/:id/feedback
+  /// POST /api/v1/user/suggestion/:id/feedback
   @override
   TaskEither<LucentFailure, TodaySuggestionFeedbackResult> submitFeedback({
     required String id,
@@ -69,7 +69,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
 
   // ── Explanation ────────────────────────────────────────────────────────
 
-  /// POST /api/v1/user/today/suggestions/:id/explain
+  /// POST /api/v1/user/suggestion/:id/explain
   @override
   TaskEither<LucentFailure, TodaySuggestionExplanation> explainSuggestion({
     required String id,
@@ -93,7 +93,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
 
   // ── History ────────────────────────────────────────────────────────────
 
-  /// GET /api/v1/user/today/suggestions/history
+  /// GET /api/v1/user/suggestion/history
   @override
   TaskEither<LucentFailure, TodaySuggestionHistory> fetchHistory({
     required String language,

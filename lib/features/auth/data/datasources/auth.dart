@@ -542,7 +542,7 @@ class LucentAuthRepository implements AuthRepository {
   }
 
   @override
-  TaskEither<LucentFailure, DataExportRequestData> requestDataExport({
+  TaskEither<LucentFailure, ExportRequestData> requestDataExport({
     required CreateRequestRequestKindEnum kind,
     required CreateRequestRequestFormatEnum format,
     required CreateRequestRequestRangeEnum range,
@@ -558,7 +558,7 @@ class LucentAuthRepository implements AuthRepository {
         ),
       );
       final body = _requireBody(response.data, 'requestDataExport');
-      return DataExportRequestData.fromJson(body.toJson());
+      return ExportRequestData.fromJson(body.toJson());
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 

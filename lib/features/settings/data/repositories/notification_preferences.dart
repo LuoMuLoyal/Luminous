@@ -56,7 +56,7 @@ class LucentNotificationPreferencesRepository
               ),
             );
 
-      if (response is Response<NotificationPreferencesResponse>) {
+      if (response is Response<NotificationSettingsResponse>) {
         return _map(
           _requireData(
             response.data,
@@ -72,7 +72,7 @@ class LucentNotificationPreferencesRepository
           networkErrorCode: NetworkErrorCode.emptyResponse,
         );
       }
-      return _map(NotificationPreferencesResponse.fromJson(raw));
+      return _map(NotificationSettingsResponse.fromJson(raw));
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));
   }
 
@@ -90,7 +90,7 @@ class LucentNotificationPreferencesRepository
     return data;
   }
 
-  NotificationPreferences _map(NotificationPreferencesResponse data) {
+  NotificationPreferences _map(NotificationSettingsResponse data) {
     return NotificationPreferences(
       isHealthAlertsEnabled: data.isHealthAlertsEnabled,
       isWeeklyInsightEnabled: data.isWeeklyInsightEnabled,

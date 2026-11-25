@@ -295,18 +295,18 @@ class LucentReviewRepository implements ReviewRepository {
       ),
       coverage: ReviewCoverage(
         checkIns: _mapCheckInCoverage(dto.coverage.checkIns),
-        dailyRecords: _mapObservedCoverage(dto.coverage.dailyRecords),
+        dailyRecords: _mapObservedCoverage(dto.coverage.records),
         // 新客户端为 doseLogs 生成独立类型（JSON 形状与 dailyRecords
         // 一致），经 JSON 往返复用 _mapObservedCoverage。
         doseLogs: _mapObservedCoverage(
-          lucent.EventReviewDataCoverageDailyRecords.fromJson(
+          lucent.EventReviewDataCoverageRecords.fromJson(
             dto.coverage.doseLogs.toJson(),
           ),
         ),
       ),
       sourceTimestamps: ReviewSourceTimestamps(
         checkIns: dto.sourceTimestamps.checkIns,
-        dailyRecords: dto.sourceTimestamps.dailyRecords,
+        dailyRecords: dto.sourceTimestamps.records,
         doseLogs: dto.sourceTimestamps.doseLogs,
       ),
       availableActions: dto.availableActions
@@ -380,7 +380,7 @@ class LucentReviewRepository implements ReviewRepository {
   }
 
   ReviewObservedCoverage _mapObservedCoverage(
-    lucent.EventReviewDataCoverageDailyRecords dto,
+    lucent.EventReviewDataCoverageRecords dto,
   ) {
     return ReviewObservedCoverage(
       state: _mapCoverageState(dto.state.value),

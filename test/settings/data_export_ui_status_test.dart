@@ -9,12 +9,12 @@ void main() {
     });
 
     test('returns requested when status is requested', () {
-      final dto = DataExportRequestData(
+      final dto = ExportRequestData(
         id: 'req-1',
-        status: DataExportRequestDataStatusEnum.requested,
-        kind: DataExportRequestDataKindEnum.hospital,
-        format: DataExportRequestDataFormatEnum.pdf,
-        range: DataExportRequestDataRangeEnum.last7Days,
+        status: ExportRequestDataStatusEnum.requested,
+        kind: ExportRequestDataKindEnum.hospital,
+        format: ExportRequestDataFormatEnum.pdf,
+        range: ExportRequestDataRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
         downloadUrl: null,
         completedAt: null,
@@ -26,12 +26,12 @@ void main() {
     });
 
     test('returns processing when status is processing', () {
-      final dto = DataExportRequestData(
+      final dto = ExportRequestData(
         id: 'req-1',
-        status: DataExportRequestDataStatusEnum.processing,
-        kind: DataExportRequestDataKindEnum.hospital,
-        format: DataExportRequestDataFormatEnum.pdf,
-        range: DataExportRequestDataRangeEnum.last7Days,
+        status: ExportRequestDataStatusEnum.processing,
+        kind: ExportRequestDataKindEnum.hospital,
+        format: ExportRequestDataFormatEnum.pdf,
+        range: ExportRequestDataRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
         downloadUrl: null,
         completedAt: null,
@@ -45,13 +45,13 @@ void main() {
     test(
       'returns completed when status is completed and downloadUrl exists',
       () {
-        final dto = DataExportRequestData(
+        final dto = ExportRequestData(
           id: 'req-1',
-          status: DataExportRequestDataStatusEnum.completed,
+          status: ExportRequestDataStatusEnum.completed,
           downloadUrl: 'https://example.com/export.pdf',
-          kind: DataExportRequestDataKindEnum.hospital,
-          format: DataExportRequestDataFormatEnum.pdf,
-          range: DataExportRequestDataRangeEnum.last7Days,
+          kind: ExportRequestDataKindEnum.hospital,
+          format: ExportRequestDataFormatEnum.pdf,
+          range: ExportRequestDataRangeEnum.last7Days,
           requestedAt: '2026-07-01T00:00:00.000Z',
           completedAt: null,
           fileName: null,
@@ -65,13 +65,13 @@ void main() {
     test(
       'returns completedLinkMissing when status is completed but downloadUrl is null',
       () {
-        final dto = DataExportRequestData(
+        final dto = ExportRequestData(
           id: 'req-1',
-          status: DataExportRequestDataStatusEnum.completed,
+          status: ExportRequestDataStatusEnum.completed,
           downloadUrl: null,
-          kind: DataExportRequestDataKindEnum.hospital,
-          format: DataExportRequestDataFormatEnum.pdf,
-          range: DataExportRequestDataRangeEnum.last7Days,
+          kind: ExportRequestDataKindEnum.hospital,
+          format: ExportRequestDataFormatEnum.pdf,
+          range: ExportRequestDataRangeEnum.last7Days,
           requestedAt: '2026-07-01T00:00:00.000Z',
           completedAt: null,
           fileName: null,
@@ -88,13 +88,13 @@ void main() {
     test(
       'returns completedLinkMissing when status is completed but downloadUrl is empty',
       () {
-        final dto = DataExportRequestData(
+        final dto = ExportRequestData(
           id: 'req-1',
-          status: DataExportRequestDataStatusEnum.completed,
+          status: ExportRequestDataStatusEnum.completed,
           downloadUrl: '',
-          kind: DataExportRequestDataKindEnum.hospital,
-          format: DataExportRequestDataFormatEnum.pdf,
-          range: DataExportRequestDataRangeEnum.last7Days,
+          kind: ExportRequestDataKindEnum.hospital,
+          format: ExportRequestDataFormatEnum.pdf,
+          range: ExportRequestDataRangeEnum.last7Days,
           requestedAt: '2026-07-01T00:00:00.000Z',
           completedAt: null,
           fileName: null,
@@ -109,12 +109,12 @@ void main() {
     );
 
     test('returns failed when status is failed', () {
-      final dto = DataExportRequestData(
+      final dto = ExportRequestData(
         id: 'req-1',
-        status: DataExportRequestDataStatusEnum.failed,
-        kind: DataExportRequestDataKindEnum.hospital,
-        format: DataExportRequestDataFormatEnum.pdf,
-        range: DataExportRequestDataRangeEnum.last7Days,
+        status: ExportRequestDataStatusEnum.failed,
+        kind: ExportRequestDataKindEnum.hospital,
+        format: ExportRequestDataFormatEnum.pdf,
+        range: ExportRequestDataRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
         downloadUrl: null,
         completedAt: null,
@@ -126,12 +126,12 @@ void main() {
     });
 
     test('returns unavailable when status is unavailable', () {
-      final dto = DataExportRequestData(
+      final dto = ExportRequestData(
         id: 'req-1',
-        status: DataExportRequestDataStatusEnum.unavailable,
-        kind: DataExportRequestDataKindEnum.hospital,
-        format: DataExportRequestDataFormatEnum.pdf,
-        range: DataExportRequestDataRangeEnum.last7Days,
+        status: ExportRequestDataStatusEnum.unavailable,
+        kind: ExportRequestDataKindEnum.hospital,
+        format: ExportRequestDataFormatEnum.pdf,
+        range: ExportRequestDataRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
         downloadUrl: null,
         completedAt: null,
@@ -143,12 +143,12 @@ void main() {
     });
 
     test('returns failed when status is unknown', () {
-      final dto = DataExportRequestData(
+      final dto = ExportRequestData(
         id: 'req-1',
-        status: DataExportRequestDataStatusEnum.unknownDefaultOpenApi,
-        kind: DataExportRequestDataKindEnum.hospital,
-        format: DataExportRequestDataFormatEnum.pdf,
-        range: DataExportRequestDataRangeEnum.last7Days,
+        status: ExportRequestDataStatusEnum.unknownDefaultOpenApi,
+        kind: ExportRequestDataKindEnum.hospital,
+        format: ExportRequestDataFormatEnum.pdf,
+        range: ExportRequestDataRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
         downloadUrl: null,
         completedAt: null,
@@ -210,12 +210,12 @@ void main() {
 
     test('matches returns true for matching request', () {
       const input = DataExportRequestInput();
-      final dto = DataExportRequestData(
+      final dto = ExportRequestData(
         id: 'req-1',
-        status: DataExportRequestDataStatusEnum.completed,
-        kind: DataExportRequestDataKindEnum.hospital,
-        format: DataExportRequestDataFormatEnum.pdf,
-        range: DataExportRequestDataRangeEnum.last7Days,
+        status: ExportRequestDataStatusEnum.completed,
+        kind: ExportRequestDataKindEnum.hospital,
+        format: ExportRequestDataFormatEnum.pdf,
+        range: ExportRequestDataRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
         downloadUrl: null,
         completedAt: null,
@@ -228,12 +228,12 @@ void main() {
 
     test('matches returns false for non-matching request', () {
       const input = DataExportRequestInput();
-      final dto = DataExportRequestData(
+      final dto = ExportRequestData(
         id: 'req-1',
-        status: DataExportRequestDataStatusEnum.completed,
-        kind: DataExportRequestDataKindEnum.monthly,
-        format: DataExportRequestDataFormatEnum.pdf,
-        range: DataExportRequestDataRangeEnum.last7Days,
+        status: ExportRequestDataStatusEnum.completed,
+        kind: ExportRequestDataKindEnum.monthly,
+        format: ExportRequestDataFormatEnum.pdf,
+        range: ExportRequestDataRangeEnum.last7Days,
         requestedAt: '2026-07-01T00:00:00.000Z',
         downloadUrl: null,
         completedAt: null,

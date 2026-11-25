@@ -375,7 +375,7 @@ class _FakeSettingsProfileRemoteDataSource
   Object? lastUnitSystem = settingsProfileNoChange;
 
   @override
-  Future<HealthContextResponse> updatePreferences({
+  Future<ContextResponse> updatePreferences({
     Object? locale = settingsProfileNoChange,
     Object? timezone = settingsProfileNoChange,
     Object? unitSystem = settingsProfileNoChange,
@@ -383,8 +383,8 @@ class _FakeSettingsProfileRemoteDataSource
     lastLocale = locale;
     lastTimezone = timezone;
     lastUnitSystem = unitSystem;
-    return HealthContextResponse(
-      summary: HealthContextResponseSummary(
+    return ContextResponse(
+      summary: ContextResponseSummary(
         age: null,
         onboardingCompleted: false,
         activeAllergyCount: 0,
@@ -392,10 +392,9 @@ class _FakeSettingsProfileRemoteDataSource
         currentMedicineCount: 0,
         missingCoreProfileFields: [],
       ),
-      profile: HealthContextResponseProfile(
+      profile: ContextResponseProfile(
         birthDate: null,
-        sexAtBirth:
-            HealthContextResponseProfileSexAtBirthEnum.unknownDefaultOpenApi,
+        sexAtBirth: ContextResponseProfileSexAtBirthEnum.unknownDefaultOpenApi,
         heightCm: null,
         weightKg: null,
         activityLevel: null,
@@ -407,10 +406,9 @@ class _FakeSettingsProfileRemoteDataSource
             ? null
             : timezone as String?,
         unitSystem: identical(unitSystem, settingsProfileNoChange)
-            ? HealthContextResponseProfileUnitSystemEnum.unknownDefaultOpenApi
-            : (unitSystem as HealthContextResponseProfileUnitSystemEnum?) ??
-                  HealthContextResponseProfileUnitSystemEnum
-                      .unknownDefaultOpenApi,
+            ? ContextResponseProfileUnitSystemEnum.unknownDefaultOpenApi
+            : (unitSystem as ContextResponseProfileUnitSystemEnum?) ??
+                  ContextResponseProfileUnitSystemEnum.unknownDefaultOpenApi,
         onboardingCompletedAt: null,
         extras: const <String, Object>{},
       ),

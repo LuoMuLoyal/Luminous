@@ -33,10 +33,7 @@ void main() {
           date: '2026-06-08',
         );
 
-        final request = adapter.requestAt(
-          'POST',
-          '/api/v1/user/medicine-dose-logs/mark',
-        );
+        final request = adapter.requestAt('POST', '/api/v1/user/dose/mark');
         expect(request.jsonBody, {
           'currentMedicineId': 'med-1',
           'reminderId': 'reminder-1',
@@ -47,8 +44,8 @@ void main() {
         expect(
           adapter.requests.where(
             (captured) =>
-                captured.path == '/api/v1/user/medicine-dose-logs' ||
-                captured.path == '/api/v1/user/medicine-dose-logs/dose-1',
+                captured.path == '/api/v1/user/dose' ||
+                captured.path == '/api/v1/user/dose/dose-1',
           ),
           isEmpty,
         );
@@ -67,10 +64,7 @@ void main() {
           date: '2026-06-08',
         );
 
-        final request = adapter.requestAt(
-          'POST',
-          '/api/v1/user/medicine-dose-logs/mark',
-        );
+        final request = adapter.requestAt('POST', '/api/v1/user/dose/mark');
         expect(request.jsonBody, {
           'currentMedicineId': 'med-1',
           'status': 'skipped',
@@ -85,7 +79,7 @@ void main() {
     test('delete calls the dose-log delete endpoint', () async {
       await dataSource.delete('dose-1');
 
-      adapter.requestAt('DELETE', '/api/v1/user/medicine-dose-logs/dose-1');
+      adapter.requestAt('DELETE', '/api/v1/user/dose/dose-1');
     });
 
     test(

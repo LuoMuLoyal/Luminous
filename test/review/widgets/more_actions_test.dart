@@ -437,10 +437,10 @@ class _ThrowingDataExportController extends DataExportController {
   DataExportRequestInput? lastInput;
 
   @override
-  Future<DataExportRequestData?> build() async => null;
+  Future<ExportRequestData?> build() async => null;
 
   @override
-  Future<DataExportRequestData?> requestExport(
+  Future<ExportRequestData?> requestExport(
     DataExportRequestInput input, {
     required String password,
   }) async {

@@ -18,7 +18,7 @@ class TodayAiRemoteSummaryEvent extends TodayAiRemoteEvent {
 class TodayAiRemoteResultEvent extends TodayAiRemoteEvent {
   const TodayAiRemoteResultEvent(this.dto);
 
-  final lucent.TodayAnalysisReadDataAnalysis dto;
+  final lucent.AnalysisReadResponseAnalysis dto;
 }
 
 class TodayAiRemoteDataSource {
@@ -27,7 +27,7 @@ class TodayAiRemoteDataSource {
   final lucent.TodayAnalysisApi api;
   final Dio dio;
 
-  Future<lucent.TodayAnalysisReadData> read({String? date}) async {
+  Future<lucent.AnalysisReadResponse> read({String? date}) async {
     final response = await api.read(date: date);
     final data = response.data;
     if (data == null) {
@@ -36,14 +36,14 @@ class TodayAiRemoteDataSource {
         networkErrorCode: NetworkErrorCode.emptyResponse,
       );
     }
-    return lucent.TodayAnalysisReadData.fromJson(data.toJson());
+    return lucent.AnalysisReadResponse.fromJson(data.toJson());
   }
 
   /// Requests a bounded refresh and normalizes the oneOf response to a read
   /// DTO. The generated client merges the union variants incorrectly (all
   /// fields become required), so this method uses a raw [Dio] call and parses
   /// the direct resource by inspecting `status`/`analysis`.
-  Future<lucent.TodayAnalysisReadData> refresh({String? date}) async {
+  Future<lucent.AnalysisReadResponse> refresh({String? date}) async {
     final response = await dio.post<Object>(
       LucentApiPaths.todayAnalysisRefresh,
       data: <String, Object?>{if (date != null) 'date': date},
@@ -60,16 +60,14 @@ class TodayAiRemoteDataSource {
     return _normalizeRefreshData(data);
   }
 
-  lucent.TodayAnalysisReadData _normalizeRefreshData(
-    Map<String, dynamic> data,
-  ) {
+  lucent.AnalysisReadResponse _normalizeRefreshData(Map<String, dynamic> data) {
     final status = data['status'] as String?;
     final analysisJson = data['analysis'];
     final jobId = data['jobId'] as String?;
 
     if (status == 'pending' && jobId != null) {
-      return lucent.TodayAnalysisReadData(
-        status: lucent.TodayAnalysisReadDataStatusEnum.pending,
+      return lucent.AnalysisReadResponse(
+        status: lucent.AnalysisReadResponseStatusEnum.pending,
         analysis: null,
         sourceVersion: 0,
         computedVersion: 0,
@@ -81,10 +79,10 @@ class TodayAiRemoteDataSource {
     if (status == 'ready' || status == null) {
       final analysisMap = status == null ? data : analysisJson;
       final analysis = analysisMap is Map<String, dynamic>
-          ? lucent.TodayAnalysisReadDataAnalysis.fromJson(analysisMap)
+          ? lucent.AnalysisReadResponseAnalysis.fromJson(analysisMap)
           : null;
-      return lucent.TodayAnalysisReadData(
-        status: lucent.TodayAnalysisReadDataStatusEnum.ready,
+      return lucent.AnalysisReadResponse(
+        status: lucent.AnalysisReadResponseStatusEnum.ready,
         analysis: analysis,
         sourceVersion: data['sourceVersion'] as num? ?? 0,
         computedVersion: data['computedVersion'] as num? ?? 0,
@@ -95,9 +93,9 @@ class TodayAiRemoteDataSource {
 
     final readStatus = _mapReadStatus(status);
     final analysis = analysisJson is Map<String, dynamic>
-        ? lucent.TodayAnalysisReadDataAnalysis.fromJson(analysisJson)
+        ? lucent.AnalysisReadResponseAnalysis.fromJson(analysisJson)
         : null;
-    return lucent.TodayAnalysisReadData(
+    return lucent.AnalysisReadResponse(
       status: readStatus,
       analysis: analysis,
       sourceVersion: data['sourceVersion'] as num? ?? 0,
@@ -107,14 +105,14 @@ class TodayAiRemoteDataSource {
     );
   }
 
-  lucent.TodayAnalysisReadDataStatusEnum _mapReadStatus(String status) {
+  lucent.AnalysisReadResponseStatusEnum _mapReadStatus(String status) {
     return switch (status) {
-      'empty' => lucent.TodayAnalysisReadDataStatusEnum.empty,
-      'pending' => lucent.TodayAnalysisReadDataStatusEnum.pending,
-      'ready' => lucent.TodayAnalysisReadDataStatusEnum.ready,
-      'stale' => lucent.TodayAnalysisReadDataStatusEnum.stale,
-      'failed' => lucent.TodayAnalysisReadDataStatusEnum.failed,
-      _ => lucent.TodayAnalysisReadDataStatusEnum.unknownDefaultOpenApi,
+      'empty' => lucent.AnalysisReadResponseStatusEnum.empty,
+      'pending' => lucent.AnalysisReadResponseStatusEnum.pending,
+      'ready' => lucent.AnalysisReadResponseStatusEnum.ready,
+      'stale' => lucent.AnalysisReadResponseStatusEnum.stale,
+      'failed' => lucent.AnalysisReadResponseStatusEnum.failed,
+      _ => lucent.AnalysisReadResponseStatusEnum.unknownDefaultOpenApi,
     };
   }
 
@@ -137,7 +135,7 @@ class TodayAiRemoteDataSource {
         case 'result':
           final json = requireMap(event.data);
           yield TodayAiRemoteResultEvent(
-            lucent.TodayAnalysisReadDataAnalysis.fromJson(json),
+            lucent.AnalysisReadResponseAnalysis.fromJson(json),
           );
         case 'error':
           throw mapSseStreamError(event.data);

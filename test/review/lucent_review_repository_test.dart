@@ -623,12 +623,11 @@ lucent.EventReviewData _reviewDto({
             windowStart: '2026-08-01T00:00:00.000Z',
             windowEnd: '2026-08-13T00:00:00.000Z',
           ),
-      dailyRecords: lucent.EventReviewDataCoverageDailyRecords(
-        state: lucent.EventReviewDataCoverageDailyRecordsStateEnum.observed,
-        coverage:
-            lucent.EventReviewDataCoverageDailyRecordsCoverageEnum.partial,
+      records: lucent.EventReviewDataCoverageRecords(
+        state: lucent.EventReviewDataCoverageRecordsStateEnum.observed,
+        coverage: lucent.EventReviewDataCoverageRecordsCoverageEnum.partial,
         sources: const [
-          lucent.EventReviewDataCoverageDailyRecordsSourcesEnum.derived,
+          lucent.EventReviewDataCoverageRecordsSourcesEnum.derived,
         ],
         observedCount: 2,
         expectedCount: 7,
@@ -647,7 +646,7 @@ lucent.EventReviewData _reviewDto({
     ),
     sourceTimestamps: lucent.EventReviewDataSourceTimestamps(
       checkIns: '2026-08-12',
-      dailyRecords: '2026-08-12T20:00:00.000Z',
+      records: '2026-08-12T20:00:00.000Z',
       doseLogs: null,
     ),
     availableActions:

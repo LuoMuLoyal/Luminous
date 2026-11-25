@@ -70,10 +70,7 @@ void main() {
         ),
       );
 
-      expect(
-        adapter.capturedRequest?.path,
-        '/api/v1/user/notification-preferences',
-      );
+      expect(adapter.capturedRequest?.path, '/api/v1/user/notification');
       expect(adapter.capturedRequest?.data, {'sleepBedtimeMinutes': null});
     },
   );

@@ -5,7 +5,7 @@ import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/core/network/map_utils.dart';
 
 /// Settings is a thin configuration surface: its data layer maps directly to
-/// generated Lucent DTOs (e.g. [HealthContextResponse]) and local platform
+/// generated Lucent DTOs (e.g. [ContextResponse]) and local platform
 /// services. There is no dedicated domain layer because the business rules are
 /// limited to form-level validation and preference persistence.
 
@@ -24,7 +24,7 @@ class SettingsProfileRemoteDataSource {
 
   final Dio dio;
 
-  Future<HealthContextResponse> updatePreferences({
+  Future<ContextResponse> updatePreferences({
     Object? locale = settingsProfileNoChange,
     Object? timezone = settingsProfileNoChange,
     Object? unitSystem = settingsProfileNoChange,
@@ -57,7 +57,7 @@ class SettingsProfileRemoteDataSource {
     }
 
     try {
-      return HealthContextResponse.fromJson(body);
+      return ContextResponse.fromJson(body);
     } catch (error) {
       // Protocol violation: the success body does not match the generated
       // client structure. Logged for diagnosability and kept as a thrown
@@ -65,7 +65,7 @@ class SettingsProfileRemoteDataSource {
       // boundary).
       appLog.error(
         'SettingsProfileRemoteDataSource.updatePreferences: response body '
-        'does not match HealthContextResponse: $error',
+        'does not match ContextResponse: $error',
       );
       rethrow;
     }

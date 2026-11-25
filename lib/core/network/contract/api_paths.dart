@@ -26,14 +26,14 @@ abstract final class LucentApiPaths {
   static String authDevice(String sessionId) =>
       '/api/v1/auth/sessions/$sessionId';
 
-  /// `POST /api/v1/user/today-analysis/generate/stream`
+  /// `POST /api/v1/user/analysis/generate/stream`
   static const todayAnalysisGenerateStream =
-      '/api/v1/user/today-analysis/generate/stream';
+      '/api/v1/user/analysis/generate/stream';
 
-  /// `POST /api/v1/user/today-analysis/refresh` — the generated client merges
+  /// `POST /api/v1/user/analysis/refresh` — the generated client merges
   /// the oneOf response variants into a single DTO with all fields required,
   /// so callers parse the direct resource and dispatch on `status`/`analysis`.
-  static const todayAnalysisRefresh = '/api/v1/user/today-analysis/refresh';
+  static const todayAnalysisRefresh = '/api/v1/user/analysis/refresh';
 
   /// `POST /api/v1/user/reports/summary/generate/stream`
   static const reportSummaryGenerateStream =
@@ -69,30 +69,28 @@ abstract final class LucentApiPaths {
 
   // ── Partial-PATCH endpoints (generated DTO requires all fields) ────────
 
-  /// `PATCH /api/v1/user/health-context/profile` — the generated
+  /// `PATCH /api/v1/user/context/profile` — the generated
   /// [UpdateUserHealthContextProfileRequest] requires 8 fields; callers need to send
   /// only changed fields.
-  static const healthContextProfile = '/api/v1/user/health-context/profile';
+  static const healthContextProfile = '/api/v1/user/context/profile';
 
-  /// `PATCH /api/v1/user/notification-preferences` — raw fallback is used
+  /// `PATCH /api/v1/user/notification` — raw fallback is used
   /// when a nullable sleep time must be explicitly cleared.
-  static const notificationPreferences =
-      '/api/v1/user/notification-preferences';
+  static const notificationPreferences = '/api/v1/user/notification';
 
-  /// `POST /api/v1/user/daily-records` — used for partial create with
+  /// `POST /api/v1/user/record` — used for partial create with
   /// optional fields.
-  static const dailyRecords = '/api/v1/user/daily-records';
+  static const dailyRecords = '/api/v1/user/record';
 
-  /// `PATCH /api/v1/user/daily-records/{id}` — partial PATCH semantics
+  /// `PATCH /api/v1/user/record/{id}` — partial PATCH semantics
   /// incompatible with [UpdateDailyRecordRequest].
-  static String dailyRecord(String id) => '/api/v1/user/daily-records/$id';
+  static String dailyRecord(String id) => '/api/v1/user/record/$id';
 
-  /// `POST /api/v1/user/medicine-reminders` — raw create with custom JSON.
-  static const medicineReminders = '/api/v1/user/medicine-reminders';
+  /// `POST /api/v1/user/reminder` — raw create with custom JSON.
+  static const medicineReminders = '/api/v1/user/reminder';
 
-  /// `PATCH /api/v1/user/medicine-reminders/{id}` — raw update with custom JSON.
-  static String medicineReminder(String id) =>
-      '/api/v1/user/medicine-reminders/$id';
+  /// `PATCH /api/v1/user/reminder/{id}` — raw update with custom JSON.
+  static String medicineReminder(String id) => '/api/v1/user/reminder/$id';
 
   /// `GET /api/v1/user/reminder-deliveries` — raw GET for deliveries.
   static const reminderDeliveries = '/api/v1/user/reminder-deliveries';
@@ -107,15 +105,14 @@ abstract final class LucentApiPaths {
   static const reminderDeliveryLocalCapability =
       '/api/v1/user/reminder-deliveries/local-capability';
 
-  /// `POST /api/v1/user/medicine-dose-logs/mark` — raw mark with custom JSON.
-  static const medicineDoseLogsMark = '/api/v1/user/medicine-dose-logs/mark';
+  /// `POST /api/v1/user/dose/mark` — raw mark with custom JSON.
+  static const medicineDoseLogsMark = '/api/v1/user/dose/mark';
 
-  /// `POST /api/v1/user/medicine-dose-logs` — raw create with custom JSON.
-  static const medicineDoseLogs = '/api/v1/user/medicine-dose-logs';
+  /// `POST /api/v1/user/dose` — raw create with custom JSON.
+  static const medicineDoseLogs = '/api/v1/user/dose';
 
-  /// `PATCH /api/v1/user/medicine-dose-logs/{id}` — raw update.
-  static String medicineDoseLog(String id) =>
-      '/api/v1/user/medicine-dose-logs/$id';
+  /// `PATCH /api/v1/user/dose/{id}` — raw update.
+  static String medicineDoseLog(String id) => '/api/v1/user/dose/$id';
 
   // ── Binary-response endpoints (generated client declares void) ──────────
 

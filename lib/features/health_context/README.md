@@ -8,7 +8,7 @@ health_context 是**跨 feature 共享的健康档案数据 feature**：聚合�
 
 ## 目录结构
 
-- `domain/entities/snapshot.dart` — 读模型：`HealthContextSnapshot` 聚合 + 5 个子模型（`HealthSummary` / `HealthProfile` / `AllergyItem` / `ConditionItem` / `CurrentMedicineItem`），全部 `@freezed`，对应 `GET /api/v1/user/health-context` 的响应。
+- `domain/entities/snapshot.dart` — 读模型：`HealthContextSnapshot` 聚合 + 5 个子模型（`HealthSummary` / `HealthProfile` / `AllergyItem` / `ConditionItem` / `CurrentMedicineItem`），全部 `@freezed`，对应 `GET /api/v1/user/context` 的响应。
 - `domain/entities/write_inputs.dart` — 写模型：`HealthContextWireEnum` 接口 + 8 个 wire enum（`HealthSexAtBirth` / `HealthUnitSystem` / `HealthActivityLevel` / `HealthDietaryPreference` / `HealthAllergyKind` / `HealthAllergySeverity` / `HealthConditionStatus` / `HealthMedicineSource`）+ 7 个 Write/Update Input 类。Update 类用 `healthContextNoChange` 哨兵表示"未变更字段"，序列化时跳过。
 - `domain/repositories/snapshot.dart` — `HealthContextRepository` 接口：1 个读（`fetchHealthContext`）+ 10 个写方法（profile 1、allergy 3、condition 3、currentMedicine 3），全部返回 `TaskEither<LucentFailure, HealthContextSnapshot>`（写成功后返回**刷新后的快照**）。
 - `domain/services/unit_conversion.dart` — 纯展示换算：kg→lb、ml→fl oz（仅展示，存储口径不变）。
