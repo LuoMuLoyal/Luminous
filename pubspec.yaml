@@ -145,11 +145,13 @@ dependencies:
   flutter_gen_ai_chat_ui: ^2.20.0
   workmanager: ^0.10.10
   hive_ce: ^2.22.0
-  genui: ^0.10.4
   flutter_reorderable_grid_view: ^5.7.0
-  a2ui_core: ^0.1.1
-  # 生成式 UI 的 catalog item schema（`S.object` / `S.string`）。`genui` 自己
-  # 也依赖它；这里显式声明是因为组合根直接构造 `CatalogItem.dataSchema`。
+  # A2UI 1.0：渲染 + 协议核心。`genui` 已 discontinued（官方指向这两个包）。
+  # 协议版本 1.0 与 pub 包版本无关——包仍是 0.x。
+  a2ui_flutter: ^0.5.0
+  a2ui_core: ^0.9.0
+  # 生成式 UI 的组件 schema（`Schema.object` / `S.string`）。组合根直接构造
+  # `ComponentImplementation.schema`。
   json_schema_builder: ^0.1.7
   graphview: ^1.5.1
   fluid_adaptive: ^2.0.0
