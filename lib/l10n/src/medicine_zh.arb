@@ -933,5 +933,17 @@
   "medicineGraphRelationSubstrateOf": "为其底物",
   "medicineGraphRelationUnknown": "相关",
   "medicineGraphSelectEnzymeHint": "如 CYP2C9",
-  "medicineGraphSelectGeneHint": "如 CYP2C9"
+  "medicineGraphSelectGeneHint": "如 CYP2C9",
+  "medicineDetailSectionAdverseReactionsOnsides": "不良反应",
+  "medicineReactionConfidenceHigh": "证据强",
+  "medicineReactionConfidenceMedium": "证据中等",
+  "medicineReactionConfidenceLow": "证据有限",
+  "medicineReactionSectionAr": "不良反应",
+  "medicineReactionSectionBw": "黑框警告",
+  "medicineReactionSectionWp": "注意事项",
+  "medicineReactionSectionNa": "其他章节",
+  "medicineReactionNoBridge": "暂无该药的不良反应数据。",
+  "medicineReactionFootNote": "源自药品说明书，非发生率。",
+  "medicineReactionError": "不良反应加载失败。",
+  "medicineReactionShowAll": "显示全部"
 }

@@ -31,6 +31,19 @@
 
 ## 不变量
 
+- **不良反应区块是「说明书声称」，不是发生率**。数据源是 OnSIDES（第三个知识源，
+  key 是 RxNorm 成分 CUI + MedDRA 术语，与 DrugBank 详情无关）。
+  - `labelCount` = 有多少份说明书这样声称，`confidence` = 抽取模型对「这条读数正确」
+    的把握，两者都**不是**患者发生该反应的概率。
+  - 原始分数（`pred1`，未归一化对数几率 3.26–6.07）**不离开 mapper**：`data/mappers/
+    adverse_reaction.dart` 把它分档成 `ReactionConfidence`，任何 widget 都拿不到数字，
+    因此不可能被误渲染成概率。
+  - 分档阈值来自全量 670 万行分布的四分位（p25 = 4.58、p50 = 5.36），不是凑整数字。
+  - **`null` 分数是 `unscored`，不是 `low`**：源数据在某些行不给分数，把它说成
+    「证据有限」是凭空造判断。这类行不渲染徽标。
+- **「没有桥」是 404，映射成 `Right(null)` 而不是 `Left`**：DrugBank 只有 8.2% 的条目带
+  RxCUI，`GET /medicines/drugs/:id/reactions` 对多数药返回 404 是常态。渲染成错误态会
+  给一个「重试也没用」的条件配一个重试按钮。只有真正的传输失败才是 `Left`。
 - repository 边界:可恢复失败一律 `TaskEither` Left(`LucentErrorMapper`),合法空集为
   Right;provider 层 Left 投影为 `AsyncValue.error`(ADR-0005)。
 - 药箱单一事实源:列表派生自 health_context `currentMedicines(isCurrent)`,medicine 不

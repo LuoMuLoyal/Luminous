@@ -8,6 +8,7 @@ import 'package:luminous/core/widgets/common/feedback/state_message.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/detail_sections.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart';
+import 'package:luminous/features/medicine/presentation/widgets/adverse_reactions_section.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -64,6 +65,8 @@ class DetailSectionView extends StatelessWidget {
         structure: structure,
         l10n: l10n,
       ),
+      AdverseReactionsSectionBody(:final drugbankId) =>
+        DrugAdverseReactionsSection(drugbankId: drugbankId, l10n: l10n),
     };
   }
 }

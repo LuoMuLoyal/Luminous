@@ -109,6 +109,7 @@ class MedicineDetailSections {
         l10n.medicineDetailSectionToxicity,
         detail.toxicity,
       ),
+      ..._adverseReactions(),
       ..._interactions(),
       ..._text(
         Tier.safety,
@@ -215,6 +216,23 @@ class MedicineDetailSections {
         tier: tier,
         title: title,
         body: DetailSectionBody.chips(values),
+      ),
+    ];
+  }
+
+  /// Label-stated adverse reactions (OnSIDES).
+  ///
+  /// Emitted unconditionally for DrugBank drugs, unlike the prose sections: the
+  /// section body fetches its own data, and "this drug has no RxCUI bridge" is
+  /// itself information the user asked for by opening the section. Showing
+  /// nothing would be indistinguishable from an omission.
+  List<MedicineDetailSection> _adverseReactions() {
+    if (detail.source != 'drugbank') return const [];
+    return [
+      MedicineDetailSection(
+        tier: Tier.safety,
+        title: l10n.medicineDetailSectionAdverseReactionsOnsides,
+        body: DetailSectionBody.adverseReactions(detail.id),
       ),
     ];
   }
@@ -351,6 +369,8 @@ sealed class DetailSectionBody {
     MedicineStructure structure,
     AppLocalizations l10n,
   ) = StructureSectionBody;
+  const factory DetailSectionBody.adverseReactions(String drugbankId) =
+      AdverseReactionsSectionBody;
 }
 
 class TextSectionBody extends DetailSectionBody {
@@ -384,6 +404,13 @@ class StructureSectionBody extends DetailSectionBody {
   const StructureSectionBody(this.structure, this.l10n);
   final MedicineStructure structure;
   final AppLocalizations l10n;
+}
+
+/// OnSIDES reactions are fetched lazily by the body itself, so it carries only
+/// the id — the payload is not known when the section list is built.
+class AdverseReactionsSectionBody extends DetailSectionBody {
+  const AdverseReactionsSectionBody(this.drugbankId);
+  final String drugbankId;
 }
 
 class MedicineDetailSection {

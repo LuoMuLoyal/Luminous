@@ -12,5 +12,6 @@ export 'package:luminous/features/medicine/data/datasources/medicine_detail_remo
 export 'package:luminous/features/medicine/data/datasources/reminder/local_preferences.dart';
 export 'package:luminous/features/medicine/data/datasources/reminder/remote.dart';
 export 'package:luminous/features/medicine/data/datasources/safety/tips_remote.dart';
+export 'package:luminous/features/medicine/data/repositories/adverse_reaction.dart';
 export 'package:luminous/features/medicine/data/repositories/relations.dart';
 export 'package:luminous/features/medicine/data/repositories/risk_check.dart';

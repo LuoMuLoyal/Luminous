@@ -926,5 +926,17 @@
   "medicineGraphRelationSubstrateOf": "is substrate of",
   "medicineGraphRelationUnknown": "related",
   "medicineGraphSelectEnzymeHint": "e.g. CYP2C9",
-  "medicineGraphSelectGeneHint": "e.g. CYP2C9"
+  "medicineGraphSelectGeneHint": "e.g. CYP2C9",
+  "medicineDetailSectionAdverseReactionsOnsides": "Adverse Reactions",
+  "medicineReactionConfidenceHigh": "Strong evidence",
+  "medicineReactionConfidenceMedium": "Moderate evidence",
+  "medicineReactionConfidenceLow": "Limited evidence",
+  "medicineReactionSectionAr": "Adverse Reactions",
+  "medicineReactionSectionBw": "Boxed Warning",
+  "medicineReactionSectionWp": "Warnings",
+  "medicineReactionSectionNa": "Other Sections",
+  "medicineReactionNoBridge": "No adverse reaction data for this medicine.",
+  "medicineReactionFootNote": "Stated in product labels. Not an incidence rate.",
+  "medicineReactionError": "Couldn’t load adverse reactions.",
+  "medicineReactionShowAll": "Show All"
 }
