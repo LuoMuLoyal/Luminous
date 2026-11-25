@@ -1,33 +1,36 @@
+// a2ui_flutter 的 basic catalog 组件建在 framework material 上（包内
+// `Card` / `Button` / `TextField` 都 import `package:flutter/material.dart`），
+// 类型断言必须对着 framework 类型。
+// ignore_for_file: deprecated_member_use
 import 'dart:convert';
 
-// genui 的 A2UI 组件（Card/Text 等）建立在 framework material 上，
-// 类型断言必须对着 framework 类型。
-// ignore: deprecated_member_use
 import 'package:flutter/material.dart' as fw;
-// ignore: deprecated_member_use
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/composition/genui/genui.dart';
+import 'package:luminous/core/composition/a2ui/a2ui.dart';
 import 'package:luminous/features/generative/domain/entities/generation.dart';
 import 'package:luminous/features/generative/presentation/widgets/generative_surface.dart';
 import 'package:luminous/shared/domain/composition/surface.dart';
 
 import '../helpers/test_forui_app.dart';
 
-/// A7a 验收：手写 A2UI 消息必须能渲染出组合布局。
+/// A2UI 1.0 验收：手写消息必须能渲染出组合布局，**且基础组件全量可用**。
 ///
-/// 这条路径不接 LLM——消息是测试里手写的 JSON 行，正好模拟「后端已经给出一
-/// 份序列」时客户端的行为。A7b 把这份序列换成 SSE 流，渲染层不变。
+/// 这条路径不接 LLM——消息是测试里手写的 JSON，正好模拟「后端已经给出一份序列」
+/// 时客户端的行为。
 void main() {
-  /// 一份只用展示原语拼的树：Column > [Card(Text), Row(Text, Text), Divider]。
-  ///
-  /// 覆盖验收里的「手写消息渲染出 Column/Row/Card/Text 组合」。
+  const surfaceId = 'generative.review';
+
+  /// 一份只用布局原语拼的树：Column > [Card(Text), Row(Text, Text), Divider]。
   const layoutMessages = <String>[
-    '{"version":"v0.9","createSurface":{"surfaceId":"generative.review","catalogId":"com.luminous.generative"}}',
-    '{"version":"v0.9","updateComponents":{"surfaceId":"generative.review","components":['
+    '{"version":"1.0","createSurface":{"surfaceId":"generative.review",'
+        '"catalogId":"https://luminous.app/a2ui/catalog/v1.json"}}',
+    '{"version":"1.0","updateComponents":{"surfaceId":"generative.review","components":['
         '{"id":"root","component":"Column","children":["header","card","stats","sep"]},'
-        '{"id":"header","component":"Text","text":"本周概览","variant":"h4"},'
+        // v1.0 的 `Text.variant` 只接受 `caption` / `body`：h1–h5 是 v0.9 独有的
+        // 东西，1.0 把标题层级交给组件组合而不是单一变体。
+        '{"id":"header","component":"Text","text":"本周概览"},'
         '{"id":"card","component":"Card","child":"cardText"},'
         '{"id":"cardText","component":"Text","text":"饮水比上周多了 12%"},'
         '{"id":"stats","component":"Row","children":["s1","s2"]},'
@@ -39,41 +42,46 @@ void main() {
 
   /// 含一个未知 type 的树：渲染应降级，不崩。
   const unknownComponentMessages = <String>[
-    '{"version":"v0.9","createSurface":{"surfaceId":"generative.review","catalogId":"com.luminous.generative"}}',
-    '{"version":"v0.9","updateComponents":{"surfaceId":"generative.review","components":['
+    '{"version":"1.0","createSurface":{"surfaceId":"generative.review",'
+        '"catalogId":"https://luminous.app/a2ui/catalog/v1.json"}}',
+    '{"version":"1.0","updateComponents":{"surfaceId":"generative.review","components":['
         '{"id":"root","component":"Column","children":["a","b"]},'
         '{"id":"a","component":"Text","text":"正常内容"},'
         '{"id":"b","component":"NoSuchComponent","foo":"bar"}'
         ']}}',
   ];
 
-  /// 被 catalog 剔除的可写控件：不应渲染出交互元素。
-  const forbiddenMessages = <String>[
-    '{"version":"v0.9","createSurface":{"surfaceId":"generative.review","catalogId":"com.luminous.generative"}}',
-    '{"version":"v0.9","updateComponents":{"surfaceId":"generative.review","components":['
-        '{"id":"root","component":"Column","children":["btn"]},'
-        '{"id":"btn","component":"Button","action":"submit","label":"删除全部记录"}'
+  /// A2UI 1.0 起 Button **在** catalog 里：agent 可以下发可写动作。
+  const buttonMessages = <String>[
+    '{"version":"1.0","createSurface":{"surfaceId":"generative.review",'
+        '"catalogId":"https://luminous.app/a2ui/catalog/v1.json"}}',
+    '{"version":"1.0","updateComponents":{"surfaceId":"generative.review","components":['
+        '{"id":"root","component":"Column","children":["btn","label"]},'
+        '{"id":"btn","component":"Button","child":"btnLabel",'
+        '"action":{"event":{"name":"delete_all"}}},'
+        '{"id":"btnLabel","component":"Text","text":"删除全部记录"},'
+        '{"id":"label","component":"Text","text":"可写动作"}'
         ']}}',
   ];
 
-  /// 把 JSONL 喂进 transport。
-  ///
-  /// 只断言「surface 已经创建」——`SurfaceContext` 是 `genui` 的内部类型，本仓
-  /// 的测试不该依赖它（这也正是把 `genui` 关在 `core/composition/genui/` 里
-  /// 的意义）。
-  void feed(GenerativeTransport transport, List<String> lines) {
-    for (final line in lines) {
-      transport.feedJsonLine(line);
-    }
-  }
+  /// 表单组件：TextField + CheckBox + Slider。
+  const formMessages = <String>[
+    '{"version":"1.0","createSurface":{"surfaceId":"generative.review",'
+        '"catalogId":"https://luminous.app/a2ui/catalog/v1.json"}}',
+    '{"version":"1.0","updateComponents":{"surfaceId":"generative.review","components":['
+        '{"id":"root","component":"Column","children":["field","check","slider"]},'
+        '{"id":"field","component":"TextField","label":"药品名称",'
+        '"value":{"@path":"/medicine"}},'
+        '{"id":"check","component":"CheckBox","label":"每天固定时间",'
+        '"value":{"@path":"/daily"}},'
+        '{"id":"slider","component":"Slider","label":"剂量","min":0,"max":10,'
+        '"value":{"@path":"/dose"}}'
+        ']}}',
+  ];
 
-  /// catalog id 必须与消息里 `createSurface.catalogId` 一致：`genui` 按 id
-  /// 把 surface 匹配回它的 catalog，对不上就不渲染任何组件（不报错，只是空）。
+  /// catalog id 必须与本仓装配一致：v1.0 按 id 匹配 surface 的默认 catalog。
   GenerativeTransport transport() => GenerativeTransport(
-    catalog: GenerativeCatalog(
-      catalogId: 'com.luminous.generative',
-      domainItems: const [],
-    ),
+    catalog: GenerativeCatalog(domainComponents: const []),
   );
 
   Future<void> pump(WidgetTester tester, Widget child) async {
@@ -85,34 +93,43 @@ void main() {
     await tester.pump();
   }
 
+  /// 把文档喂进渲染端并渲染。
+  Future<void> render(
+    WidgetTester tester,
+    GenerativeTransport t,
+    List<String> jsonl,
+  ) async {
+    final messages = [
+      for (final line in jsonl) jsonDecode(line) as Map<String, Object?>,
+    ];
+    t.processMessages(messages);
+    await pump(
+      tester,
+      GenerativeSurface(
+        state: GenerationReady(
+          GenerativeSurfaceDocument(
+            surface: SurfaceId.review,
+            messages: messages,
+            generatedAt: DateTime(2026),
+          ),
+        ),
+        transport: t,
+        surfaceId: surfaceId,
+      ),
+    );
+  }
+
   group('渲染链路', () {
     testWidgets('手写消息渲染出 Column/Card/Row/Text 组合', (tester) async {
       final t = transport();
       addTearDown(t.dispose);
-      feed(t, layoutMessages);
+
+      await render(tester, t, layoutMessages);
 
       expect(
         t.activeSurfaceIds,
-        contains('generative.review'),
-        reason: 'createSurface 之后引擎里该有这个 surface',
-      );
-
-      await pump(
-        tester,
-        GenerativeSurface(
-          state: GenerationReady(
-            GenerativeSurfaceDocument(
-              surface: SurfaceId.review,
-              messages: [
-                for (final l in layoutMessages)
-                  jsonDecode(l) as Map<String, Object?>,
-              ],
-              generatedAt: DateTime(2026),
-            ),
-          ),
-          transport: t,
-          surfaceId: 'generative.review',
-        ),
+        contains(surfaceId),
+        reason: 'createSurface 之后渲染端该有这个 surface',
       );
 
       // 四个叶子文本都在树上——说明 Column / Card / Row 都被正确展开。
@@ -120,67 +137,43 @@ void main() {
       expect(find.text('饮水比上周多了 12%'), findsOneWidget);
       expect(find.text('饮水 1800ml'), findsOneWidget);
       expect(find.text('睡眠 7.2h'), findsOneWidget);
-      // Card 与 Row 确实参与布局（不是被拍平成一段文本）。
       expect(find.byType(fw.Card), findsWidgets);
-      expect(find.byType(fw.Row), findsWidgets);
-      expect(find.byType(fw.Column), findsWidgets);
+      // v1.0 的 Row / Column 由自定义的 `Flex` 实现（带 weight / ownWidth 布局
+      // 规则），不是 Material 的 `Row` / `Column` widget。
+      expect(find.byType(fw.Flex), findsWidgets);
     });
 
     testWidgets('未知 component 降级渲染，不崩溃', (tester) async {
       final t = transport();
       addTearDown(t.dispose);
-      feed(t, unknownComponentMessages);
 
-      await pump(
-        tester,
-        GenerativeSurface(
-          state: GenerationReady(
-            GenerativeSurfaceDocument(
-              surface: SurfaceId.review,
-              messages: [
-                for (final l in unknownComponentMessages)
-                  jsonDecode(l) as Map<String, Object?>,
-              ],
-              generatedAt: DateTime(2026),
-            ),
-          ),
-          transport: t,
-          surfaceId: 'generative.review',
-        ),
-      );
+      await render(tester, t, unknownComponentMessages);
 
       expect(tester.takeException(), isNull);
-      // 合法的兄弟节点照常渲染：一棵坏树只坏自己那一支。
       expect(find.text('正常内容'), findsOneWidget);
     });
+  });
 
-    testWidgets('Button 不在 catalog 里，查不到即降级', (tester) async {
+  group('A2UI 1.0：交互组件全量可用', () {
+    testWidgets('Button 能渲染出来（不再被白名单剔除）', (tester) async {
       final t = transport();
       addTearDown(t.dispose);
-      feed(t, forbiddenMessages);
 
-      await pump(
-        tester,
-        GenerativeSurface(
-          state: GenerationReady(
-            GenerativeSurfaceDocument(
-              surface: SurfaceId.review,
-              messages: [
-                for (final l in forbiddenMessages)
-                  jsonDecode(l) as Map<String, Object?>,
-              ],
-              generatedAt: DateTime(2026),
-            ),
-          ),
-          transport: t,
-          surfaceId: 'generative.review',
-        ),
-      );
+      await render(tester, t, buttonMessages);
 
-      // 核心断言：可写动作没有出现在屏幕上。
-      expect(find.widgetWithText(fw.FilledButton, '删除全部记录'), findsNothing);
-      expect(find.widgetWithText(fw.ElevatedButton, '删除全部记录'), findsNothing);
-      expect(find.text('删除全部记录'), findsNothing);
+      expect(find.text('删除全部记录'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('TextField / CheckBox / Slider 都能渲染', (tester) async {
+      final t = transport();
+      addTearDown(t.dispose);
+
+      await render(tester, t, formMessages);
+
+      expect(find.byType(fw.TextField), findsWidgets);
+      expect(find.byType(fw.Checkbox), findsWidgets);
+      expect(find.byType(fw.Slider), findsWidgets);
       expect(tester.takeException(), isNull);
     });
   });
@@ -195,7 +188,7 @@ void main() {
         GenerativeSurface(
           state: const GenerationIdle(),
           transport: t,
-          surfaceId: 'generative.review',
+          surfaceId: surfaceId,
         ),
       );
 
@@ -219,7 +212,7 @@ void main() {
         GenerativeSurface(
           state: const GenerationInFlight(),
           transport: t,
-          surfaceId: 'generative.review',
+          surfaceId: surfaceId,
         ),
       );
 
@@ -232,7 +225,11 @@ void main() {
     testWidgets('失败但保留上一份结果 → 继续渲染上一份', (tester) async {
       final t = transport();
       addTearDown(t.dispose);
-      feed(t, layoutMessages);
+
+      final messages = [
+        for (final l in layoutMessages) jsonDecode(l) as Map<String, Object?>,
+      ];
+      t.processMessages(messages);
 
       await pump(
         tester,
@@ -241,15 +238,12 @@ void main() {
             error: StateError('boom'),
             document: GenerativeSurfaceDocument(
               surface: SurfaceId.review,
-              messages: [
-                for (final l in layoutMessages)
-                  jsonDecode(l) as Map<String, Object?>,
-              ],
+              messages: messages,
               generatedAt: DateTime(2026),
             ),
           ),
           transport: t,
-          surfaceId: 'generative.review',
+          surfaceId: surfaceId,
         ),
       );
 
@@ -262,15 +256,11 @@ void main() {
     });
   });
 
-  // ── 三个横排小卡 ──────────────────────────────────────────────────
-  //
-  // 这是「一张图看懂生成式 UI 能干什么」的最小形态：三张并排的卡，每张一句
-  // 短指标。结构只用展示原语（Row + Card + Text），不依赖任何领域 item，
-  // 因此与 review 的数据源无关——在哪个 surface 上都渲染得出来。
   group('三个横排小卡', () {
     const threeCardsMessages = <String>[
-      '{"version":"v0.9","createSurface":{"surfaceId":"generative.review","catalogId":"com.luminous.generative"}}',
-      '{"version":"v0.9","updateComponents":{"surfaceId":"generative.review","components":['
+      '{"version":"1.0","createSurface":{"surfaceId":"generative.review",'
+          '"catalogId":"https://luminous.app/a2ui/catalog/v1.json"}}',
+      '{"version":"1.0","updateComponents":{"surfaceId":"generative.review","components":['
           '{"id":"root","component":"Column","children":["cards"]},'
           '{"id":"cards","component":"Row","children":["c1","c2","c3"]},'
           '{"id":"c1","component":"Card","child":"t1"},'
@@ -285,34 +275,14 @@ void main() {
     testWidgets('三张卡并排渲染，且都在同一行', (tester) async {
       final t = transport();
       addTearDown(t.dispose);
-      feed(t, threeCardsMessages);
 
-      await pump(
-        tester,
-        GenerativeSurface(
-          state: GenerationReady(
-            GenerativeSurfaceDocument(
-              surface: SurfaceId.review,
-              messages: [
-                for (final l in threeCardsMessages)
-                  jsonDecode(l) as Map<String, Object?>,
-              ],
-              generatedAt: DateTime(2026),
-            ),
-          ),
-          transport: t,
-          surfaceId: 'generative.review',
-        ),
-      );
+      await render(tester, t, threeCardsMessages);
 
-      // 三句文案都在树上——说明 Row 的三个子节点都渲染了。
       expect(find.text('饮水 1800 ml'), findsOneWidget);
       expect(find.text('睡眠 7.2 h'), findsOneWidget);
       expect(find.text('依从率 82%'), findsOneWidget);
 
       // 卡片确实并排：三者纵向位置相同，横向依次递增。
-      // 这是「横排」与「竖排」的唯一可断言区别——只查文案在不在树上，
-      // 竖排的写法也能通过。
       final y1 = tester.getCenter(find.text('饮水 1800 ml')).dy;
       final y2 = tester.getCenter(find.text('睡眠 7.2 h')).dy;
       final y3 = tester.getCenter(find.text('依从率 82%')).dy;

@@ -13,7 +13,7 @@ import 'package:luminous/features/generative/design/ids.dart'
 import 'package:luminous/features/generative/presentation/components/catalog.dart'
     show registerGenerativeComponents;
 import 'package:luminous/features/generative/presentation/providers/surface_state.dart'
-    show generativeCatalogProvider;
+    show generativeCatalogLocaleProvider, generativeCatalogProvider;
 import 'package:luminous/features/medicine/presentation/components/catalog.dart';
 import 'package:luminous/features/mine/presentation/components/catalog.dart';
 import 'package:luminous/features/record/presentation/components/catalog.dart';
@@ -133,6 +133,11 @@ List<Override> compositionProviderOverrides() {
     // receives the key, so one entry covers all surfaces (tab chrome included —
     // it never renders a generative component, and an empty catalog is the
     // correct answer there anyway).
-    catalog.overrideWith((ref, surface) => buildGenerativeCatalog(surface)),
+    catalog.overrideWith(
+      (ref, surface) => buildGenerativeCatalog(
+        surface,
+        locale: ref.watch(generativeCatalogLocaleProvider),
+      ),
+    ),
   ];
 }

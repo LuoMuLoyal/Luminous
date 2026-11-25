@@ -49,6 +49,12 @@ abstract final class LucentApiPaths {
   static String generativeSurface(String surface) =>
       '/api/v1/layouts/$surface/generate';
 
+  /// `POST /api/v1/layouts/{surface}/turn` — SSE stream for one interaction
+  /// round: the renderer's `action` / `callAgentFunction` messages go up, the
+  /// agent's continuation comes back in the same four frames.
+  static String generativeSurfaceTurn(String surface) =>
+      '/api/v1/layouts/$surface/turn';
+
   // ── Void-return endpoints (generated client discards response body) ────
 
   /// `POST /api/v1/user/files/upload` — returns presigned upload URL data

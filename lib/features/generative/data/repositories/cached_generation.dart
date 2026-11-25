@@ -9,15 +9,14 @@ import 'package:luminous/shared/domain/failure.dart';
 /// 生成结果的仓储实现：远端生成 + 本地缓存。
 ///
 /// 两条腿各管一件事，**不混在一起**：
-/// - `generate` 走远端（一次 LLM 调用，可能很慢，只能流式）；
+/// - `generate` / `turn` 走远端（一次 LLM 调用，可能很慢，只能流式）；
 /// - `read` / `write` / `clear` 走本地 `KvStore`（冷启动重放，零网络）。
 ///
-/// 这正是计划 §3.4 的结论：生成结果不落库，服务端只负责「一次生成」这个动作，
-/// 持久化是客户端自己的事。所以这里不存在「远端读回历史结果」的分支。
+/// 生成结果不落库，服务端只负责「一次生成」这个动作，持久化是客户端自己的事。
+/// 所以这里不存在「远端读回历史结果」的分支。
 ///
-/// 它不做校验：校验是 `catalog_policy` 的职责，在应用层对**刚落地的消息**
-/// 做（见 `application/orchestrators/generation_session.dart`）。把校验塞进
-/// 缓存层会让「读历史的旧结果」也过一次当前规则，升级后旧结果会突然消失。
+/// 它不做校验：结构合法性由 `a2ui_core` 在渲染前判定（A2UI 1.0 取消了客户端的
+/// 内容准入规则）。
 final class CachedGenerationRepository implements GenerationRepository {
   CachedGenerationRepository(this._cache, this._remote);
 
@@ -48,14 +47,26 @@ final class CachedGenerationRepository implements GenerationRepository {
       surface: request.surface,
       prompt: request.prompt.text,
       range: request.range,
+      capabilities: request.capabilities,
     );
 
+    yield* _translate(events);
+  }
+
+  @override
+  Stream<GenerationStreamEvent> turn(GenerationTurn turn) async* {
+    yield* _translate(_remote.turn(turn));
+  }
+
+  Stream<GenerationStreamEvent> _translate(
+    Stream<GenerationRemoteEvent> events,
+  ) async* {
     await for (final event in events) {
       switch (event) {
         case GenerationRemoteChunk(:final message):
           yield GenerationStreamChunk(message);
-        case GenerationRemoteResult(:final messages):
-          yield GenerationStreamResult(messages);
+        case GenerationRemoteResult(:final messages, :final dataModel):
+          yield GenerationStreamResult(messages, dataModel: dataModel);
       }
     }
   }

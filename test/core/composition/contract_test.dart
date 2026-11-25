@@ -17,12 +17,12 @@ void main() {
   /// Ids exempt from the "first segment is never a surface" rule.
   ///
   /// `generative.<surface>` is the one deliberate exception (plan
-  /// `2026-10-31-a2ui-generative.md` §7 answer 2): a generated surface is
-  /// **per-surface by definition** — its result is stored under
-  /// `genui.<surface>.surface` and it is rendered by that surface's own
-  /// `GenerativeTransport`. Pretending it is a reusable component would mean
-  /// one engine instance serving several pages, and "which page does this
-  /// result belong to" would become a runtime question.
+  /// `2026-11-25-a2ui-1.0.md`): a generated surface is **per-surface by
+  /// definition** — its result is stored under `a2ui.<surface>.document` and it
+  /// is rendered by that surface's own `GenerativeTransport`. Pretending it is
+  /// a reusable component would mean one engine instance serving several pages,
+  /// and "which page does this result belong to" would become a runtime
+  /// question.
   ///
   /// Keeping the id self-describing is the point: `generative.today` tells you
   /// both that it is a generative slot and which surface it belongs to.
