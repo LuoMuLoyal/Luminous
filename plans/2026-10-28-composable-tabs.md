@@ -410,7 +410,7 @@ Grafana 是 `/dashboards/:uid`、Notion 是 `/blocks/:id`、`/pages/:id`，业�
 | A3 尺寸档 | 响应式三档完成；组件内 sealed 变体未做 |
 | A4 跨表面挂载 | 完成 |
 | A5 各 tab 补组件 | A5-1 用药已完成（10 端点 + 10 组件）；A5-2/3/4 未开始 |
-| A6 底部 tab 可配 | 已移交 `2026-11-12-navigable-shell.md`（序号 / 名称 / 图标 / 显隐已落地；编排 UI 待做） |
+| A6 底部 tab 可配 | **完成**（`features/shell` 数据化 tab chrome：序号 / 名称 / 图标 / 显隐 + `/customize/nav` 编排 UI + 远端同步） |
 | A7 生成式 UI | 未开始 |
 
 | 表面 | 组件数 | 默认布局 | 备注 |
@@ -638,12 +638,13 @@ GET /daily-records/month-overview?month=YYYY-MM&kind=<可选>
 
 ### A6 底部 tab 全可配（图标 / 名称 / 顺序）
 
-> 需求第 10 条。**本节已由 [`2026-11-12-navigable-shell.md`](2026-11-12-navigable-shell.md)
-> 接管**：该计划曾主张全仓迁移 `auto_route`，理由是「`go_router` 的编译期固定分支只能
-> 做到「改名 / 换图标 / 组内换序」」。**该判断 2026-11-16 已推翻**——`StatefulShellRoute`
+> 需求第 10 条。**已落地（2026-11-16）**：留在 `go_router`，靠一层
+> `可见位置 → branchIndex` 映射实现顺序 / 名称 / 图标 / 显隐全可配，
+> 代码在 `lib/features/shell/`（见该 feature 的 README）。
+> 原方案曾主张全仓迁移 `auto_route`，理由是「`go_router` 的编译期固定分支只能
+> 做到「改名 / 换图标 / 组内换序」」。**该判断已推翻**——`StatefulShellRoute`
 > 的 `branches` 是运行期可构造的普通列表，且 Material 底栏上限 5、本仓恰好占满，
-> 「运行期增删 tab」不通往任何产品形态。现方案**留在 `go_router`**，靠一层
-> `可见位置 → branchIndex` 映射实现顺序 / 名称 / 图标 / 显隐全可配。
+> 「运行期增删 tab」不通往任何产品形态。
 > 本节仅保留原始需求描述。
 
 - 需求：底部 tab 的图标、名称、顺序全可自定义。
