@@ -76,6 +76,8 @@ import 'package:luminous/features/medicine/data/repositories/relations.dart'
     show medicineRelationsRepositoryProvider;
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart'
     show medicineRiskCheckRepositoryProvider;
+import 'package:luminous/features/medicine/presentation/providers/adverse_reaction.dart'
+    show drugAdverseReactionsProvider;
 import 'package:luminous/features/medicine/presentation/providers/medicine_detail.dart'
     show medicineDetailProvider;
 import 'package:luminous/features/medicine/presentation/providers/reminder/reminders.dart'
@@ -119,6 +121,7 @@ import 'package:luminous/shared/domain/failure.dart';
 import '../../integration_test/screenshots/page_catalog_screenshot_test.dart'
     as catalog;
 import '../../test/helpers/kv_test_store.dart';
+import 'simulated_fakes_adverse_reaction.dart';
 import 'simulated_fakes_assistant.dart';
 import 'simulated_fakes_graph.dart';
 import 'simulated_fakes_health_event.dart';
@@ -768,6 +771,14 @@ Future<ProviderContainer> _pumpPage(
           id: args.$2,
           source: args.$1,
         ),
+      ),
+
+      // OnSIDES adverse reactions ride a separate provider (they are their own
+      // knowledge source, not a field on the detail payload). Without this
+      // override the section would hit the network and render its error state.
+      drugAdverseReactionsProvider.overrideWith(
+        (ref, drugbankId) async =>
+            simulatedAdverseReactionReportsByDrugbankId[drugbankId],
       ),
     ],
   );
@@ -1690,6 +1701,37 @@ void main() {
     await tester.pump(const Duration(seconds: 5));
   }
 
+  /// Per-page pre-capture steps that the const catalog cannot hold.
+  ///
+  /// `screenshotCatalog` is `const`, so a `prepare` closure cannot live on the
+  /// entry. Anything that needs a tap before the frame is registered here by
+  /// `$group/$id` instead, and `capture` merges it with the catalog's own
+  /// `prepare` field.
+  final Map<String, Future<void> Function(WidgetTester)> catalogPrepares = {
+    // Every detail section starts collapsed, so a plain route capture shows only
+    // the section headers. Opening "不良反应" is what makes the frame test the
+    // reactions render path rather than the accordion chrome.
+    'medicine/detail-drugbank-reactions': (tester) async {
+      await tester.tap(find.text('不良反应').first);
+      await tester.pumpAndSettle();
+    },
+  };
+
+  Future<void> runCatalogPrepare(
+    WidgetTester tester,
+    String group,
+    String id,
+    Future<void> Function(WidgetTester)? catalogPrepare,
+  ) async {
+    if (catalogPrepare != null) {
+      await catalogPrepare(tester);
+    }
+    final extra = catalogPrepares['$group/$id'];
+    if (extra != null) {
+      await extra(tester);
+    }
+  }
+
   // ── 桌面档：五个 tab 根页 ────────────────────────────────────────────
   //
   // 1280x800 落在 M3 `large` 档，侧边栏、分组、三层底色与桌面密度全部出现。
@@ -1709,7 +1751,8 @@ void main() {
         placement: (folder: 'desktop', prefix: ''),
         name: target.id,
         route: target.route,
-        prepare: target.prepare,
+        prepare: (tester) =>
+            runCatalogPrepare(tester, target.group, target.id, target.prepare),
         longCapture: false,
         scrolledCapture: false,
         record: (name, count) => manifest.writeln(
@@ -1742,7 +1785,8 @@ void main() {
         placement: (folder: 'desktop', prefix: ''),
         name: fileName,
         route: target.route,
-        prepare: target.prepare,
+        prepare: (tester) =>
+            runCatalogPrepare(tester, target.group, target.id, target.prepare),
         longCapture: false,
         scrolledCapture: false,
         record: (name, count) => manifest.writeln(
@@ -1766,7 +1810,8 @@ void main() {
         placement: placement,
         name: target.id,
         route: target.route,
-        prepare: target.prepare,
+        prepare: (tester) =>
+            runCatalogPrepare(tester, target.group, target.id, target.prepare),
         record: (name, count) => manifest.writeln(
           '| `$name` | ${target.group} | ${target.id} | '
           '`${target.route}` | $count | ${target.note ?? ''}'

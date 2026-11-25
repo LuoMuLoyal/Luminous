@@ -237,6 +237,14 @@ Two details make the scan extras work:
 - **Placeholder ids.** The catalog points at e2e fixture ids
   (`e2e-allergy-1`, `__mock_cn_ibuprofen__`, …). `_resolveRoute` rewrites those
   onto the simulated dataset so the committed catalog stays untouched.
+- **Collapsed sections capture as headers only.** The medicine detail is an
+  accordion, and every section starts closed. A plain route capture of
+  `medicine/detail-drugbank-reactions` therefore showed six section headers and
+  no reactions at all — the frame had to be discarded. `screenshotCatalog` is
+  `const`, so it cannot carry the `prepare` closure that opens the section;
+  those taps live in `catalogPrepares` in `generate.dart`, keyed by `group/id`,
+  and `runCatalogPrepare` merges them with the catalog's own `prepare` field.
+  **Any capture of an accordion-spawned surface needs an entry there.**
 
 ## Simulated data
 

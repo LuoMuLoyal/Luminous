@@ -1644,6 +1644,41 @@ const List<MedicineDetail> _medicineDetails = <MedicineDetail>[
       salts: <String>['赖氨酸盐', '钙盐'],
     ),
   ),
+  // DrugBank variant. Needed as its own entry because the adverse-reaction
+  // section only renders for `drugbank` (see `detail_sections.dart`), so the two
+  // CN fixtures above can never show it.
+  MedicineDetail(
+    id: 'DB01050',
+    source: 'drugbank',
+    name: 'Ibuprofen',
+    subtitle: 'DB01050 · Small molecule · 布洛芬',
+    kind: 'drugbank',
+    description:
+        'A nonsteroidal anti-inflammatory drug (NSAID) used for pain relief, '
+        'fever reduction and inflammation.',
+    indication:
+        'For relief of mild to moderate pain, and for reducing fever and '
+        'inflammation in conditions such as osteoarthritis.',
+    mechanismOfAction:
+        'Reversibly inhibits cyclooxygenase-1 and -2, reducing prostaglandin '
+        'synthesis.',
+    toxicity:
+        'May cause gastrointestinal irritation, ulceration and bleeding; '
+        'risk is higher with long-term use and in the elderly.',
+    groups: <String>['approved', 'small molecule'],
+    categories: <String>['Anti-Inflammatory Agents, Non-Steroidal'],
+    atcCodes: <String>['M01AE01'],
+    synonyms: <String>['Ibuprofen', 'p-Isobutylhydratropic acid'],
+    structure: MedicineStructure(
+      formula: 'C13H18O2',
+      molecularWeight: 206.28,
+      exactMass: 206.13,
+      logP: 3.97,
+      atomCount: 17,
+      ringCount: 1,
+      rotatableBondCount: 4,
+    ),
+  ),
 ];
 
 /// Fake backing `/medicine/detail/<source>/<id>`.

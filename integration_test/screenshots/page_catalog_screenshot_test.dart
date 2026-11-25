@@ -181,6 +181,18 @@ const List<ScreenshotTarget> screenshotCatalog = <ScreenshotTarget>[
     route: '/medicine/detail/cn/__mock_cn_ibuprofen__',
     note: 'Medicine detail (E2E demo medicine).',
   ),
+  // The adverse-reaction section only exists on the DrugBank variant: OnSIDES
+  // keys on RxNorm ingredient CUI, and the CN catalogue has no such mapping.
+  // Capturing the CN detail would therefore never show the new section.
+  ScreenshotTarget(
+    group: 'medicine',
+    id: 'detail-drugbank-reactions',
+    route: '/medicine/detail/drugbank/DB01050',
+    note:
+        'Medicine detail (DrugBank) — label-stated adverse reactions grouped by '
+        'section, with confidence bands.',
+    expectVisible: ['不良反应'],
+  ),
   ScreenshotTarget(
     group: 'medicine',
     id: 'risk-check',
