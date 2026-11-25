@@ -131,16 +131,21 @@ class _SectionGroupState extends State<_SectionGroup> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: Spacing.xs),
-            child: Text(
-              _sectionLabel(widget.group.section, l10n),
-              style: context.theme.typography.body.xs.copyWith(
-                fontWeight: FontWeight.w700,
-                color: SemanticColor.neutral.solid(context),
+          // No label for the adverse-reaction bucket: the accordion header
+          // already says "Adverse Reactions", so repeating it is the same phrase
+          // twice in a row. The other buckets keep theirs — they are the
+          // distinctions that actually need naming.
+          if (widget.group.section != ReactionSection.adverseReaction)
+            Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.xs),
+              child: Text(
+                _sectionLabel(widget.group.section, l10n),
+                style: context.theme.typography.body.xs.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: SemanticColor.neutral.solid(context),
+                ),
               ),
             ),
-          ),
           FCard(
             child: Padding(
               padding: const EdgeInsets.symmetric(

@@ -97,7 +97,9 @@ void main() {
         l10n: l10n,
       );
 
-      expect(find.text(l10n.medicineReactionSectionAr), findsOneWidget);
+      // The AR bucket carries no label: the accordion header above it already
+      // reads "Adverse Reactions". Only the distinguishing buckets are named.
+      expect(find.text(l10n.medicineReactionSectionAr), findsNothing);
       expect(find.text(l10n.medicineReactionSectionBw), findsOneWidget);
       expect(find.text('Rash'), findsOneWidget);
       expect(find.text('Hepatotoxicity'), findsOneWidget);
