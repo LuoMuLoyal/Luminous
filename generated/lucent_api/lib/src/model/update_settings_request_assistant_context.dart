@@ -20,7 +20,7 @@ class UpdateSettingsRequestAssistantContext {
   UpdateSettingsRequestAssistantContext({
     this.healthProfile,
 
-    this.dailyRecords,
+    this.records,
 
     this.sleepRecords,
 
@@ -32,8 +32,8 @@ class UpdateSettingsRequestAssistantContext {
   final bool? healthProfile;
 
   /// Allow the assistant to read recent daily records.
-  @JsonKey(name: r'dailyRecords', required: false, includeIfNull: false)
-  final bool? dailyRecords;
+  @JsonKey(name: r'records', required: false, includeIfNull: false)
+  final bool? records;
 
   /// Allow the assistant to read sleep records and summaries.
   @JsonKey(name: r'sleepRecords', required: false, includeIfNull: false)
@@ -48,14 +48,14 @@ class UpdateSettingsRequestAssistantContext {
       identical(this, other) ||
       other is UpdateSettingsRequestAssistantContext &&
           other.healthProfile == healthProfile &&
-          other.dailyRecords == dailyRecords &&
+          other.records == records &&
           other.sleepRecords == sleepRecords &&
           other.currentMedicines == currentMedicines;
 
   @override
   int get hashCode =>
       healthProfile.hashCode +
-      dailyRecords.hashCode +
+      records.hashCode +
       sleepRecords.hashCode +
       currentMedicines.hashCode;
 

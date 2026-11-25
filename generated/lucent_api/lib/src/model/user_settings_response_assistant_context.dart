@@ -20,7 +20,7 @@ class UserSettingsResponseAssistantContext {
   UserSettingsResponseAssistantContext({
     required this.healthProfile,
 
-    required this.dailyRecords,
+    required this.records,
 
     required this.sleepRecords,
 
@@ -32,8 +32,8 @@ class UserSettingsResponseAssistantContext {
   final bool healthProfile;
 
   /// Whether the assistant may read recent daily records.
-  @JsonKey(name: r'dailyRecords', required: true, includeIfNull: false)
-  final bool dailyRecords;
+  @JsonKey(name: r'records', required: true, includeIfNull: false)
+  final bool records;
 
   /// Whether the assistant may read sleep records and summaries.
   @JsonKey(name: r'sleepRecords', required: true, includeIfNull: false)
@@ -48,14 +48,14 @@ class UserSettingsResponseAssistantContext {
       identical(this, other) ||
       other is UserSettingsResponseAssistantContext &&
           other.healthProfile == healthProfile &&
-          other.dailyRecords == dailyRecords &&
+          other.records == records &&
           other.sleepRecords == sleepRecords &&
           other.currentMedicines == currentMedicines;
 
   @override
   int get hashCode =>
       healthProfile.hashCode +
-      dailyRecords.hashCode +
+      records.hashCode +
       sleepRecords.hashCode +
       currentMedicines.hashCode;
 

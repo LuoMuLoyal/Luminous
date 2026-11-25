@@ -9,14 +9,14 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
+import 'package:lucent_api/src/model/analysis_async_status_data.dart';
+import 'package:lucent_api/src/model/analysis_read_response.dart';
+import 'package:lucent_api/src/model/analysis_refresh_ready_data.dart';
 import 'package:lucent_api/src/model/enqueue_analysis_generation_request.dart';
 import 'package:lucent_api/src/model/generate200_response.dart';
 import 'package:lucent_api/src/model/generate_request.dart';
 import 'package:lucent_api/src/model/generate_stream_request.dart';
 import 'package:lucent_api/src/model/refresh_today_analysis_request.dart';
-import 'package:lucent_api/src/model/today_analysis_async_status_data.dart';
-import 'package:lucent_api/src/model/today_analysis_read_response.dart';
-import 'package:lucent_api/src/model/today_analysis_refresh_ready_data.dart';
 import 'package:lucent_api/src/model/today_recommendation_item.dart';
 
 class TodayAnalysisApi {
@@ -36,9 +36,9 @@ class TodayAnalysisApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [TodayAnalysisAsyncStatusData] as data
+  /// Returns a [Future] containing a [Response] with a [AnalysisAsyncStatusData] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<TodayAnalysisAsyncStatusData>> enqueueAnalysisGeneration({
+  Future<Response<AnalysisAsyncStatusData>> enqueueAnalysisGeneration({
     required EnqueueAnalysisGenerationRequest enqueueAnalysisGenerationRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -47,7 +47,7 @@ class TodayAnalysisApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today-analysis/generate/async';
+    final _path = r'/api/v1/user/analysis/generate/async';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{...?headers},
@@ -78,16 +78,17 @@ class TodayAnalysisApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    TodayAnalysisAsyncStatusData? _responseData;
+    AnalysisAsyncStatusData? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              TodayAnalysisAsyncStatusData,
-              TodayAnalysisAsyncStatusData
-            >(rawData, 'TodayAnalysisAsyncStatusData', growable: true);
+          : deserialize<AnalysisAsyncStatusData, AnalysisAsyncStatusData>(
+              rawData,
+              'AnalysisAsyncStatusData',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -98,7 +99,7 @@ class TodayAnalysisApi {
       );
     }
 
-    return Response<TodayAnalysisAsyncStatusData>(
+    return Response<AnalysisAsyncStatusData>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -133,7 +134,7 @@ class TodayAnalysisApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today-analysis/generate';
+    final _path = r'/api/v1/user/analysis/generate';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{...?headers},
@@ -220,13 +221,12 @@ class TodayAnalysisApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today-analysis/generate/status/{jobId}'
-        .replaceAll(
-          '{'
-          r'jobId'
-          '}',
-          jobId.toString(),
-        );
+    final _path = r'/api/v1/user/analysis/generate/status/{jobId}'.replaceAll(
+      '{'
+      r'jobId'
+      '}',
+      jobId.toString(),
+    );
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -268,7 +268,7 @@ class TodayAnalysisApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today-analysis/generate/stream';
+    final _path = r'/api/v1/user/analysis/generate/stream';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{...?headers},
@@ -351,7 +351,7 @@ class TodayAnalysisApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today-analysis/recommendations';
+    final _path = r'/api/v1/user/analysis/recommendations';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -417,9 +417,9 @@ class TodayAnalysisApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [TodayAnalysisReadResponse] as data
+  /// Returns a [Future] containing a [Response] with a [AnalysisReadResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<TodayAnalysisReadResponse>> read({
+  Future<Response<AnalysisReadResponse>> read({
     String? date,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -428,7 +428,7 @@ class TodayAnalysisApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today-analysis';
+    final _path = r'/api/v1/user/analysis';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -447,15 +447,15 @@ class TodayAnalysisApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    TodayAnalysisReadResponse? _responseData;
+    AnalysisReadResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<TodayAnalysisReadResponse, TodayAnalysisReadResponse>(
+          : deserialize<AnalysisReadResponse, AnalysisReadResponse>(
               rawData,
-              'TodayAnalysisReadResponse',
+              'AnalysisReadResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -468,7 +468,7 @@ class TodayAnalysisApi {
       );
     }
 
-    return Response<TodayAnalysisReadResponse>(
+    return Response<AnalysisReadResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -492,9 +492,9 @@ class TodayAnalysisApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [TodayAnalysisRefreshReadyData] as data
+  /// Returns a [Future] containing a [Response] with a [AnalysisRefreshReadyData] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<TodayAnalysisRefreshReadyData>> refreshTodayAnalysis({
+  Future<Response<AnalysisRefreshReadyData>> refreshTodayAnalysis({
     required RefreshTodayAnalysisRequest refreshTodayAnalysisRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -503,7 +503,7 @@ class TodayAnalysisApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today-analysis/refresh';
+    final _path = r'/api/v1/user/analysis/refresh';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{...?headers},
@@ -534,16 +534,17 @@ class TodayAnalysisApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    TodayAnalysisRefreshReadyData? _responseData;
+    AnalysisRefreshReadyData? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              TodayAnalysisRefreshReadyData,
-              TodayAnalysisRefreshReadyData
-            >(rawData, 'TodayAnalysisRefreshReadyData', growable: true);
+          : deserialize<AnalysisRefreshReadyData, AnalysisRefreshReadyData>(
+              rawData,
+              'AnalysisRefreshReadyData',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -554,7 +555,7 @@ class TodayAnalysisApi {
       );
     }
 
-    return Response<TodayAnalysisRefreshReadyData>(
+    return Response<AnalysisRefreshReadyData>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

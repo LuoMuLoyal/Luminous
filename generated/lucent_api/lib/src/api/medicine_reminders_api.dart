@@ -10,9 +10,9 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/create_medicine_reminder_request.dart';
-import 'package:lucent_api/src/model/medicine_reminder_list_response.dart';
-import 'package:lucent_api/src/model/medicine_reminder_response.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
+import 'package:lucent_api/src/model/reminder_entry_list_response.dart';
+import 'package:lucent_api/src/model/reminder_entry_response.dart';
 import 'package:lucent_api/src/model/update_medicine_reminder_request.dart';
 import 'package:lucent_api/src/model/upsert_group_request.dart';
 
@@ -33,9 +33,9 @@ class MedicineRemindersApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineReminderResponse] as data
+  /// Returns a [Future] containing a [Response] with a [ReminderEntryResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineReminderResponse>> createMedicineReminder({
+  Future<Response<ReminderEntryResponse>> createMedicineReminder({
     required CreateMedicineReminderRequest createMedicineReminderRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -44,7 +44,7 @@ class MedicineRemindersApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/medicine-reminders';
+    final _path = r'/api/v1/user/reminder';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{...?headers},
@@ -75,15 +75,15 @@ class MedicineRemindersApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineReminderResponse? _responseData;
+    ReminderEntryResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<MedicineReminderResponse, MedicineReminderResponse>(
+          : deserialize<ReminderEntryResponse, ReminderEntryResponse>(
               rawData,
-              'MedicineReminderResponse',
+              'ReminderEntryResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -96,7 +96,7 @@ class MedicineRemindersApi {
       );
     }
 
-    return Response<MedicineReminderResponse>(
+    return Response<ReminderEntryResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -131,7 +131,7 @@ class MedicineRemindersApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/medicine-reminders/{id}'.replaceAll(
+    final _path = r'/api/v1/user/reminder/{id}'.replaceAll(
       '{'
       r'id'
       '}',
@@ -167,9 +167,9 @@ class MedicineRemindersApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineReminderListResponse] as data
+  /// Returns a [Future] containing a [Response] with a [ReminderEntryListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineReminderListResponse>> listMedicineReminders({
+  Future<Response<ReminderEntryListResponse>> listMedicineReminders({
     String? activeOnly,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -178,7 +178,7 @@ class MedicineRemindersApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/medicine-reminders';
+    final _path = r'/api/v1/user/reminder';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -199,16 +199,17 @@ class MedicineRemindersApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineReminderListResponse? _responseData;
+    ReminderEntryListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              MedicineReminderListResponse,
-              MedicineReminderListResponse
-            >(rawData, 'MedicineReminderListResponse', growable: true);
+          : deserialize<ReminderEntryListResponse, ReminderEntryListResponse>(
+              rawData,
+              'ReminderEntryListResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -219,7 +220,7 @@ class MedicineRemindersApi {
       );
     }
 
-    return Response<MedicineReminderListResponse>(
+    return Response<ReminderEntryListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -244,9 +245,9 @@ class MedicineRemindersApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineReminderResponse] as data
+  /// Returns a [Future] containing a [Response] with a [ReminderEntryResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineReminderResponse>> updateMedicineReminder({
+  Future<Response<ReminderEntryResponse>> updateMedicineReminder({
     required String id,
     required UpdateMedicineReminderRequest updateMedicineReminderRequest,
     CancelToken? cancelToken,
@@ -256,7 +257,7 @@ class MedicineRemindersApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/medicine-reminders/{id}'.replaceAll(
+    final _path = r'/api/v1/user/reminder/{id}'.replaceAll(
       '{'
       r'id'
       '}',
@@ -292,15 +293,15 @@ class MedicineRemindersApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineReminderResponse? _responseData;
+    ReminderEntryResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<MedicineReminderResponse, MedicineReminderResponse>(
+          : deserialize<ReminderEntryResponse, ReminderEntryResponse>(
               rawData,
-              'MedicineReminderResponse',
+              'ReminderEntryResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -313,7 +314,7 @@ class MedicineRemindersApi {
       );
     }
 
-    return Response<MedicineReminderResponse>(
+    return Response<ReminderEntryResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -337,9 +338,9 @@ class MedicineRemindersApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineReminderListResponse] as data
+  /// Returns a [Future] containing a [Response] with a [ReminderEntryListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineReminderListResponse>> upsertGroup({
+  Future<Response<ReminderEntryListResponse>> upsertGroup({
     required UpsertGroupRequest upsertGroupRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -348,7 +349,7 @@ class MedicineRemindersApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/medicine-reminders/group';
+    final _path = r'/api/v1/user/reminder/group';
     final _options = Options(
       method: r'PUT',
       headers: <String, dynamic>{...?headers},
@@ -379,16 +380,17 @@ class MedicineRemindersApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineReminderListResponse? _responseData;
+    ReminderEntryListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              MedicineReminderListResponse,
-              MedicineReminderListResponse
-            >(rawData, 'MedicineReminderListResponse', growable: true);
+          : deserialize<ReminderEntryListResponse, ReminderEntryListResponse>(
+              rawData,
+              'ReminderEntryListResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -399,7 +401,7 @@ class MedicineRemindersApi {
       );
     }
 
-    return Response<MedicineReminderListResponse>(
+    return Response<ReminderEntryListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

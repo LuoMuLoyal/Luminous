@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/notification_preferences_response.dart';
+import 'package:lucent_api/src/model/notification_settings_response.dart';
 import 'package:lucent_api/src/model/patch_request.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
 
@@ -30,9 +30,9 @@ class NotificationPreferencesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [NotificationPreferencesResponse] as data
+  /// Returns a [Future] containing a [Response] with a [NotificationSettingsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<NotificationPreferencesResponse>> callPatch({
+  Future<Response<NotificationSettingsResponse>> callPatch({
     required PatchRequest patchRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -41,7 +41,7 @@ class NotificationPreferencesApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/notification-preferences';
+    final _path = r'/api/v1/user/notification';
     final _options = Options(
       method: r'PATCH',
       headers: <String, dynamic>{...?headers},
@@ -72,16 +72,16 @@ class NotificationPreferencesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    NotificationPreferencesResponse? _responseData;
+    NotificationSettingsResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              NotificationPreferencesResponse,
-              NotificationPreferencesResponse
-            >(rawData, 'NotificationPreferencesResponse', growable: true);
+              NotificationSettingsResponse,
+              NotificationSettingsResponse
+            >(rawData, 'NotificationSettingsResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -92,7 +92,7 @@ class NotificationPreferencesApi {
       );
     }
 
-    return Response<NotificationPreferencesResponse>(
+    return Response<NotificationSettingsResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -115,9 +115,9 @@ class NotificationPreferencesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [NotificationPreferencesResponse] as data
+  /// Returns a [Future] containing a [Response] with a [NotificationSettingsResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<NotificationPreferencesResponse>> getNotificationPreferences({
+  Future<Response<NotificationSettingsResponse>> getNotificationPreferences({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -125,7 +125,7 @@ class NotificationPreferencesApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/notification-preferences';
+    final _path = r'/api/v1/user/notification';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -141,16 +141,16 @@ class NotificationPreferencesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    NotificationPreferencesResponse? _responseData;
+    NotificationSettingsResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              NotificationPreferencesResponse,
-              NotificationPreferencesResponse
-            >(rawData, 'NotificationPreferencesResponse', growable: true);
+              NotificationSettingsResponse,
+              NotificationSettingsResponse
+            >(rawData, 'NotificationSettingsResponse', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -161,7 +161,7 @@ class NotificationPreferencesApi {
       );
     }
 
-    return Response<NotificationPreferencesResponse>(
+    return Response<NotificationSettingsResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

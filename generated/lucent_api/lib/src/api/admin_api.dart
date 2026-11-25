@@ -1056,7 +1056,7 @@ class AdminApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/admin/content/legal-documents';
+    final _path = r'/api/v1/admin/content/legal';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -1724,7 +1724,7 @@ class AdminApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/admin/content/legal-documents/{docType}'.replaceAll(
+    final _path = r'/api/v1/admin/content/legal/{docType}'.replaceAll(
       '{'
       r'docType'
       '}',

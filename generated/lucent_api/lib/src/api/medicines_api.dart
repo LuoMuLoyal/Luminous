@@ -10,6 +10,7 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/enqueue_medicine_recognition_request.dart';
+import 'package:lucent_api/src/model/ingredient_reactions_response.dart';
 import 'package:lucent_api/src/model/medication_overview_response.dart';
 import 'package:lucent_api/src/model/medicine_cascade_paths_response.dart';
 import 'package:lucent_api/src/model/medicine_detail_response.dart';
@@ -29,6 +30,7 @@ import 'package:lucent_api/src/model/medicine_shortest_routes_response.dart';
 import 'package:lucent_api/src/model/medicine_substitute_candidates_response.dart';
 import 'package:lucent_api/src/model/medicine_target_drugs_response.dart';
 import 'package:lucent_api/src/model/medicine_transport_routes_response.dart';
+import 'package:lucent_api/src/model/reaction_drugs_response.dart';
 import 'package:lucent_api/src/model/recognize_request.dart';
 import 'package:lucent_api/src/model/run_risk_check_request.dart';
 
@@ -757,6 +759,82 @@ class MedicinesApi {
     );
   }
 
+  /// Label-stated adverse reactions for one DrugBank drug
+  ///
+  ///
+  /// Parameters:
+  /// * [drugbankId] - DrugBank drug id (e.g. DB01050)
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [IngredientReactionsResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<IngredientReactionsResponse>> listDrugReactions({
+    required String drugbankId,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/medicines/drugs/{drugbankId}/reactions'.replaceAll(
+      '{'
+      r'drugbankId'
+      '}',
+      drugbankId.toString(),
+    );
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    IngredientReactionsResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              IngredientReactionsResponse,
+              IngredientReactionsResponse
+            >(rawData, 'IngredientReactionsResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<IngredientReactionsResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
   /// Induction vs substrate pairs: opposite effect on exposure
   ///
   ///
@@ -831,6 +909,83 @@ class MedicinesApi {
     );
   }
 
+  /// Label-stated adverse reactions for one RxNorm ingredient
+  ///
+  ///
+  /// Parameters:
+  /// * [rxnormCui] - RxNorm ingredient CUI (e.g. 5640 for ibuprofen)
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [IngredientReactionsResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<IngredientReactionsResponse>> listIngredientReactions({
+    required String rxnormCui,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/medicines/ingredients/{rxnormCui}/reactions'
+        .replaceAll(
+          '{'
+          r'rxnormCui'
+          '}',
+          rxnormCui.toString(),
+        );
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    IngredientReactionsResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              IngredientReactionsResponse,
+              IngredientReactionsResponse
+            >(rawData, 'IngredientReactionsResponse', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<IngredientReactionsResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
   /// Metabolic mechanism paths between drugs (INHIBITS/INDUCES x SUBSTRATE_OF)
   ///
   ///
@@ -894,6 +1049,90 @@ class MedicinesApi {
     }
 
     return Response<MedicineMechanismPathsResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Drugs whose labels state a given MedDRA reaction
+  ///
+  ///
+  /// Parameters:
+  /// * [meddraId] - MedDRA term id (e.g. 10037844)
+  /// * [limit] - Maximum drugs to return (1-200, default 50).
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [ReactionDrugsResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<ReactionDrugsResponse>> listReactionDrugs({
+    required String meddraId,
+    int? limit = 50,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/medicines/reactions/{meddraId}/drugs'.replaceAll(
+      '{'
+      r'meddraId'
+      '}',
+      meddraId.toString(),
+    );
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _queryParameters = <String, dynamic>{
+      if (limit != null) r'limit': limit,
+    };
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      queryParameters: _queryParameters,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    ReactionDrugsResponse? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<ReactionDrugsResponse, ReactionDrugsResponse>(
+              rawData,
+              'ReactionDrugsResponse',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<ReactionDrugsResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

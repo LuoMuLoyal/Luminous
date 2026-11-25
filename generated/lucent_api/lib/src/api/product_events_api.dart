@@ -43,7 +43,7 @@ class ProductEventsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/product-events/funnel';
+    final _path = r'/api/v1/user/product/funnel';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -121,7 +121,7 @@ class ProductEventsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/product-events';
+    final _path = r'/api/v1/user/product';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{...?headers},

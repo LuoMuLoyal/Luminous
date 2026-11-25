@@ -20,7 +20,7 @@ class EventReviewResponseSourceTimestamps {
   EventReviewResponseSourceTimestamps({
     required this.checkIns,
 
-    required this.dailyRecords,
+    required this.records,
 
     required this.doseLogs,
   });
@@ -30,8 +30,8 @@ class EventReviewResponseSourceTimestamps {
   final String? checkIns;
 
   /// Latest daily-record creation time in the event window (ISO 8601), or null.
-  @JsonKey(name: r'dailyRecords', required: true, includeIfNull: true)
-  final String? dailyRecords;
+  @JsonKey(name: r'records', required: true, includeIfNull: true)
+  final String? records;
 
   /// Latest dose-log scheduled time in the event window (ISO 8601), or null.
   @JsonKey(name: r'doseLogs', required: true, includeIfNull: true)
@@ -42,13 +42,13 @@ class EventReviewResponseSourceTimestamps {
       identical(this, other) ||
       other is EventReviewResponseSourceTimestamps &&
           other.checkIns == checkIns &&
-          other.dailyRecords == dailyRecords &&
+          other.records == records &&
           other.doseLogs == doseLogs;
 
   @override
   int get hashCode =>
       (checkIns == null ? 0 : checkIns.hashCode) +
-      (dailyRecords == null ? 0 : dailyRecords.hashCode) +
+      (records == null ? 0 : records.hashCode) +
       (doseLogs == null ? 0 : doseLogs.hashCode);
 
   factory EventReviewResponseSourceTimestamps.fromJson(

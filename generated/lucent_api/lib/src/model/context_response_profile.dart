@@ -1,0 +1,206 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+
+// ignore_for_file: unused_element
+import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'context_response_profile.g.dart';
+
+@CopyWith()
+@JsonSerializable(
+  checked: true,
+  createToJson: true,
+  disallowUnrecognizedKeys: false,
+  explicitToJson: true,
+)
+class ContextResponseProfile {
+  /// Returns a new [ContextResponseProfile] instance.
+  ContextResponseProfile({
+    required this.birthDate,
+
+    required this.sexAtBirth,
+
+    required this.heightCm,
+
+    required this.weightKg,
+
+    this.activityLevel,
+
+    this.dietaryPreferences,
+
+    required this.locale,
+
+    required this.timezone,
+
+    required this.unitSystem,
+
+    required this.onboardingCompletedAt,
+
+    required this.extras,
+  });
+
+  /// Birth date in YYYY-MM-DD format.
+  @JsonKey(name: r'birthDate', required: true, includeIfNull: true)
+  final String? birthDate;
+
+  /// Sex assigned at birth.
+  @JsonKey(
+    name: r'sexAtBirth',
+    required: true,
+    includeIfNull: true,
+    unknownEnumValue:
+        ContextResponseProfileSexAtBirthEnum.unknownDefaultOpenApi,
+  )
+  final ContextResponseProfileSexAtBirthEnum? sexAtBirth;
+
+  /// Height in centimeters.
+  @JsonKey(name: r'heightCm', required: true, includeIfNull: true)
+  final num? heightCm;
+
+  /// Weight in kilograms. Extracted from extras JSONB.
+  @JsonKey(name: r'weightKg', required: true, includeIfNull: true)
+  final num? weightKg;
+
+  /// Self-reported activity level. Absent/null on older payloads and caches.
+  @JsonKey(
+    name: r'activityLevel',
+    required: false,
+    includeIfNull: false,
+    unknownEnumValue:
+        ContextResponseProfileActivityLevelEnum.unknownDefaultOpenApi,
+  )
+  final ContextResponseProfileActivityLevelEnum? activityLevel;
+
+  /// Dietary preferences extracted from extras JSONB. Absent/null on older payloads and caches.
+  @JsonKey(name: r'dietaryPreferences', required: false, includeIfNull: false)
+  final List<String>? dietaryPreferences;
+
+  /// Preferred locale.
+  @JsonKey(name: r'locale', required: true, includeIfNull: true)
+  final String? locale;
+
+  /// Preferred timezone.
+  @JsonKey(name: r'timezone', required: true, includeIfNull: true)
+  final String? timezone;
+
+  /// Preferred unit system.
+  @JsonKey(
+    name: r'unitSystem',
+    required: true,
+    includeIfNull: true,
+    unknownEnumValue:
+        ContextResponseProfileUnitSystemEnum.unknownDefaultOpenApi,
+  )
+  final ContextResponseProfileUnitSystemEnum? unitSystem;
+
+  /// When the onboarding flow was completed.
+  @JsonKey(name: r'onboardingCompletedAt', required: true, includeIfNull: true)
+  final String? onboardingCompletedAt;
+
+  /// Sparse profile extensions stored in jsonb.
+  @JsonKey(name: r'extras', required: true, includeIfNull: true)
+  final Object? extras;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ContextResponseProfile &&
+          other.birthDate == birthDate &&
+          other.sexAtBirth == sexAtBirth &&
+          other.heightCm == heightCm &&
+          other.weightKg == weightKg &&
+          other.activityLevel == activityLevel &&
+          other.dietaryPreferences == dietaryPreferences &&
+          other.locale == locale &&
+          other.timezone == timezone &&
+          other.unitSystem == unitSystem &&
+          other.onboardingCompletedAt == onboardingCompletedAt &&
+          other.extras == extras;
+
+  @override
+  int get hashCode =>
+      (birthDate == null ? 0 : birthDate.hashCode) +
+      (sexAtBirth == null ? 0 : sexAtBirth.hashCode) +
+      (heightCm == null ? 0 : heightCm.hashCode) +
+      (weightKg == null ? 0 : weightKg.hashCode) +
+      (activityLevel == null ? 0 : activityLevel.hashCode) +
+      (dietaryPreferences == null ? 0 : dietaryPreferences.hashCode) +
+      (locale == null ? 0 : locale.hashCode) +
+      (timezone == null ? 0 : timezone.hashCode) +
+      (unitSystem == null ? 0 : unitSystem.hashCode) +
+      (onboardingCompletedAt == null ? 0 : onboardingCompletedAt.hashCode) +
+      (extras == null ? 0 : extras.hashCode);
+
+  factory ContextResponseProfile.fromJson(Map<String, dynamic> json) =>
+      _$ContextResponseProfileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ContextResponseProfileToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
+}
+
+/// Sex assigned at birth.
+enum ContextResponseProfileSexAtBirthEnum {
+  @JsonValue(r'female')
+  female(r'female'),
+  @JsonValue(r'male')
+  male(r'male'),
+  @JsonValue(r'intersex')
+  intersex(r'intersex'),
+  @JsonValue(r'unknown')
+  unknown(r'unknown'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const ContextResponseProfileSexAtBirthEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+/// Self-reported activity level. Absent/null on older payloads and caches.
+enum ContextResponseProfileActivityLevelEnum {
+  @JsonValue(r'sedentary')
+  sedentary(r'sedentary'),
+  @JsonValue(r'lightlyActive')
+  lightlyActive(r'lightlyActive'),
+  @JsonValue(r'moderatelyActive')
+  moderatelyActive(r'moderatelyActive'),
+  @JsonValue(r'veryActive')
+  veryActive(r'veryActive'),
+  @JsonValue(r'extremelyActive')
+  extremelyActive(r'extremelyActive'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const ContextResponseProfileActivityLevelEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}
+
+/// Preferred unit system.
+enum ContextResponseProfileUnitSystemEnum {
+  @JsonValue(r'metric')
+  metric(r'metric'),
+  @JsonValue(r'imperial')
+  imperial(r'imperial'),
+  @JsonValue(r'unknown_default_open_api')
+  unknownDefaultOpenApi(r'unknown_default_open_api');
+
+  const ContextResponseProfileUnitSystemEnum(this.value);
+
+  final String value;
+
+  @override
+  String toString() => value;
+}

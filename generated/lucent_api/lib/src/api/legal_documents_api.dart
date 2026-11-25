@@ -9,8 +9,8 @@ import 'dart:convert';
 import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
-import 'package:lucent_api/src/model/legal_document_detail_response.dart';
-import 'package:lucent_api/src/model/legal_document_list_response.dart';
+import 'package:lucent_api/src/model/legal_doc_detail_response.dart';
+import 'package:lucent_api/src/model/legal_doc_list_response.dart';
 import 'package:lucent_api/src/model/problem_details_dto.dart';
 
 class LegalDocumentsApi {
@@ -31,9 +31,9 @@ class LegalDocumentsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [LegalDocumentDetailResponse] as data
+  /// Returns a [Future] containing a [Response] with a [LegalDocDetailResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<LegalDocumentDetailResponse>> getLegalDocument({
+  Future<Response<LegalDocDetailResponse>> getLegalDocument({
     required String docType,
     String? lang,
     CancelToken? cancelToken,
@@ -43,7 +43,7 @@ class LegalDocumentsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/legal-documents/{docType}'.replaceAll(
+    final _path = r'/api/v1/legal/{docType}'.replaceAll(
       '{'
       r'docType'
       '}',
@@ -67,16 +67,17 @@ class LegalDocumentsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    LegalDocumentDetailResponse? _responseData;
+    LegalDocDetailResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<
-              LegalDocumentDetailResponse,
-              LegalDocumentDetailResponse
-            >(rawData, 'LegalDocumentDetailResponse', growable: true);
+          : deserialize<LegalDocDetailResponse, LegalDocDetailResponse>(
+              rawData,
+              'LegalDocDetailResponse',
+              growable: true,
+            );
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -87,7 +88,7 @@ class LegalDocumentsApi {
       );
     }
 
-    return Response<LegalDocumentDetailResponse>(
+    return Response<LegalDocDetailResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -111,9 +112,9 @@ class LegalDocumentsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [LegalDocumentListResponse] as data
+  /// Returns a [Future] containing a [Response] with a [LegalDocListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<LegalDocumentListResponse>> listLegalDocuments({
+  Future<Response<LegalDocListResponse>> listLegalDocuments({
     String? lang,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -122,7 +123,7 @@ class LegalDocumentsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/legal-documents';
+    final _path = r'/api/v1/legal';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -141,15 +142,15 @@ class LegalDocumentsApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    LegalDocumentListResponse? _responseData;
+    LegalDocListResponse? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<LegalDocumentListResponse, LegalDocumentListResponse>(
+          : deserialize<LegalDocListResponse, LegalDocListResponse>(
               rawData,
-              'LegalDocumentListResponse',
+              'LegalDocListResponse',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -162,7 +163,7 @@ class LegalDocumentsApi {
       );
     }
 
-    return Response<LegalDocumentListResponse>(
+    return Response<LegalDocListResponse>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

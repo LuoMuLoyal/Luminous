@@ -47,13 +47,12 @@ class TodaySuggestionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today/suggestions/{id}/explain/async'
-        .replaceAll(
-          '{'
-          r'id'
-          '}',
-          id.toString(),
-        );
+    final _path = r'/api/v1/user/suggestion/{id}/explain/async'.replaceAll(
+      '{'
+      r'id'
+      '}',
+      id.toString(),
+    );
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -129,7 +128,7 @@ class TodaySuggestionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today/suggestions/{id}/explain'.replaceAll(
+    final _path = r'/api/v1/user/suggestion/{id}/explain'.replaceAll(
       '{'
       r'id'
       '}',
@@ -208,13 +207,12 @@ class TodaySuggestionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today/suggestions/explain/status/{jobId}'
-        .replaceAll(
-          '{'
-          r'jobId'
-          '}',
-          jobId.toString(),
-        );
+    final _path = r'/api/v1/user/suggestion/explain/status/{jobId}'.replaceAll(
+      '{'
+      r'jobId'
+      '}',
+      jobId.toString(),
+    );
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -266,7 +264,7 @@ class TodaySuggestionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today/suggestions/history';
+    final _path = r'/api/v1/user/suggestion/history';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -354,7 +352,7 @@ class TodaySuggestionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today/suggestions';
+    final _path = r'/api/v1/user/suggestion';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -437,7 +435,7 @@ class TodaySuggestionApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/today/suggestions/{id}/feedback'.replaceAll(
+    final _path = r'/api/v1/user/suggestion/{id}/feedback'.replaceAll(
       '{'
       r'id'
       '}',

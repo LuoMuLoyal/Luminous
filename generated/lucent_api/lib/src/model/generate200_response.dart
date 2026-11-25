@@ -3,11 +3,11 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/today_analysis_data.dart';
-import 'package:lucent_api/src/model/today_analysis_data_metrics.dart';
-import 'package:lucent_api/src/model/today_analysis_data_bullets.dart';
-import 'package:lucent_api/src/model/today_analysis_read_data.dart';
-import 'package:lucent_api/src/model/today_analysis_read_data_analysis.dart';
+import 'package:lucent_api/src/model/analysis_data.dart';
+import 'package:lucent_api/src/model/analysis_data_metrics.dart';
+import 'package:lucent_api/src/model/analysis_read_data_analysis.dart';
+import 'package:lucent_api/src/model/analysis_read_data.dart';
+import 'package:lucent_api/src/model/analysis_data_bullets.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -67,7 +67,7 @@ class Generate200Response {
   final String summary;
 
   @JsonKey(name: r'bullets', required: true, includeIfNull: false)
-  final List<TodayAnalysisDataBullets> bullets;
+  final List<AnalysisDataBullets> bullets;
 
   @JsonKey(name: r'actionLabel', required: true, includeIfNull: false)
   final String actionLabel;
@@ -82,10 +82,10 @@ class Generate200Response {
   final bool aiGenerated;
 
   @JsonKey(name: r'metrics', required: false, includeIfNull: false)
-  final List<TodayAnalysisDataMetrics>? metrics;
+  final List<AnalysisDataMetrics>? metrics;
 
   @JsonKey(name: r'analysis', required: true, includeIfNull: true)
-  final TodayAnalysisReadDataAnalysis? analysis;
+  final AnalysisReadDataAnalysis? analysis;
 
   @JsonKey(
     name: r'status',

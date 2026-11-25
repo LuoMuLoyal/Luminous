@@ -49,7 +49,7 @@ class DailyRecordsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/daily-records';
+    final _path = r'/api/v1/user/record';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{...?headers},
@@ -136,8 +136,7 @@ class DailyRecordsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path =
-        r'/api/v1/user/daily-records/attachments/images/presign-upload';
+    final _path = r'/api/v1/user/record/attachments/images/presign-upload';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{...?headers},
@@ -223,7 +222,7 @@ class DailyRecordsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/daily-records/{id}'.replaceAll(
+    final _path = r'/api/v1/user/record/{id}'.replaceAll(
       '{'
       r'id'
       '}',
@@ -270,7 +269,7 @@ class DailyRecordsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/daily-records/candidate-records/generate';
+    final _path = r'/api/v1/user/record/candidate-records/generate';
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{...?headers},
@@ -356,7 +355,7 @@ class DailyRecordsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/daily-records/{id}'.replaceAll(
+    final _path = r'/api/v1/user/record/{id}'.replaceAll(
       '{'
       r'id'
       '}',
@@ -431,7 +430,7 @@ class DailyRecordsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/daily-records/symptom-catalog';
+    final _path = r'/api/v1/user/record/symptom-catalog';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -509,7 +508,7 @@ class DailyRecordsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/daily-records';
+    final _path = r'/api/v1/user/record';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -589,7 +588,7 @@ class DailyRecordsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/daily-records/summary';
+    final _path = r'/api/v1/user/record/summary';
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{...?headers},
@@ -666,7 +665,7 @@ class DailyRecordsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/v1/user/daily-records/{id}'.replaceAll(
+    final _path = r'/api/v1/user/record/{id}'.replaceAll(
       '{'
       r'id'
       '}',

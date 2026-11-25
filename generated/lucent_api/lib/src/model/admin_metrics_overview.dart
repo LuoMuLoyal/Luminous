@@ -23,7 +23,7 @@ class AdminMetricsOverview {
 
     required this.users,
 
-    required this.productEventsLast24Hours,
+    required this.productEventLogLast24Hours,
   });
 
   @JsonKey(name: r'generatedAt', required: true, includeIfNull: false)
@@ -35,11 +35,11 @@ class AdminMetricsOverview {
   // minimum: 0
   // maximum: 9007199254740991
   @JsonKey(
-    name: r'productEventsLast24Hours',
+    name: r'productEventLogLast24Hours',
     required: true,
     includeIfNull: false,
   )
-  final int productEventsLast24Hours;
+  final int productEventLogLast24Hours;
 
   @override
   bool operator ==(Object other) =>
@@ -47,11 +47,13 @@ class AdminMetricsOverview {
       other is AdminMetricsOverview &&
           other.generatedAt == generatedAt &&
           other.users == users &&
-          other.productEventsLast24Hours == productEventsLast24Hours;
+          other.productEventLogLast24Hours == productEventLogLast24Hours;
 
   @override
   int get hashCode =>
-      generatedAt.hashCode + users.hashCode + productEventsLast24Hours.hashCode;
+      generatedAt.hashCode +
+      users.hashCode +
+      productEventLogLast24Hours.hashCode;
 
   factory AdminMetricsOverview.fromJson(Map<String, dynamic> json) =>
       _$AdminMetricsOverviewFromJson(json);

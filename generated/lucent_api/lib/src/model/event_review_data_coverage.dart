@@ -3,9 +3,9 @@
 //
 
 // ignore_for_file: unused_element
-import 'package:lucent_api/src/model/event_review_data_coverage_daily_records.dart';
 import 'package:lucent_api/src/model/event_review_data_coverage_check_ins.dart';
 import 'package:lucent_api/src/model/event_review_data_coverage_dose_logs.dart';
+import 'package:lucent_api/src/model/event_review_data_coverage_records.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -23,7 +23,7 @@ class EventReviewDataCoverage {
   EventReviewDataCoverage({
     required this.checkIns,
 
-    required this.dailyRecords,
+    required this.records,
 
     required this.doseLogs,
   });
@@ -31,8 +31,8 @@ class EventReviewDataCoverage {
   @JsonKey(name: r'checkIns', required: true, includeIfNull: false)
   final EventReviewDataCoverageCheckIns checkIns;
 
-  @JsonKey(name: r'dailyRecords', required: true, includeIfNull: false)
-  final EventReviewDataCoverageDailyRecords dailyRecords;
+  @JsonKey(name: r'records', required: true, includeIfNull: false)
+  final EventReviewDataCoverageRecords records;
 
   @JsonKey(name: r'doseLogs', required: true, includeIfNull: false)
   final EventReviewDataCoverageDoseLogs doseLogs;
@@ -42,12 +42,11 @@ class EventReviewDataCoverage {
       identical(this, other) ||
       other is EventReviewDataCoverage &&
           other.checkIns == checkIns &&
-          other.dailyRecords == dailyRecords &&
+          other.records == records &&
           other.doseLogs == doseLogs;
 
   @override
-  int get hashCode =>
-      checkIns.hashCode + dailyRecords.hashCode + doseLogs.hashCode;
+  int get hashCode => checkIns.hashCode + records.hashCode + doseLogs.hashCode;
 
   factory EventReviewDataCoverage.fromJson(Map<String, dynamic> json) =>
       _$EventReviewDataCoverageFromJson(json);
