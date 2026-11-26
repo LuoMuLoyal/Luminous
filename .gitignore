@@ -44,7 +44,10 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+# `**/` rather than `/`: a sub-package under `pkgs/` produces its own `build/`
+# when tested in place, and an anchored pattern silently lets those artifacts
+# into a commit.
+**/build/
 /coverage/
 lib/l10n/app_localizations.dart
 lib/l10n/app_localizations_*.dart
