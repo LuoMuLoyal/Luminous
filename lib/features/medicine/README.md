@@ -133,6 +133,18 @@
   - 测试锚点:`test/medicine/graph_components_test.dart`(降级三态、覆盖度、
     「已注册但不在默认布局」)、`graph_drug_set_test.dart`、
     `medicine_relations_mapper_test.dart`。
+- **安全提示组件 `safety.tip_card`**(`presentation/components/catalog.dart`,
+  `presentation/widgets/sections/safety_tip.dart`)。接的是
+  `GET /api/v1/medicines/safety-tips` 这条一直没消费方的链路:
+  - 进 `owned`、**不进默认布局**——它是一条可选提示,不是页面主干;用户在编排页
+    自己挂,可挂到任意 surface。
+  - 卡片只有正文一行块(17pt body、16pt 内边距、无图标无次级文字),类别与来源
+    不上屏;文本由服务端按语言下发,客户端不留文案。
+  - `build` 返回 `null` 的三态:加载中、失败、后端没有更多提示。宿主的语义是
+    「连间距一起移除」,这里要的正是这个——空壳卡片比没有卡片更糟。这与关系图
+    组件「失败必须显式否定」相反,别照抄那边的降级形态。
+  - 测试锚点:`test/medicine/safety_tip_component_test.dart`(正文渲染、类别不上屏、
+    无提示整块跳过)。
 
 ## 依赖禁区
 
