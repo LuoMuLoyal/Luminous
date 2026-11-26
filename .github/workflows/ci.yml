@@ -69,7 +69,16 @@ jobs:
           dart run build_runner build --delete-conflicting-outputs
           cd ../..
 
+      # --- 门禁检查项（可失败不阻断）-----------------------------------------
+      # 下面四条彼此独立：analyze 报一个未使用变量，不该让「测试是否也坏了」
+      # 这个信息丢失。所以每条带 continue-on-error，失败结论由末尾的
+      # 「汇总门禁」统一抛出。
+      #
+      # ⚠️ 汇总必须读 `steps.<id>.outcome` 而不是 `conclusion`：continue-on-error
+      #    下 conclusion 恒为 success，只有 outcome 保留 failure。
       - name: Verify generated docs
+        id: docs
+        continue-on-error: true
         run: dart run scripts/docs/generate.dart --check
 
       # 根 `pub get` 不会为 path 依赖的子 package 各自解析依赖，而 `flutter analyze`
@@ -86,6 +95,8 @@ jobs:
           done
 
       - name: Analyze
+        id: analyze
+        continue-on-error: true
         run: flutter analyze
 
       # 严格 Clean 分层门禁（R1–R9，无白名单）。
@@ -94,6 +105,7 @@ jobs:
       # scripts/workflows/daily.dart 跑同一条命令且不带 continue-on-error，
       # 本地推送与日常检查是真门禁。
       - name: Clean Architecture violations
+        id: clean_layers
         continue-on-error: true
         run: |
           cd tool/luminous_lints
@@ -101,6 +113,8 @@ jobs:
           dart run bin/luminous_lints.dart --clean-layers --quiet
 
       - name: Run tests
+        id: test
+        continue-on-error: true
         run: flutter test --coverage --reporter=github
 
       # KMP 共享模块（native/luminous-native）的 commonTest 跑在 JVM 上，
@@ -109,6 +123,41 @@ jobs:
       # 用 `bash gradlew` 而非 `./gradlew`：wrapper 脚本的可执行位在 Windows 上
       # 提交时（core.fileMode=false）会丢成 100644，Linux 上直接执行报 exit 126。
       - name: Run KMP host tests
+        id: kmp
+        continue-on-error: true
         run: |
           cd native
           bash gradlew :luminous-native:testAndroidHostTest
+
+      # 汇总：把上面被放行的失败重新变成 job 的失败结论。
+      # 这是「不阻断后续步骤」与「门禁仍然要红」两个要求的交点——任何一条挂掉，
+      # 这里都会 exit 1，只是要等其余检查跑完才报，且一次报全。
+      #
+      # `!cancelled()` 而非 `always()`：手动取消 run 时不该再出一个「汇总失败」，
+      # 那会把「用户取消」伪装成「代码坏了」。
+      - name: 门禁汇总
+        if: ${{ !cancelled() }}
+        run: |
+          set -euo pipefail
+          failed=""
+          # $1 = 步骤 id，$2 = 人类可读名称
+          check() {
+            local outcome="$1" label="$2"
+            case "$outcome" in
+              success) return 0 ;;
+              skipped) echo "::error::$label 未运行（前置步骤失败，见上方日志）" ;;
+              *)       echo "::error::$label 失败（outcome=${outcome}）" ;;
+            esac
+            failed="${failed} ${label}"
+          }
+          check "${{ steps.docs.outcome }}"         "生成文档一致性"
+          check "${{ steps.analyze.outcome }}"      "flutter analyze"
+          check "${{ steps.clean_layers.outcome }}" "Clean Architecture 分层门禁"
+          check "${{ steps.test.outcome }}"         "flutter test"
+          check "${{ steps.kmp.outcome }}"          "KMP host tests"
+          if [ -n "$failed" ]; then
+            echo ""
+            echo "以下门禁未通过：${failed}"
+            exit 1
+          fi
+          echo "全部门禁通过"

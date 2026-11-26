@@ -87,6 +87,36 @@ drift worker（只有 `lib/core/database/connection_web.dart` 消费），移动
 Web 的三个 `LUMINOUS_*` 是 Web 实验运行时开关，移动端发布不注入，保持产品默认（关闭）。
 `WECHAT_IOS_UNIVERSAL_LINK` 还要求 Apple 账号侧配好 Associated Domains 才可用。
 
+## `ci.yml` 的失败不阻断与结论汇总
+
+`verify` job 里的四条检查彼此独立，全部带 `continue-on-error: true`：`flutter analyze`
+报一个未使用变量，不该让「测试是否也坏了」这个信息丢失。
+
+| 步骤 | id |
+| --- | --- |
+| Verify generated docs | `docs` |
+| Analyze | `analyze` |
+| Clean Architecture violations | `clean_layers` |
+| Run tests | `test` |
+| Run KMP host tests | `kmp` |
+
+末尾的 `门禁汇总` 步骤把被放行的失败重新变成 job 的失败结论（它自己不带
+`continue-on-error`），所以行为是「跑完全部再报错、一次报全」，而不是「假装成功」。
+
+三个容易写错的点：
+
+- **读 `steps.<id>.outcome`，不要读 `conclusion`**。`continue-on-error` 下
+  `conclusion` 恒为 `success`，用错等于把门禁静音了。
+- **`id` 不能用连字符**。`steps.clean-layers.outcome` 的 `-` 会被当作减号，workflow
+  在启动前即被拒（`Unexpected symbol: '-'`）。故这一步 id 写 `clean_layers`，
+  `name` 不变。
+- **用 `!cancelled()`，不要用 `always()`**。手动取消 run 时不该再冒出一个「汇总失败」，
+  那会把「用户取消」伪装成「代码坏了」。
+
+前置步骤（ARB 合并 / bootstrap / 生成客户端 / 子包依赖解析）**仍按顺序阻断**，且不在
+汇总范围内：它们是四条检查的共同前置，build_runner 要跑几分钟，拆成独立 job 等于把这套
+跑两遍。前置挂掉时四条检查是 `skipped`，汇总会明确报「未运行」而不是「失败」。
+
 ## 生成物前置步骤
 
 每个跑 `flutter build` 的 workflow（`ci.yml`、`deploy-web.yml`、`deploy-android.yml`、
