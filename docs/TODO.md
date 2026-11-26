@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-10-30
+updated: 2026-11-26
 ---
 
 # Luminous TODO
 
-Last updated: 2026-10-30
+Last updated: 2026-11-26
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -345,3 +345,30 @@ Product Loop Program 的延后项如下。
   放宽「不得改生成物」并调整 drift 生成布局。
 - 新引入循环由 `scripts/arch/guard.dart` 直接拦截；修完一组后 `dart run arch_guard --update-baseline` 收窄冻结清单
 
+## 2026-11-26 端侧 LLM（`pkgs/llama_native`）
+
+Dart 侧已落地并通过 `flutter analyze` + 12 个领域测试，**但原生库还没构建，包不能真正
+推理**。以下按依赖顺序排列。
+
+- **llama.cpp 源码与构建脚本**：`src-native/` 只有 shim，没有 vendor 进来的 llama.cpp。
+  需要 `scripts/` 拉取指定 tag 的源码、按平台编译（Android `arm64-v8a`、iOS
+  xcframework、Windows DLL、macOS/Linux 各自）。本机当前**无 cmake / 无 MSVC**
+  （只有 msys2 gcc 15.2），Windows 桌面端要先装构建工具链。
+- **shim 从未编译过**：`llama_shim.cpp` 按 llama.cpp 当前 C API 写成，但没有编译验证，
+  `LLAMA_SHIM_LEGACY_API` 分支也未经测试。第一次编译预计要修签名/结构体字段。
+- **平台工程配置**：Android 需 `jniLibs` 与 Gradle NDK 配置；iOS 需 podspec 与
+  `PrivacyInfo.xcprivacy`；桌面需把库放到可执行文件旁（`LlamaShim.defaultLibraryName`
+  按裸名加载，依赖这一点）。
+- **模型管理**：下载 + sha256 校验 + manifest 版本化。**复用现有模式**（
+  `lib/features/scan/data/datasources/ocr_model_manager.dart` 的按需下载方案），
+  不要发明的轮子。模型 2–3 GB，绝不能进安装包。
+- **app 接线**：`pubspec.yaml` 加 path 依赖；`RuntimeProviderKind` 增加后端枚举值
+  （现有 `aiToolkit` 指向一个不存在的包，是历史遗留）；engine 装配与生命周期。
+  **改枚举要写迁移**：`runtimeProvider` 存在 SharedPreferences
+  （`PrefKeys.featureFlagsRuntimeProvider`），旧值会解析成 `none`，老用户感知为「开关失效」。
+- **GBNF 语法生成**：结构化输出（JSON）应由 grammar 约束而非提示词祈祷。llama.cpp
+  原生支持 GBNF，是这条路线相对其他引擎的决定性优势，但目前没有 Schema → GBNF 的生成器。
+- **设备可用性探测**：内存 + ABI 探测，决定能否加载以及用多小的 `contextLength`；
+  不可用时降级而不是崩溃。
+- **settings 里的「端侧运行时」开关当前是空壳**：只存 SharedPreferences 并显示，
+  没有任何代码读它去跑模型。接线前它对用户是无效的。

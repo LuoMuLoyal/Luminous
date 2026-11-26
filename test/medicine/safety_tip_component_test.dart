@@ -57,10 +57,7 @@ void main() {
     expect(find.byType(SafetyTipCard), findsOneWidget);
     expect(find.text('服药期间避免饮酒'), findsOneWidget);
     expect(find.text('alcohol'), findsNothing);
-    expect(
-      find.byKey(const Key('medicine-safety-tip-tip-1')),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('medicine-safety-tip-tip-1')), findsOneWidget);
   });
 
   testWidgets('没有提示时整块跳过，不留空卡', (tester) async {
