@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/record/domain/undo/quick_entry_undo.dart';
 import 'package:luminous/features/record/presentation/providers/data_access.dart';

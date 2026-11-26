@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/health_event/presentation/providers/data_access.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:luminous/core/auth/session_mapping.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/app/composition/auth/session_mapping.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
 import 'package:luminous/features/auth/presentation/controllers/wechat_oauth.dart';

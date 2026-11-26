@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/utils/hour_minute.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/time.dart';
