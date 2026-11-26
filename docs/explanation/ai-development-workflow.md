@@ -74,6 +74,7 @@ flutter run \
 | `LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED` | GitHub Variables | `deploy-web` | Enable experimental AI runtime（默认 `false`） |
 | `LUMINOUS_RUNTIME_PROVIDER` | GitHub Variables | `deploy-web` | AI runtime provider（工作流回退值 `openai`，运行时按 `none` 处理） |
 | `LUMINOUS_ENABLE_GEN_UI` | GitHub Variables | `deploy-web` | Enable GenUI features（默认 `false`） |
+| `A2UI_CATALOG_ID` | GitHub Variables | `deploy-web` | 生成式 UI 广播的 catalog id，必须与 Lucent 的 `A2UI_CATALOG_ID` 同值（默认 `urn:a2ui:catalog:luminous:v1`） |
 
 `deploy-web.yml` 另外在构建前校验：`SENTRY_DSN` 若已设置，必须符合
 `https://<key>@<host>/<project>` 格式，否则构建失败。最后三个 `LUMINOUS_*` 是 Web
