@@ -11,6 +11,15 @@ enum EnvKey {
   luminousExperimentalRuntimeEnabled('LUMINOUS_EXPERIMENTAL_RUNTIME_ENABLED'),
   luminousRuntimeProvider('LUMINOUS_RUNTIME_PROVIDER'),
   luminousEnableGenUi('LUMINOUS_ENABLE_GEN_UI'),
+
+  /// A2UI catalog id this build advertises.
+  ///
+  /// Named the same as Lucent's server-side `A2UI_CATALOG_ID` on purpose: the
+  /// two must agree, or the `createSurface.catalogId` the agent writes will not
+  /// match the catalog the renderer registered and every component in the batch
+  /// is rejected.
+  a2uiCatalogId('A2UI_CATALOG_ID'),
+
   sentryDsn('SENTRY_DSN'),
   supportEmail('SUPPORT_EMAIL'),
   luminousDeepLinkHost('LUMINOUS_DEEP_LINK_HOST'),

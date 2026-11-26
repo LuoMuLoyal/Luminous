@@ -65,6 +65,22 @@ v1.0 引入了**双向通道**，这是本 feature 相对 A7b 的最大变化：
 （`GenerativeTransport.capabilitiesDocument()`，含完整 catalog 文档）。服务端不再
 维护第二份组件清单，提示词由它生成。
 
+### catalog id 是配置，不是常量
+
+`createSurface.catalogId` 由 `GenerativeCatalog.catalogId` 提供，来源是编译期
+`--dart-define=A2UI_CATALOG_ID=...`。
+
+**它必须与 Lucent 的 `A2UI_CATALOG_ID` 一致。** 服务端用它告诉模型往
+`createSurface` 里写什么值；渲染端按这个 id 找自己的 catalog。对不上时模型产出的
+整批组件会被按「不属于本 catalog」拒绝，而报错看起来像是模型的错。
+
+未配置时用 `GenerativeCatalog.defaultCatalogId` —— 一个 `urn:` 形式的值。选 URN 而
+不是 URL 是刻意的：catalog id 是**对外发布的标识符**（出现在每一条 `createSurface`
+里），默认值不该替部署方声称一个它可能并不拥有的域名。要对外发布就在构建时指定。
+
+空值在使用点兜底（`catalogId` getter），不依赖 `EnvReader` 的 `fallback:`：那条兜底
+只作用于 `String.fromEnvironment` 分支，catalog id 为空会让 surface 建不出来。
+
 **`chunk` 不是 LLM 文本流**。它的 `data` 是一条服务端已解析好的 A2UI 消息对象，
 直接交给 `MessageProcessor`——不需要增量解析器。
 

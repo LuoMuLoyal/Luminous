@@ -25,7 +25,7 @@ void main() {
   /// 一份只用布局原语拼的树：Column > [Card(Text), Row(Text, Text), Divider]。
   const layoutMessages = <String>[
     '{"version":"1.0","createSurface":{"surfaceId":"generative.review",'
-        '"catalogId":"https://luminous.app/a2ui/catalog/v1.json"}}',
+        '"catalogId":"${GenerativeCatalog.defaultCatalogId}"}}',
     '{"version":"1.0","updateComponents":{"surfaceId":"generative.review","components":['
         '{"id":"root","component":"Column","children":["header","card","stats","sep"]},'
         // v1.0 的 `Text.variant` 只接受 `caption` / `body`：h1–h5 是 v0.9 独有的
@@ -43,7 +43,7 @@ void main() {
   /// 含一个未知 type 的树：渲染应降级，不崩。
   const unknownComponentMessages = <String>[
     '{"version":"1.0","createSurface":{"surfaceId":"generative.review",'
-        '"catalogId":"https://luminous.app/a2ui/catalog/v1.json"}}',
+        '"catalogId":"${GenerativeCatalog.defaultCatalogId}"}}',
     '{"version":"1.0","updateComponents":{"surfaceId":"generative.review","components":['
         '{"id":"root","component":"Column","children":["a","b"]},'
         '{"id":"a","component":"Text","text":"正常内容"},'
@@ -54,7 +54,7 @@ void main() {
   /// A2UI 1.0 起 Button **在** catalog 里：agent 可以下发可写动作。
   const buttonMessages = <String>[
     '{"version":"1.0","createSurface":{"surfaceId":"generative.review",'
-        '"catalogId":"https://luminous.app/a2ui/catalog/v1.json"}}',
+        '"catalogId":"${GenerativeCatalog.defaultCatalogId}"}}',
     '{"version":"1.0","updateComponents":{"surfaceId":"generative.review","components":['
         '{"id":"root","component":"Column","children":["btn","label"]},'
         '{"id":"btn","component":"Button","child":"btnLabel",'
@@ -67,7 +67,7 @@ void main() {
   /// 表单组件：TextField + CheckBox + Slider。
   const formMessages = <String>[
     '{"version":"1.0","createSurface":{"surfaceId":"generative.review",'
-        '"catalogId":"https://luminous.app/a2ui/catalog/v1.json"}}',
+        '"catalogId":"${GenerativeCatalog.defaultCatalogId}"}}',
     '{"version":"1.0","updateComponents":{"surfaceId":"generative.review","components":['
         '{"id":"root","component":"Column","children":["field","check","slider"]},'
         '{"id":"field","component":"TextField","label":"药品名称",'
@@ -259,7 +259,7 @@ void main() {
   group('三个横排小卡', () {
     const threeCardsMessages = <String>[
       '{"version":"1.0","createSurface":{"surfaceId":"generative.review",'
-          '"catalogId":"https://luminous.app/a2ui/catalog/v1.json"}}',
+          '"catalogId":"${GenerativeCatalog.defaultCatalogId}"}}',
       '{"version":"1.0","updateComponents":{"surfaceId":"generative.review","components":['
           '{"id":"root","component":"Column","children":["cards"]},'
           '{"id":"cards","component":"Row","children":["c1","c2","c3"]},'

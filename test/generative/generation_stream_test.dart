@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:luminous/core/composition/a2ui/a2ui.dart';
 import 'package:luminous/features/generative/application/orchestrators/generation_session.dart';
 import 'package:luminous/features/generative/domain/entities/generation.dart';
 import 'package:luminous/features/generative/domain/repositories/generation.dart';
@@ -228,7 +229,7 @@ List<Map<String, Object?>> _validMessages() => [
     'version': '1.0',
     'createSurface': {
       'surfaceId': 'generative.review',
-      'catalogId': 'https://luminous.app/a2ui/catalog/v1.json',
+      'catalogId': GenerativeCatalog.defaultCatalogId,
       'sendDataModel': true,
     },
   },

@@ -69,6 +69,8 @@ abstract final class EnvReader {
         return const String.fromEnvironment('LUMINOUS_RUNTIME_PROVIDER');
       case EnvKey.luminousEnableGenUi:
         return const String.fromEnvironment('LUMINOUS_ENABLE_GEN_UI');
+      case EnvKey.a2uiCatalogId:
+        return const String.fromEnvironment('A2UI_CATALOG_ID');
       case EnvKey.sentryDsn:
         return const String.fromEnvironment('SENTRY_DSN');
       case EnvKey.supportEmail:
