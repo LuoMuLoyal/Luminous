@@ -347,28 +347,30 @@ Product Loop Program 的延后项如下。
 
 ## 2026-11-26 端侧 LLM（`pkgs/llama_native`）
 
-Dart 侧已落地并通过 `flutter analyze` + 12 个领域测试，**但原生库还没构建，包不能真正
-推理**。以下按依赖顺序排列。
+Dart 侧与 Rust 侧代码已落地（22 个测试通过、`flutter analyze` 干净），**但桥接代码未
+生成、Rust crate 未编译过**，包还不能真正推理。以下按依赖顺序。
 
-- **llama.cpp 源码与构建脚本**：`src-native/` 只有 shim，没有 vendor 进来的 llama.cpp。
-  需要 `scripts/` 拉取指定 tag 的源码、按平台编译（Android `arm64-v8a`、iOS
-  xcframework、Windows DLL、macOS/Linux 各自）。本机当前**无 cmake / 无 MSVC**
-  （只有 msys2 gcc 15.2），Windows 桌面端要先装构建工具链。
-- **shim 从未编译过**：`llama_shim.cpp` 按 llama.cpp 当前 C API 写成，但没有编译验证，
-  `LLAMA_SHIM_LEGACY_API` 分支也未经测试。第一次编译预计要修签名/结构体字段。
+- **桥接代码生成（当前阻塞点）**：`flutter_rust_bridge_codegen` 未安装（需
+  `cargo install flutter_rust_bridge_codegen`，要编译数分钟）。`LlamaBridge` 接缝已定义、
+  `RustLlamaEngine` 已按接缝实现并有 fake 测试覆盖，但生成目录还是空的。
+  生成后只需补一个约 80 行的 `RustBridgeBindings` 适配类，其余不动。
+- **Rust crate 从未编译过**：`rust/src/**` 按 `llama-cpp-2` 与 `flutter_rust_bridge` 的
+  API 写成，`cargo check` 没跑完。第一次编译预计要修签名与生命周期问题——
+  这是最可能推翻当前设计的环节，应优先验证。
+- **构建工具链已就绪**：cmake 4.2.3、ninja 1.12.1、MSVC 19.50、Windows SDK 均可用，
+  cmake/ninja 已加入用户 PATH。不需要完整 VS。
 - **平台工程配置**：Android 需 `jniLibs` 与 Gradle NDK 配置；iOS 需 podspec 与
-  `PrivacyInfo.xcprivacy`；桌面需把库放到可执行文件旁（`LlamaShim.defaultLibraryName`
-  按裸名加载，依赖这一点）。
+  `PrivacyInfo.xcprivacy`；桌面需把动态库放到可执行文件旁。
 - **模型管理**：下载 + sha256 校验 + manifest 版本化。**复用现有模式**（
-  `lib/features/scan/data/datasources/ocr_model_manager.dart` 的按需下载方案），
-  不要发明的轮子。模型 2–3 GB，绝不能进安装包。
+  `lib/features/scan/data/datasources/ocr_model_manager.dart` 的按需下载方案）。
+  模型 2–3 GB，绝不能进安装包。
 - **app 接线**：`pubspec.yaml` 加 path 依赖；`RuntimeProviderKind` 增加后端枚举值
   （现有 `aiToolkit` 指向一个不存在的包，是历史遗留）；engine 装配与生命周期。
   **改枚举要写迁移**：`runtimeProvider` 存在 SharedPreferences
   （`PrefKeys.featureFlagsRuntimeProvider`），旧值会解析成 `none`，老用户感知为「开关失效」。
-- **GBNF 语法生成**：结构化输出（JSON）应由 grammar 约束而非提示词祈祷。llama.cpp
-  原生支持 GBNF，是这条路线相对其他引擎的决定性优势，但目前没有 Schema → GBNF 的生成器。
+- **GBNF 语法生成**：结构化输出应由 grammar 约束而非提示词祈祷。llama.cpp 原生支持
+  GBNF，但还没有 Schema → GBNF 的生成器。
 - **设备可用性探测**：内存 + ABI 探测，决定能否加载以及用多小的 `contextLength`；
   不可用时降级而不是崩溃。
 - **settings 里的「端侧运行时」开关当前是空壳**：只存 SharedPreferences 并显示，
-  没有任何代码读它去跑模型。接线前它对用户是无效的。
+  没有任何代码读它去跑模型。
