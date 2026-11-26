@@ -14,6 +14,7 @@ export 'package:luminous/core/auth/session_state.dart'
     show
         AuthRequiredException,
         AuthSessionState,
+        AuthSessionStateIdentity,
         AuthSessionStateStatus,
         kSessionRestoreTimeout,
         pendingAuthSessionResolution;

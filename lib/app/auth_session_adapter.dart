@@ -2,13 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/composition/auth/auth.dart';
+import 'package:luminous/app/composition/auth/session_mapping.dart';
 import 'package:luminous/app/composition/components/registry.dart';
 import 'package:luminous/app/push_handlers.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/app/settings_adapters.dart';
 import 'package:luminous/app/sync_handlers.dart';
 import 'package:luminous/core/auth/session_gateway.dart';
-import 'package:luminous/core/auth/session_mapping.dart';
 import 'package:luminous/core/auth/session_snapshot.dart';
 import 'package:luminous/core/database/sync/handlers.dart';
 import 'package:luminous/core/push/message_handler.dart'
@@ -16,7 +16,7 @@ import 'package:luminous/core/push/message_handler.dart'
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
-export 'package:luminous/core/auth/session_mapping.dart';
+export 'package:luminous/app/composition/auth/session_mapping.dart';
 export 'package:luminous/core/auth/session_provider.dart';
 
 // The app-side auth API (gateway override, snapshot adapters, and the typed

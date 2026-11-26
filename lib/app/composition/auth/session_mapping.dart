@@ -1,11 +1,13 @@
-/// 把 feature 侧的 auth 实体映射成 `core/auth` 的 feature-free 快照类型。
+/// 把 feature 侧的 auth 实体映射成 feature-free 的快照类型。
 ///
-/// 放在 `core/auth/` 而不是组合根：这是一次**纯值映射**（无 I/O、无 Riverpod），
-/// 而 `features/auth` 的登录/账号表单要用它把结果交给会话层。若留在
-/// `lib/app/`，feature 就只能 import 组合根，那是主依赖环上的一条边。
+/// 住在**组合根**而不是 `core/auth/`：这一支直接认识 `features/auth` 的
+/// `AuthUser` / `AuthSession`，而 `core_not_import_features` 不允许 `lib/core/**`
+/// 反向依赖 feature——快照类型本身是 feature-free 的
+/// (`core/auth/session_snapshot.dart`)，只有「从 feature 实体投影过来」这一步
+/// 属于跨层接线，归 `lib/app/` 管。
 ///
-/// 注意这仍是 core → feature(domain) 的单向引用：只取领域实体字段，不碰
-/// feature 的 data / presentation。
+/// `lib/core/auth/` 侧只依赖 [SessionUserSnapshot] / [SessionSnapshot] 这两个
+/// feature-free 类型，因此 core 仍然不知道 feature 的存在。
 library;
 
 import 'package:luminous/core/auth/session_snapshot.dart';
