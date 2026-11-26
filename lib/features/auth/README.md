@@ -11,7 +11,7 @@
 ## 对外契约
 - 路由(presentation/routes.dart):`Routes.login` / `loginOauthWechat|Qq|Google` / `register` / `forgotPassword` / `account` / `accountOauthWechat` / `accountChangeEmail` / `accountSessions` / `accountSecurityCenter`(均为 `@TypedGoRoute`,经 `auth_routes.$appRoutes` 注册)。重置密码页**没有**独立路由:验证码/新密码在同一条 `/forgot-password` 流程里。
 - 导出:domain/entities/session.dart(`AuthUser`/`AuthSession`/`AuthLinkedIdentity`,core/auth 消费)、data/providers/auth.dart(`authRepositoryProvider`)、presentation/services/wechat_oauth.dart(平台感知微信 OAuth,登录与身份绑定共用)。
-- 被依赖:core/auth/session_provider.dart 与 session_state.dart(`authSessionProvider` 建在其上)、app/router.dart redirect、mine/settings 的账号入口(账号管理 `/account`、个人信息 `/profile` 均经 `pushAuthRequiredRoute` 先做登录引导)。
+- 被依赖:app/router.dart redirect、mine/settings 的账号入口(账号管理 `/account`、个人信息 `/profile` 均经 `pushAuthRequiredRoute` 先做登录引导)。同仓其它 feature 读会话走 `core/providers/session/session_snapshot.dart`;需要富类型 `AuthUser` 时走 `presentation/providers/session_state.dart`(本 feature 的 barrel)。
 
 ## 登录引导只有一种形态:先弹框
 
@@ -26,7 +26,7 @@
   location、`mounted`/已在登录页时不重复 push。
 
 ## 不变量
-- 会话状态只在 core/auth/session_provider.dart 的 `authSessionProvider` 上变更;presentation/providers/session.dart 仅为兼容 re-export,不得再 import。
+- 会话状态只在 core/auth/session_provider.dart 的 `authSessionProvider` 上变更;presentation 读它经 `core/providers/session/session_snapshot.dart`(只读接缝),不直接 import `core/auth/session_provider.dart`——`--clean-layers` 的 R5 会拦。
 - 网络连通性错误不清 session store(`isNetworkConnectivityError` 分支);远程 logout 失败不得把用户置为登出。
 - 仓库方法一律 `TaskEither<LucentFailure, T>`;会话恢复有超时地板(isTimeout),防冷启动挂死骨架屏。
 - 显式刷新只能经注入的 `LucentDioClient.refreshSession` 回调(`LucentAuthRepository.refreshSession` 的第三个

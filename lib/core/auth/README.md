@@ -20,10 +20,17 @@
 
 - 导出:`authSessionProvider` / `AuthSessionNotifier`、`AuthSessionState` +
   `AuthSessionStateStatus`(`canAccessProtectedData` / `isRestoring` / `isConfirmedSignedOut`)、
-  `AuthRequiredException`、`pendingAuthSessionResolution`、`kSessionRestoreTimeout`。
-- 被依赖:`app/router.dart`、`app/bootstrap.dart`(启动 restore)、features/auth、shell、
-  notification、mine、health_event、scan,以及 `../widgets/common/feedback/` 的连接横幅与
-  页面状态组件。
+  `AuthSessionStateIdentity.userId`、`AuthRequiredException`、`pendingAuthSessionResolution`、
+  `kSessionRestoreTimeout`。
+- 被依赖:`app/router.dart`、`app/bootstrap.dart`(启动 restore);其余 `core/` 内部子树
+  (`providers/session/`、`widgets/auth/`、`widgets/common/feedback/`)直连。
+- **展示层不直连本目录**。presentation 需要会话状态时走
+  `../providers/session/session_snapshot.dart`(只读接缝:`authSessionProvider` +
+  `AuthSessionState` + `AuthSessionStateIdentity`);需要富类型 `AuthUser` 时再加
+  `features/auth/presentation/providers/session_state.dart`(feature 侧 barrel)。
+  这是 R5 `presentation_layer` 的硬约束,不是风格问题。
+- feature 实体 → `Session*Snapshot` 的投影在 `app/composition/auth/session_mapping.dart`,
+  不在本目录:它认识 `features/auth` 的实体,而 core 不许反向依赖 feature。
 
 ## 不变量
 
