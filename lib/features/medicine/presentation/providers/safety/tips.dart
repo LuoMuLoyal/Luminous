@@ -1,5 +1,3 @@
-// TODO(archive): 无 UI 消费方（死代码保留）；若未来做随机安全贴士，
-// 应在移动端药品详情页内以经过审核的内容卡片形式重做，勿直接复用本链路。
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/network/network_client.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';

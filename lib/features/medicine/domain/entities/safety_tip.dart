@@ -1,5 +1,8 @@
-// TODO(archive): 无 UI 消费方（死代码保留）；若未来做随机安全贴士，
-// 应在移动端药品详情页内以经过审核的内容卡片形式重做，勿直接复用本链路。
+/// One reviewed medication safety tip, as delivered by
+/// `GET /api/v1/medicines/safety-tips`.
+///
+/// Rendered by `SafetyTipCard` through the `safety.tip_card` component; the
+/// text is already localised server-side, so there is no client-side copy here.
 class MedicineSafetyTip {
   const MedicineSafetyTip({
     required this.id,
