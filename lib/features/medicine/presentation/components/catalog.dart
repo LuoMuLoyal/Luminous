@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/composition/composition.dart';
+import 'package:luminous/features/medicine/presentation/providers/safety/tips.dart';
 import 'package:luminous/features/medicine/presentation/providers/surface.dart';
 import 'package:luminous/features/medicine/presentation/widgets/sections/drug_box.dart';
 import 'package:luminous/features/medicine/presentation/widgets/sections/graph/drug_set_sections.dart';
@@ -8,6 +9,7 @@ import 'package:luminous/features/medicine/presentation/widgets/sections/graph/s
 import 'package:luminous/features/medicine/presentation/widgets/sections/quick_operation.dart';
 import 'package:luminous/features/medicine/presentation/widgets/sections/records.dart';
 import 'package:luminous/features/medicine/presentation/widgets/sections/safety_engine.dart';
+import 'package:luminous/features/medicine/presentation/widgets/sections/safety_tip.dart';
 
 /// `medicine` 表面的组件。
 ///
@@ -20,6 +22,14 @@ const medicineDrugBoxId = ComponentId('drug_box.inventory');
 const medicineRecordsId = ComponentId('dose.records');
 const medicineSafetyEngineId = ComponentId('dose.safety_engine');
 const medicineQuickOperationId = ComponentId('quick_action.medicine');
+
+/// One reviewed medication safety tip.
+///
+/// The data chain has been there since the endpoint shipped — remote source,
+/// notifier with id exclusion on refresh — but no widget ever consumed it; this
+/// id is that consumer. The `safety.` domain says what the card is about, not
+/// which page happens to mount it.
+const medicineSafetyTipId = ComponentId('safety.tip_card');
 
 // ── 药理关系图组件（A5-1：接通 10 个此前未调用的端点）────────────────
 //
@@ -61,6 +71,7 @@ const medicineSurfaceDefinition = SurfaceDefinition(
     medicineRecordsId,
     medicineSafetyEngineId,
     medicineQuickOperationId,
+    medicineSafetyTipId,
     medicineMedicationOverviewId,
     medicineMechanismPathsId,
     medicineSharedTargetsId,
@@ -95,6 +106,7 @@ void registerMedicineComponents(ComponentRegistry registry) {
   registry.registerDescriptor(const _DrugBoxComponent());
   registry.registerDescriptor(const _RecordsComponent());
   registry.registerDescriptor(const _SafetyEngineComponent());
+  registry.registerDescriptor(const _SafetyTipComponent());
   registry.registerDescriptor(const _QuickOperationComponent());
   registry.registerDescriptor(const _MedicationOverviewComponent());
   registry.registerDescriptor(const _MechanismPathsComponent());
@@ -200,6 +212,43 @@ class _SafetyEngineComponent extends ComponentDescriptor<NoComponentConfig> {
       return null;
     }
     return const SafetyEngineSection();
+  }
+}
+
+/// One reviewed safety tip.
+///
+/// The tip is content, not chrome: it renders as a single block of text. While
+/// the tips are loading, while they fail to load, and when the backend has none
+/// left, the component answers `null` — the host then drops the card together
+/// with its spacing, so the surface shows a normal page rather than an empty
+/// card. Nothing here fakes a placeholder: an unreachable endpoint is an
+/// operational problem, and the page-level state machine owns that.
+class _SafetyTipComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _SafetyTipComponent();
+
+  @override
+  ComponentId get id => medicineSafetyTipId;
+
+  @override
+  NoComponentConfig get defaultConfig => const NoComponentConfig();
+
+  @override
+  Set<ComponentSize> get supportedSizes => const {
+    ComponentSize.compact,
+    ComponentSize.regular,
+    ComponentSize.wide,
+  };
+
+  @override
+  Widget? build(
+    BuildContext context,
+    WidgetRef ref,
+    ComponentRenderContext render,
+    NoComponentConfig config,
+  ) {
+    final tips = ref.watch(medicineSafetyTipListProvider).value;
+    if (tips == null || tips.isEmpty) return null;
+    return SafetyTipCard(tip: tips.first);
   }
 }
 
