@@ -1,0 +1,41 @@
+[package]
+name = "llama_native_rust"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# The crate is a cdylib: Flutter loads it as a shared library, and the Dart side
+# never links it statically. `rlib` stays so unit tests can run against the crate
+# itself without going through the bridge.
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# The llama.cpp binding. Chosen over hand-written C FFI because it generates its
+# bindings from the vendored llama.cpp source, so an upstream rename is a
+# compile error here rather than a segfault at runtime.
+llama-cpp-2 = "0.1"
+
+# Generates the Dart ⇄ Rust bridge for us. The type-safe binding and the
+# memory-safety guarantees are the whole reason this package is Rust and not
+# another C shim.
+flutter_rust_bridge = "=2.11.1"
+
+# Tracing for the runtime log the Dart side can surface in a diagnostics screen.
+tracing = "0.1"
+
+[profile.release]
+# A 2 GB model makes code size irrelevant next to load time; optimising the
+# generated bridge and the crate itself matters more for token throughput.
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = "debuginfo"
+
+[profile.dev]
+# llama.cpp is C++ compiled by cmake; it is slow enough in debug that the
+# round-trip feels broken. Keep the crate debuggable but optimise dependencies.
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3

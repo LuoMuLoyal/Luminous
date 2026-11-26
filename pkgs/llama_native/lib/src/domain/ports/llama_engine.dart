@@ -1,5 +1,4 @@
 import '../entities/chat_message.dart';
-import '../entities/engine_options.dart';
 import '../entities/generation_options.dart';
 import '../entities/model_info.dart';
 import '../failures/llama_failure.dart';
@@ -27,11 +26,12 @@ import '../failures/llama_failure.dart';
 /// [generate]: the whole point of a stream is that the app can paint between
 /// tokens.
 abstract interface class LlamaEngine {
-  /// Loads a GGUF model and allocates its context.
+  /// Describes the currently loaded model.
   ///
-  /// Replaces any previously loaded model. Throws [LlamaFailure] when the file is
-  /// unreadable or the context cannot be allocated.
-  Future<ModelInfo> load(String modelPath, {EngineOptions options});
+  /// Separate from loading because the two have different costs and different
+  /// failure modes, and a diagnostics screen wants the former without paying for
+  /// the latter.
+  Future<ModelInfo> info();
 
   /// Applies the model's own chat template to [messages].
   ///

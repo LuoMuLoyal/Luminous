@@ -1,0 +1,17 @@
+# flutter_rust_bridge code generation config.
+#
+# Run from this package root:
+#   dart run flutter_rust_bridge_codegen generate
+#
+# The Rust crate is the single source of truth for the bridge surface: whatever
+# `rust/src/api.rs` exposes becomes a Dart function here. Changing a signature
+# and forgetting to regenerate produces a stale `lib/src/data/ffi/` tree, which
+# is why the generated files are committed rather than built on demand.
+rust_input: crate::api
+rust_root: rust/
+dart_output: lib/src/data/ffi
+
+# Only the types the API references are mirrored. Widening this pulls the whole
+# crate's internals into the generated Dart, which then becomes a second API to
+# keep compatible.
+rust_features: []
