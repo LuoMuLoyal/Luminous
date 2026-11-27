@@ -105,6 +105,10 @@ dependencies:
   health: ^13.3.2
   luminous_native_bridge:
     path: pkgs/luminous_native_bridge
+  # 端侧 LLM 推理：llama.cpp 核心在 Rust，经 flutter_rust_bridge 调用。
+  # 原生库由 cargokit 在构建期按目标平台编译，不提交二进制。
+  llama_native:
+    path: pkgs/llama_native
 
   # 深链：OAuth 回调 / 推送跳转 / 分享链接
   app_links: ^7.2.2
