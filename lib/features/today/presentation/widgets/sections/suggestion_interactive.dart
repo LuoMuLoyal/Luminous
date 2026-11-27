@@ -134,18 +134,18 @@ String labelFor(AppLocalizations l10n, TodaySuggestionFeedback feedback) {
 ///
 /// Shows a loading spinner while fetching, and a retry button on failure
 /// (up to [_maxRetries] attempts).
-class SuggestionAiExplainButton extends ConsumerStatefulWidget {
-  const SuggestionAiExplainButton({super.key, required this.suggestionId});
+class SuggestionExplainButton extends ConsumerStatefulWidget {
+  const SuggestionExplainButton({super.key, required this.suggestionId});
 
   final String suggestionId;
 
   @override
-  ConsumerState<SuggestionAiExplainButton> createState() =>
-      _SuggestionAiExplainButtonState();
+  ConsumerState<SuggestionExplainButton> createState() =>
+      _SuggestionExplainButtonState();
 }
 
-class _SuggestionAiExplainButtonState
-    extends ConsumerState<SuggestionAiExplainButton> {
+class _SuggestionExplainButtonState
+    extends ConsumerState<SuggestionExplainButton> {
   bool _isRequested = false;
   int _retryCount = 0;
   static const int _maxRetries = 3;
@@ -177,15 +177,15 @@ class _SuggestionAiExplainButtonState
     return explanationAsync.when(
       data: (explanation) {
         if (explanation == null) {
-          return AiExplainUnavailable(l10n: l10n);
+          return SuggestionExplanationUnavailable(l10n: l10n);
         }
-        // aiGenerated=false means the backend returned a rule-based fallback
+        // briefingGenerated=false means the backend returned a rule-based fallback
         // explanation (e.g. model not configured). Do not waste retries;
         // display the fallback content with a rule-based label.
-        if (!explanation.aiGenerated) {
-          return AiExplainContent(explanation: explanation);
+        if (!explanation.briefingGenerated) {
+          return SuggestionExplanation(explanation: explanation);
         }
-        return AiExplainContent(explanation: explanation);
+        return SuggestionExplanation(explanation: explanation);
       },
       loading: () => Row(
         children: [
@@ -205,7 +205,7 @@ class _SuggestionAiExplainButtonState
       ),
       error: (_, __) {
         if (_retryCount >= _maxRetries) {
-          return AiExplainUnavailable(l10n: l10n);
+          return SuggestionExplanationUnavailable(l10n: l10n);
         }
         return FButton(
           onPress: () {
@@ -225,8 +225,8 @@ class _SuggestionAiExplainButtonState
 }
 
 /// Renders AI-generated explanation content (reason + boundary) as Markdown.
-class AiExplainContent extends StatelessWidget {
-  const AiExplainContent({super.key, required this.explanation});
+class SuggestionExplanation extends StatelessWidget {
+  const SuggestionExplanation({super.key, required this.explanation});
 
   final TodaySuggestionExplanation explanation;
 
@@ -247,21 +247,21 @@ class AiExplainContent extends StatelessWidget {
           Row(
             children: [
               Icon(
-                explanation.aiGenerated
-                    ? SemanticIcons.aiGenerated
+                explanation.briefingGenerated
+                    ? SemanticIcons.briefingGenerated
                     : SemanticIcons.statusRuleBased,
                 size: IconSizeTokens.sm,
-                color: explanation.aiGenerated
+                color: explanation.briefingGenerated
                     ? SemanticColor.primary.solid(context)
                     : SemanticColor.neutral.solid(context),
               ),
               const SizedBox(width: Spacing.xs),
               Text(
-                explanation.aiGenerated
+                explanation.briefingGenerated
                     ? l10n.todaySuggestionAiLabel
                     : l10n.todaySuggestionRuleBasedLabel,
                 style: typography.body.xs.copyWith(
-                  color: explanation.aiGenerated
+                  color: explanation.briefingGenerated
                       ? SemanticColor.primary.solid(context)
                       : SemanticColor.neutral.solid(context),
                   fontWeight: FontWeight.w700,
@@ -273,14 +273,14 @@ class AiExplainContent extends StatelessWidget {
           MarkdownBody(
             data: explanation.reason,
             selectable: true,
-            styleSheet: MarkdownStyle.ai(context),
+            styleSheet: MarkdownStyle.assistantGenerated(context),
           ),
           if (explanation.boundary.isNotEmpty) ...[
             const SizedBox(height: Spacing.sm),
             MarkdownBody(
               data: explanation.boundary,
               selectable: true,
-              styleSheet: MarkdownStyle.ai(context).copyWith(
+              styleSheet: MarkdownStyle.assistantGenerated(context).copyWith(
                 p: typography.body.xs.copyWith(
                   color: SemanticColor.neutral.solid(context),
                 ),
@@ -294,8 +294,8 @@ class AiExplainContent extends StatelessWidget {
 }
 
 /// Shown when AI explanation is unavailable after max retries.
-class AiExplainUnavailable extends StatelessWidget {
-  const AiExplainUnavailable({super.key, required this.l10n});
+class SuggestionExplanationUnavailable extends StatelessWidget {
+  const SuggestionExplanationUnavailable({super.key, required this.l10n});
 
   final AppLocalizations l10n;
 

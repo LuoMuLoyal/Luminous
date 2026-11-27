@@ -515,8 +515,8 @@ void main() {
     await tester.tap(expandButton);
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.text(l10n.todayAiSummaryPreviewHint), findsOneWidget);
-    expect(find.text(l10n.todayAiSummaryGenerateAction), findsNothing);
+    expect(find.text(l10n.todayBriefingSummaryPreviewHint), findsOneWidget);
+    expect(find.text(l10n.todayBriefingSummaryGenerateAction), findsNothing);
   });
 
   testWidgets('Error state shows retry', (tester) async {

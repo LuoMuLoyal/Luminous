@@ -62,7 +62,10 @@ void main() {
     });
 
     test('returns lightbulb icon for "lightbulb"', () {
-      expect(SuggestionIconMapping.resolve('lightbulb'), SemanticIcons.aiTip);
+      expect(
+        SuggestionIconMapping.resolve('lightbulb'),
+        SemanticIcons.assistantTip,
+      );
     });
 
     test('returns info icon for "info"', () {
@@ -72,12 +75,15 @@ void main() {
     test('returns fallback wand icon for unknown icon name', () {
       expect(
         SuggestionIconMapping.resolve('unknown-icon'),
-        SemanticIcons.aiFallbackIcon,
+        SemanticIcons.assistantFallbackIcon,
       );
     });
 
     test('returns fallback wand icon for empty string', () {
-      expect(SuggestionIconMapping.resolve(''), SemanticIcons.aiFallbackIcon);
+      expect(
+        SuggestionIconMapping.resolve(''),
+        SemanticIcons.assistantFallbackIcon,
+      );
     });
 
     test('fallback is consistent', () {

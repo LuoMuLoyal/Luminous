@@ -330,11 +330,11 @@ void main() {
         suggestionId: 's1',
         reason: 'Because...',
         boundary: 'Only when...',
-        aiGenerated: true,
+        briefingGenerated: true,
       );
 
       expect(explanation.suggestionId, 's1');
-      expect(explanation.aiGenerated, isTrue);
+      expect(explanation.briefingGenerated, isTrue);
       expect(explanation.locale, isNull);
     });
 

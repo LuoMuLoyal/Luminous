@@ -5,24 +5,24 @@ import 'package:luminous/core/network/client/sse.dart';
 import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/core/network/map_utils.dart';
 
-sealed class TodayAiRemoteEvent {
-  const TodayAiRemoteEvent();
+sealed class TodayBriefingRemoteEvent {
+  const TodayBriefingRemoteEvent();
 }
 
-class TodayAiRemoteSummaryEvent extends TodayAiRemoteEvent {
-  const TodayAiRemoteSummaryEvent(this.summary);
+class TodayBriefingRemoteSummaryEvent extends TodayBriefingRemoteEvent {
+  const TodayBriefingRemoteSummaryEvent(this.summary);
 
   final String summary;
 }
 
-class TodayAiRemoteResultEvent extends TodayAiRemoteEvent {
-  const TodayAiRemoteResultEvent(this.dto);
+class TodayBriefingRemoteResultEvent extends TodayBriefingRemoteEvent {
+  const TodayBriefingRemoteResultEvent(this.dto);
 
   final lucent.AnalysisReadResponseAnalysis dto;
 }
 
-class TodayAiRemoteDataSource {
-  TodayAiRemoteDataSource({required this.api, required this.dio});
+class TodayBriefingRemoteDataSource {
+  TodayBriefingRemoteDataSource({required this.api, required this.dio});
 
   final lucent.TodayAnalysisApi api;
   final Dio dio;
@@ -116,7 +116,7 @@ class TodayAiRemoteDataSource {
     };
   }
 
-  Stream<TodayAiRemoteEvent> generateStream({String? date}) async* {
+  Stream<TodayBriefingRemoteEvent> generateStream({String? date}) async* {
     final sse = LucentSseClient(dio: dio);
 
     await for (final event in sse.postJson(
@@ -129,12 +129,12 @@ class TodayAiRemoteDataSource {
           if (data is Map<String, Object?>) {
             final summary = data['summary'];
             if (summary is String && summary.trim().isNotEmpty) {
-              yield TodayAiRemoteSummaryEvent(summary);
+              yield TodayBriefingRemoteSummaryEvent(summary);
             }
           }
         case 'result':
           final json = requireMap(event.data);
-          yield TodayAiRemoteResultEvent(
+          yield TodayBriefingRemoteResultEvent(
             lucent.AnalysisReadResponseAnalysis.fromJson(json),
           );
         case 'error':

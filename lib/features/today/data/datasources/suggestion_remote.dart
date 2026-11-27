@@ -85,7 +85,7 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
         suggestionId: data.suggestionId,
         reason: data.reason,
         boundary: data.boundary,
-        aiGenerated: data.aiGenerated,
+        briefingGenerated: data.briefingGenerated,
         locale: data.locale,
       );
     }, (error, stackTrace) => LucentErrorMapper.fromObject(error));

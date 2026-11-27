@@ -4,33 +4,33 @@ import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/network/contract/failure.dart';
 import 'package:luminous/core/network/wire_time.dart';
-import 'package:luminous/features/today/data/datasources/ai_remote.dart';
-import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
-import 'package:luminous/features/today/domain/repositories/ai.dart';
+import 'package:luminous/features/today/data/datasources/briefing_remote.dart';
+import 'package:luminous/features/today/domain/entities/briefing.dart';
+import 'package:luminous/features/today/domain/repositories/briefing.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'lucent_ai.g.dart';
+part 'lucent_briefing.g.dart';
 
 @riverpod
-TodayAiRemoteDataSource todayAiRemoteDataSource(Ref ref) {
+TodayBriefingRemoteDataSource todayBriefingRemoteDataSource(Ref ref) {
   final api = ref.watch(lucentClientProvider).todayAnalysis;
   final dio = ref.watch(lucentDioClientProvider).dio;
-  return TodayAiRemoteDataSource(api: api, dio: dio);
+  return TodayBriefingRemoteDataSource(api: api, dio: dio);
 }
 
 @riverpod
-TodayAiRepository todayAiRepository(Ref ref) {
-  final dataSource = ref.watch(todayAiRemoteDataSourceProvider);
-  return LucentTodayAiRepository(dataSource: dataSource);
+TodayBriefingRepository todayBriefingRepository(Ref ref) {
+  final dataSource = ref.watch(todayBriefingRemoteDataSourceProvider);
+  return LucentTodayBriefingRepository(dataSource: dataSource);
 }
 
-class LucentTodayAiRepository implements TodayAiRepository {
-  LucentTodayAiRepository({required this.dataSource});
+class LucentTodayBriefingRepository implements TodayBriefingRepository {
+  LucentTodayBriefingRepository({required this.dataSource});
 
-  final TodayAiRemoteDataSource dataSource;
+  final TodayBriefingRemoteDataSource dataSource;
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) {
+  TaskEither<LucentFailure, TodayBriefing> read(DateTime date) {
     return TaskEither.tryCatch(() async {
       final dto = await dataSource.read(date: _formatDate(date));
       return _mapReadDataDto(dto);
@@ -38,7 +38,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
   }
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) {
+  TaskEither<LucentFailure, TodayBriefing> refresh(DateTime date) {
     return TaskEither.tryCatch(() async {
       final dto = await dataSource.refresh(date: _formatDate(date));
       return _mapReadDataDto(dto);
@@ -48,10 +48,10 @@ class LucentTodayAiRepository implements TodayAiRepository {
   /// 兼容保留：当前无生产消费者，仅保留 API 兼容；流结束无结果按本地
   /// 不变量映射 Left(unknown)。
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) {
+  TaskEither<LucentFailure, TodayBriefing> generate({String? date}) {
     return TaskEither.tryCatch(() async {
       await for (final event in generateStream(date: date)) {
-        if (event is TodayAiGenerationResultEvent) {
+        if (event is TodayBriefingResultEvent) {
           return event.analysis;
         }
       }
@@ -65,24 +65,24 @@ class LucentTodayAiRepository implements TodayAiRepository {
   }
 
   @override
-  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
+  Stream<TodayBriefingEvent> generateStream({String? date}) async* {
     await for (final event in dataSource.generateStream(date: date)) {
       switch (event) {
-        case TodayAiRemoteSummaryEvent():
-          yield TodayAiGenerationSummaryEvent(event.summary);
-        case TodayAiRemoteResultEvent():
-          yield TodayAiGenerationResultEvent(_mapAnalysis(event.dto));
+        case TodayBriefingRemoteSummaryEvent():
+          yield TodayBriefingSummaryEvent(event.summary);
+        case TodayBriefingRemoteResultEvent():
+          yield TodayBriefingResultEvent(_mapAnalysis(event.dto));
       }
     }
   }
 
-  TodayAiAnalysis _mapReadDataDto(lucent.AnalysisReadResponse dto) {
+  TodayBriefing _mapReadDataDto(lucent.AnalysisReadResponse dto) {
     final analysis = dto.analysis;
     final status = _mapMaterializationStatus(dto.status);
     final sourceVersion = dto.sourceVersion.toInt();
     final computedVersion = dto.computedVersion.toInt();
     if (analysis == null) {
-      return TodayAiAnalysis(
+      return TodayBriefing(
         date: _formatDate(DateTime.now()),
         generatedAt: parseDateTimeOrEpoch(dto.computedAt),
         summary: '',
@@ -90,7 +90,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
         actionLabel: '',
         confidenceNote: '',
         materializationStatus: status,
-        aiGenerated: false,
+        briefingGenerated: false,
         sourceVersion: sourceVersion,
         computedVersion: computedVersion,
       );
@@ -104,15 +104,15 @@ class LucentTodayAiRepository implements TodayAiRepository {
     );
   }
 
-  TodayAiAnalysis _mapAnalysis(
+  TodayBriefing _mapAnalysis(
     lucent.AnalysisReadResponseAnalysis dto, {
-    TodayAiAnalysisMaterializationStatus materializationStatus =
-        TodayAiAnalysisMaterializationStatus.ready,
+    TodayBriefingMaterializationStatus materializationStatus =
+        TodayBriefingMaterializationStatus.ready,
     DateTime? computedAt,
     int sourceVersion = 0,
     int computedVersion = 0,
   }) {
-    return TodayAiAnalysis(
+    return TodayBriefing(
       date: dto.date,
       generatedAt: computedAt ?? parseDateTimeOrEpoch(dto.generatedAt),
       summary: dto.summary,
@@ -120,42 +120,42 @@ class LucentTodayAiRepository implements TodayAiRepository {
       actionLabel: dto.actionLabel,
       confidenceNote: dto.confidenceNote,
       materializationStatus: materializationStatus,
-      aiGenerated: dto.aiGenerated,
+      briefingGenerated: dto.briefingGenerated,
       sourceVersion: sourceVersion,
       computedVersion: computedVersion,
     );
   }
 
-  TodayAiAnalysisBullet _mapBullet(
+  TodayBriefingBullet _mapBullet(
     lucent.AnalysisReadResponseAnalysisBullets dto,
   ) {
-    return TodayAiAnalysisBullet(
+    return TodayBriefingBullet(
       kind: switch (dto.kind.value) {
-        'medication' => TodayAiAnalysisBulletKind.medication,
-        'hydration' => TodayAiAnalysisBulletKind.hydration,
-        'sleep' => TodayAiAnalysisBulletKind.sleep,
-        _ => TodayAiAnalysisBulletKind.general,
+        'medication' => TodayBriefingBulletKind.medication,
+        'hydration' => TodayBriefingBulletKind.hydration,
+        'sleep' => TodayBriefingBulletKind.sleep,
+        _ => TodayBriefingBulletKind.general,
       },
       text: dto.text,
     );
   }
 
-  TodayAiAnalysisMaterializationStatus _mapMaterializationStatus(
+  TodayBriefingMaterializationStatus _mapMaterializationStatus(
     lucent.AnalysisReadResponseStatusEnum status,
   ) {
     return switch (status) {
       lucent.AnalysisReadResponseStatusEnum.empty =>
-        TodayAiAnalysisMaterializationStatus.empty,
+        TodayBriefingMaterializationStatus.empty,
       lucent.AnalysisReadResponseStatusEnum.pending =>
-        TodayAiAnalysisMaterializationStatus.pending,
+        TodayBriefingMaterializationStatus.pending,
       lucent.AnalysisReadResponseStatusEnum.ready =>
-        TodayAiAnalysisMaterializationStatus.ready,
+        TodayBriefingMaterializationStatus.ready,
       lucent.AnalysisReadResponseStatusEnum.stale =>
-        TodayAiAnalysisMaterializationStatus.stale,
+        TodayBriefingMaterializationStatus.stale,
       lucent.AnalysisReadResponseStatusEnum.failed =>
-        TodayAiAnalysisMaterializationStatus.failed,
+        TodayBriefingMaterializationStatus.failed,
       lucent.AnalysisReadResponseStatusEnum.unknownDefaultOpenApi =>
-        TodayAiAnalysisMaterializationStatus.empty,
+        TodayBriefingMaterializationStatus.empty,
     };
   }
 

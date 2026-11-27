@@ -240,7 +240,7 @@ abstract class TodaySuggestionExplanation with _$TodaySuggestionExplanation {
     required String suggestionId,
     required String reason,
     required String boundary,
-    required bool aiGenerated,
+    required bool briefingGenerated,
     String? locale,
   }) = _TodaySuggestionExplanation;
 }

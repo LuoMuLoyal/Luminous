@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/features/today/data/datasources/ai_remote.dart';
+import 'package:luminous/features/today/data/datasources/briefing_remote.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 /// SSE adapter that returns a stream of events.
@@ -96,7 +96,7 @@ class _ErrorSseAdapter implements HttpClientAdapter {
 }
 
 void main() {
-  group('TodayAiRemoteDataSource — read', () {
+  group('TodayBriefingRemoteDataSource — read', () {
     late Dio dio;
 
     setUp(() {
@@ -115,7 +115,7 @@ void main() {
             'actionLabel': '保持现状',
             'action': 'navigate_to_record',
             'confidenceNote': '基于最近7天数据',
-            'aiGenerated': true,
+            'briefingGenerated': true,
           },
           'sourceVersion': 1,
           'computedVersion': 1,
@@ -124,7 +124,7 @@ void main() {
         },
       );
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -137,7 +137,7 @@ void main() {
     test('throws LucentFailure when response body is empty', () async {
       dio.httpClientAdapter = _JsonAdapter(responseBody: null);
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -157,7 +157,7 @@ void main() {
     });
   });
 
-  group('TodayAiRemoteDataSource — refresh', () {
+  group('TodayBriefingRemoteDataSource — refresh', () {
     late Dio dio;
 
     setUp(() {
@@ -172,7 +172,7 @@ void main() {
       'actionLabel': '保持现状',
       'action': 'navigate_to_record',
       'confidenceNote': '基于最近7天数据',
-      'aiGenerated': true,
+      'briefingGenerated': true,
     };
 
     Map<String, dynamic> dataBody({
@@ -194,7 +194,7 @@ void main() {
         responseBody: dataBody(status: 'empty'),
       );
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -209,7 +209,7 @@ void main() {
         responseBody: dataBody(status: 'ready', analysis: analysisBody()),
       );
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -225,7 +225,7 @@ void main() {
         responseBody: dataBody(status: 'pending', jobId: 'job-1'),
       );
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -240,7 +240,7 @@ void main() {
         responseBody: dataBody(status: 'stale', analysis: analysisBody()),
       );
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -255,7 +255,7 @@ void main() {
         responseBody: dataBody(status: 'failed'),
       );
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -268,7 +268,7 @@ void main() {
     test('throws LucentFailure when response body is empty', () async {
       dio.httpClientAdapter = _JsonAdapter(responseBody: null);
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -290,7 +290,7 @@ void main() {
     test('throws LucentFailure when response body is malformed', () async {
       dio.httpClientAdapter = _JsonAdapter(responseBody: 'not an object');
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -310,21 +310,21 @@ void main() {
     });
   });
 
-  group('TodayAiRemoteDataSource — generateStream', () {
+  group('TodayBriefingRemoteDataSource — generateStream', () {
     late Dio dio;
 
     setUp(() {
       dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
     });
 
-    test('summary event yields TodayAiRemoteSummaryEvent', () async {
+    test('summary event yields TodayBriefingRemoteSummaryEvent', () async {
       final adapter = _SseAdapter([
         (event: 'summary', data: {'summary': '今日分析'}),
         (event: 'done', data: {}),
       ]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -332,11 +332,11 @@ void main() {
       final events = await ds.generateStream().toList();
 
       expect(events.length, 1);
-      expect(events[0], isA<TodayAiRemoteSummaryEvent>());
-      expect((events[0] as TodayAiRemoteSummaryEvent).summary, '今日分析');
+      expect(events[0], isA<TodayBriefingRemoteSummaryEvent>());
+      expect((events[0] as TodayBriefingRemoteSummaryEvent).summary, '今日分析');
     });
 
-    test('result event yields TodayAiRemoteResultEvent', () async {
+    test('result event yields TodayBriefingRemoteResultEvent', () async {
       final adapter = _SseAdapter([
         (
           event: 'result',
@@ -348,14 +348,14 @@ void main() {
             'actionLabel': '多喝水',
             'action': 'navigate_to_record',
             'confidenceNote': 'confidence',
-            'aiGenerated': true,
+            'briefingGenerated': true,
           },
         ),
         (event: 'done', data: {}),
       ]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -363,8 +363,8 @@ void main() {
       final events = await ds.generateStream().toList();
 
       expect(events.length, 1);
-      expect(events[0], isA<TodayAiRemoteResultEvent>());
-      final result = events[0] as TodayAiRemoteResultEvent;
+      expect(events[0], isA<TodayBriefingRemoteResultEvent>());
+      final result = events[0] as TodayBriefingRemoteResultEvent;
       expect(result.dto.summary, '分析结果');
       expect(result.dto.actionLabel, '多喝水');
     });
@@ -378,7 +378,7 @@ void main() {
       ]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -386,7 +386,7 @@ void main() {
       final events = await ds.generateStream().toList();
 
       expect(events.length, 1);
-      expect((events[0] as TodayAiRemoteSummaryEvent).summary, 'valid');
+      expect((events[0] as TodayBriefingRemoteSummaryEvent).summary, 'valid');
     });
 
     test('non-Map summary data is skipped', () async {
@@ -396,7 +396,7 @@ void main() {
       ]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -423,7 +423,7 @@ void main() {
       ]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -444,7 +444,7 @@ void main() {
       final adapter = _SseAdapter([(event: 'error', data: {})]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -466,7 +466,7 @@ void main() {
       ]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -474,7 +474,7 @@ void main() {
       final events = await ds.generateStream().toList();
 
       expect(events, hasLength(1));
-      expect((events[0] as TodayAiRemoteSummaryEvent).summary, 'partial');
+      expect((events[0] as TodayBriefingRemoteSummaryEvent).summary, 'partial');
     });
 
     test(
@@ -489,7 +489,7 @@ void main() {
           ),
         );
 
-        final ds = TodayAiRemoteDataSource(
+        final ds = TodayBriefingRemoteDataSource(
           api: lucent.TodayAnalysisApi(dio),
           dio: dio,
         );
@@ -528,7 +528,7 @@ void main() {
       ]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -565,7 +565,7 @@ void main() {
       ]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -573,7 +573,7 @@ void main() {
       final events = await ds.generateStream().toList();
 
       expect(events.length, 1);
-      expect((events[0] as TodayAiRemoteSummaryEvent).summary, 'before');
+      expect((events[0] as TodayBriefingRemoteSummaryEvent).summary, 'before');
     });
 
     test('unknown event types are ignored', () async {
@@ -584,7 +584,7 @@ void main() {
       ]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -592,7 +592,7 @@ void main() {
       final events = await ds.generateStream().toList();
 
       expect(events.length, 1);
-      expect((events[0] as TodayAiRemoteSummaryEvent).summary, 'valid');
+      expect((events[0] as TodayBriefingRemoteSummaryEvent).summary, 'valid');
     });
 
     test('summary + result + done sequence', () async {
@@ -609,14 +609,14 @@ void main() {
             'actionLabel': '',
             'action': '',
             'confidenceNote': '',
-            'aiGenerated': true,
+            'briefingGenerated': true,
           },
         ),
         (event: 'done', data: {}),
       ]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -624,16 +624,16 @@ void main() {
       final events = await ds.generateStream().toList();
 
       expect(events.length, 3);
-      expect(events[0], isA<TodayAiRemoteSummaryEvent>());
-      expect(events[1], isA<TodayAiRemoteSummaryEvent>());
-      expect(events[2], isA<TodayAiRemoteResultEvent>());
+      expect(events[0], isA<TodayBriefingRemoteSummaryEvent>());
+      expect(events[1], isA<TodayBriefingRemoteSummaryEvent>());
+      expect(events[2], isA<TodayBriefingRemoteResultEvent>());
     });
 
     test('passes date parameter in stream body', () async {
       final adapter = _SseAdapter([(event: 'done', data: {})]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );
@@ -647,7 +647,7 @@ void main() {
       final adapter = _SseAdapter([(event: 'done', data: {})]);
       dio.httpClientAdapter = adapter;
 
-      final ds = TodayAiRemoteDataSource(
+      final ds = TodayBriefingRemoteDataSource(
         api: lucent.TodayAnalysisApi(dio),
         dio: dio,
       );

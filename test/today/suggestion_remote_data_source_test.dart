@@ -351,7 +351,7 @@ void main() {
           'suggestionId': 's1',
           'reason': '基于您的用药记录和血压数据',
           'boundary': '本建议仅供参考',
-          'aiGenerated': true,
+          'briefingGenerated': true,
           'locale': 'zh-CN',
         },
       );
@@ -365,7 +365,7 @@ void main() {
       expect(result.suggestionId, 's1');
       expect(result.reason, '基于您的用药记录和血压数据');
       expect(result.boundary, '本建议仅供参考');
-      expect(result.aiGenerated, isTrue);
+      expect(result.briefingGenerated, isTrue);
       expect(result.locale, 'zh-CN');
     });
   });

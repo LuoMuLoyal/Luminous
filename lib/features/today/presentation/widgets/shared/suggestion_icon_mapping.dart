@@ -4,12 +4,12 @@ import 'package:material_ui/material_ui.dart';
 /// Maps backend suggestion icon strings to Flutter [IconData].
 ///
 /// When the backend introduces a new icon name not listed here, the fallback
-/// [SemanticIcons.aiEntry] is used. To add support for a new icon, simply add
+/// [SemanticIcons.assistantEntry] is used. To add support for a new icon, simply add
 /// an entry to [_mapping].
 class SuggestionIconMapping {
   SuggestionIconMapping._();
 
-  static const IconData _fallback = SemanticIcons.aiFallbackIcon;
+  static const IconData _fallback = SemanticIcons.assistantFallbackIcon;
 
   /// Canonical mapping from backend icon string → [IconData].
   static const Map<String, IconData> _mapping = {
@@ -22,7 +22,7 @@ class SuggestionIconMapping {
     'alert-triangle': SemanticIcons.statusWarning,
     'pill': SemanticIcons.recordMedicine,
     'trending-up': SemanticIcons.reportTrend,
-    'lightbulb': SemanticIcons.aiTip,
+    'lightbulb': SemanticIcons.assistantTip,
     'info': SemanticIcons.statusInfo,
   };
 

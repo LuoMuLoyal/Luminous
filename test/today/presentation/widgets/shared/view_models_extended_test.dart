@@ -423,7 +423,7 @@ void main() {
           ),
         );
         final bullets = buildAiSummaryBullets(l10n, dashboard);
-        expect(bullets[0].text, l10n.todayAiSummaryMedicationPending(2));
+        expect(bullets[0].text, l10n.todayBriefingSummaryMedicationPending(2));
       },
     );
 
@@ -437,7 +437,7 @@ void main() {
         ),
       );
       final bullets = buildAiSummaryBullets(l10n, dashboard);
-      expect(bullets[0].text, l10n.todayAiSummaryMedicationDone);
+      expect(bullets[0].text, l10n.todayBriefingSummaryMedicationDone);
     });
 
     test('second bullet is hydration-related', () async {
@@ -455,7 +455,7 @@ void main() {
           water: const TodayWaterSummary(completedCount: 3, targetCount: 8),
         );
         final bullets = buildAiSummaryBullets(l10n, dashboard);
-        expect(bullets[1].text, l10n.todayAiSummaryWaterRemaining(5));
+        expect(bullets[1].text, l10n.todayBriefingSummaryWaterRemaining(5));
       },
     );
 
@@ -467,7 +467,7 @@ void main() {
           water: const TodayWaterSummary(completedCount: 8, targetCount: 8),
         );
         final bullets = buildAiSummaryBullets(l10n, dashboard);
-        expect(bullets[1].text, l10n.todayAiSummaryWaterDone);
+        expect(bullets[1].text, l10n.todayBriefingSummaryWaterDone);
       },
     );
 

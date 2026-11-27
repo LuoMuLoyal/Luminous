@@ -7,10 +7,10 @@ import 'package:fpdart/fpdart.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
-import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
-import 'package:luminous/features/today/domain/repositories/ai.dart';
-import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
+import 'package:luminous/features/today/data/repositories/lucent_briefing.dart';
+import 'package:luminous/features/today/domain/entities/briefing.dart';
+import 'package:luminous/features/today/domain/repositories/briefing.dart';
+import 'package:luminous/features/today/presentation/providers/briefing.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/kv_test_store.dart';
@@ -32,10 +32,10 @@ void main() {
     addTearDown(container.dispose);
 
     final state = await container.read(
-      todayAiAnalysisControllerProvider.future,
+      todayBriefingAnalysisControllerProvider.future,
     );
 
-    expect(state.status, TodayAiAnalysisCardStatus.idle);
+    expect(state.status, TodayBriefingCardStatus.idle);
   });
 
   test('Today AI provider returns disabled when user setting is off', () async {
@@ -52,23 +52,23 @@ void main() {
     await container.read(userSettingsControllerProvider.future);
 
     final state = await container.read(
-      todayAiAnalysisControllerProvider.future,
+      todayBriefingAnalysisControllerProvider.future,
     );
 
-    expect(state.status, TodayAiAnalysisCardStatus.disabled);
+    expect(state.status, TodayBriefingCardStatus.disabled);
   });
 
   test('Today AI provider maps empty read state', () async {
-    final repository = _StaticTodayAiRepository(
-      TodayAiAnalysis(
+    final repository = _StaticTodayBriefingRepository(
+      TodayBriefing(
         date: '2026-06-12',
         generatedAt: generatedAt,
         summary: '',
         bullets: const [],
         actionLabel: '',
         confidenceNote: '',
-        materializationStatus: TodayAiAnalysisMaterializationStatus.empty,
-        aiGenerated: false,
+        materializationStatus: TodayBriefingMaterializationStatus.empty,
+        briefingGenerated: false,
       ),
     );
 
@@ -78,7 +78,7 @@ void main() {
         userSettingsControllerProvider.overrideWith(
           EnabledUserSettingsController.new,
         ),
-        todayAiRepositoryProvider.overrideWithValue(repository),
+        todayBriefingRepositoryProvider.overrideWithValue(repository),
       ],
     );
     addTearDown(container.dispose);
@@ -86,120 +86,126 @@ void main() {
     await container.read(userSettingsControllerProvider.future);
 
     final state = await container.read(
-      todayAiAnalysisControllerProvider.future,
+      todayBriefingAnalysisControllerProvider.future,
     );
 
-    expect(state.status, TodayAiAnalysisCardStatus.success);
+    expect(state.status, TodayBriefingCardStatus.success);
     expect(
       state.materializationStatus,
-      TodayAiAnalysisMaterializationStatus.empty,
+      TodayBriefingMaterializationStatus.empty,
     );
     expect(state.analysis, isNull);
   });
 
-  test('Today AI provider maps ready state with aiGenerated true', () async {
-    final repository = _StaticTodayAiRepository(
-      TodayAiAnalysis(
-        date: '2026-06-12',
-        generatedAt: generatedAt,
-        summary: 'Hydration still needs attention today.',
-        bullets: const [
-          TodayAiAnalysisBullet(
-            kind: TodayAiAnalysisBulletKind.hydration,
-            text: 'Two water check-ins are still missing.',
+  test(
+    'Today AI provider maps ready state with briefingGenerated true',
+    () async {
+      final repository = _StaticTodayBriefingRepository(
+        TodayBriefing(
+          date: '2026-06-12',
+          generatedAt: generatedAt,
+          summary: 'Hydration still needs attention today.',
+          bullets: const [
+            TodayBriefingBullet(
+              kind: TodayBriefingBulletKind.hydration,
+              text: 'Two water check-ins are still missing.',
+            ),
+          ],
+          actionLabel: 'View today',
+          confidenceNote: 'Generated from today records only.',
+          materializationStatus: TodayBriefingMaterializationStatus.ready,
+          briefingGenerated: true,
+        ),
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
           ),
+          todayBriefingRepositoryProvider.overrideWithValue(repository),
         ],
-        actionLabel: 'View today',
-        confidenceNote: 'Generated from today records only.',
-        materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-        aiGenerated: true,
-      ),
-    );
+      );
+      addTearDown(container.dispose);
 
-    final container = ProviderContainer(
-      overrides: [
-        authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-        userSettingsControllerProvider.overrideWith(
-          EnabledUserSettingsController.new,
+      await container.read(userSettingsControllerProvider.future);
+
+      final state = await container.read(
+        todayBriefingAnalysisControllerProvider.future,
+      );
+
+      expect(state.status, TodayBriefingCardStatus.success);
+      expect(
+        state.materializationStatus,
+        TodayBriefingMaterializationStatus.ready,
+      );
+      expect(state.analysis?.summary, 'Hydration still needs attention today.');
+      expect(state.analysis?.briefingGenerated, isTrue);
+    },
+  );
+
+  test(
+    'Today AI provider maps ready state with briefingGenerated false',
+    () async {
+      final repository = _StaticTodayBriefingRepository(
+        TodayBriefing(
+          date: '2026-06-12',
+          generatedAt: generatedAt,
+          summary: 'Rule-based summary.',
+          bullets: const [],
+          actionLabel: '',
+          confidenceNote: '',
+          materializationStatus: TodayBriefingMaterializationStatus.ready,
+          briefingGenerated: false,
         ),
-        todayAiRepositoryProvider.overrideWithValue(repository),
-      ],
-    );
-    addTearDown(container.dispose);
+      );
 
-    await container.read(userSettingsControllerProvider.future);
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          userSettingsControllerProvider.overrideWith(
+            EnabledUserSettingsController.new,
+          ),
+          todayBriefingRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
 
-    final state = await container.read(
-      todayAiAnalysisControllerProvider.future,
-    );
+      await container.read(userSettingsControllerProvider.future);
 
-    expect(state.status, TodayAiAnalysisCardStatus.success);
-    expect(
-      state.materializationStatus,
-      TodayAiAnalysisMaterializationStatus.ready,
-    );
-    expect(state.analysis?.summary, 'Hydration still needs attention today.');
-    expect(state.analysis?.aiGenerated, isTrue);
-  });
+      final state = await container.read(
+        todayBriefingAnalysisControllerProvider.future,
+      );
 
-  test('Today AI provider maps ready state with aiGenerated false', () async {
-    final repository = _StaticTodayAiRepository(
-      TodayAiAnalysis(
-        date: '2026-06-12',
-        generatedAt: generatedAt,
-        summary: 'Rule-based summary.',
-        bullets: const [],
-        actionLabel: '',
-        confidenceNote: '',
-        materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-        aiGenerated: false,
-      ),
-    );
-
-    final container = ProviderContainer(
-      overrides: [
-        authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-        userSettingsControllerProvider.overrideWith(
-          EnabledUserSettingsController.new,
-        ),
-        todayAiRepositoryProvider.overrideWithValue(repository),
-      ],
-    );
-    addTearDown(container.dispose);
-
-    await container.read(userSettingsControllerProvider.future);
-
-    final state = await container.read(
-      todayAiAnalysisControllerProvider.future,
-    );
-
-    expect(state.analysis?.aiGenerated, isFalse);
-  });
+      expect(state.analysis?.briefingGenerated, isFalse);
+    },
+  );
 
   test(
     'Today AI provider preserves previous analysis on pending/stale/failed',
     () async {
-      final readyAnalysis = TodayAiAnalysis(
+      final readyAnalysis = TodayBriefing(
         date: '2026-06-12',
         generatedAt: generatedAt,
         summary: 'Original summary.',
         bullets: const [],
         actionLabel: '',
         confidenceNote: '',
-        materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-        aiGenerated: true,
+        materializationStatus: TodayBriefingMaterializationStatus.ready,
+        briefingGenerated: true,
       );
-      final repository = _SequenceTodayAiRepository([
+      final repository = _SequenceTodayBriefingRepository([
         readyAnalysis,
-        TodayAiAnalysis(
+        TodayBriefing(
           date: '2026-06-12',
           generatedAt: generatedAt,
           summary: '',
           bullets: const [],
           actionLabel: '',
           confidenceNote: '',
-          materializationStatus: TodayAiAnalysisMaterializationStatus.pending,
-          aiGenerated: true,
+          materializationStatus: TodayBriefingMaterializationStatus.pending,
+          briefingGenerated: true,
         ),
       ]);
 
@@ -209,7 +215,7 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          todayAiRepositoryProvider.overrideWithValue(repository),
+          todayBriefingRepositoryProvider.overrideWithValue(repository),
         ],
       );
       addTearDown(container.dispose);
@@ -217,48 +223,48 @@ void main() {
       await container.read(userSettingsControllerProvider.future);
 
       final firstState = await container.read(
-        todayAiAnalysisControllerProvider.future,
+        todayBriefingAnalysisControllerProvider.future,
       );
       expect(firstState.analysis?.summary, 'Original summary.');
 
       await container
-          .read(todayAiAnalysisControllerProvider.notifier)
+          .read(todayBriefingAnalysisControllerProvider.notifier)
           .refresh();
 
       final secondState = container
-          .read(todayAiAnalysisControllerProvider)
+          .read(todayBriefingAnalysisControllerProvider)
           .asData
           ?.value;
       expect(secondState, isNotNull);
       expect(
         secondState!.materializationStatus,
-        TodayAiAnalysisMaterializationStatus.pending,
+        TodayBriefingMaterializationStatus.pending,
       );
       expect(secondState.analysis?.summary, 'Original summary.');
     },
   );
 
   test('Today AI provider refresh action updates state', () async {
-    final repository = _SequenceTodayAiRepository([
-      TodayAiAnalysis(
+    final repository = _SequenceTodayBriefingRepository([
+      TodayBriefing(
         date: '2026-06-12',
         generatedAt: generatedAt,
         summary: 'First summary.',
         bullets: const [],
         actionLabel: '',
         confidenceNote: '',
-        materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-        aiGenerated: true,
+        materializationStatus: TodayBriefingMaterializationStatus.ready,
+        briefingGenerated: true,
       ),
-      TodayAiAnalysis(
+      TodayBriefing(
         date: '2026-06-12',
         generatedAt: generatedAt,
         summary: 'Refreshed summary.',
         bullets: const [],
         actionLabel: '',
         confidenceNote: '',
-        materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-        aiGenerated: true,
+        materializationStatus: TodayBriefingMaterializationStatus.ready,
+        briefingGenerated: true,
       ),
     ]);
 
@@ -268,34 +274,36 @@ void main() {
         userSettingsControllerProvider.overrideWith(
           EnabledUserSettingsController.new,
         ),
-        todayAiRepositoryProvider.overrideWithValue(repository),
+        todayBriefingRepositoryProvider.overrideWithValue(repository),
       ],
     );
     addTearDown(container.dispose);
 
     await container.read(userSettingsControllerProvider.future);
 
-    await container.read(todayAiAnalysisControllerProvider.future);
-    await container.read(todayAiAnalysisControllerProvider.notifier).refresh();
+    await container.read(todayBriefingAnalysisControllerProvider.future);
+    await container
+        .read(todayBriefingAnalysisControllerProvider.notifier)
+        .refresh();
 
     final state = container
-        .read(todayAiAnalysisControllerProvider)
+        .read(todayBriefingAnalysisControllerProvider)
         .asData
         ?.value;
     expect(state?.analysis?.summary, 'Refreshed summary.');
   });
 
   test('Today AI provider re-reads on relevant DataChangeBus topic', () async {
-    final repository = _CallCountingTodayAiRepository(
-      TodayAiAnalysis(
+    final repository = _CallCountingTodayBriefingRepository(
+      TodayBriefing(
         date: '2026-06-12',
         generatedAt: generatedAt,
         summary: 'Summary.',
         bullets: const [],
         actionLabel: '',
         confidenceNote: '',
-        materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-        aiGenerated: true,
+        materializationStatus: TodayBriefingMaterializationStatus.ready,
+        briefingGenerated: true,
       ),
     );
 
@@ -305,13 +313,13 @@ void main() {
         userSettingsControllerProvider.overrideWith(
           EnabledUserSettingsController.new,
         ),
-        todayAiRepositoryProvider.overrideWithValue(repository),
+        todayBriefingRepositoryProvider.overrideWithValue(repository),
       ],
     );
     addTearDown(container.dispose);
 
     await container.read(userSettingsControllerProvider.future);
-    await container.read(todayAiAnalysisControllerProvider.future);
+    await container.read(todayBriefingAnalysisControllerProvider.future);
 
     expect(repository.readCount, 1);
 
@@ -325,7 +333,7 @@ void main() {
   });
 
   test('Today AI provider maps forbidden error to disabled state', () async {
-    const repository = _ThrowingTodayAiRepository(
+    const repository = _ThrowingTodayBriefingRepository(
       LucentFailure(
         kind: LucentFailureKind.authentication,
         message: 'AI summaries are disabled for this user',
@@ -340,24 +348,26 @@ void main() {
         userSettingsControllerProvider.overrideWith(
           EnabledUserSettingsController.new,
         ),
-        todayAiRepositoryProvider.overrideWithValue(repository),
+        todayBriefingRepositoryProvider.overrideWithValue(repository),
       ],
     );
     addTearDown(container.dispose);
 
     await container.read(userSettingsControllerProvider.future);
 
-    await container.read(todayAiAnalysisControllerProvider.notifier).refresh();
+    await container
+        .read(todayBriefingAnalysisControllerProvider.notifier)
+        .refresh();
 
     final state = container
-        .read(todayAiAnalysisControllerProvider)
+        .read(todayBriefingAnalysisControllerProvider)
         .asData
         ?.value;
-    expect(state?.status, TodayAiAnalysisCardStatus.disabled);
+    expect(state?.status, TodayBriefingCardStatus.disabled);
   });
 
   test('Today AI provider maps generic refresh error to error state', () async {
-    const repository = _ThrowingTodayAiRepository(
+    const repository = _ThrowingTodayBriefingRepository(
       LucentFailure(
         kind: LucentFailureKind.network,
         message: 'Network request failed.',
@@ -370,23 +380,25 @@ void main() {
         userSettingsControllerProvider.overrideWith(
           EnabledUserSettingsController.new,
         ),
-        todayAiRepositoryProvider.overrideWithValue(repository),
+        todayBriefingRepositoryProvider.overrideWithValue(repository),
       ],
     );
     addTearDown(container.dispose);
 
     await container.read(userSettingsControllerProvider.future);
 
-    await container.read(todayAiAnalysisControllerProvider.notifier).refresh();
+    await container
+        .read(todayBriefingAnalysisControllerProvider.notifier)
+        .refresh();
 
-    final asyncValue = container.read(todayAiAnalysisControllerProvider);
+    final asyncValue = container.read(todayBriefingAnalysisControllerProvider);
     expect(asyncValue.hasError, isTrue);
   });
 
   test(
     'Today AI provider projects refresh FormatException to an AsyncError',
     () async {
-      final repository = _FormatExceptionTodayAiRepository();
+      final repository = _FormatExceptionTodayBriefingRepository();
 
       final container = ProviderContainer(
         overrides: [
@@ -394,22 +406,24 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          todayAiRepositoryProvider.overrideWithValue(repository),
+          todayBriefingRepositoryProvider.overrideWithValue(repository),
         ],
       );
       addTearDown(container.dispose);
 
       await container.read(userSettingsControllerProvider.future);
-      await container.read(todayAiAnalysisControllerProvider.future);
+      await container.read(todayBriefingAnalysisControllerProvider.future);
 
       // A malformed (non-problem+json) body surfaces as a FormatException
       // from the repository; refresh() must not rethrow — it projects the
       // failure into an AsyncError state.
       await container
-          .read(todayAiAnalysisControllerProvider.notifier)
+          .read(todayBriefingAnalysisControllerProvider.notifier)
           .refresh();
 
-      final asyncValue = container.read(todayAiAnalysisControllerProvider);
+      final asyncValue = container.read(
+        todayBriefingAnalysisControllerProvider,
+      );
       expect(asyncValue.hasError, isTrue);
       expect(asyncValue.error, isA<LucentFailure>());
       expect(
@@ -422,7 +436,7 @@ void main() {
   test(
     'Today AI provider maps initial forbidden read to disabled state',
     () async {
-      const repository = _ThrowingTodayAiRepository(
+      const repository = _ThrowingTodayBriefingRepository(
         LucentFailure(
           kind: LucentFailureKind.authentication,
           message: 'AI summaries are disabled for this user',
@@ -437,7 +451,7 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          todayAiRepositoryProvider.overrideWithValue(repository),
+          todayBriefingRepositoryProvider.overrideWithValue(repository),
         ],
       );
       addTearDown(container.dispose);
@@ -445,26 +459,26 @@ void main() {
       await container.read(userSettingsControllerProvider.future);
 
       final state = await container.read(
-        todayAiAnalysisControllerProvider.future,
+        todayBriefingAnalysisControllerProvider.future,
       );
 
-      expect(state.status, TodayAiAnalysisCardStatus.disabled);
+      expect(state.status, TodayBriefingCardStatus.disabled);
     },
   );
 
   test(
     'Today AI provider re-reads on healthEvents DataChangeBus topic',
     () async {
-      final repository = _CallCountingTodayAiRepository(
-        TodayAiAnalysis(
+      final repository = _CallCountingTodayBriefingRepository(
+        TodayBriefing(
           date: '2026-06-12',
           generatedAt: generatedAt,
           summary: 'Summary.',
           bullets: const [],
           actionLabel: '',
           confidenceNote: '',
-          materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-          aiGenerated: true,
+          materializationStatus: TodayBriefingMaterializationStatus.ready,
+          briefingGenerated: true,
         ),
       );
 
@@ -474,13 +488,13 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          todayAiRepositoryProvider.overrideWithValue(repository),
+          todayBriefingRepositoryProvider.overrideWithValue(repository),
         ],
       );
       addTearDown(container.dispose);
 
       await container.read(userSettingsControllerProvider.future);
-      await container.read(todayAiAnalysisControllerProvider.future);
+      await container.read(todayBriefingAnalysisControllerProvider.future);
 
       expect(repository.readCount, 1);
 
@@ -497,31 +511,31 @@ void main() {
   testWidgets(
     'resumed diff updates state when sourceVersion or computedAt change',
     (tester) async {
-      final firstAnalysis = TodayAiAnalysis(
+      final firstAnalysis = TodayBriefing(
         date: '2026-06-12',
         generatedAt: generatedAt,
         summary: 'First summary.',
         bullets: const [],
         actionLabel: '',
         confidenceNote: '',
-        materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-        aiGenerated: true,
+        materializationStatus: TodayBriefingMaterializationStatus.ready,
+        briefingGenerated: true,
         sourceVersion: 1,
         computedVersion: 1,
       );
-      final secondAnalysis = TodayAiAnalysis(
+      final secondAnalysis = TodayBriefing(
         date: '2026-06-12',
         generatedAt: generatedAt.add(const Duration(seconds: 1)),
         summary: 'Second summary.',
         bullets: const [],
         actionLabel: '',
         confidenceNote: '',
-        materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-        aiGenerated: true,
+        materializationStatus: TodayBriefingMaterializationStatus.ready,
+        briefingGenerated: true,
         sourceVersion: 2,
         computedVersion: 2,
       );
-      final repository = _SequenceTodayAiRepository([
+      final repository = _SequenceTodayBriefingRepository([
         firstAnalysis,
         secondAnalysis,
       ]);
@@ -532,17 +546,17 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          todayAiRepositoryProvider.overrideWithValue(repository),
+          todayBriefingRepositoryProvider.overrideWithValue(repository),
         ],
       );
       addTearDown(container.dispose);
 
       await container.read(userSettingsControllerProvider.future);
-      await container.read(todayAiAnalysisControllerProvider.future);
+      await container.read(todayBriefingAnalysisControllerProvider.future);
 
       expect(
         container
-            .read(todayAiAnalysisControllerProvider)
+            .read(todayBriefingAnalysisControllerProvider)
             .asData
             ?.value
             .analysis
@@ -556,7 +570,7 @@ void main() {
       await tester.pump();
 
       final state = container
-          .read(todayAiAnalysisControllerProvider)
+          .read(todayBriefingAnalysisControllerProvider)
           .asData
           ?.value;
       expect(state?.analysis?.summary, 'Second summary.');
@@ -567,19 +581,19 @@ void main() {
   testWidgets(
     'resumed diff keeps state when sourceVersion and computedAt are unchanged',
     (tester) async {
-      final analysis = TodayAiAnalysis(
+      final analysis = TodayBriefing(
         date: '2026-06-12',
         generatedAt: generatedAt,
         summary: 'Stable summary.',
         bullets: const [],
         actionLabel: '',
         confidenceNote: '',
-        materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-        aiGenerated: true,
+        materializationStatus: TodayBriefingMaterializationStatus.ready,
+        briefingGenerated: true,
         sourceVersion: 1,
         computedVersion: 1,
       );
-      final repository = _StaticTodayAiRepository(analysis);
+      final repository = _StaticTodayBriefingRepository(analysis);
 
       final container = ProviderContainer(
         overrides: [
@@ -587,58 +601,62 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          todayAiRepositoryProvider.overrideWithValue(repository),
+          todayBriefingRepositoryProvider.overrideWithValue(repository),
         ],
       );
       addTearDown(container.dispose);
 
       await container.read(userSettingsControllerProvider.future);
-      await container.read(todayAiAnalysisControllerProvider.future);
+      await container.read(todayBriefingAnalysisControllerProvider.future);
 
-      final firstState = container.read(todayAiAnalysisControllerProvider);
+      final firstState = container.read(
+        todayBriefingAnalysisControllerProvider,
+      );
 
       WidgetsBinding.instance.handleAppLifecycleStateChanged(
         AppLifecycleState.resumed,
       );
       await tester.pump();
 
-      final secondState = container.read(todayAiAnalysisControllerProvider);
+      final secondState = container.read(
+        todayBriefingAnalysisControllerProvider,
+      );
       expect(secondState.asData?.value.analysis?.summary, 'Stable summary.');
       expect(identical(firstState, secondState), isTrue);
     },
   );
 }
 
-class _StaticTodayAiRepository implements TodayAiRepository {
-  const _StaticTodayAiRepository(this.analysis);
+class _StaticTodayBriefingRepository implements TodayBriefingRepository {
+  const _StaticTodayBriefingRepository(this.analysis);
 
-  final TodayAiAnalysis analysis;
+  final TodayBriefing analysis;
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> read(DateTime date) =>
       TaskEither.right(analysis);
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> refresh(DateTime date) =>
       TaskEither.right(analysis);
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+  TaskEither<LucentFailure, TodayBriefing> generate({String? date}) =>
       TaskEither.right(analysis);
 
   @override
-  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
-    yield TodayAiGenerationResultEvent(analysis);
+  Stream<TodayBriefingEvent> generateStream({String? date}) async* {
+    yield TodayBriefingResultEvent(analysis);
   }
 }
 
-class _SequenceTodayAiRepository implements TodayAiRepository {
-  _SequenceTodayAiRepository(this.analyses);
+class _SequenceTodayBriefingRepository implements TodayBriefingRepository {
+  _SequenceTodayBriefingRepository(this.analyses);
 
-  final List<TodayAiAnalysis> analyses;
+  final List<TodayBriefing> analyses;
   var _index = 0;
 
-  TodayAiAnalysis get _next {
+  TodayBriefing get _next {
     final analysis = analyses[_index];
     if (_index < analyses.length - 1) {
       _index++;
@@ -647,106 +665,107 @@ class _SequenceTodayAiRepository implements TodayAiRepository {
   }
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> read(DateTime date) =>
       TaskEither.right(_next);
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> refresh(DateTime date) =>
       TaskEither.right(_next);
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+  TaskEither<LucentFailure, TodayBriefing> generate({String? date}) =>
       TaskEither.right(_next);
 
   @override
-  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
-    yield TodayAiGenerationResultEvent(_next);
+  Stream<TodayBriefingEvent> generateStream({String? date}) async* {
+    yield TodayBriefingResultEvent(_next);
   }
 }
 
-class _CallCountingTodayAiRepository implements TodayAiRepository {
-  _CallCountingTodayAiRepository(this.analysis);
+class _CallCountingTodayBriefingRepository implements TodayBriefingRepository {
+  _CallCountingTodayBriefingRepository(this.analysis);
 
-  final TodayAiAnalysis analysis;
+  final TodayBriefing analysis;
   int readCount = 0;
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> read(DateTime date) =>
       TaskEither(() async {
         readCount++;
         return Right(analysis);
       });
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> refresh(DateTime date) =>
       TaskEither(() async {
         readCount++;
         return Right(analysis);
       });
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+  TaskEither<LucentFailure, TodayBriefing> generate({String? date}) =>
       TaskEither.right(analysis);
 
   @override
-  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
-    yield TodayAiGenerationResultEvent(analysis);
+  Stream<TodayBriefingEvent> generateStream({String? date}) async* {
+    yield TodayBriefingResultEvent(analysis);
   }
 }
 
-class _ThrowingTodayAiRepository implements TodayAiRepository {
-  const _ThrowingTodayAiRepository(this.error);
+class _ThrowingTodayBriefingRepository implements TodayBriefingRepository {
+  const _ThrowingTodayBriefingRepository(this.error);
 
   final LucentFailure error;
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> read(DateTime date) =>
       TaskEither.left(error);
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> refresh(DateTime date) =>
       TaskEither.left(error);
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+  TaskEither<LucentFailure, TodayBriefing> generate({String? date}) =>
       TaskEither.left(error);
 
   @override
-  Stream<TodayAiGenerationEvent> generateStream({String? date}) {
-    return Stream<TodayAiGenerationEvent>.error(error);
+  Stream<TodayBriefingEvent> generateStream({String? date}) {
+    return Stream<TodayBriefingEvent>.error(error);
   }
 }
 
 /// Read succeeds but [refresh] throws a [FormatException] — simulating a
 /// malformed (non-problem+json) response body at the HTTP boundary.
-class _FormatExceptionTodayAiRepository implements TodayAiRepository {
-  TodayAiAnalysis get _analysis => TodayAiAnalysis(
+class _FormatExceptionTodayBriefingRepository
+    implements TodayBriefingRepository {
+  TodayBriefing get _analysis => TodayBriefing(
     date: '2026-06-12',
     generatedAt: generatedAt,
     summary: 'Existing summary.',
     bullets: const [],
     actionLabel: '',
     confidenceNote: '',
-    materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-    aiGenerated: true,
+    materializationStatus: TodayBriefingMaterializationStatus.ready,
+    briefingGenerated: true,
   );
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> read(DateTime date) =>
       TaskEither.right(_analysis);
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> refresh(DateTime date) =>
       TaskEither(() async {
         throw const FormatException('malformed response body');
       });
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+  TaskEither<LucentFailure, TodayBriefing> generate({String? date}) =>
       TaskEither.right(_analysis);
 
   @override
-  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
-    yield TodayAiGenerationResultEvent(_analysis);
+  Stream<TodayBriefingEvent> generateStream({String? date}) async* {
+    yield TodayBriefingResultEvent(_analysis);
   }
 }

@@ -249,12 +249,14 @@ void main() {
       expect(find.text(l10n.todaySuggestionAiExplainLoading), findsOneWidget);
     });
 
-    testWidgets('shows AI content when aiGenerated is true', (tester) async {
+    testWidgets('shows AI content when briefingGenerated is true', (
+      tester,
+    ) async {
       const explanation = TodaySuggestionExplanation(
         suggestionId: 'sug_test_001',
         reason: '这是AI增强的原因说明',
         boundary: '这是AI增强的边界提示',
-        aiGenerated: true,
+        briefingGenerated: true,
         locale: 'zh',
       );
 
@@ -280,39 +282,40 @@ void main() {
       expect(find.text(l10n.todaySuggestionAiLabel), findsOneWidget);
     });
 
-    testWidgets('shows rule-based fallback content when aiGenerated is false', (
-      tester,
-    ) async {
-      const explanation = TodaySuggestionExplanation(
-        suggestionId: 'sug_test_001',
-        reason: '规则文案',
-        boundary: '规则边界',
-        aiGenerated: false,
-        locale: 'zh',
-      );
+    testWidgets(
+      'shows rule-based fallback content when briefingGenerated is false',
+      (tester) async {
+        const explanation = TodaySuggestionExplanation(
+          suggestionId: 'sug_test_001',
+          reason: '规则文案',
+          boundary: '规则边界',
+          briefingGenerated: false,
+          locale: 'zh',
+        );
 
-      await tester.pumpWidget(
-        dataApp(explainFuture: (ref) async => explanation),
-      );
-      await settle(tester);
+        await tester.pumpWidget(
+          dataApp(explainFuture: (ref) async => explanation),
+        );
+        await settle(tester);
 
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+        final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
-      // Expand evidence area
-      await tester.tap(find.text(l10n.todaySuggestionShowEvidence));
-      await tester.pumpAndSettle();
+        // Expand evidence area
+        await tester.tap(find.text(l10n.todaySuggestionShowEvidence));
+        await tester.pumpAndSettle();
 
-      // Tap AI explain trigger
-      await tester.tap(find.text(l10n.todaySuggestionAiExplainAction));
-      await tester.pumpAndSettle();
+        // Tap AI explain trigger
+        await tester.tap(find.text(l10n.todaySuggestionAiExplainAction));
+        await tester.pumpAndSettle();
 
-      // Should show fallback explanation content and rule-based label
-      expect(find.text('规则文案'), findsOneWidget);
-      expect(find.text('规则边界'), findsOneWidget);
-      expect(find.text(l10n.todaySuggestionRuleBasedLabel), findsOneWidget);
-      // Should not offer retry for rule-based fallback
-      expect(find.text(l10n.todaySuggestionAiExplainRetry), findsNothing);
-    });
+        // Should show fallback explanation content and rule-based label
+        expect(find.text('规则文案'), findsOneWidget);
+        expect(find.text('规则边界'), findsOneWidget);
+        expect(find.text(l10n.todaySuggestionRuleBasedLabel), findsOneWidget);
+        // Should not offer retry for rule-based fallback
+        expect(find.text(l10n.todaySuggestionAiExplainRetry), findsNothing);
+      },
+    );
 
     testWidgets('shows retry button on error', (tester) async {
       await tester.pumpWidget(

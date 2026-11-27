@@ -9,19 +9,19 @@ import 'package:luminous/core/providers/instrumentation/data_change_bus.dart';
 import 'package:luminous/core/providers/session/auth_guarded.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/entities/briefing.dart';
 import 'package:luminous/features/today/presentation/providers/data_access.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 /// Manages the Today AI analysis card using the materialization pattern:
 /// cache-first read, backend status mapping, stale/old-card preservation, and
 /// debounced re-reads on relevant data changes.
-final todayAiAnalysisControllerProvider =
-    AsyncNotifierProvider<TodayAiAnalysisNotifier, TodayAiAnalysisCardState>(
-      TodayAiAnalysisNotifier.new,
+final todayBriefingAnalysisControllerProvider =
+    AsyncNotifierProvider<TodayBriefingNotifier, TodayBriefingCardState>(
+      TodayBriefingNotifier.new,
     );
 
-class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
+class TodayBriefingNotifier extends AsyncNotifier<TodayBriefingCardState> {
   static const _refreshTopics = {
     DataChangeTopic.dailyRecords,
     DataChangeTopic.doseLogs,
@@ -34,28 +34,28 @@ class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
 
   Timer? _dataChangeDebounce;
   AppLifecycleListener? _lifecycleListener;
-  TodayAiAnalysisCardState? _lastState;
+  TodayBriefingCardState? _lastState;
   bool _listenersInstalled = false;
   bool _disposed = false;
 
   @override
-  Future<TodayAiAnalysisCardState> build() async {
+  Future<TodayBriefingCardState> build() async {
     _installRefreshListeners();
 
     final session = ref.watch(authSessionProvider);
     if (!session.canAccessProtectedData) {
-      return const TodayAiAnalysisCardState.idle();
+      return const TodayBriefingCardState.idle();
     }
 
     final settings = ref.watch(userSettingsControllerProvider).asData?.value;
-    if (settings?.aiSummariesEnabled == false) {
-      return const TodayAiAnalysisCardState.disabled();
+    if (settings?.digestEnabled == false) {
+      return const TodayBriefingCardState.disabled();
     }
 
     final state = await authGuarded(
       ref: ref,
       fetch: _fetch,
-      signedOutFallback: () async => const TodayAiAnalysisCardState.idle(),
+      signedOutFallback: () async => const TodayBriefingCardState.idle(),
     );
     _lastState = state;
     return state;
@@ -102,13 +102,13 @@ class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
 
   bool get _isAuthenticated => ref.read(authSessionProvider).isAuthenticated;
 
-  Future<TodayAiAnalysisCardState> _fetch() async {
-    final repo = ref.read(todayAiRepositoryProvider);
+  Future<TodayBriefingCardState> _fetch() async {
+    final repo = ref.read(todayBriefingRepositoryProvider);
     final result = await repo.read(DateTime.now()).run();
     return result.fold(
       (failure) {
         if (failure.statusCode == 403) {
-          return const TodayAiAnalysisCardState.disabled();
+          return const TodayBriefingCardState.disabled();
         }
         throw failure;
       },
@@ -120,13 +120,13 @@ class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
     );
   }
 
-  TodayAiAnalysisCardState _mapToCardState(
-    TodayAiAnalysis analysis, {
-    TodayAiAnalysis? previous,
+  TodayBriefingCardState _mapToCardState(
+    TodayBriefing analysis, {
+    TodayBriefing? previous,
   }) {
     final status = analysis.materializationStatus;
-    if (status == TodayAiAnalysisMaterializationStatus.empty) {
-      return TodayAiAnalysisCardState.success(
+    if (status == TodayBriefingMaterializationStatus.empty) {
+      return TodayBriefingCardState.success(
         null,
         materializationStatus: status,
         computedAt: analysis.generatedAt,
@@ -136,15 +136,15 @@ class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
     }
 
     final shouldPreservePrevious =
-        status == TodayAiAnalysisMaterializationStatus.pending ||
-        status == TodayAiAnalysisMaterializationStatus.stale ||
-        status == TodayAiAnalysisMaterializationStatus.failed;
+        status == TodayBriefingMaterializationStatus.pending ||
+        status == TodayBriefingMaterializationStatus.stale ||
+        status == TodayBriefingMaterializationStatus.failed;
     final effectiveAnalysis =
         (shouldPreservePrevious && analysis.summary.isEmpty && previous != null)
         ? previous
         : analysis;
 
-    return TodayAiAnalysisCardState.success(
+    return TodayBriefingCardState.success(
       effectiveAnalysis,
       materializationStatus: status,
       computedAt: analysis.generatedAt,
@@ -188,21 +188,21 @@ class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
     if (!_isAuthenticated) return;
 
     final settings = ref.read(userSettingsControllerProvider).asData?.value;
-    if (settings?.aiSummariesEnabled == false) {
+    if (settings?.digestEnabled == false) {
       if (!_disposed) {
-        state = const AsyncData(TodayAiAnalysisCardState.disabled());
+        state = const AsyncData(TodayBriefingCardState.disabled());
       }
       return;
     }
 
-    final repo = ref.read(todayAiRepositoryProvider);
+    final repo = ref.read(todayBriefingRepositoryProvider);
     final previousAnalysis = state.asData?.value.analysis;
-    final Either<LucentFailure, TodayAiAnalysis> result;
+    final Either<LucentFailure, TodayBriefing> result;
     try {
       result = await repo.refresh(DateTime.now()).run();
     } on FormatException catch (e, st) {
       // 协议不变量（非 problem+json / 畸形 body）：直接投影为错误态，不抛出。
-      ref.read(talkerProvider).error('TodayAiAnalysisNotifier.refresh: $e');
+      ref.read(talkerProvider).error('TodayBriefingNotifier.refresh: $e');
       if (!_disposed) {
         state = AsyncError(LucentErrorMapper.fromObject(e), st);
       }
@@ -212,10 +212,10 @@ class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
       (failure) {
         ref
             .read(talkerProvider)
-            .error('TodayAiAnalysisNotifier.refresh: $failure');
+            .error('TodayBriefingNotifier.refresh: $failure');
         if (failure.statusCode == 403) {
           if (!_disposed) {
-            state = const AsyncData(TodayAiAnalysisCardState.disabled());
+            state = const AsyncData(TodayBriefingCardState.disabled());
           }
           return;
         }
@@ -234,6 +234,6 @@ class TodayAiAnalysisNotifier extends AsyncNotifier<TodayAiAnalysisCardState> {
   }
 
   void reset() {
-    if (!_disposed) state = const AsyncData(TodayAiAnalysisCardState.idle());
+    if (!_disposed) state = const AsyncData(TodayBriefingCardState.idle());
   }
 }

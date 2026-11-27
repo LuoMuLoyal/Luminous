@@ -521,7 +521,7 @@ class _FakeUserSettingsRepository implements UserSettingsRepository {
   @override
   TaskEither<LucentFailure, UserSettings> getSettings() => TaskEither.right(
     const UserSettings(
-      aiSummariesEnabled: true,
+      digestEnabled: true,
       dataSharingConsent: false,
       assistantEnabled: true,
       assistantMemoryEnabled: false,
@@ -537,7 +537,7 @@ class _FakeUserSettingsRepository implements UserSettingsRepository {
 
   @override
   TaskEither<LucentFailure, UserSettings> updateSettings({
-    required bool aiSummariesEnabled,
+    required bool digestEnabled,
     required bool dataSharingConsent,
     required bool assistantEnabled,
     required bool assistantMemoryEnabled,

@@ -10,5 +10,5 @@ export 'package:luminous/app/composition/snapshot/today.dart'
 export 'package:luminous/app/composition/today/suggestion.dart'
     show suggestionRepositoryProvider, todaySuggestionRemoteDataSourceProvider;
 export 'package:luminous/app/composition/today/today_suggestion.dart';
-export 'package:luminous/features/today/data/repositories/lucent_ai.dart';
+export 'package:luminous/features/today/data/repositories/lucent_briefing.dart';
 export 'package:luminous/features/today/data/utils/suggestion_json_codec.dart';

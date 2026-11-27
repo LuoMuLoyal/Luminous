@@ -1,25 +1,25 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/entities/briefing.dart';
 
 void main() {
-  group('TodayAiAnalysisCardState', () {
+  group('TodayBriefingCardState', () {
     test('idle constructor sets idle status', () {
-      const state = TodayAiAnalysisCardState.idle();
-      expect(state.status, TodayAiAnalysisCardStatus.idle);
+      const state = TodayBriefingCardState.idle();
+      expect(state.status, TodayBriefingCardStatus.idle);
       expect(state.analysis, isNull);
       expect(state.streamingSummary, isNull);
       expect(state.errorMessage, isNull);
     });
 
     test('loading constructor sets loading status', () {
-      const state = TodayAiAnalysisCardState.loading();
-      expect(state.status, TodayAiAnalysisCardStatus.loading);
+      const state = TodayBriefingCardState.loading();
+      expect(state.status, TodayBriefingCardStatus.loading);
       expect(state.analysis, isNull);
       expect(state.streamingSummary, isNull);
     });
 
     test('loading constructor preserves previousAnalysis', () {
-      final analysis = TodayAiAnalysis(
+      final analysis = TodayBriefing(
         date: '2026-07-12',
         generatedAt: DateTime(2026, 7, 12),
         summary: 'Summary',
@@ -27,22 +27,20 @@ void main() {
         actionLabel: 'Action',
         confidenceNote: 'High',
       );
-      final state = TodayAiAnalysisCardState.loading(
-        previousAnalysis: analysis,
-      );
-      expect(state.status, TodayAiAnalysisCardStatus.loading);
+      final state = TodayBriefingCardState.loading(previousAnalysis: analysis);
+      expect(state.status, TodayBriefingCardStatus.loading);
       expect(state.analysis, same(analysis));
     });
 
     test('loading constructor sets streamingSummary', () {
-      const state = TodayAiAnalysisCardState.loading(
+      const state = TodayBriefingCardState.loading(
         streamingSummary: 'Partial...',
       );
       expect(state.streamingSummary, 'Partial...');
     });
 
     test('success constructor sets success status and analysis', () {
-      final analysis = TodayAiAnalysis(
+      final analysis = TodayBriefing(
         date: '2026-07-12',
         generatedAt: DateTime(2026, 7, 12),
         summary: 'Summary',
@@ -50,20 +48,20 @@ void main() {
         actionLabel: 'Action',
         confidenceNote: 'High',
       );
-      final state = TodayAiAnalysisCardState.success(analysis);
-      expect(state.status, TodayAiAnalysisCardStatus.success);
+      final state = TodayBriefingCardState.success(analysis);
+      expect(state.status, TodayBriefingCardStatus.success);
       expect(state.analysis, same(analysis));
     });
 
     test('error constructor sets error status and message', () {
-      const state = TodayAiAnalysisCardState.error(message: 'Network failed');
-      expect(state.status, TodayAiAnalysisCardStatus.error);
+      const state = TodayBriefingCardState.error(message: 'Network failed');
+      expect(state.status, TodayBriefingCardStatus.error);
       expect(state.errorMessage, 'Network failed');
       expect(state.analysis, isNull);
     });
 
     test('error constructor preserves previousAnalysis', () {
-      final analysis = TodayAiAnalysis(
+      final analysis = TodayBriefing(
         date: '2026-07-12',
         generatedAt: DateTime(2026, 7, 12),
         summary: 'Summary',
@@ -71,7 +69,7 @@ void main() {
         actionLabel: 'Action',
         confidenceNote: 'High',
       );
-      final state = TodayAiAnalysisCardState.error(
+      final state = TodayBriefingCardState.error(
         message: 'Failed',
         previousAnalysis: analysis,
       );
@@ -79,35 +77,35 @@ void main() {
     });
 
     test('disabled constructor sets disabled status', () {
-      const state = TodayAiAnalysisCardState.disabled();
-      expect(state.status, TodayAiAnalysisCardStatus.disabled);
+      const state = TodayBriefingCardState.disabled();
+      expect(state.status, TodayBriefingCardStatus.disabled);
       expect(state.analysis, isNull);
     });
   });
 
-  group('TodayAiAnalysisCardState computed getters', () {
+  group('TodayBriefingCardState computed getters', () {
     test('isLoading is true for loading status', () {
-      const state = TodayAiAnalysisCardState.loading();
+      const state = TodayBriefingCardState.loading();
       expect(state.isLoading, isTrue);
     });
 
     test('isLoading is false for idle status', () {
-      const state = TodayAiAnalysisCardState.idle();
+      const state = TodayBriefingCardState.idle();
       expect(state.isLoading, isFalse);
     });
 
     test('isDisabled is true for disabled status', () {
-      const state = TodayAiAnalysisCardState.disabled();
+      const state = TodayBriefingCardState.disabled();
       expect(state.isDisabled, isTrue);
     });
 
     test('isDisabled is false for idle status', () {
-      const state = TodayAiAnalysisCardState.idle();
+      const state = TodayBriefingCardState.idle();
       expect(state.isDisabled, isFalse);
     });
 
     test('hasAnalysis is true when analysis is non-null', () {
-      final analysis = TodayAiAnalysis(
+      final analysis = TodayBriefing(
         date: '2026-07-12',
         generatedAt: DateTime(2026, 7, 12),
         summary: 'Summary',
@@ -115,29 +113,29 @@ void main() {
         actionLabel: 'Action',
         confidenceNote: 'High',
       );
-      final state = TodayAiAnalysisCardState.success(analysis);
+      final state = TodayBriefingCardState.success(analysis);
       expect(state.hasAnalysis, isTrue);
     });
 
     test('hasAnalysis is false when analysis is null', () {
-      const state = TodayAiAnalysisCardState.idle();
+      const state = TodayBriefingCardState.idle();
       expect(state.hasAnalysis, isFalse);
     });
   });
 
-  group('TodayAiAnalysis', () {
+  group('TodayBriefing', () {
     test('stores all fields correctly', () {
       final bullets = [
-        const TodayAiAnalysisBullet(
-          kind: TodayAiAnalysisBulletKind.medication,
+        const TodayBriefingBullet(
+          kind: TodayBriefingBulletKind.medication,
           text: 'Take meds',
         ),
-        const TodayAiAnalysisBullet(
-          kind: TodayAiAnalysisBulletKind.hydration,
+        const TodayBriefingBullet(
+          kind: TodayBriefingBulletKind.hydration,
           text: 'Drink water',
         ),
       ];
-      final analysis = TodayAiAnalysis(
+      final analysis = TodayBriefing(
         date: '2026-07-12',
         generatedAt: DateTime(2026, 7, 12, 10, 30),
         summary: 'Daily summary',
@@ -150,38 +148,38 @@ void main() {
       expect(analysis.generatedAt, DateTime(2026, 7, 12, 10, 30));
       expect(analysis.summary, 'Daily summary');
       expect(analysis.bullets.length, 2);
-      expect(analysis.bullets[0].kind, TodayAiAnalysisBulletKind.medication);
+      expect(analysis.bullets[0].kind, TodayBriefingBulletKind.medication);
       expect(analysis.bullets[0].text, 'Take meds');
-      expect(analysis.bullets[1].kind, TodayAiAnalysisBulletKind.hydration);
+      expect(analysis.bullets[1].kind, TodayBriefingBulletKind.hydration);
       expect(analysis.actionLabel, 'View details');
       expect(analysis.confidenceNote, 'High confidence');
     });
   });
 
-  group('TodayAiAnalysisCardStatus', () {
+  group('TodayBriefingCardStatus', () {
     test('has all expected values', () {
       expect(
-        TodayAiAnalysisCardStatus.values,
+        TodayBriefingCardStatus.values,
         containsAll([
-          TodayAiAnalysisCardStatus.idle,
-          TodayAiAnalysisCardStatus.loading,
-          TodayAiAnalysisCardStatus.success,
-          TodayAiAnalysisCardStatus.error,
-          TodayAiAnalysisCardStatus.disabled,
+          TodayBriefingCardStatus.idle,
+          TodayBriefingCardStatus.loading,
+          TodayBriefingCardStatus.success,
+          TodayBriefingCardStatus.error,
+          TodayBriefingCardStatus.disabled,
         ]),
       );
     });
   });
 
-  group('TodayAiAnalysisBulletKind', () {
+  group('TodayBriefingBulletKind', () {
     test('has all expected values', () {
       expect(
-        TodayAiAnalysisBulletKind.values,
+        TodayBriefingBulletKind.values,
         containsAll([
-          TodayAiAnalysisBulletKind.medication,
-          TodayAiAnalysisBulletKind.hydration,
-          TodayAiAnalysisBulletKind.sleep,
-          TodayAiAnalysisBulletKind.general,
+          TodayBriefingBulletKind.medication,
+          TodayBriefingBulletKind.hydration,
+          TodayBriefingBulletKind.sleep,
+          TodayBriefingBulletKind.general,
         ]),
       );
     });

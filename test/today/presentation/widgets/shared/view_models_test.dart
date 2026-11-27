@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/entities/briefing.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 
@@ -117,8 +117,8 @@ void main() {
 
   group('mapAiBullet', () {
     test('maps medication bullet to pill icon', () {
-      const bullet = TodayAiAnalysisBullet(
-        kind: TodayAiAnalysisBulletKind.medication,
+      const bullet = TodayBriefingBullet(
+        kind: TodayBriefingBulletKind.medication,
         text: 'Take your medicine',
       );
       final item = mapAiBullet(bullet);
@@ -128,8 +128,8 @@ void main() {
     });
 
     test('maps hydration bullet to droplets icon', () {
-      const bullet = TodayAiAnalysisBullet(
-        kind: TodayAiAnalysisBulletKind.hydration,
+      const bullet = TodayBriefingBullet(
+        kind: TodayBriefingBulletKind.hydration,
         text: 'Drink more water',
       );
       final item = mapAiBullet(bullet);
@@ -138,8 +138,8 @@ void main() {
     });
 
     test('maps sleep bullet to moonStar icon', () {
-      const bullet = TodayAiAnalysisBullet(
-        kind: TodayAiAnalysisBulletKind.sleep,
+      const bullet = TodayBriefingBullet(
+        kind: TodayBriefingBulletKind.sleep,
         text: 'Sleep earlier',
       );
       final item = mapAiBullet(bullet);
@@ -148,12 +148,12 @@ void main() {
     });
 
     test('maps general bullet to lightbulb icon', () {
-      const bullet = TodayAiAnalysisBullet(
-        kind: TodayAiAnalysisBulletKind.general,
+      const bullet = TodayBriefingBullet(
+        kind: TodayBriefingBulletKind.general,
         text: 'General advice',
       );
       final item = mapAiBullet(bullet);
-      expect(item.icon, SemanticIcons.aiTip);
+      expect(item.icon, SemanticIcons.assistantTip);
       expect(item.text, 'General advice');
     });
   });

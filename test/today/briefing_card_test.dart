@@ -6,9 +6,9 @@ import 'package:luminous/app/auth_session_adapter.dart';
 import 'package:luminous/app/composition/notification/unread_count.dart';
 import 'package:luminous/app/composition/today/today_suggestion.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
-import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
-import 'package:luminous/features/today/domain/repositories/ai.dart';
+import 'package:luminous/features/today/data/repositories/lucent_briefing.dart';
+import 'package:luminous/features/today/domain/entities/briefing.dart';
+import 'package:luminous/features/today/domain/repositories/briefing.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -52,7 +52,7 @@ void main() {
       await _scrollToSummaryCard(tester);
       await _expandAiBullets(tester, l10n);
 
-      expect(find.text(l10n.todayAiSummaryPreviewHint), findsOneWidget);
+      expect(find.text(l10n.todayBriefingSummaryPreviewHint), findsOneWidget);
       expect(
         find.widgetWithText(FButton, l10n.todayAnalysisRefreshAction),
         findsNothing,
@@ -90,9 +90,12 @@ void main() {
       await _scrollToSummaryCard(tester);
       await _expandAiBullets(tester, l10n);
 
-      expect(find.text(l10n.todayAiSummaryDisabledHint), findsOneWidget);
+      expect(find.text(l10n.todayBriefingSummaryDisabledHint), findsOneWidget);
       expect(
-        find.widgetWithText(FButton, l10n.todayAiSummaryOpenSettingsAction),
+        find.widgetWithText(
+          FButton,
+          l10n.todayBriefingSummaryOpenSettingsAction,
+        ),
         findsOneWidget,
       );
     },
@@ -112,18 +115,17 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          todayAiRepositoryProvider.overrideWithValue(
-            _StaticTodayAiRepository(
-              TodayAiAnalysis(
+          todayBriefingRepositoryProvider.overrideWithValue(
+            _StaticTodayBriefingRepository(
+              TodayBriefing(
                 date: '2026-06-12',
                 generatedAt: generatedAt,
                 summary: '',
                 bullets: [],
                 actionLabel: '',
                 confidenceNote: '',
-                materializationStatus:
-                    TodayAiAnalysisMaterializationStatus.empty,
-                aiGenerated: false,
+                materializationStatus: TodayBriefingMaterializationStatus.empty,
+                briefingGenerated: false,
               ),
             ),
           ),
@@ -163,18 +165,17 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          todayAiRepositoryProvider.overrideWithValue(
-            _StaticTodayAiRepository(
-              TodayAiAnalysis(
+          todayBriefingRepositoryProvider.overrideWithValue(
+            _StaticTodayBriefingRepository(
+              TodayBriefing(
                 date: '2026-06-12',
                 generatedAt: generatedAt,
                 summary: '今天的节奏基本稳定。',
                 bullets: [],
                 actionLabel: '',
                 confidenceNote: '基于规则生成。',
-                materializationStatus:
-                    TodayAiAnalysisMaterializationStatus.ready,
-                aiGenerated: false,
+                materializationStatus: TodayBriefingMaterializationStatus.ready,
+                briefingGenerated: false,
               ),
             ),
           ),
@@ -214,9 +215,9 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          todayAiRepositoryProvider.overrideWithValue(
-            _StaticTodayAiRepository(
-              TodayAiAnalysis(
+          todayBriefingRepositoryProvider.overrideWithValue(
+            _StaticTodayBriefingRepository(
+              TodayBriefing(
                 date: '2026-06-12',
                 generatedAt: generatedAt,
                 summary: 'Original summary.',
@@ -224,8 +225,8 @@ void main() {
                 actionLabel: '',
                 confidenceNote: '',
                 materializationStatus:
-                    TodayAiAnalysisMaterializationStatus.pending,
-                aiGenerated: true,
+                    TodayBriefingMaterializationStatus.pending,
+                briefingGenerated: true,
               ),
             ),
           ),
@@ -262,12 +263,12 @@ void main() {
               EnabledUserSettingsController.new,
             ),
             // 服务端在 materialization 未就绪时不下发 analysis,仓库层据此合成
-            // 「空 summary + aiGenerated=false」的占位对象
+            // 「空 summary + briefingGenerated=false」的占位对象
             // (lucent_ai.dart `_mapReadDataDto`)。它不是规则摘要,卡片不得挂
             // 「基于规则的摘要」徽章,也不得给出无内容可展开的「查看依据」。
-            todayAiRepositoryProvider.overrideWithValue(
-              _StaticTodayAiRepository(
-                TodayAiAnalysis(
+            todayBriefingRepositoryProvider.overrideWithValue(
+              _StaticTodayBriefingRepository(
+                TodayBriefing(
                   date: '2026-06-12',
                   generatedAt: generatedAt,
                   summary: '',
@@ -275,8 +276,8 @@ void main() {
                   actionLabel: '',
                   confidenceNote: '',
                   materializationStatus:
-                      TodayAiAnalysisMaterializationStatus.pending,
-                  aiGenerated: false,
+                      TodayBriefingMaterializationStatus.pending,
+                  briefingGenerated: false,
                 ),
               ),
             ),
@@ -314,9 +315,9 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          todayAiRepositoryProvider.overrideWithValue(
-            _StaticTodayAiRepository(
-              TodayAiAnalysis(
+          todayBriefingRepositoryProvider.overrideWithValue(
+            _StaticTodayBriefingRepository(
+              TodayBriefing(
                 date: '2026-06-12',
                 generatedAt: generatedAt,
                 summary: 'Original summary.',
@@ -324,8 +325,8 @@ void main() {
                 actionLabel: '',
                 confidenceNote: '',
                 materializationStatus:
-                    TodayAiAnalysisMaterializationStatus.failed,
-                aiGenerated: true,
+                    TodayBriefingMaterializationStatus.failed,
+                briefingGenerated: true,
               ),
             ),
           ),
@@ -347,7 +348,7 @@ void main() {
 
   testWidgets('Today summary triggers refresh on button tap', (tester) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    final repository = _TappableTodayAiRepository();
+    final repository = _TappableTodayBriefingRepository();
 
     await tester.pumpWidget(
       ProviderScope(
@@ -360,7 +361,7 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          todayAiRepositoryProvider.overrideWithValue(repository),
+          todayBriefingRepositoryProvider.overrideWithValue(repository),
           todaySuggestionProvider.overrideWith(
             EmptyTodaySuggestionNotifier.new,
           ),
@@ -437,59 +438,59 @@ Future<void> _expandAiBullets(
   await tester.pump(const Duration(milliseconds: 300));
 }
 
-class _StaticTodayAiRepository implements TodayAiRepository {
-  _StaticTodayAiRepository(this.analysis);
+class _StaticTodayBriefingRepository implements TodayBriefingRepository {
+  _StaticTodayBriefingRepository(this.analysis);
 
-  final TodayAiAnalysis analysis;
+  final TodayBriefing analysis;
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> read(DateTime date) =>
       TaskEither.right(analysis);
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> refresh(DateTime date) =>
       TaskEither.right(analysis);
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+  TaskEither<LucentFailure, TodayBriefing> generate({String? date}) =>
       TaskEither.right(analysis);
 
   @override
-  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
-    yield TodayAiGenerationResultEvent(analysis);
+  Stream<TodayBriefingEvent> generateStream({String? date}) async* {
+    yield TodayBriefingResultEvent(analysis);
   }
 }
 
-class _TappableTodayAiRepository implements TodayAiRepository {
+class _TappableTodayBriefingRepository implements TodayBriefingRepository {
   int refreshCount = 0;
 
-  TodayAiAnalysis get _analysis => TodayAiAnalysis(
+  TodayBriefing get _analysis => TodayBriefing(
     date: '2026-06-12',
     generatedAt: generatedAt,
     summary: 'Summary.',
     bullets: const [],
     actionLabel: '',
     confidenceNote: '',
-    materializationStatus: TodayAiAnalysisMaterializationStatus.ready,
-    aiGenerated: true,
+    materializationStatus: TodayBriefingMaterializationStatus.ready,
+    briefingGenerated: true,
   );
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> read(DateTime date) =>
       TaskEither.right(_analysis);
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) {
+  TaskEither<LucentFailure, TodayBriefing> refresh(DateTime date) {
     refreshCount++;
     return TaskEither.right(_analysis);
   }
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
+  TaskEither<LucentFailure, TodayBriefing> generate({String? date}) =>
       TaskEither.right(_analysis);
 
   @override
-  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
-    yield TodayAiGenerationResultEvent(_analysis);
+  Stream<TodayBriefingEvent> generateStream({String? date}) async* {
+    yield TodayBriefingResultEvent(_analysis);
   }
 }

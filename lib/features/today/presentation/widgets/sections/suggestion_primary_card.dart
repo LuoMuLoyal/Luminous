@@ -252,7 +252,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                           value: card.boundary,
                         ),
                         const SizedBox(height: Spacing.md),
-                        SuggestionAiExplainButton(suggestionId: card.id),
+                        SuggestionExplainButton(suggestionId: card.id),
                       ],
                     ),
                   ),

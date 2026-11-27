@@ -1,18 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/features/today/data/datasources/ai_remote.dart';
-import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
-import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
-import 'package:luminous/features/today/domain/repositories/ai.dart';
+import 'package:luminous/features/today/data/datasources/briefing_remote.dart';
+import 'package:luminous/features/today/data/repositories/lucent_briefing.dart';
+import 'package:luminous/features/today/domain/entities/briefing.dart';
+import 'package:luminous/features/today/domain/repositories/briefing.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 import '../helpers/task_either.dart';
 
-class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
-  _FakeTodayAiRemoteDataSource();
+class _FakeTodayBriefingRemoteDataSource
+    implements TodayBriefingRemoteDataSource {
+  _FakeTodayBriefingRemoteDataSource();
 
-  List<TodayAiRemoteEvent> streamEvents = [];
+  List<TodayBriefingRemoteEvent> streamEvents = [];
   Object? streamError;
   lucent.AnalysisReadResponse? readResult;
   lucent.AnalysisReadResponse? refreshResult;
@@ -48,7 +49,7 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
   }
 
   @override
-  Stream<TodayAiRemoteEvent> generateStream({String? date}) async* {
+  Stream<TodayBriefingRemoteEvent> generateStream({String? date}) async* {
     if (streamError != null) {
       throw streamError!;
     }
@@ -63,7 +64,7 @@ lucent.AnalysisReadResponseAnalysis _buildDto({
   String summary = '今日健康状况良好',
   String actionLabel = '多喝水',
   String confidenceNote = '基于最近7天数据',
-  bool aiGenerated = true,
+  bool briefingGenerated = true,
   List<lucent.AnalysisReadResponseAnalysisBullets>? bullets,
 }) {
   return lucent.AnalysisReadResponseAnalysis(
@@ -74,7 +75,7 @@ lucent.AnalysisReadResponseAnalysis _buildDto({
     actionLabel: actionLabel,
     action: 'navigate_to_record',
     confidenceNote: confidenceNote,
-    aiGenerated: aiGenerated,
+    briefingGenerated: briefingGenerated,
   );
 }
 
@@ -105,25 +106,25 @@ lucent.AnalysisReadResponseAnalysisBullets _bullet({
 }
 
 void main() {
-  group('LucentTodayAiRepository', () {
-    late _FakeTodayAiRemoteDataSource dataSource;
-    late LucentTodayAiRepository repo;
+  group('LucentTodayBriefingRepository', () {
+    late _FakeTodayBriefingRemoteDataSource dataSource;
+    late LucentTodayBriefingRepository repo;
 
     setUp(() {
-      dataSource = _FakeTodayAiRemoteDataSource();
-      repo = LucentTodayAiRepository(dataSource: dataSource);
+      dataSource = _FakeTodayBriefingRemoteDataSource();
+      repo = LucentTodayBriefingRepository(dataSource: dataSource);
     });
 
     // ─── read ──────────────────────────────────────────────────────────
     group('read', () {
-      test('maps ready read DTO to TodayAiAnalysis', () async {
+      test('maps ready read DTO to TodayBriefing', () async {
         dataSource.readResult = _buildReadDto(
           analysis: _buildDto(
             date: '2026-07-11',
             summary: '今日健康提醒',
             actionLabel: '按时服药',
             confidenceNote: '高置信度',
-            aiGenerated: true,
+            briefingGenerated: true,
             bullets: [_bullet(kind: 'medication', text: '记得服用阿司匹林')],
           ),
         );
@@ -136,9 +137,9 @@ void main() {
         expect(analysis.summary, '今日健康提醒');
         expect(
           analysis.materializationStatus,
-          TodayAiAnalysisMaterializationStatus.ready,
+          TodayBriefingMaterializationStatus.ready,
         );
-        expect(analysis.aiGenerated, isTrue);
+        expect(analysis.briefingGenerated, isTrue);
       });
 
       test('maps empty read DTO to empty analysis', () async {
@@ -153,7 +154,7 @@ void main() {
 
         expect(
           analysis.materializationStatus,
-          TodayAiAnalysisMaterializationStatus.empty,
+          TodayBriefingMaterializationStatus.empty,
         );
         expect(analysis.summary, '');
       });
@@ -171,22 +172,22 @@ void main() {
 
         expect(
           analysis.materializationStatus,
-          TodayAiAnalysisMaterializationStatus.pending,
+          TodayBriefingMaterializationStatus.pending,
         );
         expect(
           analysis.generatedAt,
           DateTime.parse('2026-07-10T08:00:00.000Z'),
         );
-        // 服务端未下发 analysis 时合成的是**空**占位对象,却把 aiGenerated 置为
+        // 服务端未下发 analysis 时合成的是**空**占位对象,却把 briefingGenerated 置为
         // false;展示层不得据此宣称「规则摘要」(摘要正文为空即为无内容)。
         expect(analysis.summary, '');
-        expect(analysis.aiGenerated, isFalse);
+        expect(analysis.briefingGenerated, isFalse);
       });
 
       test('maps stale read DTO', () async {
         dataSource.readResult = _buildReadDto(
           status: lucent.AnalysisReadResponseStatusEnum.stale,
-          analysis: _buildDto(aiGenerated: false),
+          analysis: _buildDto(briefingGenerated: false),
         );
 
         final analysis = await expectTaskRight(
@@ -195,9 +196,9 @@ void main() {
 
         expect(
           analysis.materializationStatus,
-          TodayAiAnalysisMaterializationStatus.stale,
+          TodayBriefingMaterializationStatus.stale,
         );
-        expect(analysis.aiGenerated, isFalse);
+        expect(analysis.briefingGenerated, isFalse);
       });
 
       test('maps failed read DTO', () async {
@@ -212,19 +213,19 @@ void main() {
 
         expect(
           analysis.materializationStatus,
-          TodayAiAnalysisMaterializationStatus.failed,
+          TodayBriefingMaterializationStatus.failed,
         );
       });
     });
 
     // ─── refresh ───────────────────────────────────────────────────────
     group('refresh', () {
-      test('maps ready refresh response to TodayAiAnalysis', () async {
+      test('maps ready refresh response to TodayBriefing', () async {
         dataSource.refreshResult = _buildReadDto(
           analysis: _buildDto(
             date: '2026-07-11',
             summary: '刷新后的摘要',
-            aiGenerated: true,
+            briefingGenerated: true,
           ),
         );
 
@@ -235,7 +236,7 @@ void main() {
         expect(analysis.summary, '刷新后的摘要');
         expect(
           analysis.materializationStatus,
-          TodayAiAnalysisMaterializationStatus.ready,
+          TodayBriefingMaterializationStatus.ready,
         );
       });
 
@@ -251,7 +252,7 @@ void main() {
 
         expect(
           analysis.materializationStatus,
-          TodayAiAnalysisMaterializationStatus.pending,
+          TodayBriefingMaterializationStatus.pending,
         );
       });
     });
@@ -316,25 +317,25 @@ void main() {
     group('generateStream', () {
       test('emits summary event from remote summary event', () async {
         dataSource.streamEvents = [
-          const TodayAiRemoteSummaryEvent('正在分析...'),
-          TodayAiRemoteResultEvent(_buildDto()),
+          const TodayBriefingRemoteSummaryEvent('正在分析...'),
+          TodayBriefingRemoteResultEvent(_buildDto()),
         ];
 
         final events = await repo.generateStream().toList();
 
         expect(events, hasLength(2));
-        expect(events[0], isA<TodayAiGenerationSummaryEvent>());
-        expect((events[0] as TodayAiGenerationSummaryEvent).summary, '正在分析...');
-        expect(events[1], isA<TodayAiGenerationResultEvent>());
+        expect(events[0], isA<TodayBriefingSummaryEvent>());
+        expect((events[0] as TodayBriefingSummaryEvent).summary, '正在分析...');
+        expect(events[1], isA<TodayBriefingResultEvent>());
       });
 
-      test('maps result event to TodayAiAnalysis correctly', () async {
+      test('maps result event to TodayBriefing correctly', () async {
         final dto = _buildDto(
           date: '2026-07-11',
           summary: '今日健康提醒',
           actionLabel: '按时服药',
           confidenceNote: '高置信度',
-          aiGenerated: true,
+          briefingGenerated: true,
           bullets: [
             _bullet(kind: 'medication', text: '记得服用阿司匹林'),
             _bullet(kind: 'hydration', text: '饮水量不足'),
@@ -343,12 +344,12 @@ void main() {
           ],
         );
 
-        dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
+        dataSource.streamEvents = [TodayBriefingRemoteResultEvent(dto)];
 
         final events = await repo.generateStream().toList();
 
         expect(events, hasLength(1));
-        final result = events[0] as TodayAiGenerationResultEvent;
+        final result = events[0] as TodayBriefingResultEvent;
         final analysis = result.analysis;
 
         expect(analysis.date, '2026-07-11');
@@ -361,16 +362,16 @@ void main() {
         );
         expect(analysis.bullets, hasLength(4));
 
-        expect(analysis.bullets[0].kind, TodayAiAnalysisBulletKind.medication);
+        expect(analysis.bullets[0].kind, TodayBriefingBulletKind.medication);
         expect(analysis.bullets[0].text, '记得服用阿司匹林');
 
-        expect(analysis.bullets[1].kind, TodayAiAnalysisBulletKind.hydration);
+        expect(analysis.bullets[1].kind, TodayBriefingBulletKind.hydration);
         expect(analysis.bullets[1].text, '饮水量不足');
 
-        expect(analysis.bullets[2].kind, TodayAiAnalysisBulletKind.sleep);
+        expect(analysis.bullets[2].kind, TodayBriefingBulletKind.sleep);
         expect(analysis.bullets[2].text, '睡眠时长偏短');
 
-        expect(analysis.bullets[3].kind, TodayAiAnalysisBulletKind.general);
+        expect(analysis.bullets[3].kind, TodayBriefingBulletKind.general);
         expect(analysis.bullets[3].text, '注意休息');
       });
 
@@ -379,41 +380,41 @@ void main() {
           bullets: [_bullet(kind: 'unknown_kind', text: 'Unknown category')],
         );
 
-        dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
+        dataSource.streamEvents = [TodayBriefingRemoteResultEvent(dto)];
 
         final events = await repo.generateStream().toList();
 
-        final result = events[0] as TodayAiGenerationResultEvent;
+        final result = events[0] as TodayBriefingResultEvent;
         expect(
           result.analysis.bullets[0].kind,
-          TodayAiAnalysisBulletKind.general,
+          TodayBriefingBulletKind.general,
         );
       });
 
       test('emits multiple summary events before result', () async {
         dataSource.streamEvents = [
-          const TodayAiRemoteSummaryEvent('正在分析数据...'),
-          const TodayAiRemoteSummaryEvent('生成建议中...'),
-          const TodayAiRemoteSummaryEvent('即将完成...'),
-          TodayAiRemoteResultEvent(_buildDto()),
+          const TodayBriefingRemoteSummaryEvent('正在分析数据...'),
+          const TodayBriefingRemoteSummaryEvent('生成建议中...'),
+          const TodayBriefingRemoteSummaryEvent('即将完成...'),
+          TodayBriefingRemoteResultEvent(_buildDto()),
         ];
 
         final events = await repo.generateStream().toList();
 
         expect(events, hasLength(4));
-        expect(events[0], isA<TodayAiGenerationSummaryEvent>());
-        expect(events[1], isA<TodayAiGenerationSummaryEvent>());
-        expect(events[2], isA<TodayAiGenerationSummaryEvent>());
-        expect(events[3], isA<TodayAiGenerationResultEvent>());
+        expect(events[0], isA<TodayBriefingSummaryEvent>());
+        expect(events[1], isA<TodayBriefingSummaryEvent>());
+        expect(events[2], isA<TodayBriefingSummaryEvent>());
+        expect(events[3], isA<TodayBriefingResultEvent>());
       });
 
       test('emits only result event when no summaries', () async {
-        dataSource.streamEvents = [TodayAiRemoteResultEvent(_buildDto())];
+        dataSource.streamEvents = [TodayBriefingRemoteResultEvent(_buildDto())];
 
         final events = await repo.generateStream().toList();
 
         expect(events, hasLength(1));
-        expect(events[0], isA<TodayAiGenerationResultEvent>());
+        expect(events[0], isA<TodayBriefingResultEvent>());
       });
 
       test('emits no events when stream is empty', () async {
@@ -448,11 +449,11 @@ void main() {
       test('maps empty bullets list', () async {
         final dto = _buildDto(bullets: []);
 
-        dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
+        dataSource.streamEvents = [TodayBriefingRemoteResultEvent(dto)];
 
         final events = await repo.generateStream().toList();
 
-        final result = events[0] as TodayAiGenerationResultEvent;
+        final result = events[0] as TodayBriefingResultEvent;
         expect(result.analysis.bullets, isEmpty);
       });
     });
@@ -463,8 +464,8 @@ void main() {
         final dto = _buildDto(date: '2026-07-10', summary: '健康日报');
 
         dataSource.streamEvents = [
-          const TodayAiRemoteSummaryEvent('分析中...'),
-          TodayAiRemoteResultEvent(dto),
+          const TodayBriefingRemoteSummaryEvent('分析中...'),
+          TodayBriefingRemoteResultEvent(dto),
         ];
 
         final analysis = await expectTaskRight(repo.generate());
@@ -476,7 +477,9 @@ void main() {
       test(
         'stream ending without a result event becomes a business Left',
         () async {
-          dataSource.streamEvents = [const TodayAiRemoteSummaryEvent('分析中...')];
+          dataSource.streamEvents = [
+            const TodayBriefingRemoteSummaryEvent('分析中...'),
+          ];
 
           final failure = await expectTaskLeft(repo.generate());
 
@@ -497,7 +500,7 @@ void main() {
       test('returns analysis immediately when result is first event', () async {
         final dto = _buildDto();
 
-        dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
+        dataSource.streamEvents = [TodayBriefingRemoteResultEvent(dto)];
 
         final analysis = await expectTaskRight(repo.generate());
 
@@ -507,7 +510,7 @@ void main() {
       test('passes date parameter through', () async {
         final dto = _buildDto(date: '2026-07-15');
 
-        dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
+        dataSource.streamEvents = [TodayBriefingRemoteResultEvent(dto)];
 
         final analysis = await expectTaskRight(
           repo.generate(date: '2026-07-15'),

@@ -10,8 +10,8 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/router/app_routes.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
-import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
+import 'package:luminous/features/today/domain/entities/briefing.dart';
+import 'package:luminous/features/today/presentation/providers/briefing.dart';
 import 'package:luminous/features/today/presentation/providers/surface.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
@@ -67,38 +67,38 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
     final canAccessProtectedData = ref.watch(
       authSessionProvider.select((s) => s.canAccessProtectedData),
     );
-    final aiSummariesEnabled = canAccessProtectedData
+    final digestEnabled = canAccessProtectedData
         ? ref.watch(
             userSettingsControllerProvider.select(
-              (s) => s.asData?.value.aiSummariesEnabled,
+              (s) => s.asData?.value.digestEnabled,
             ),
           )
         : null;
-    final aiAsync = ref.watch(todayAiAnalysisControllerProvider);
-    final aiState = aiAsync.asData?.value;
-    final isRefreshing = aiAsync.isLoading;
+    final briefingAsync = ref.watch(todayBriefingAnalysisControllerProvider);
+    final briefingState = briefingAsync.asData?.value;
+    final isRefreshing = briefingAsync.isLoading;
     final content = buildAiCardContent(
       l10n: l10n,
       dashboard: dashboard,
       canAccessProtectedData: canAccessProtectedData,
-      aiSummariesEnabled: aiSummariesEnabled,
-      aiState: aiState ?? const TodayAiAnalysisCardState.idle(),
+      digestEnabled: digestEnabled,
+      briefingState: briefingState ?? const TodayBriefingCardState.idle(),
     );
     final metrics = buildOverviewItems(l10n, dashboard);
     final isPreview = !canAccessProtectedData;
-    final actionLabel = _actionLabel(l10n, aiSummariesEnabled, aiState);
+    final actionLabel = _actionLabel(l10n, digestEnabled, briefingState);
     // 只有正文非空才算「有内容」:materialization 未就绪(pending/stale/failed)时
     // 服务端不下发 analysis,仓库层会合成一个空 analysis 占位(空 summary +
-    // aiGenerated=false),它既不是规则摘要,也没有可展开的依据。
+    // briefingGenerated=false),它既不是规则摘要,也没有可展开的依据。
     final hasSummaryText = (content.summary?.trim() ?? '').isNotEmpty;
     final hasAiContent = hasSummaryText || content.bullets.isNotEmpty;
-    final showNotice = _showMaterializationNotice(aiState);
-    // 徽章描述的是它下方那段摘要的来源:aiGenerated=false 表示服务端返回的是
+    final showNotice = _showMaterializationNotice(briefingState);
+    // 徽章描述的是它下方那段摘要的来源:briefingGenerated=false 表示服务端返回的是
     // 规则兜底文案(base-llm-summary 在模型未配置/输出被安全策略拒绝/生成失败时
     // 回落,见 Lucent common/llm/generators/base-llm-summary.service.ts)。没有正文
     // 时挂徽章会被读成「降级通知」,与同时出现的「分析生成中」互相矛盾(真机反馈)。
     final showRuleBasedLabel =
-        hasSummaryText && aiState?.analysis?.aiGenerated == false;
+        hasSummaryText && briefingState?.analysis?.briefingGenerated == false;
 
     return TodaySection(
       title: l10n.todayHealthSummaryCardTitle,
@@ -132,7 +132,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                 MarkdownBody(
                   data: content.summary!,
                   selectable: true,
-                  styleSheet: MarkdownStyle.ai(
+                  styleSheet: MarkdownStyle.assistantGenerated(
                     context,
                     paragraphWeight: FontWeight.w700,
                   ),
@@ -164,7 +164,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                   runSpacing: Spacing.sm,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    _AiExpandButton(
+                    _BriefingExpandButton(
                       onTap: _toggleAi,
                       l10n: l10n,
                       isCollapse: _aiExpanded,
@@ -176,8 +176,8 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                             : () => _handleSummaryAction(
                                 context,
                                 ref,
-                                aiSummariesEnabled,
-                                aiState,
+                                digestEnabled,
+                                briefingState,
                                 l10n,
                               ),
                         variant: FButtonVariant.ghost,
@@ -204,8 +204,8 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                         : () => _handleSummaryAction(
                             context,
                             ref,
-                            aiSummariesEnabled,
-                            aiState,
+                            digestEnabled,
+                            briefingState,
                             l10n,
                           ),
                     variant: FButtonVariant.ghost,
@@ -250,17 +250,17 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
               ),
               if (showNotice)
                 _AnalysisMaterializationNotice(
-                  status: aiState!.materializationStatus!,
-                  computedAt: aiState.computedAt,
+                  status: briefingState!.materializationStatus!,
+                  computedAt: briefingState.computedAt,
                   l10n: l10n,
                   onRetry:
-                      aiState.materializationStatus ==
-                          TodayAiAnalysisMaterializationStatus.failed
+                      briefingState.materializationStatus ==
+                          TodayBriefingMaterializationStatus.failed
                       ? () => _handleSummaryAction(
                           context,
                           ref,
-                          aiSummariesEnabled,
-                          aiState,
+                          digestEnabled,
+                          briefingState,
                           l10n,
                         )
                       : null,
@@ -274,25 +274,25 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
 
   String _actionLabel(
     AppLocalizations l10n,
-    bool? aiSummariesEnabled,
-    TodayAiAnalysisCardState? aiState,
+    bool? digestEnabled,
+    TodayBriefingCardState? briefingState,
   ) {
-    if (aiSummariesEnabled == false || aiState?.isDisabled == true) {
-      return l10n.todayAiSummaryOpenSettingsAction;
+    if (digestEnabled == false || briefingState?.isDisabled == true) {
+      return l10n.todayBriefingSummaryOpenSettingsAction;
     }
-    if (aiState?.status == TodayAiAnalysisCardStatus.error) {
+    if (briefingState?.status == TodayBriefingCardStatus.error) {
       return l10n.todayRetryAction;
     }
     return l10n.todayAnalysisRefreshAction;
   }
 
-  bool _showMaterializationNotice(TodayAiAnalysisCardState? aiState) {
-    if (aiState == null) return false;
-    if (aiState.status != TodayAiAnalysisCardStatus.success) return false;
-    return switch (aiState.materializationStatus) {
-      TodayAiAnalysisMaterializationStatus.pending ||
-      TodayAiAnalysisMaterializationStatus.stale ||
-      TodayAiAnalysisMaterializationStatus.failed => true,
+  bool _showMaterializationNotice(TodayBriefingCardState? briefingState) {
+    if (briefingState == null) return false;
+    if (briefingState.status != TodayBriefingCardStatus.success) return false;
+    return switch (briefingState.materializationStatus) {
+      TodayBriefingMaterializationStatus.pending ||
+      TodayBriefingMaterializationStatus.stale ||
+      TodayBriefingMaterializationStatus.failed => true,
       _ => false,
     };
   }
@@ -300,20 +300,20 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
   Future<void> _handleSummaryAction(
     BuildContext context,
     WidgetRef ref,
-    bool? aiSummariesEnabled,
-    TodayAiAnalysisCardState? aiState,
+    bool? digestEnabled,
+    TodayBriefingCardState? briefingState,
     AppLocalizations l10n,
   ) async {
-    if (aiSummariesEnabled == false) {
+    if (digestEnabled == false) {
       unawaited(context.push(Routes.settings));
       return;
     }
 
-    await ref.read(todayAiAnalysisControllerProvider.notifier).refresh();
+    await ref.read(todayBriefingAnalysisControllerProvider.notifier).refresh();
 
     if (!context.mounted) return;
 
-    final error = ref.read(todayAiAnalysisControllerProvider).error;
+    final error = ref.read(todayBriefingAnalysisControllerProvider).error;
     if (error != null) {
       // 失败对象过一遍错误归一 seam：error.toString() 会把
       // 「LucentFailure(kind: ..., code: ...)」这类诊断串直接怼到屏幕上。
@@ -322,7 +322,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
         userMessageFromError(
           error,
           l10n: l10n,
-          fallback: l10n.todayAiSummaryErrorHint,
+          fallback: l10n.todayBriefingSummaryErrorHint,
         ),
       );
     }
@@ -337,7 +337,7 @@ class _AnalysisMaterializationNotice extends StatelessWidget {
     this.onRetry,
   });
 
-  final TodayAiAnalysisMaterializationStatus status;
+  final TodayBriefingMaterializationStatus status;
   final DateTime? computedAt;
   final AppLocalizations l10n;
   final VoidCallback? onRetry;
@@ -345,11 +345,10 @@ class _AnalysisMaterializationNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final message = switch (status) {
-      TodayAiAnalysisMaterializationStatus.pending =>
+      TodayBriefingMaterializationStatus.pending =>
         l10n.todayAnalysisPendingHint,
-      TodayAiAnalysisMaterializationStatus.stale => l10n.todayAnalysisStaleHint,
-      TodayAiAnalysisMaterializationStatus.failed =>
-        l10n.todayAnalysisFailedHint,
+      TodayBriefingMaterializationStatus.stale => l10n.todayAnalysisStaleHint,
+      TodayBriefingMaterializationStatus.failed => l10n.todayAnalysisFailedHint,
       _ => null,
     };
 
@@ -369,7 +368,7 @@ class _AnalysisMaterializationNotice extends StatelessWidget {
               ),
             ),
           ),
-          if (status == TodayAiAnalysisMaterializationStatus.failed &&
+          if (status == TodayBriefingMaterializationStatus.failed &&
               onRetry != null) ...[
             const SizedBox(width: Spacing.sm),
             FButton(
@@ -395,8 +394,8 @@ class _AnalysisMaterializationNotice extends StatelessWidget {
   }
 }
 
-class _AiExpandButton extends StatelessWidget {
-  const _AiExpandButton({
+class _BriefingExpandButton extends StatelessWidget {
+  const _BriefingExpandButton({
     required this.onTap,
     required this.l10n,
     this.isCollapse = false,
@@ -499,7 +498,7 @@ class _CompactSummaryMetric extends StatelessWidget {
 class _SummaryBullet extends StatelessWidget {
   const _SummaryBullet({required this.item});
 
-  final TodayAiSummaryItem item;
+  final TodayBriefingItem item;
 
   @override
   Widget build(BuildContext context) {

@@ -6,7 +6,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/router/app_routes.dart';
-import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/entities/briefing.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
@@ -35,8 +35,8 @@ class TodayOverviewItem {
   final bool isDegraded;
 }
 
-class TodayAiSummaryItem {
-  const TodayAiSummaryItem({
+class TodayBriefingItem {
+  const TodayBriefingItem({
     required this.icon,
     required this.color,
     required this.text,
@@ -47,15 +47,15 @@ class TodayAiSummaryItem {
   final String text;
 }
 
-class TodayAiSummaryCardContent {
-  const TodayAiSummaryCardContent({
+class TodayBriefingCardContent {
+  const TodayBriefingCardContent({
     required this.bullets,
     this.summary,
     this.footer,
   });
 
   final String? summary;
-  final List<TodayAiSummaryItem> bullets;
+  final List<TodayBriefingItem> bullets;
   final String? footer;
 }
 
@@ -242,7 +242,7 @@ String _waterOverviewValue(AppLocalizations l10n, TodayWaterSummary water) {
   return l10n.todayWaterOverviewCount(water.completedCount, water.targetCount);
 }
 
-List<TodayAiSummaryItem> buildAiSummaryBullets(
+List<TodayBriefingItem> buildAiSummaryBullets(
   AppLocalizations l10n,
   TodayDashboard dashboard,
 ) {
@@ -250,69 +250,69 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
   final hasMedicationRisk = dashboard.medication.pendingCount > 0;
 
   return [
-    TodayAiSummaryItem(
+    TodayBriefingItem(
       icon: SemanticIcons.recordMedicine,
       color: SemanticColor.primary,
       text: hasMedicationRisk
-          ? l10n.todayAiSummaryMedicationPending(
+          ? l10n.todayBriefingSummaryMedicationPending(
               dashboard.medication.pendingCount,
             )
-          : l10n.todayAiSummaryMedicationDone,
+          : l10n.todayBriefingSummaryMedicationDone,
     ),
-    TodayAiSummaryItem(
+    TodayBriefingItem(
       icon: SemanticIcons.recordWater,
       color: SemanticColor.primary,
       text: waterRemaining == 0
-          ? l10n.todayAiSummaryWaterDone
-          : l10n.todayAiSummaryWaterRemaining(waterRemaining),
+          ? l10n.todayBriefingSummaryWaterDone
+          : l10n.todayBriefingSummaryWaterRemaining(waterRemaining),
     ),
-    TodayAiSummaryItem(
+    TodayBriefingItem(
       icon: SemanticIcons.recordSleep,
       color: SemanticColor.primary,
-      text: l10n.todayAiSummarySleepPlaceholder,
+      text: l10n.todayBriefingSummarySleepPlaceholder,
     ),
   ];
 }
 
-TodayAiSummaryCardContent buildAiCardContent({
+TodayBriefingCardContent buildAiCardContent({
   required AppLocalizations l10n,
   required TodayDashboard dashboard,
   required bool canAccessProtectedData,
-  required bool? aiSummariesEnabled,
-  required TodayAiAnalysisCardState aiState,
+  required bool? digestEnabled,
+  required TodayBriefingCardState briefingState,
 }) {
   if (!canAccessProtectedData) {
-    return TodayAiSummaryCardContent(
+    return TodayBriefingCardContent(
       bullets: [
-        TodayAiSummaryItem(
-          icon: SemanticIcons.aiPermissionHint,
+        TodayBriefingItem(
+          icon: SemanticIcons.assistantPermissionHint,
           color: SemanticColor.primary,
-          text: l10n.todayAiSummaryPreviewHint,
+          text: l10n.todayBriefingSummaryPreviewHint,
         ),
       ],
     );
   }
 
-  if (aiSummariesEnabled == false || aiState.isDisabled) {
-    return TodayAiSummaryCardContent(
+  if (digestEnabled == false || briefingState.isDisabled) {
+    return TodayBriefingCardContent(
       bullets: [
-        TodayAiSummaryItem(
-          icon: SemanticIcons.aiSuggestion,
+        TodayBriefingItem(
+          icon: SemanticIcons.assistantSuggestion,
           color: SemanticColor.primary,
-          text: l10n.todayAiSummaryDisabledHint,
+          text: l10n.todayBriefingSummaryDisabledHint,
         ),
       ],
     );
   }
 
-  final analysis = aiState.analysis;
-  final materializationStatus = aiState.materializationStatus;
+  final analysis = briefingState.analysis;
+  final materializationStatus = briefingState.materializationStatus;
 
-  if (materializationStatus == TodayAiAnalysisMaterializationStatus.empty) {
-    return TodayAiSummaryCardContent(
+  if (materializationStatus == TodayBriefingMaterializationStatus.empty) {
+    return TodayBriefingCardContent(
       bullets: [
-        TodayAiSummaryItem(
-          icon: SemanticIcons.aiEmptyAnalysis,
+        TodayBriefingItem(
+          icon: SemanticIcons.briefingEmpty,
           color: SemanticColor.primary,
           text: l10n.todayAnalysisEmptyTitle,
         ),
@@ -322,57 +322,57 @@ TodayAiSummaryCardContent buildAiCardContent({
   }
 
   if (analysis != null) {
-    return TodayAiSummaryCardContent(
+    return TodayBriefingCardContent(
       summary: analysis.summary,
       bullets: analysis.bullets.map(mapAiBullet).toList(growable: false),
       footer: analysis.confidenceNote,
     );
   }
 
-  if (aiState.status == TodayAiAnalysisCardStatus.error) {
-    return TodayAiSummaryCardContent(
+  if (briefingState.status == TodayBriefingCardStatus.error) {
+    return TodayBriefingCardContent(
       bullets: [
-        TodayAiSummaryItem(
+        TodayBriefingItem(
           icon: SemanticIcons.statusError,
           color: SemanticColor.primary,
-          text: l10n.todayAiSummaryErrorHint,
+          text: l10n.todayBriefingSummaryErrorHint,
         ),
         ...buildAiSummaryBullets(l10n, dashboard),
       ],
-      footer: aiState.errorMessage ?? l10n.todayAiSummaryErrorHint,
+      footer: briefingState.errorMessage ?? l10n.todayBriefingSummaryErrorHint,
     );
   }
 
-  if (aiState.status == TodayAiAnalysisCardStatus.loading) {
-    return TodayAiSummaryCardContent(
-      summary: aiState.streamingSummary,
+  if (briefingState.status == TodayBriefingCardStatus.loading) {
+    return TodayBriefingCardContent(
+      summary: briefingState.streamingSummary,
       bullets: [
-        TodayAiSummaryItem(
-          icon: SemanticIcons.aiAnalyzing,
+        TodayBriefingItem(
+          icon: SemanticIcons.briefingAnalyzing,
           color: SemanticColor.primary,
-          text: l10n.todayAiSummaryGeneratingHint,
+          text: l10n.todayBriefingSummaryGeneratingHint,
         ),
         ...buildAiSummaryBullets(l10n, dashboard),
       ],
-      footer: l10n.todayAiSummaryGeneratingHint,
+      footer: l10n.todayBriefingSummaryGeneratingHint,
     );
   }
 
-  return TodayAiSummaryCardContent(
+  return TodayBriefingCardContent(
     bullets: buildAiSummaryBullets(l10n, dashboard),
-    footer: l10n.todayAiSummaryDefaultHint,
+    footer: l10n.todayBriefingSummaryDefaultHint,
   );
 }
 
-TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
+TodayBriefingItem mapAiBullet(TodayBriefingBullet bullet) {
   final icon = switch (bullet.kind) {
-    TodayAiAnalysisBulletKind.medication => SemanticIcons.recordMedicine,
-    TodayAiAnalysisBulletKind.hydration => SemanticIcons.recordWater,
-    TodayAiAnalysisBulletKind.sleep => SemanticIcons.recordSleep,
-    TodayAiAnalysisBulletKind.general => SemanticIcons.aiTip,
+    TodayBriefingBulletKind.medication => SemanticIcons.recordMedicine,
+    TodayBriefingBulletKind.hydration => SemanticIcons.recordWater,
+    TodayBriefingBulletKind.sleep => SemanticIcons.recordSleep,
+    TodayBriefingBulletKind.general => SemanticIcons.assistantTip,
   };
 
-  return TodayAiSummaryItem(
+  return TodayBriefingItem(
     icon: icon,
     color: SemanticColor.primary,
     text: bullet.text,

@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:fpdart/fpdart.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/entities/briefing.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
-import 'package:luminous/features/today/domain/repositories/ai.dart';
+import 'package:luminous/features/today/domain/repositories/briefing.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/shared/domain/failure.dart';
@@ -35,57 +35,56 @@ class StaticTodayRepository implements TodayRepository {
 class EnabledUserSettingsController extends UserSettingsController {
   @override
   Future<UserSettings> build() async {
-    return userSettings(aiSummariesEnabled: true);
+    return userSettings(digestEnabled: true);
   }
 }
 
 class DisabledUserSettingsController extends UserSettingsController {
   @override
   Future<UserSettings> build() async {
-    return userSettings(aiSummariesEnabled: false);
+    return userSettings(digestEnabled: false);
   }
 }
 
-class FakeTodayAiRepository implements TodayAiRepository {
-  final Completer<TodayAiAnalysis> _completer = Completer<TodayAiAnalysis>();
+class FakeTodayBriefingRepository implements TodayBriefingRepository {
+  final Completer<TodayBriefing> _completer = Completer<TodayBriefing>();
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> read(DateTime date) => TaskEither(
+  TaskEither<LucentFailure, TodayBriefing> read(DateTime date) => TaskEither(
     () => _completer.future.then(
-      (analysis) => Right<LucentFailure, TodayAiAnalysis>(analysis),
+      (analysis) => Right<LucentFailure, TodayBriefing>(analysis),
     ),
   );
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> refresh(DateTime date) =>
+  TaskEither<LucentFailure, TodayBriefing> refresh(DateTime date) => TaskEither(
+    () => _completer.future.then(
+      (analysis) => Right<LucentFailure, TodayBriefing>(analysis),
+    ),
+  );
+
+  @override
+  TaskEither<LucentFailure, TodayBriefing> generate({String? date}) =>
       TaskEither(
         () => _completer.future.then(
-          (analysis) => Right<LucentFailure, TodayAiAnalysis>(analysis),
+          (analysis) => Right<LucentFailure, TodayBriefing>(analysis),
         ),
       );
 
   @override
-  TaskEither<LucentFailure, TodayAiAnalysis> generate({String? date}) =>
-      TaskEither(
-        () => _completer.future.then(
-          (analysis) => Right<LucentFailure, TodayAiAnalysis>(analysis),
-        ),
-      );
-
-  @override
-  Stream<TodayAiGenerationEvent> generateStream({String? date}) async* {
+  Stream<TodayBriefingEvent> generateStream({String? date}) async* {
     final analysis = await _completer.future;
-    yield TodayAiGenerationResultEvent(analysis);
+    yield TodayBriefingResultEvent(analysis);
   }
 
-  void complete(TodayAiAnalysis analysis) {
+  void complete(TodayBriefing analysis) {
     _completer.complete(analysis);
   }
 }
 
-UserSettings userSettings({required bool aiSummariesEnabled}) {
+UserSettings userSettings({required bool digestEnabled}) {
   return UserSettings(
-    aiSummariesEnabled: aiSummariesEnabled,
+    digestEnabled: digestEnabled,
     dataSharingConsent: false,
     assistantEnabled: true,
     assistantMemoryEnabled: false,
