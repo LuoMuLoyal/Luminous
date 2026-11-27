@@ -34,7 +34,7 @@ List<Widget> buildRecordHeaderActions({
       RecordHeaderActionChip(
         key: const Key('record-nlp-action'),
         label: l10n.recordNlpHeaderAction,
-        icon: SemanticIcons.aiEntry,
+        icon: SemanticIcons.assistantEntry,
         emphasized: true,
         onTap: () => onOpenNlpSheet(context),
         iconOnly: true,
@@ -80,7 +80,7 @@ List<Widget> buildRecordHeaderActions({
     RecordHeaderActionChip(
       key: const Key('record-nlp-action'),
       label: l10n.recordNlpHeaderAction,
-      icon: SemanticIcons.aiEntry,
+      icon: SemanticIcons.assistantEntry,
       emphasized: true,
       onTap: () => onOpenNlpSheet(context),
       iconOnly: true,

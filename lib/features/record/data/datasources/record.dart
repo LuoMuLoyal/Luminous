@@ -18,7 +18,7 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 /// maps every failure via `LucentErrorMapper.fromObject`. Reads, presign and
 /// candidate generation go through the typed generated [lucent.DailyRecordsApi]
 /// (responses carry typed DTOs again after the Lucent contract fix). An empty
-/// success body is a `LucentFailure.network(emptyResponse)` (today `ai_remote`
+/// success body is a `LucentFailure.network(emptyResponse)` (today `briefing_remote`
 /// / medicine `dose_log_remote` precedent — never a transport exception); a
 /// structurally malformed body or a delete status other than 204 is a thrown
 /// protocol exception (logged via [appLog] for diagnosability) that

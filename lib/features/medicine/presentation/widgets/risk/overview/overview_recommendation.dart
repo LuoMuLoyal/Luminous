@@ -33,7 +33,7 @@ class OverallRecommendationCard extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  SemanticIcons.aiTip,
+                  SemanticIcons.assistantTip,
                   color: SemanticColor.primary.solid(context),
                   size: IconSizeTokens.md,
                 ),

@@ -17,7 +17,7 @@ part 'dose_log_remote.g.dart';
 /// `LucentFailure`; the repository boundary (`CachedDoseLogDataSource`)
 /// maps every failure via `LucentErrorMapper.fromObject`. An empty success
 /// body is a `LucentFailure.network(emptyResponse)` (reminder `_responseData`
-/// / today `ai_remote` precedent — never a transport `FormatException`); a
+/// / today `briefing_remote` precedent — never a transport `FormatException`); a
 /// structurally malformed body is a thrown protocol exception (logged via
 /// [appLog] for diagnosability) that surfaces as a `Left(unknown)` at the
 /// repository boundary.

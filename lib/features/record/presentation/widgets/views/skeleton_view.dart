@@ -34,7 +34,7 @@ class _MobileRecordSkeleton extends StatelessWidget {
       children: [
         _DateBarPlaceholder(),
         SizedBox(height: Spacing.lg),
-        _AiInputPlaceholder(),
+        _BriefingInputPlaceholder(),
         SizedBox(height: Spacing.lg),
         _QuickEntryPlaceholder(),
         SizedBox(height: Spacing.lg),
@@ -126,8 +126,8 @@ class _DateBarPlaceholder extends StatelessWidget {
   }
 }
 
-class _AiInputPlaceholder extends StatelessWidget {
-  const _AiInputPlaceholder();
+class _BriefingInputPlaceholder extends StatelessWidget {
+  const _BriefingInputPlaceholder();
 
   @override
   Widget build(BuildContext context) {

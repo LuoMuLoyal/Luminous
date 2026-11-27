@@ -261,11 +261,11 @@ class _TypeChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final (label, color) = switch (type) {
-      NotificationType.aiTodaySummary => (
+      NotificationType.todayBriefing => (
         l10n.notificationTypeAiTodaySummary,
         SemanticColor.primary,
       ),
-      NotificationType.aiWeeklyInsight => (
+      NotificationType.digestWeeklyInsight => (
         l10n.notificationTypeAiWeeklyInsight,
         SemanticColor.primary,
       ),
@@ -277,7 +277,7 @@ class _TypeChip extends StatelessWidget {
         l10n.notificationTypePasswordChanged,
         SemanticColor.destructive,
       ),
-      NotificationType.aiProactiveSuggestion => (
+      NotificationType.assistantProactiveSuggestion => (
         l10n.notificationTypeAiProactiveSuggestion,
         SemanticColor.primary,
       ),

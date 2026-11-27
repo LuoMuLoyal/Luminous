@@ -51,7 +51,7 @@ class LucentAuthRepository implements AuthRepository {
   /// Replaces `response.data!` to avoid `NullPointerException` when
   /// the server returns an empty body (500 error, network timeout, CDN
   /// interception). [operation] names the API call so production errors
-  /// carry request context. Follows the `TodayAiRemoteDataSource` precedent:
+  /// carry request context. Follows the `TodayBriefingRemoteDataSource` precedent:
   /// an empty body is a transport-level failure, not a protocol invariant.
   T _requireBody<T>(T? body, String operation) {
     if (body == null) {

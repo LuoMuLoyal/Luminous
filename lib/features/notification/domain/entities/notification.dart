@@ -10,9 +10,9 @@ part 'notification.g.dart';
 /// adds new notification types.
 @JsonEnum(valueField: 'wire')
 enum NotificationType {
-  aiTodaySummary('ai_today_summary'),
-  aiWeeklyInsight('ai_weekly_insight'),
-  aiProactiveSuggestion('ai_proactive_suggestion'),
+  todayBriefing('ai_today_summary'),
+  digestWeeklyInsight('ai_weekly_insight'),
+  assistantProactiveSuggestion('ai_proactive_suggestion'),
   medicineMissedDose('medicine_missed_dose'),
   passwordChanged('password_changed'),
   reportGenerated('report_generated'),
