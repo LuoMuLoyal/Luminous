@@ -39,6 +39,14 @@ abstract final class PrefKeys {
       'featureFlags.medicineBarcodeScan';
   static const featureFlagsReportExportPdf = 'featureFlags.reportExportPdf';
 
+  // ── 端侧模型 ────────────────────────────────────────────────────────────
+
+  /// 用户选中的端侧模型 id（`ModelSource.id`，形如 `owner/repo/file.gguf`）。
+  ///
+  /// 只存 id，不存解析后的描述符：摘要与大小每次运行都从 host 重新读，
+  /// 存下来会把一个本该跟随实际文件的値冻结住。
+  static const localModelId = 'localModel.id';
+
   // ── Shell / Navigation ─────────────────────────────────────────────────
 
   /// 底部导航的用户配置（`NavConfig.toJson()`）。

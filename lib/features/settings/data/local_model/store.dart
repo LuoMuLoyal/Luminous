@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:luminous/core/network/app_log.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'local_model.dart';
+import '../../domain/local_model/catalog.dart';
 
 /// Why a model could not be made available.
 enum LocalModelFailure {

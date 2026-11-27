@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/ai/local_model.dart';
-import 'package:luminous/core/ai/model_store.dart';
+import 'package:luminous/features/settings/data/local_model/store.dart';
+import 'package:luminous/features/settings/domain/local_model/catalog.dart';
 
 /// A model descriptor pointing at a file the test writes.
 ///
@@ -18,6 +18,8 @@ const _model = LocalModel(
   sha256: 'PLACEHOLDER',
   sizeBytes: 11,
   contextLength: 4096,
+  minDeviceMemoryGb: 4,
+  note: '',
 );
 
 LocalModel _withDigest(LocalModel base, String digest) => LocalModel(
@@ -28,6 +30,8 @@ LocalModel _withDigest(LocalModel base, String digest) => LocalModel(
   sha256: digest,
   sizeBytes: base.sizeBytes,
   contextLength: base.contextLength,
+  minDeviceMemoryGb: base.minDeviceMemoryGb,
+  note: base.note,
 );
 
 void main() {
