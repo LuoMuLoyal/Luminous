@@ -94,20 +94,20 @@ is the machine projection; the interpretive contract lives in
 | `tabMedicine` | `` | `FLucideIcons.pill` |  |
 | `tabReview` | `` | `FLucideIcons.chartColumn` |  |
 | `tabMine` | `` | `FLucideIcons.userRound` |  |
-| `aiEntry` | `` | `FLucideIcons.sparkles` |  |
-| `aiAnalyzing` | `` | `FLucideIcons.loaderCircle` |  |
-| `aiGenerated` | `` | `FLucideIcons.bot` |  |
-| `aiSuggestion` | `` | `FLucideIcons.brain` |  |
-| `aiTip` | `` | `FLucideIcons.lightbulb` |  |
-| `aiMemory` | `` | `FLucideIcons.memoryStick` | 持久化记忆(能力面板摘要行)。 |
-| `aiKnowledge` | `` | `FLucideIcons.database` | 知识库 / RAG 检索(能力面板摘要行)。 |
-| `aiToolCalling` | `` | `FLucideIcons.wrench` | 工具调用(能力面板工具列表行前缀)。 |
-| `aiPermissionHint` | `` | `FLucideIcons.lockKeyhole` | 未授权访问 AI 摘要的提示。 |
-| `aiEmptyAnalysis` | `` | `FLucideIcons.circleDashed` | AI 分析结果为空。 |
-| `aiEmptySuggestion` | `` | `FLucideIcons.orbit` | AI 建议列表空态。 |
-| `aiFallbackIcon` | `` | `FLucideIcons.wandSparkles` | 后端图标字符串无法识别时的兜底图标。 |
-| `aiGenerate` | `` | `FLucideIcons.wand2` | 触发 AI 生成报告 / 总结。 |
-| `aiScanMethod` | `` | `FLucideIcons.scanText` | 扫码「AI 识别」方式入口。 |
+| `assistantEntry` | `` | `FLucideIcons.sparkles` |  |
+| `briefingAnalyzing` | `` | `FLucideIcons.loaderCircle` |  |
+| `briefingGenerated` | `` | `FLucideIcons.bot` |  |
+| `assistantSuggestion` | `` | `FLucideIcons.brain` |  |
+| `assistantTip` | `` | `FLucideIcons.lightbulb` |  |
+| `assistantMemory` | `` | `FLucideIcons.memoryStick` | 持久化记忆(能力面板摘要行)。 |
+| `assistantKnowledge` | `` | `FLucideIcons.database` | 知识库 / RAG 检索(能力面板摘要行)。 |
+| `assistantToolCalling` | `` | `FLucideIcons.wrench` | 工具调用(能力面板工具列表行前缀)。 |
+| `assistantPermissionHint` | `` | `FLucideIcons.lockKeyhole` | 未授权访问 AI 摘要的提示。 |
+| `briefingEmpty` | `` | `FLucideIcons.circleDashed` | AI 分析结果为空。 |
+| `assistantEmptySuggestion` | `` | `FLucideIcons.orbit` | AI 建议列表空态。 |
+| `assistantFallbackIcon` | `` | `FLucideIcons.wandSparkles` | 后端图标字符串无法识别时的兜底图标。 |
+| `briefingGenerate` | `` | `FLucideIcons.wand2` | 触发 AI 生成报告 / 总结。 |
+| `assistantScanMethod` | `` | `FLucideIcons.scanText` | 扫码「AI 识别」方式入口。 |
 | `recordMedicine` | `` | `FLucideIcons.tablets` |  |
 | `recordWater` | `` | `FLucideIcons.droplets` |  |
 | `recordMeal` | `` | `FLucideIcons.utensils` |  |
@@ -268,7 +268,7 @@ is the machine projection; the interpretive contract lives in
 | `profileArchiveBasic` | `` | `FLucideIcons.clipboardCheck` | 「我的」档案卡片：基本档案。 |
 | `authEmailVerified` | `` | `FLucideIcons.mailCheck` | 邮箱已验证标记。 |
 | `actionSettingsTopBar` | `` | `FLucideIcons.cog` | `actionSettings` 的页面区分版本（top_bar.dart）。 |
-| `aiEntryTopBar` | `` | `FLucideIcons.cpu` | `aiEntry` 的页面区分版本（top_bar.dart）。 |
+| `assistantEntryTopBar` | `` | `FLucideIcons.cpu` | `assistantEntry` 的页面区分版本（top_bar.dart）。 |
 | `notificationBellTopBar` | `` | `FLucideIcons.bellElectric` | `notificationBell` 的页面区分版本（top_bar.dart）。 |
 
 ### tokens/spacing.dart
