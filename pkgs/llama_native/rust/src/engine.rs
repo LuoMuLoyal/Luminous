@@ -1,28 +1,39 @@
 //! The llama.cpp session: the only place a model or a context exists.
 //!
-//! ## Why this is a plain struct and not shared state
+//! ## Why this is not shared state
 //!
-//! A `llama_context` holds a KV cache, so two generations on one context would
-//! interleave their tokens. The Dart side therefore creates one engine per
-//! conversation and serialises calls through it; making the Rust type `Sync`
-//! with interior locking would invite exactly the interleaving the KV cache
-//! cannot survive. `flutter_rust_bridge` handles the async wrapping.
+//! A context holds a KV cache, so two generations on one context would interleave
+//! their tokens. The Dart side therefore keeps one engine per conversation and
+//! serialises calls through it; making this type shareable with interior locking
+//! would invite exactly the interleaving the cache cannot survive.
+//!
+//! ## API notes for `llama-cpp-2` 0.1.x
+//!
+//! Three things differ from what the upstream README shows and are easy to get
+//! wrong:
+//!
+//! - There is no `AddBos` enum; tokenisation takes an `add_special` bool.
+//! - `token_to_piece(token, special, lstrip)` returns `Vec<u8>`, not `String` —
+//!   a single token can be an incomplete UTF-8 sequence.
+//! - Samplers are assembled **before** the chain is built (`chain_simple` takes
+//!   the whole list); there is no `with_sampler` builder.
+
+use std::num::NonZeroU32;
 
 use llama_cpp_2::context::params::LlamaContextParams;
 use llama_cpp_2::llama_backend::LlamaBackend;
 use llama_cpp_2::llama_batch::LlamaBatch;
 use llama_cpp_2::model::params::LlamaModelParams;
-use llama_cpp_2::model::{AddBos, LlamaChatMessage, LlamaModel};
+use llama_cpp_2::model::{LlamaChatMessage, LlamaModel};
 use llama_cpp_2::sampling::LlamaSampler;
 
 use crate::error::{LlamaError, LlamaResult};
 use crate::options::{EngineOptions, GenerationOptions, ModelInfo};
 
-/// One loaded model plus its context.
+/// One loaded model plus the backend it came from.
 ///
-/// Field order matters for drop: Rust drops in declaration order, and the
-/// context borrows the model. Declaring the model first means it outlives the
-/// context, which is the same ordering constraint the C API has.
+/// Declaration order matters for drop: the model borrows the backend, so the
+/// model is declared first and released first.
 pub struct Engine {
     model: LlamaModel,
     backend: LlamaBackend,
@@ -35,8 +46,8 @@ impl Engine {
         options.validate()?;
 
         let backend = LlamaBackend::init().map_err(|error| {
-            // The common cause here is a missing native library or an
-            // unsupported CPU feature, not a bad argument.
+            // The usual cause is a missing native library or an unsupported CPU
+            // feature, not a bad argument.
             LlamaError::BackendUnavailable(error.to_string())
         })?;
 
@@ -45,8 +56,8 @@ impl Engine {
             params = params.with_n_gpu_layers(options.gpu_layers as u32);
         }
         if !options.use_mmap {
-            // `with_use_mmap(false)` reads the weights into anonymous memory.
-            // Left on by default so the OS can reclaim clean pages.
+            // Reading the weights into anonymous memory instead of mapping them
+            // costs startup time and removes the OS's ability to reclaim pages.
             params = params.with_use_mmap(false);
         }
 
@@ -62,27 +73,26 @@ impl Engine {
 
     /// Reads the model's own description of itself.
     pub fn info(&self) -> ModelInfo {
-        let trained_context_length = self.model.n_ctx_train();
         ModelInfo {
             architecture: self.describe("general.architecture"),
             name: self.describe("general.name"),
-            trained_context_length,
-            embedding_size: self.model.n_embd(),
+            trained_context_length: self.model.n_ctx_train(),
+            // `n_embd` is a C `int` upstream; the domain type is unsigned because
+            // a negative embedding width is not a meaningful value.
+            embedding_size: self.model.n_embd().max(0) as u32,
             layer_count: self.model.n_layer(),
             has_chat_template: self.model.chat_template(None).is_ok(),
         }
     }
 
     fn describe(&self, key: &str) -> String {
-        self.model
-            .meta_val_str(key)
-            .unwrap_or_default()
+        self.model.meta_val_str(key).unwrap_or_default()
     }
 
     /// Applies the model's embedded chat template.
     ///
-    /// Returns `Ok(None)` when the GGUF has no template: the caller then builds
-    /// a prompt itself rather than receive a format the model never saw.
+    /// `Ok(None)` when the GGUF has no template: the caller then builds a prompt
+    /// itself rather than receive a format the model never saw.
     pub fn format_chat_prompt(
         &self,
         roles: &[String],
@@ -96,7 +106,9 @@ impl Engine {
         let messages: Vec<LlamaChatMessage> = roles
             .iter()
             .zip(contents.iter())
-            .map(|(role, content)| LlamaChatMessage::new(role.clone(), content.clone()))
+            .map(|(role, content)| {
+                LlamaChatMessage::new(role.clone(), content.clone())
+            })
             .collect::<Result<_, _>>()
             .map_err(|error| LlamaError::PromptRejected(error.to_string()))?;
 
@@ -106,30 +118,65 @@ impl Engine {
                 .apply_chat_template(&template, &messages, true)
                 .map(Some)
                 .map_err(|error| LlamaError::PromptRejected(error.to_string())),
-            // No template is not a failure: it is an answer the caller acts on.
+            // No template is an answer, not a failure.
             Err(_) => Ok(None),
         }
     }
 
-    /// The context parameters for this engine's options.
     fn context_params(&self) -> LlamaContextParams {
         LlamaContextParams::default()
-            .with_n_ctx(Some(
-                std::num::NonZeroU32::new(self.options.context_length)
-                    .unwrap_or(std::num::NonZeroU32::MIN),
-            ))
+            .with_n_ctx(NonZeroU32::new(self.options.context_length))
             .with_n_batch(self.options.batch_size)
+            .with_n_threads(self.options.threads)
+            .with_n_threads_batch(self.options.threads)
     }
 
-    /// Streams a completion, calling `on_token` for each decoded piece.
+    /// Builds the sampler chain.
     ///
-    /// The callback is synchronous and runs on this thread: the Dart side
-    /// forwards each piece into a `StreamSink`, so the UI paints between tokens
-    /// while the decode loop keeps running.
+    /// Order matters: the grammar goes first so every later sampler filters
+    /// inside the set it allows. Reversed, the model can pick a token the grammar
+    /// rejects and decoding fails mid-stream.
+    fn build_sampler(&self, options: &GenerationOptions) -> LlamaResult<LlamaSampler> {
+        let mut samplers = Vec::with_capacity(6);
+
+        if let Some(grammar) = options.grammar.as_deref() {
+            let sampler = LlamaSampler::grammar(&self.model, grammar, "root")
+                .map_err(|error| LlamaError::GrammarInvalid(error.to_string()))?;
+            samplers.push(sampler);
+        }
+
+        if options.repeat_last_n > 0 && options.repeat_penalty > 0.0 {
+            samplers.push(LlamaSampler::penalties(
+                self.model.n_vocab(),
+                options.repeat_last_n,
+                options.repeat_penalty,
+                0.0,
+                0.0,
+            ));
+        }
+
+        if options.temperature <= 0.0 {
+            // Greedy: top-k / top-p would be dead weight.
+            samplers.push(LlamaSampler::greedy());
+        } else {
+            if options.top_k > 0 {
+                samplers.push(LlamaSampler::top_k(options.top_k));
+            }
+            if options.top_p < 1.0 {
+                samplers.push(LlamaSampler::top_p(options.top_p, 1));
+            }
+            samplers.push(LlamaSampler::temp(options.temperature));
+            samplers.push(LlamaSampler::dist(0));
+        }
+
+        Ok(LlamaSampler::chain_simple(samplers))
+    }
+
+    /// Streams a completion, calling `on_token` per decoded piece.
     ///
-    /// Returning `false` from the callback stops generation; the result then
-    /// reports `cancelled: true` and keeps the text produced so far — a user
-    /// pressing stop should not lose what they already read.
+    /// The callback runs synchronously on this thread. Returning `false` stops
+    /// generation and the result reports `cancelled: true` while keeping the text
+    /// already produced — a user pressing stop should not lose what they read.
     pub fn generate<F>(
         &self,
         prompt: &str,
@@ -141,34 +188,36 @@ impl Engine {
     {
         options.validate()?;
 
-        let context = self
+        let mut context = self
             .model
             .new_context(&self.backend, self.context_params())
             .map_err(|error| LlamaError::ContextUnavailable(error.to_string()))?;
 
-        // Tokenise the prompt. `AddBos` follows the model: adding a BOS the model
-        // does not expect degrades output subtly rather than failing.
-        let tokens = self
-            .model
-            .str_to_token(prompt, AddBos::Always)
-            .map_err(|error| LlamaError::PromptRejected(error.to_string()))?;
+        let vocab = self.model.vocab();
+
+        // `add_special: true` matches what the model expects at the start of a
+        // prompt; `parse_special: true` lets a template emit its own markers.
+        let tokens = vocab.tokenize(prompt.as_bytes(), true, true);
         if tokens.is_empty() {
-            return Err(LlamaError::PromptRejected("prompt produced no tokens".into()));
+            return Err(LlamaError::PromptRejected(
+                "prompt produced no tokens".into(),
+            ));
         }
 
-        // Decode the prompt in batches: a prompt longer than `n_batch` fails if
-        // submitted at once, and a catalog-heavy system prompt routinely is.
+        // Decode the prompt in batches: a prompt larger than `n_batch` fails if
+        // submitted at once, and a long system prompt regularly is.
         let batch_size = self.options.batch_size.max(1) as usize;
         let mut batch = LlamaBatch::new(batch_size, 1);
-        let last = tokens.len().saturating_sub(1);
-        for (offset, chunk) in tokens.chunks(batch_size).enumerate() {
+        let last_index = tokens.len().saturating_sub(1);
+
+        for (chunk_index, chunk) in tokens.chunks(batch_size).enumerate() {
             batch.clear();
-            for (index, token) in chunk.iter().enumerate() {
-                let position = (offset * batch_size + index) as i32;
-                // Only the final prompt token needs its logits: they are what
-                // the sampler reads. Requesting them all wastes memory.
+            for (offset, token) in chunk.iter().enumerate() {
+                let position = (chunk_index * batch_size + offset) as i32;
+                // Only the final prompt token needs logits: they are what the
+                // sampler reads, and requesting them all wastes memory.
                 batch
-                    .add(*token, position, &[0], position as usize == last)
+                    .add(*token, position, &[0], position as usize == last_index)
                     .map_err(|error| LlamaError::DecodeFailed(error.to_string()))?;
             }
             context
@@ -176,40 +225,7 @@ impl Engine {
                 .map_err(|error| LlamaError::DecodeFailed(error.to_string()))?;
         }
 
-        // Build the sampler chain. The grammar goes first so every other sampler
-        // filters inside the set it allows; reversed, the model can pick a token
-        // the grammar rejects and decoding fails mid-stream.
-        let mut chain = LlamaSampler::chain_simple([
-            LlamaSampler::penalties(
-                options.repeat_last_n,
-                options.repeat_penalty,
-                0.0,
-                0.0,
-            ),
-        ]);
-
-        if let Some(grammar) = options.grammar.as_deref() {
-            match LlamaSampler::grammar(&self.model, grammar, "root") {
-                Ok(sampler) => chain = chain.with_sampler(sampler),
-                Err(error) => {
-                    return Err(LlamaError::GrammarInvalid(error.to_string()));
-                }
-            }
-        }
-
-        if options.temperature <= 0.0 {
-            chain = chain.with_sampler(LlamaSampler::greedy());
-        } else {
-            if options.top_k > 0 {
-                chain = chain.with_sampler(LlamaSampler::top_k(options.top_k));
-            }
-            if options.top_p < 1.0 {
-                chain = chain.with_sampler(LlamaSampler::top_p(options.top_p, 1));
-            }
-            chain = chain
-                .with_sampler(LlamaSampler::temp(options.temperature))
-                .with_sampler(LlamaSampler::dist(0));
-        }
+        let mut sampler = self.build_sampler(&options)?;
 
         let mut text = String::new();
         let mut generated: u32 = 0;
@@ -217,30 +233,26 @@ impl Engine {
         let mut tail = String::new();
 
         while generated < options.max_tokens as u32 {
-            let token = chain.sample(&context, -1);
+            let token = sampler.sample(&context, -1);
 
-            if self.model.is_eog_token(token) {
+            if vocab.is_eog(token) {
                 break;
             }
 
-            let piece = match self.model.token_to_piece(token, &mut |_| {}) {
-                Ok(piece) => piece,
-                Err(error) => {
-                    return Err(LlamaError::DecodeFailed(error.to_string()));
-                }
-            };
+            // A token can be a partial UTF-8 sequence, so it is collected as bytes
+            // and decoded lossily rather than assumed to be a `String`.
+            let piece_bytes = vocab.token_to_piece(token, true, None);
+            let piece = String::from_utf8_lossy(&piece_bytes).into_owned();
 
             text.push_str(&piece);
             generated += 1;
 
-            // A stop string can straddle two tokens, so matching runs on a
-            // rolling window rather than per piece.
+            // A stop string can straddle two tokens, so matching runs on a rolling
+            // window rather than per piece.
             tail.push_str(&piece);
-            if tail.len() > 64 {
-                let cut = tail.len() - 64;
-                // Borrowed boundary: `truncate` is safe on a char boundary, and
-                // cutting mid-codepoint would panic.
-                tail = tail.chars().skip(cut.min(tail.chars().count())).collect();
+            if tail.chars().count() > 64 {
+                let skip = tail.chars().count() - 64;
+                tail = tail.chars().skip(skip).collect();
             }
             let hit_stop = options
                 .stop_sequences
@@ -258,7 +270,12 @@ impl Engine {
             // Feed the token back for the next step.
             batch.clear();
             batch
-                .add(token, (tokens.len() + generated as usize - 1) as i32, &[0], true)
+                .add(
+                    token,
+                    (tokens.len() + generated as usize - 1) as i32,
+                    &[0],
+                    true,
+                )
                 .map_err(|error| LlamaError::DecodeFailed(error.to_string()))?;
             context
                 .decode(&mut batch)
