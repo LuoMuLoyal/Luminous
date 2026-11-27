@@ -103,13 +103,13 @@
   "todaySecondarySuggestionSectionTitle": "稍后处理",
   "todaySuggestionEvidenceLabel": "依据",
   "todaySuggestionBoundaryLabel": "注意",
-  "todayAiSummaryGenerateAction": "生成",
-  "todayAiSummaryOpenSettingsAction": "设置",
-  "todayAiSummaryDefaultHint": "用今天的记录生成一句总结和两条提醒",
-  "todayAiSummaryPreviewHint": "登录后可查看今日总结与提醒",
-  "todayAiSummaryGeneratingHint": "正在整理今天的记录…",
-  "todayAiSummaryErrorHint": "这次生成没有成功，请重试",
-  "todayAiSummaryDisabledHint": "AI 总结已在设置中关闭，请先开启",
+  "todayBriefingSummaryGenerateAction": "生成",
+  "todayBriefingSummaryOpenSettingsAction": "设置",
+  "todayBriefingSummaryDefaultHint": "用今天的记录生成一句总结和两条提醒",
+  "todayBriefingSummaryPreviewHint": "登录后可查看今日总结与提醒",
+  "todayBriefingSummaryGeneratingHint": "正在整理今天的记录…",
+  "todayBriefingSummaryErrorHint": "这次生成没有成功，请重试",
+  "todayBriefingSummaryDisabledHint": "AI 总结已在设置中关闭，请先开启",
   "todayAnalysisRuleBasedLabel": "基于规则的摘要",
   "todayAnalysisRefreshAction": "刷新",
   "todayAnalysisEmptyTitle": "暂无分析",
@@ -117,25 +117,25 @@
   "todayAnalysisPendingHint": "分析生成中…",
   "todayAnalysisStaleHint": "分析结果较旧，下拉刷新",
   "todayAnalysisFailedHint": "分析生成失败，点击重试",
-  "todayAiSummaryMedicationPending": "还有 {count} 条用药待确认，请勿自行调整剂量",
-  "@todayAiSummaryMedicationPending": {
+  "todayBriefingSummaryMedicationPending": "还有 {count} 条用药待确认，请勿自行调整剂量",
+  "@todayBriefingSummaryMedicationPending": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "todayAiSummaryMedicationDone": "今日用药待办已处理，新增药品仍需检查风险",
-  "todayAiSummaryWaterRemaining": "饮水还差 {count} 次，可分散到全天",
-  "@todayAiSummaryWaterRemaining": {
+  "todayBriefingSummaryMedicationDone": "今日用药待办已处理，新增药品仍需检查风险",
+  "todayBriefingSummaryWaterRemaining": "饮水还差 {count} 次，可分散到全天",
+  "@todayBriefingSummaryWaterRemaining": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "todayAiSummaryWaterDone": "今日饮水已达标，保持少量多次",
-  "todayAiSummarySleepPlaceholder": "记录睡眠后会纳入今日总结",
+  "todayBriefingSummaryWaterDone": "今日饮水已达标，保持少量多次",
+  "todayBriefingSummarySleepPlaceholder": "记录睡眠后会纳入今日总结",
   "todaySummaryFallbackNarrative": "点生成，用今天的记录整理总结",
   "todayObservationSectionTitle": "留意事项",
   "todayObservationSubtitle": "仅供参考，不构成待办",

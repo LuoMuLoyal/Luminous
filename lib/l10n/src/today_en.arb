@@ -103,13 +103,13 @@
   "todaySecondarySuggestionSectionTitle": "Worth handling next",
   "todaySuggestionEvidenceLabel": "Basis",
   "todaySuggestionBoundaryLabel": "Note",
-  "todayAiSummaryGenerateAction": "Generate",
-  "todayAiSummaryOpenSettingsAction": "Settings",
-  "todayAiSummaryDefaultHint": "Generate a short recap and reminders from today's records.",
-  "todayAiSummaryPreviewHint": "Sign in to see today's recap and reminders.",
-  "todayAiSummaryGeneratingHint": "Organizing today's records…",
-  "todayAiSummaryErrorHint": "Generation didn't finish. Try again.",
-  "todayAiSummaryDisabledHint": "AI summaries are off in settings. Enable them first.",
+  "todayBriefingSummaryGenerateAction": "Generate",
+  "todayBriefingSummaryOpenSettingsAction": "Settings",
+  "todayBriefingSummaryDefaultHint": "Generate a short recap and reminders from today's records.",
+  "todayBriefingSummaryPreviewHint": "Sign in to see today's recap and reminders.",
+  "todayBriefingSummaryGeneratingHint": "Organizing today's records…",
+  "todayBriefingSummaryErrorHint": "Generation didn't finish. Try again.",
+  "todayBriefingSummaryDisabledHint": "AI summaries are off in settings. Enable them first.",
   "todayAnalysisRuleBasedLabel": "Rule-based summary",
   "todayAnalysisRefreshAction": "Refresh",
   "todayAnalysisEmptyTitle": "No analysis yet",
@@ -117,25 +117,25 @@
   "todayAnalysisPendingHint": "Analysis is being generated…",
   "todayAnalysisStaleHint": "Analysis is stale, pull to refresh",
   "todayAnalysisFailedHint": "Analysis failed, tap to retry",
-  "todayAiSummaryMedicationPending": "{count} medication items need confirmation. Don't adjust doses casually",
-  "@todayAiSummaryMedicationPending": {
+  "todayBriefingSummaryMedicationPending": "{count} medication items need confirmation. Don't adjust doses casually",
+  "@todayBriefingSummaryMedicationPending": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "todayAiSummaryMedicationDone": "Medication todos handled. Check risks when adding new medicine",
-  "todayAiSummaryWaterRemaining": "{count} water check-ins left. Spread them across the day",
-  "@todayAiSummaryWaterRemaining": {
+  "todayBriefingSummaryMedicationDone": "Medication todos handled. Check risks when adding new medicine",
+  "todayBriefingSummaryWaterRemaining": "{count} water check-ins left. Spread them across the day",
+  "@todayBriefingSummaryWaterRemaining": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
   },
-  "todayAiSummaryWaterDone": "Water check-ins complete. Keep taking small amounts often",
-  "todayAiSummarySleepPlaceholder": "Record sleep to include it in today's summary",
+  "todayBriefingSummaryWaterDone": "Water check-ins complete. Keep taking small amounts often",
+  "todayBriefingSummarySleepPlaceholder": "Record sleep to include it in today's summary",
   "todaySummaryFallbackNarrative": "Tap generate to summarize today's records.",
   "todayObservationSectionTitle": "Worth noting",
   "todayObservationSubtitle": "For reference only, not action items",

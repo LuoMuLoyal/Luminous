@@ -66,6 +66,7 @@
   "assistantToolSleepByRange": "Sleep summary",
   "assistantToolResolveDrugbankEntity": "DrugBank entity lookup",
   "assistantToolSearchDrugbankPassages": "DrugBank passage search",
+  "assistantToolSearchAdverseReactions": "Adverse reaction search",
   "assistantToolReasonOverOntology": "DrugBank ontology reasoning",
   "assistantToolReasonOverRules": "DrugBank rule inference",
   "assistantToolProposeCreateRecord": "Save proposal",

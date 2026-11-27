@@ -92,7 +92,7 @@
   "mineCompletenessGapAction": "Complete",
   "minePrivacyReportTitle": "Report sharing",
   "minePrivacyReportSubtitle": "Health reports and trend analysis",
-  "mineAiPrivacySectionTitle": "AI & Privacy",
+  "mineAssistantPrivacySectionTitle": "AI & Privacy",
   "mineReminderSectionTitle": "Reminder settings",
   "mineReminderWaterTitle": "Water",
   "mineNotificationReminderSectionTitle": "Notifications & reminders",

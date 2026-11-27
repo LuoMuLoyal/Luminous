@@ -66,6 +66,7 @@
   "assistantToolSleepByRange": "睡眠概况",
   "assistantToolResolveDrugbankEntity": "DrugBank 实体定位",
   "assistantToolSearchDrugbankPassages": "DrugBank 片段检索",
+  "assistantToolSearchAdverseReactions": "不良反应检索",
   "assistantToolReasonOverOntology": "DrugBank 本体推理",
   "assistantToolReasonOverRules": "DrugBank 规则推导",
   "assistantToolProposeCreateRecord": "保存建议",
