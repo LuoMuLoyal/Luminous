@@ -345,27 +345,21 @@ Product Loop Program 的延后项如下。
   放宽「不得改生成物」并调整 drift 生成布局。
 - 新引入循环由 `scripts/arch/guard.dart` 直接拦截；修完一组后 `dart run arch_guard --update-baseline` 收窄冻结清单
 
-## 2026-11-27 端侧 LLM（`pkgs/llama_native`）
+## 2026-11-27 端侧 LLM（`lib/core/ai` + `pkgs/llama_native`）
 
-Dart 与 Rust 两侧代码已落地、桥接代码已生成。**仍未在真机上跑过模型**，模型清单是空的。
-以下按依赖顺序。
+模型来源、原生库打包、app 接线三件事已完成，`flutter analyze` 与两侧测试都通过。
+**但仍没有一次真实推理**，且 release 里还没有 `manifest.json`。以下按依赖顺序。
 
-- **模型清单与下载源**：`lib/core/ai/local_model.dart` 的 `availableLocalModels` 目前是
-  空列表。填条目需要从实际要分发的字节算出 SHA-256——编一个假哈希会让每次下载都校验
-  失败，而放宽校验就失去了校验的意义。需要先定分发渠道（GitHub Release / 自建），再算
-  哈希。模型 2–3 GB，绝不能进安装包。
-- **真机验证**：Desktop 上 `cargo build` 通过、DLL 已生成，但**没有任何一次真实推理**。
-  第一次加载模型会暴露 KV 分配、GPU 层、线程数这些参数的实际表现，这次构建里对它们的
-  判断全部来自文档而非实测。
-- **平台原生库打包**：Android `jniLibs` + Gradle NDK、iOS podspec +
-  `PrivacyInfo.xcprivacy`、桌面把动态库放到可执行文件旁。`rust_builder` 钩子还没配。
-- **app 接线**：`pubspec.yaml` 加 path 依赖；`RuntimeProviderKind` 增加后端枚举值
-  （现有 `aiToolkit` 指向一个不存在的包，是历史遗留）；engine 装配与生命周期。
-  **改枚举要写迁移**：`runtimeProvider` 存在 SharedPreferences
-  （`PrefKeys.featureFlagsRuntimeProvider`），旧值会解析成 `none`，老用户感知为「开关失效」。
+- **发布 `manifest.json`**（当前阻塞点）：`ModelRelease` 指向
+  `flespark/luminous-models` 的 `v1` tag，该 release 与清单都还不存在。清单格式见
+  `ModelManifest.decode` 的文档注释；`sha256` 与 `sizeBytes` 必须与实际要分发的字节
+  完全一致——**不要在代码里手填哈希**，它只能从上传的那份文件算出。
+- **真机验证**：Desktop 上 crate 编译通过、DLL 已生成，但模型从未被加载过。
+  `contextLength`、`gpuLayers`、`threads` 的实际表现全部来自文档而非实测，
+  第一次加载很可能要调这组参数。
 - **GBNF 语法生成**：结构化输出应由 grammar 约束而非提示词祈祷。llama.cpp 原生支持
-  GBNF，但还没有 Schema → GBNF 的生成器。
+  GBNF，`GenerationOptions.grammar` 已能透传，但还没有 Schema → GBNF 的生成器。
 - **设备可用性探测**：内存 + ABI 探测，决定能否加载以及用多小的 `contextLength`；
-  不可用时降级而不是崩溃。
-- **settings 里的「端侧运行时」开关当前是空壳**：只存 SharedPreferences 并显示，
-  没有任何代码读它去跑模型。
+  不可用时降级到 Lucent 后端而不是崩溃。
+- **settings 里的「端侧运行时」开关仍是空壳**：只存 SharedPreferences 并显示，
+  没有任何代码读它去决定是否使用 `LocalAssistant`。接线前它对用户无效。
