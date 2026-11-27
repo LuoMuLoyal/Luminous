@@ -44,7 +44,7 @@ void main() {
 
       final state = await container.read(userSettingsControllerProvider.future);
 
-      expect(state.aiSummariesEnabled, isFalse);
+      expect(state.digestEnabled, isFalse);
       expect(state.dataSharingConsent, isTrue);
       expect(state.updatedAt, '2026-06-12T00:00:00.000Z');
       expect(fakeApi.getCallCount, 1);
@@ -84,7 +84,7 @@ void main() {
     });
   });
 
-  group('setAiSummariesEnabled', () {
+  group('setDigestEnabled', () {
     test('patches settings and updates state on success', () async {
       container = buildContainer();
 
@@ -93,18 +93,18 @@ void main() {
 
       // Patch response returns updated state.
       fakeApi.patchResponse = _buildResponse(
-        aiSummariesEnabled: true,
+        digestEnabled: true,
         dataSharingConsent: true,
       );
 
       await container
           .read(userSettingsControllerProvider.notifier)
-          .setAiSummariesEnabled(true);
+          .setDigestEnabled(true);
 
       final state = container.read(userSettingsControllerProvider);
-      expect(state.value?.aiSummariesEnabled, isTrue);
+      expect(state.value?.digestEnabled, isTrue);
       expect(state.value?.dataSharingConsent, isTrue);
-      expect(fakeApi.lastPatchDto?.aiSummariesEnabled, isTrue);
+      expect(fakeApi.lastPatchDto?.digestEnabled, isTrue);
       expect(fakeApi.lastPatchDto?.dataSharingConsent, isTrue);
       expect(fakeApi.patchCallCount, 1);
     });
@@ -112,26 +112,23 @@ void main() {
     test('disables previously enabled AI summaries', () async {
       container = buildContainer(
         api: _FakeUserSettingsApi(
-          responseData: _buildResponse(aiSummariesEnabled: true),
+          responseData: _buildResponse(digestEnabled: true),
         ),
       );
 
       await container.read(userSettingsControllerProvider.future);
 
-      fakeApi.patchResponse = _buildResponse(aiSummariesEnabled: false);
+      fakeApi.patchResponse = _buildResponse(digestEnabled: false);
 
       await container
           .read(userSettingsControllerProvider.notifier)
-          .setAiSummariesEnabled(false);
+          .setDigestEnabled(false);
 
       expect(
-        container
-            .read(userSettingsControllerProvider)
-            .value
-            ?.aiSummariesEnabled,
+        container.read(userSettingsControllerProvider).value?.digestEnabled,
         isFalse,
       );
-      expect(fakeApi.lastPatchDto?.aiSummariesEnabled, isFalse);
+      expect(fakeApi.lastPatchDto?.digestEnabled, isFalse);
     });
 
     test('propagates error when API call fails', () async {
@@ -147,13 +144,13 @@ void main() {
       expect(
         () => container
             .read(userSettingsControllerProvider.notifier)
-            .setAiSummariesEnabled(true),
+            .setDigestEnabled(true),
         throwsA(isA<LucentFailure>()),
       );
 
       // State remains from the successful initial load.
       final state = container.read(userSettingsControllerProvider);
-      expect(state.value?.aiSummariesEnabled, isFalse);
+      expect(state.value?.digestEnabled, isFalse);
       expect(state.value?.dataSharingConsent, isTrue);
     });
 
@@ -169,7 +166,7 @@ void main() {
         await expectLater(
           container
               .read(userSettingsControllerProvider.notifier)
-              .setAiSummariesEnabled(true),
+              .setDigestEnabled(true),
           throwsA(
             isA<LucentFailure>()
                 .having(
@@ -195,7 +192,7 @@ void main() {
       await container.read(userSettingsControllerProvider.future);
 
       fakeApi.patchResponse = _buildResponse(
-        aiSummariesEnabled: false,
+        digestEnabled: false,
         dataSharingConsent: true,
       );
 
@@ -206,7 +203,7 @@ void main() {
       final state = container.read(userSettingsControllerProvider);
       expect(state.value?.dataSharingConsent, isTrue);
       expect(fakeApi.lastPatchDto?.dataSharingConsent, isTrue);
-      expect(fakeApi.lastPatchDto?.aiSummariesEnabled, isFalse);
+      expect(fakeApi.lastPatchDto?.digestEnabled, isFalse);
       expect(fakeApi.patchCallCount, 1);
     });
 
@@ -266,7 +263,7 @@ void main() {
         await container.read(userSettingsControllerProvider.future);
 
         fakeApi.patchResponse = _buildResponse(
-          aiSummariesEnabled: false,
+          digestEnabled: false,
           dataSharingConsent: true,
           assistantEnabled: false,
           assistantContext: UserSettingsResponseAssistantContext(
@@ -296,7 +293,7 @@ void main() {
         await container.read(userSettingsControllerProvider.future);
 
         fakeApi.patchResponse = _buildResponse(
-          aiSummariesEnabled: false,
+          digestEnabled: false,
           dataSharingConsent: true,
           assistantEnabled: true,
           assistantMemoryEnabled: true,
@@ -333,7 +330,7 @@ void main() {
         );
 
         fakeApi.patchResponse = _buildResponse(
-          aiSummariesEnabled: false,
+          digestEnabled: false,
           dataSharingConsent: true,
           assistantEnabled: true,
           assistantContext: UserSettingsResponseAssistantContext(
@@ -371,20 +368,17 @@ void main() {
       await container.read(userSettingsControllerProvider.future);
 
       fakeApi.patchResponse = _buildResponse(
-        aiSummariesEnabled: true,
+        digestEnabled: true,
         dataSharingConsent: true,
       );
 
       await container
           .read(userSettingsControllerProvider.notifier)
-          .setAiSummariesEnabled(true);
+          .setDigestEnabled(true);
 
       // Patch response should carry both fields back.
       expect(
-        container
-            .read(userSettingsControllerProvider)
-            .value
-            ?.aiSummariesEnabled,
+        container.read(userSettingsControllerProvider).value?.digestEnabled,
         isTrue,
       );
       expect(
@@ -397,7 +391,7 @@ void main() {
 
       // Now toggle data sharing off.
       fakeApi.patchResponse = _buildResponse(
-        aiSummariesEnabled: true,
+        digestEnabled: true,
         dataSharingConsent: false,
       );
 
@@ -406,10 +400,7 @@ void main() {
           .setDataSharingConsent(false);
 
       expect(
-        container
-            .read(userSettingsControllerProvider)
-            .value
-            ?.aiSummariesEnabled,
+        container.read(userSettingsControllerProvider).value?.digestEnabled,
         isTrue,
       );
       expect(
@@ -428,13 +419,13 @@ void main() {
 
       await container.read(userSettingsControllerProvider.future);
 
-      fakeApi.patchResponse = _buildResponse(aiSummariesEnabled: true);
+      fakeApi.patchResponse = _buildResponse(digestEnabled: true);
       await container
           .read(userSettingsControllerProvider.notifier)
-          .setAiSummariesEnabled(true);
+          .setDigestEnabled(true);
 
       fakeApi.patchResponse = _buildResponse(
-        aiSummariesEnabled: true,
+        digestEnabled: true,
         dataSharingConsent: true,
       );
       await container
@@ -442,15 +433,15 @@ void main() {
           .setDataSharingConsent(true);
 
       fakeApi.patchResponse = _buildResponse(
-        aiSummariesEnabled: false,
+        digestEnabled: false,
         dataSharingConsent: true,
       );
       await container
           .read(userSettingsControllerProvider.notifier)
-          .setAiSummariesEnabled(false);
+          .setDigestEnabled(false);
 
       final state = container.read(userSettingsControllerProvider).value;
-      expect(state?.aiSummariesEnabled, isFalse);
+      expect(state?.digestEnabled, isFalse);
       expect(state?.dataSharingConsent, isTrue);
       expect(fakeApi.patchCallCount, 3);
     });
@@ -468,7 +459,7 @@ Response<T> _response<T>(T? data) => Response<T>(
 );
 
 UserSettingsResponse _buildResponse({
-  bool aiSummariesEnabled = false,
+  bool digestEnabled = false,
   bool dataSharingConsent = false,
   bool assistantEnabled = true,
   bool assistantMemoryEnabled = false,
@@ -477,7 +468,7 @@ UserSettingsResponse _buildResponse({
   UserSettingsResponseAssistantContext? assistantContext,
 }) {
   return UserSettingsResponse(
-    aiSummariesEnabled: aiSummariesEnabled,
+    digestEnabled: digestEnabled,
     dataSharingConsent: dataSharingConsent,
     assistantEnabled: assistantEnabled,
     assistantMemoryEnabled: assistantMemoryEnabled,
@@ -505,7 +496,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     : _getResponseData = responseData;
 
   static UserSettingsResponse _defaultResponse() => UserSettingsResponse(
-    aiSummariesEnabled: false,
+    digestEnabled: false,
     dataSharingConsent: true,
     assistantEnabled: true,
     assistantMemoryEnabled: false,

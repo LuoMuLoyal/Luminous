@@ -10,7 +10,7 @@ import 'package:luminous/core/storage/kv_store.dart';
 import 'package:luminous/core/widgets/common/dialog/sheet_drag_handle.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/advanced.dart';
-import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/assistant_backend.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/feature_flags.dart';
 import 'package:luminous/features/settings/presentation/pages/storage/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
@@ -49,7 +49,7 @@ class _StubExportController extends DataExportController {
 }
 
 UserSettings _buildSettings({
-  bool aiSummaries = false,
+  bool digests = false,
   bool assistantEnabled = true,
   bool assistantMemory = false,
   bool healthProfile = true,
@@ -58,7 +58,7 @@ UserSettings _buildSettings({
   bool currentMedicines = true,
 }) {
   return UserSettings(
-    aiSummariesEnabled: aiSummaries,
+    digestEnabled: digests,
     dataSharingConsent: true,
     assistantEnabled: assistantEnabled,
     assistantMemoryEnabled: assistantMemory,
@@ -133,7 +133,10 @@ void main() {
             _testSensitiveActionPolicy(),
           ),
         ],
-        child: const TestForuiApp(home: AiSettingsPage(), showToaster: true),
+        child: const TestForuiApp(
+          home: AssistantBackendSettingsPage(),
+          showToaster: true,
+        ),
       ),
     );
     await tester.pump();
@@ -226,69 +229,102 @@ void main() {
     });
   });
 
-  // -- AiSettingsPage --------------------------------------------------
+  // -- AssistantBackendSettingsPage --------------------------------------------------
 
-  group('AiSettingsPage', () {
+  group('AssistantBackendSettingsPage', () {
     testWidgets('renders page title', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPageWithSettings(
         tester,
-        const AiSettingsPage(),
+        const AssistantBackendSettingsPage(),
         _buildSettings(),
       );
 
-      expect(find.text(l10n.settingsAiTitle), findsOneWidget);
+      expect(find.text(l10n.settingsAssistantBackendTitle), findsOneWidget);
     });
 
     testWidgets('renders AI summaries toggle', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPageWithSettings(
         tester,
-        const AiSettingsPage(),
+        const AssistantBackendSettingsPage(),
         _buildSettings(),
       );
 
-      expect(find.text(l10n.settingsAiSummariesTitle), findsOneWidget);
-      expect(find.text(l10n.settingsAiSummariesSubtitle), findsOneWidget);
+      expect(
+        find.text(l10n.settingsAssistantBackendSummariesTitle),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendSummariesSubtitle),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders assistant toggle', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPageWithSettings(
         tester,
-        const AiSettingsPage(),
+        const AssistantBackendSettingsPage(),
         _buildSettings(),
       );
 
-      expect(find.text(l10n.settingsAiAssistantTitle), findsOneWidget);
-      expect(find.text(l10n.settingsAiAssistantSubtitle), findsOneWidget);
+      expect(
+        find.text(l10n.settingsAssistantBackendAssistantTitle),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendAssistantSubtitle),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders memory toggle', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPageWithSettings(
         tester,
-        const AiSettingsPage(),
+        const AssistantBackendSettingsPage(),
         _buildSettings(),
       );
 
-      expect(find.text(l10n.settingsAiMemoryTitle), findsOneWidget);
-      expect(find.text(l10n.settingsAiMemorySubtitle), findsOneWidget);
+      expect(
+        find.text(l10n.settingsAssistantBackendMemoryTitle),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendMemorySubtitle),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders context section with 4 context tiles', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPageWithSettings(
         tester,
-        const AiSettingsPage(),
+        const AssistantBackendSettingsPage(),
         _buildSettings(),
       );
 
-      expect(find.text(l10n.settingsAiContextSectionTitle), findsOneWidget);
-      expect(find.text(l10n.settingsAiContextHealthProfile), findsOneWidget);
-      expect(find.text(l10n.settingsAiContextDailyRecords), findsOneWidget);
-      expect(find.text(l10n.settingsAiContextSleepRecords), findsOneWidget);
-      expect(find.text(l10n.settingsAiContextCurrentMedicines), findsOneWidget);
+      expect(
+        find.text(l10n.settingsAssistantBackendContextSectionTitle),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendContextHealthProfile),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendContextDailyRecords),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendContextSleepRecords),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendContextCurrentMedicines),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders the assistant engine section with 3 options', (
@@ -297,17 +333,29 @@ void main() {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPageWithSettings(
         tester,
-        const AiSettingsPage(),
+        const AssistantBackendSettingsPage(),
         _buildSettings(),
       );
 
-      expect(find.text(l10n.settingsAiEngineSectionTitle), findsOneWidget);
+      expect(
+        find.text(l10n.settingsAssistantBackendEngineSectionTitle),
+        findsOneWidget,
+      );
       // Three radios, one per engine. The selected one reflects whatever the
       // server stored — the client never guesses what `default` resolves to.
       expect(find.byType(FRadio), findsNWidgets(3));
-      expect(find.text(l10n.settingsAiEngineDefault), findsOneWidget);
-      expect(find.text(l10n.settingsAiEngineGraph), findsOneWidget);
-      expect(find.text(l10n.settingsAiEngineDeepAgents), findsOneWidget);
+      expect(
+        find.text(l10n.settingsAssistantBackendEngineDefault),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendEngineGraph),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendEngineDeepAgents),
+        findsOneWidget,
+      );
     });
 
     testWidgets('shows disabled hint when assistant not enabled', (
@@ -316,17 +364,20 @@ void main() {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPageWithSettings(
         tester,
-        const AiSettingsPage(),
+        const AssistantBackendSettingsPage(),
         _buildSettings(assistantEnabled: false),
       );
 
-      expect(find.text(l10n.settingsAiContextDisabledHint), findsOneWidget);
+      expect(
+        find.text(l10n.settingsAssistantBackendContextDisabledHint),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders FSwitch widgets for toggles', (tester) async {
       await pumpPageWithSettings(
         tester,
-        const AiSettingsPage(),
+        const AssistantBackendSettingsPage(),
         _buildSettings(),
       );
 
@@ -337,14 +388,26 @@ void main() {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPageWithSettings(
         tester,
-        const AiSettingsPage(),
+        const AssistantBackendSettingsPage(),
         _buildSettings(),
       );
 
-      expect(find.text(l10n.settingsAiPrivacySectionTitle), findsOneWidget);
-      expect(find.text(l10n.settingsAiPrivacyMemoryNote), findsOneWidget);
-      expect(find.text(l10n.settingsAiPrivacyContextNote), findsOneWidget);
-      expect(find.text(l10n.settingsAiPrivacyHistoricalNote), findsOneWidget);
+      expect(
+        find.text(l10n.settingsAssistantBackendPrivacySectionTitle),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendPrivacyMemoryNote),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendPrivacyContextNote),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAssistantBackendPrivacyHistoricalNote),
+        findsOneWidget,
+      );
     });
 
     testWidgets('context toggle shows next-turn toast on success', (
@@ -366,7 +429,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(
-        find.text(l10n.settingsAiContextChangeNextTurnToast),
+        find.text(l10n.settingsAssistantBackendContextChangeNextTurnToast),
         findsOneWidget,
       );
 
@@ -392,7 +455,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(
-        find.text(l10n.settingsAiContextChangeNextTurnToast),
+        find.text(l10n.settingsAssistantBackendContextChangeNextTurnToast),
         findsNothing,
       );
 

@@ -276,7 +276,7 @@ class _AssistantChatSurfaceState extends ConsumerState<AssistantChatSurface> {
         aiNameIcon: const SizedBox.shrink(),
         showCopyButton: false,
         showTime: false,
-        markdownStyleSheet: MarkdownStyle.ai(
+        markdownStyleSheet: MarkdownStyle.assistantGenerated(
           context,
           background: context.theme.colors.secondary,
         ),

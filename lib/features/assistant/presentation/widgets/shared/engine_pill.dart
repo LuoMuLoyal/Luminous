@@ -78,7 +78,7 @@ class AssistantEnginePill extends ConsumerWidget {
                 // Deliberately not a chevron: the disclaimer bar already uses
                 // `actionExpand` for its own disclosure, and two identical
                 // chevrons on one screen read as the same control twice.
-                SemanticIcons.aiEntry,
+                SemanticIcons.assistantEntry,
                 size: 12,
                 color: expanded
                     ? context.theme.colors.primary

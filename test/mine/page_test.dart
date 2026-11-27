@@ -54,7 +54,7 @@ void main() {
     expect(find.text(l10n.mineCompletionTitle), findsOneWidget);
     expect(find.text(l10n.mineProfileTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsAccountTitle), findsWidgets);
-    expect(find.text(l10n.settingsAiTitle), findsOneWidget);
+    expect(find.text(l10n.settingsAssistantBackendTitle), findsOneWidget);
     expect(
       find.text(l10n.mineNotificationReminderSectionTitle),
       findsOneWidget,

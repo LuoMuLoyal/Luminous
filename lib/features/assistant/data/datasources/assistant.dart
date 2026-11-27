@@ -209,7 +209,7 @@ class AssistantRemoteDataSource {
 
   /// Extracts a non-null generated-client payload, throwing
   /// [LucentFailure.network] (emptyResponse) when the success body is absent
-  /// (today `ai_remote` / record `record.dart` precedent).
+  /// (today `briefing_remote` / record `record.dart` precedent).
   T _requireData<T>(T? data, {String? operation}) {
     if (data == null) {
       final context = operation != null ? ' ($operation)' : '';

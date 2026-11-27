@@ -53,15 +53,15 @@ class PrivacySection extends ConsumerWidget {
           children: [
             SettingsNavigationTile(
               tileKey: const Key('settings-row-ai'),
-              icon: SemanticIcons.aiEntry,
-              title: l10n.settingsAiTitle,
-              subtitle: l10n.settingsAiSubtitle,
+              icon: SemanticIcons.assistantEntry,
+              title: l10n.settingsAssistantBackendTitle,
+              subtitle: l10n.settingsAssistantBackendSubtitle,
               onTap: () {
                 if (!signedIn) {
                   unawaited(pushAuthRequiredRoute(context, Routes.settings));
                   return;
                 }
-                unawaited(context.push(Routes.settingsAi));
+                unawaited(context.push(Routes.settingsAssistantBackend));
               },
             ),
             FTile(

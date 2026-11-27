@@ -25,9 +25,9 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
     );
   }
 
-  Future<void> setAiSummariesEnabled(bool enabled) async {
+  Future<void> setDigestEnabled(bool enabled) async {
     final current = state.value!;
-    await _patch(aiSummariesEnabled: enabled, current: current);
+    await _patch(digestEnabled: enabled, current: current);
   }
 
   Future<void> setAssistantEnabled(bool enabled) async {
@@ -56,7 +56,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
   }
 
   Future<void> applySettingsPatch({
-    required bool aiSummariesEnabled,
+    required bool digestEnabled,
     required bool dataSharingConsent,
     required bool assistantEnabled,
     required bool assistantMemoryEnabled,
@@ -67,7 +67,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
     final repo = ref.read(userSettingsRepositoryProvider);
     final result = await repo
         .updateSettings(
-          aiSummariesEnabled: aiSummariesEnabled,
+          digestEnabled: digestEnabled,
           dataSharingConsent: dataSharingConsent,
           assistantEnabled: assistantEnabled,
           assistantMemoryEnabled: assistantMemoryEnabled,
@@ -82,7 +82,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
   }
 
   Future<void> _patch({
-    bool? aiSummariesEnabled,
+    bool? digestEnabled,
     bool? dataSharingConsent,
     bool? assistantEnabled,
     bool? assistantMemoryEnabled,
@@ -99,7 +99,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
     // the previous value and flash a skeleton).
     final result = await repo
         .updateSettings(
-          aiSummariesEnabled: aiSummariesEnabled ?? current.aiSummariesEnabled,
+          digestEnabled: digestEnabled ?? current.digestEnabled,
           dataSharingConsent: dataSharingConsent ?? current.dataSharingConsent,
           assistantEnabled: assistantEnabled ?? current.assistantEnabled,
           assistantMemoryEnabled:

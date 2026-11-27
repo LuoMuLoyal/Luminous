@@ -6,8 +6,8 @@ import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-class MineAiPrivacySection extends StatelessWidget {
-  const MineAiPrivacySection({super.key});
+class MineAssistantPrivacySection extends StatelessWidget {
+  const MineAssistantPrivacySection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class MineAiPrivacySection extends StatelessWidget {
       key: const Key('mine-ai-privacy-section'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MineSectionTitle(title: l10n.mineAiPrivacySectionTitle),
+        MineSectionTitle(title: l10n.mineAssistantPrivacySectionTitle),
         SizedBox(height: context.titleContentGap),
         FTileGroup(
           divider: FItemDivider.full,
@@ -24,18 +24,21 @@ class MineAiPrivacySection extends StatelessWidget {
             FTile(
               key: const Key('mine-ai-settings-tile'),
               prefix: Icon(
-                SemanticIcons.aiEntry,
+                SemanticIcons.assistantEntry,
                 color: SemanticColor.primary.solid(context),
                 size: IconSizeTokens.sm,
               ),
-              title: Text(l10n.settingsAiTitle),
+              title: Text(l10n.settingsAssistantBackendTitle),
               subtitle: Text(
-                l10n.settingsAiSubtitle,
+                l10n.settingsAssistantBackendSubtitle,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
               suffix: const Icon(SemanticIcons.actionNext),
-              onPress: () => pushAuthRequiredRoute(context, Routes.settingsAi),
+              onPress: () => pushAuthRequiredRoute(
+                context,
+                Routes.settingsAssistantBackend,
+              ),
             ),
             FTile(
               key: const Key('mine-privacy-report-tile'),

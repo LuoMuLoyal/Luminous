@@ -144,7 +144,8 @@ class AssistantPageBody extends ConsumerWidget {
             variant: FButtonVariant.ghost,
             onPress: !session.canAccessProtectedData
                 ? null
-                : () => unawaited(context.push(Routes.settingsAi)),
+                : () =>
+                      unawaited(context.push(Routes.settingsAssistantBackend)),
             child: const Icon(SemanticIcons.actionSettings),
           ),
         ),

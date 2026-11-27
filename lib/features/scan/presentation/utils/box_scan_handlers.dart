@@ -65,8 +65,8 @@ Future<List<MedicineMatchResult>> processPhoto(
     if (name.isEmpty && approvalNumber.isEmpty) return [];
 
     final query = approvalNumber.isNotEmpty ? approvalNumber : name;
-    final aiSearchResult = await repo.search(query).run();
-    final items = aiSearchResult.fold(
+    final assistantSearchResult = await repo.search(query).run();
+    final items = assistantSearchResult.fold(
       (failure) => throw failure,
       (items) => items,
     );

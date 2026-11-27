@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 /// Assistant 欢迎区 headline:图标 + 文案。
 ///
 /// 宽屏图标(40px)+ 文本并排底对齐,窄屏上下堆叠。glyph 使用
-/// [SemanticIcons.aiGenerated];颜色与字号取自 Forui 主题 token
+/// [SemanticIcons.briefingGenerated];颜色与字号取自 Forui 主题 token
 /// (`context.theme.colors` / `context.theme.typography.display`)。
 class AssistantSvgGreeting extends StatelessWidget {
   const AssistantSvgGreeting({super.key, required this.text});
@@ -31,7 +31,7 @@ class AssistantSvgGreeting extends StatelessWidget {
         );
         final label = Text(text, style: style, textAlign: TextAlign.center);
         final glyph = Icon(
-          SemanticIcons.aiGenerated,
+          SemanticIcons.briefingGenerated,
           size: _iconSize,
           color: colors.primary,
         );

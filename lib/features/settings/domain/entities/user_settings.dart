@@ -64,7 +64,7 @@ abstract class AssistantContextSettings with _$AssistantContextSettings {
 abstract class UserSettings with _$UserSettings {
   const factory UserSettings({
     /// Allow AI-generated summaries and advice.
-    required bool aiSummariesEnabled,
+    required bool digestEnabled,
 
     /// Consent to share anonymized data for research.
     required bool dataSharingConsent,

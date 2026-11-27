@@ -19,7 +19,7 @@ abstract interface class UserSettingsRepository {
   /// [UpdateUserSettingsDto]. The [AssistantContextPatch] supports partial
   /// updates at the context level (null fields are not sent).
   TaskEither<LucentFailure, UserSettings> updateSettings({
-    required bool aiSummariesEnabled,
+    required bool digestEnabled,
     required bool dataSharingConsent,
     required bool assistantEnabled,
     required bool assistantMemoryEnabled,

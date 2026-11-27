@@ -8,11 +8,11 @@ import 'package:material_ui/material_ui.dart';
 /// Mirrors the real dashboard section order so the loading-to-loaded
 /// transition doesn't cause a large layout jump:
 ///
-/// **Mobile:** MineSyncFailedBanner → AccountHero → Archive → AiPrivacy
+/// **Mobile:** MineSyncFailedBanner → AccountHero → Archive → AssistantPrivacy
 /// → NotificationsReminders → AccountSecurity
 ///
 /// **Desktop:** MineSyncFailedBanner → AccountHero →
-/// Row[7: Archive+NotificationsReminders | 5: AiPrivacy+AccountSecurity]
+/// Row[7: Archive+NotificationsReminders | 5: AssistantPrivacy+AccountSecurity]
 class MineSkeletonView extends StatelessWidget {
   const MineSkeletonView({super.key});
 
@@ -44,7 +44,7 @@ class _MobileMineSkeleton extends StatelessWidget {
         SizedBox(height: Spacing.xl),
         _ArchivePlaceholder(),
         SizedBox(height: Spacing.xl),
-        _AiPrivacyPlaceholder(),
+        _AssistantPrivacyPlaceholder(),
         SizedBox(height: Spacing.xl),
         _NotificationsRemindersPlaceholder(),
         SizedBox(height: Spacing.xl),
@@ -87,7 +87,7 @@ class _DesktopMineSkeleton extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _AiPrivacyPlaceholder(),
+                  _AssistantPrivacyPlaceholder(),
                   SizedBox(height: Spacing.xl),
                   _AccountSecurityPlaceholder(),
                 ],
@@ -211,8 +211,8 @@ class _ArchivePlaceholder extends StatelessWidget {
   }
 }
 
-class _AiPrivacyPlaceholder extends StatelessWidget {
-  const _AiPrivacyPlaceholder();
+class _AssistantPrivacyPlaceholder extends StatelessWidget {
+  const _AssistantPrivacyPlaceholder();
 
   @override
   Widget build(BuildContext context) {

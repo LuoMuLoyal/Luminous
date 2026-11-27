@@ -66,8 +66,10 @@ class AssistantEngineOption extends StatelessWidget {
 /// disagree about naming.
 String assistantEngineLabel(AppLocalizations l10n, AssistantAgentMode mode) {
   return switch (mode) {
-    AssistantAgentMode.followOperator => l10n.settingsAiEngineDefault,
-    AssistantAgentMode.graph => l10n.settingsAiEngineGraph,
-    AssistantAgentMode.deepAgents => l10n.settingsAiEngineDeepAgents,
+    AssistantAgentMode.followOperator =>
+      l10n.settingsAssistantBackendEngineDefault,
+    AssistantAgentMode.graph => l10n.settingsAssistantBackendEngineGraph,
+    AssistantAgentMode.deepAgents =>
+      l10n.settingsAssistantBackendEngineDeepAgents,
   };
 }

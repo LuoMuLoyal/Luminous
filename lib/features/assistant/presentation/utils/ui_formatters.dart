@@ -23,6 +23,7 @@ String localizeToolName(String toolId, BuildContext context) {
     'get_meal_digest' => l10n.assistantToolMealAnalysisDigest,
     'resolve_drugbank' => l10n.assistantToolResolveDrugbankEntity,
     'search_drugbank' => l10n.assistantToolSearchDrugbankPassages,
+    'search_adverse_reactions' => l10n.assistantToolSearchAdverseReactions,
     'reason_ontology' => l10n.assistantToolReasonOverOntology,
     'reason_rules' => l10n.assistantToolReasonOverRules,
     'search_cn_products' => l10n.assistantToolSearchCnMedicineProducts,

@@ -27,7 +27,7 @@ import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
-import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/assistant_backend.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/shared/domain/failure.dart';
 import 'package:material_ui/material_ui.dart';
@@ -1118,8 +1118,8 @@ Widget _buildTestApp({
                 const Scaffold(body: Text('login-page')),
           ),
           GoRoute(
-            path: '/settings/ai',
-            builder: (context, state) => const AiSettingsPage(),
+            path: '/settings/assistant-backend',
+            builder: (context, state) => const AssistantBackendSettingsPage(),
           ),
         ],
       ),
@@ -1131,7 +1131,7 @@ class _ReadyUserSettingsController extends UserSettingsController {
   @override
   Future<UserSettings> build() async {
     return const UserSettings(
-      aiSummariesEnabled: false,
+      digestEnabled: false,
       dataSharingConsent: false,
       assistantEnabled: true,
       assistantMemoryEnabled: false,
@@ -1149,7 +1149,7 @@ class _ReadyUserSettingsController extends UserSettingsController {
 
 class _TrackingUserSettingsController extends _ReadyUserSettingsController {
   ({
-    bool aiSummariesEnabled,
+    bool digestEnabled,
     bool dataSharingConsent,
     bool assistantEnabled,
     bool assistantMemoryEnabled,
@@ -1160,7 +1160,7 @@ class _TrackingUserSettingsController extends _ReadyUserSettingsController {
 
   @override
   Future<void> applySettingsPatch({
-    required bool aiSummariesEnabled,
+    required bool digestEnabled,
     required bool dataSharingConsent,
     required bool assistantEnabled,
     required bool assistantMemoryEnabled,
@@ -1169,7 +1169,7 @@ class _TrackingUserSettingsController extends _ReadyUserSettingsController {
     required AssistantAgentMode assistantAgentMode,
   }) async {
     lastPatch = (
-      aiSummariesEnabled: aiSummariesEnabled,
+      digestEnabled: digestEnabled,
       dataSharingConsent: dataSharingConsent,
       assistantEnabled: assistantEnabled,
       assistantMemoryEnabled: assistantMemoryEnabled,

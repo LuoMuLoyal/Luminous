@@ -97,17 +97,17 @@ class AssistantCapabilitiesPanel extends StatelessWidget {
             const SizedBox(height: Spacing.sm),
             _SummaryRow(
               label: l10n.assistantSettingsEnableTitle,
-              icon: SemanticIcons.aiEntry,
+              icon: SemanticIcons.assistantEntry,
               enabled: capabilities.assistantEnabled,
             ),
             _SummaryRow(
               label: l10n.assistantSettingsMemoryTitle,
-              icon: SemanticIcons.aiMemory,
+              icon: SemanticIcons.assistantMemory,
               enabled: capabilities.assistantMemoryEnabled,
             ),
             _SummaryRow(
               label: l10n.assistantCapabilitiesRagLabel,
-              icon: SemanticIcons.aiKnowledge,
+              icon: SemanticIcons.assistantKnowledge,
               enabled: capabilities.ragEnabled,
             ),
             const SizedBox(height: Spacing.lg),
@@ -233,7 +233,7 @@ class _ToolRow extends StatelessWidget {
               // 工具行前缀用「工具调用」语义图标,状态(可用/原因)在
               // 右侧文本表达;不再用 check/lock 重复状态符号。
               Icon(
-                SemanticIcons.aiToolCalling,
+                SemanticIcons.assistantToolCalling,
                 size: 14,
                 color: tool.enabled
                     ? SemanticColor.primary.solid(context)

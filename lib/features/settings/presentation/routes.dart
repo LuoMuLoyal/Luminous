@@ -4,7 +4,7 @@ import 'package:luminous/features/settings/presentation/pages/about/about.dart';
 import 'package:luminous/features/settings/presentation/pages/about/help.dart';
 import 'package:luminous/features/settings/presentation/pages/about/oss_licenses.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/advanced.dart';
-import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/assistant_backend.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/feature_flags.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/local_model.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/accessibility.dart';
@@ -38,7 +38,7 @@ part 'routes.g.dart';
       ],
     ),
     TypedGoRoute<SettingsAccessibilityRoute>(path: 'accessibility'),
-    TypedGoRoute<SettingsAiRoute>(
+    TypedGoRoute<SettingsAssistantBackendRoute>(
       path: 'ai',
       routes: [TypedGoRoute<SettingsLocalModelRoute>(path: 'local-model')],
     ),
@@ -154,12 +154,16 @@ class SettingsAccessibilityRoute extends GoRouteData
   }
 }
 
-class SettingsAiRoute extends GoRouteData with $SettingsAiRoute {
-  const SettingsAiRoute();
+class SettingsAssistantBackendRoute extends GoRouteData
+    with $SettingsAssistantBackendRoute {
+  const SettingsAssistantBackendRoute();
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return slidePage(key: state.pageKey, child: const AiSettingsPage());
+    return slidePage(
+      key: state.pageKey,
+      child: const AssistantBackendSettingsPage(),
+    );
   }
 }
 

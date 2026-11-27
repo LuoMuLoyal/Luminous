@@ -18,14 +18,16 @@ import 'package:luminous/features/settings/presentation/utils/page_padding.dart'
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-class AiSettingsPage extends ConsumerStatefulWidget {
-  const AiSettingsPage({super.key});
+class AssistantBackendSettingsPage extends ConsumerStatefulWidget {
+  const AssistantBackendSettingsPage({super.key});
 
   @override
-  ConsumerState<AiSettingsPage> createState() => _AiSettingsPageState();
+  ConsumerState<AssistantBackendSettingsPage> createState() =>
+      _AssistantBackendSettingsPageState();
 }
 
-class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
+class _AssistantBackendSettingsPageState
+    extends ConsumerState<AssistantBackendSettingsPage> {
   /// Tracks any in-flight PATCH on this page. While true, every toggle is
   /// disabled so two rapid taps cannot both compute "flip false→true" off the
   /// same stale snapshot — the first tap flips this to `true` and the second
@@ -52,7 +54,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     final engineEnabled = !disabled;
 
     return PageScaffold(
-      title: l10n.settingsAiTitle,
+      title: l10n.settingsAssistantBackendTitle,
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
@@ -70,26 +72,26 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       l10n: l10n,
                       signedIn: signedIn,
                       disabled: disabled,
-                      title: l10n.settingsAiSummariesTitle,
-                      subtitle: l10n.settingsAiSummariesSubtitle,
-                      value: settings?.aiSummariesEnabled ?? false,
+                      title: l10n.settingsAssistantBackendSummariesTitle,
+                      subtitle: l10n.settingsAssistantBackendSummariesSubtitle,
+                      value: settings?.digestEnabled ?? false,
                       read: (r) =>
                           r
                               .read(userSettingsControllerProvider)
                               .value
-                              ?.aiSummariesEnabled ??
+                              ?.digestEnabled ??
                           false,
                       apply: (next) => ref
                           .read(userSettingsControllerProvider.notifier)
-                          .setAiSummariesEnabled(next),
+                          .setDigestEnabled(next),
                     ),
                     _buildToggleTile(
                       context: context,
                       l10n: l10n,
                       signedIn: signedIn,
                       disabled: disabled,
-                      title: l10n.settingsAiAssistantTitle,
-                      subtitle: l10n.settingsAiAssistantSubtitle,
+                      title: l10n.settingsAssistantBackendAssistantTitle,
+                      subtitle: l10n.settingsAssistantBackendAssistantSubtitle,
                       value: settings?.assistantEnabled ?? false,
                       read: (r) =>
                           r
@@ -106,8 +108,8 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       l10n: l10n,
                       signedIn: signedIn,
                       disabled: disabled,
-                      title: l10n.settingsAiMemoryTitle,
-                      subtitle: l10n.settingsAiMemorySubtitle,
+                      title: l10n.settingsAssistantBackendMemoryTitle,
+                      subtitle: l10n.settingsAssistantBackendMemorySubtitle,
                       value: settings?.assistantMemoryEnabled ?? false,
                       read: (r) =>
                           r
@@ -122,7 +124,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SectionLabel(label: l10n.settingsAiEngineSectionTitle),
+                SectionLabel(
+                  label: l10n.settingsAssistantBackendEngineSectionTitle,
+                ),
                 SizedBox(height: context.titleContentGap),
                 FTileGroup(
                   style: settingsTileGroup(context.theme),
@@ -131,8 +135,10 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       title: FRadio(
                         value:
                             effectiveMode == AssistantAgentMode.followOperator,
-                        label: Text(l10n.settingsAiEngineDefault),
-                        description: Text(l10n.settingsAiEngineDefaultSubtitle),
+                        label: Text(l10n.settingsAssistantBackendEngineDefault),
+                        description: Text(
+                          l10n.settingsAssistantBackendEngineDefaultSubtitle,
+                        ),
                         enabled: engineEnabled,
                         onChange: engineEnabled
                             ? (_) => unawaited(
@@ -149,8 +155,10 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                     FTile(
                       title: FRadio(
                         value: effectiveMode == AssistantAgentMode.graph,
-                        label: Text(l10n.settingsAiEngineGraph),
-                        description: Text(l10n.settingsAiEngineGraphSubtitle),
+                        label: Text(l10n.settingsAssistantBackendEngineGraph),
+                        description: Text(
+                          l10n.settingsAssistantBackendEngineGraphSubtitle,
+                        ),
                         enabled: engineEnabled,
                         onChange: engineEnabled
                             ? (_) => unawaited(
@@ -167,9 +175,11 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                     FTile(
                       title: FRadio(
                         value: effectiveMode == AssistantAgentMode.deepAgents,
-                        label: Text(l10n.settingsAiEngineDeepAgents),
+                        label: Text(
+                          l10n.settingsAssistantBackendEngineDeepAgents,
+                        ),
                         description: Text(
-                          l10n.settingsAiEngineDeepAgentsSubtitle,
+                          l10n.settingsAssistantBackendEngineDeepAgentsSubtitle,
                         ),
                         enabled: engineEnabled,
                         onChange: engineEnabled
@@ -205,7 +215,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SectionLabel(label: l10n.settingsAiContextSectionTitle),
+                SectionLabel(
+                  label: l10n.settingsAssistantBackendContextSectionTitle,
+                ),
                 SizedBox(height: context.titleContentGap),
                 if (!assistantEnabled)
                   Padding(
@@ -215,7 +227,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       bottom: Spacing.md,
                     ),
                     child: Text(
-                      l10n.settingsAiContextDisabledHint,
+                      l10n.settingsAssistantBackendContextDisabledHint,
                       style: context.theme.typography.body.xs.copyWith(
                         color: SemanticColor.neutral.solid(context),
                       ),
@@ -229,8 +241,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       l10n: l10n,
                       signedIn: signedIn,
                       enabled: !contextDisabled,
-                      title: l10n.settingsAiContextHealthProfile,
-                      subtitle: l10n.settingsAiContextHealthProfileSubtitle,
+                      title: l10n.settingsAssistantBackendContextHealthProfile,
+                      subtitle: l10n
+                          .settingsAssistantBackendContextHealthProfileSubtitle,
                       value: settings?.assistantContext.healthProfile ?? false,
                       field: _AssistantContextField.healthProfile,
                     ),
@@ -239,8 +252,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       l10n: l10n,
                       signedIn: signedIn,
                       enabled: !contextDisabled,
-                      title: l10n.settingsAiContextDailyRecords,
-                      subtitle: l10n.settingsAiContextDailyRecordsSubtitle,
+                      title: l10n.settingsAssistantBackendContextDailyRecords,
+                      subtitle: l10n
+                          .settingsAssistantBackendContextDailyRecordsSubtitle,
                       value: settings?.assistantContext.dailyRecords ?? false,
                       field: _AssistantContextField.dailyRecords,
                     ),
@@ -249,8 +263,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       l10n: l10n,
                       signedIn: signedIn,
                       enabled: !contextDisabled,
-                      title: l10n.settingsAiContextSleepRecords,
-                      subtitle: l10n.settingsAiContextSleepRecordsSubtitle,
+                      title: l10n.settingsAssistantBackendContextSleepRecords,
+                      subtitle: l10n
+                          .settingsAssistantBackendContextSleepRecordsSubtitle,
                       value: settings?.assistantContext.sleepRecords ?? false,
                       field: _AssistantContextField.sleepRecords,
                     ),
@@ -259,8 +274,10 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                       l10n: l10n,
                       signedIn: signedIn,
                       enabled: !contextDisabled,
-                      title: l10n.settingsAiContextCurrentMedicines,
-                      subtitle: l10n.settingsAiContextCurrentMedicinesSubtitle,
+                      title:
+                          l10n.settingsAssistantBackendContextCurrentMedicines,
+                      subtitle: l10n
+                          .settingsAssistantBackendContextCurrentMedicinesSubtitle,
                       value:
                           settings?.assistantContext.currentMedicines ?? false,
                       field: _AssistantContextField.currentMedicines,
@@ -268,7 +285,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                   ],
                 ),
                 const SizedBox(height: Spacing.xl),
-                SectionLabel(label: l10n.settingsAiPrivacySectionTitle),
+                SectionLabel(
+                  label: l10n.settingsAssistantBackendPrivacySectionTitle,
+                ),
                 SizedBox(height: context.titleContentGap),
                 // Carded like every other block on this page: as bare text the
                 // paragraph had no boundary against the switch group above it.
@@ -278,16 +297,19 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _privacyNote(context, l10n.settingsAiPrivacyMemoryNote),
-                        const SizedBox(height: Spacing.md),
                         _privacyNote(
                           context,
-                          l10n.settingsAiPrivacyContextNote,
+                          l10n.settingsAssistantBackendPrivacyMemoryNote,
                         ),
                         const SizedBox(height: Spacing.md),
                         _privacyNote(
                           context,
-                          l10n.settingsAiPrivacyHistoricalNote,
+                          l10n.settingsAssistantBackendPrivacyContextNote,
+                        ),
+                        const SizedBox(height: Spacing.md),
+                        _privacyNote(
+                          context,
+                          l10n.settingsAssistantBackendPrivacyHistoricalNote,
                         ),
                       ],
                     ),
@@ -412,7 +434,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     required Future<void> Function() apply,
   }) async {
     if (!signedIn) {
-      unawaited(pushAuthRequiredRoute(context, Routes.settingsAi));
+      unawaited(
+        pushAuthRequiredRoute(context, Routes.settingsAssistantBackend),
+      );
       return false;
     }
     if (_isPatching) return false;
@@ -465,7 +489,10 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     // change an in-flight or already-answered conversation. Say so on success
     // only — on failure `_guardedApply` already showed the error toast.
     if (applied && context.mounted) {
-      await Toast.show(context, l10n.settingsAiEngineChangeNextTurnToast);
+      await Toast.show(
+        context,
+        l10n.settingsAssistantBackendEngineChangeNextTurnToast,
+      );
     }
   }
 
@@ -476,7 +503,9 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     required _AssistantContextField field,
   }) async {
     if (!signedIn) {
-      unawaited(pushAuthRequiredRoute(context, Routes.settingsAi));
+      unawaited(
+        pushAuthRequiredRoute(context, Routes.settingsAssistantBackend),
+      );
       return;
     }
     // Read the freshest snapshot at click time. Combined with the
@@ -525,7 +554,10 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     // messages keep their already-injected context. Only surface this on
     // success — on failure `_guardedApply` already showed the error toast.
     if (applied && context.mounted) {
-      await Toast.show(context, l10n.settingsAiContextChangeNextTurnToast);
+      await Toast.show(
+        context,
+        l10n.settingsAssistantBackendContextChangeNextTurnToast,
+      );
     }
   }
 }

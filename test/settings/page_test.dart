@@ -78,7 +78,7 @@ void main() {
     expect(find.text(l10n.mineSettingsLanguageTitle), findsOneWidget);
     expect(find.text(l10n.settingsQuickEntrySection), findsWidgets);
     expect(find.text(l10n.minePrivacyReportTitle), findsOneWidget);
-    expect(find.text(l10n.settingsAiTitle), findsOneWidget);
+    expect(find.text(l10n.settingsAssistantBackendTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsNotificationsTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingExportTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingHelpTitle), findsOneWidget);
@@ -362,7 +362,7 @@ void main() {
             builder: (context, state) => const SettingsPage(),
           ),
           GoRoute(
-            path: '/settings/ai',
+            path: '/settings/assistant-backend',
             builder: (context, state) =>
                 const Scaffold(body: Text('ai-settings-page')),
           ),
@@ -617,7 +617,7 @@ class _FakeUserSettingsController extends UserSettingsController {
   @override
   Future<UserSettings> build() async {
     return const UserSettings(
-      aiSummariesEnabled: false,
+      digestEnabled: false,
       dataSharingConsent: false,
       assistantEnabled: false,
       assistantMemoryEnabled: false,
@@ -637,7 +637,7 @@ class _FakeUserSettingsController extends UserSettingsController {
     lastDataSharingConsent = consent;
     state = AsyncData(
       UserSettings(
-        aiSummariesEnabled: false,
+        digestEnabled: false,
         dataSharingConsent: consent,
         assistantEnabled: false,
         assistantMemoryEnabled: false,

@@ -88,7 +88,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
 
   @override
   TaskEither<LucentFailure, UserSettings> updateSettings({
-    required bool aiSummariesEnabled,
+    required bool digestEnabled,
     required bool dataSharingConsent,
     required bool assistantEnabled,
     required bool assistantMemoryEnabled,
@@ -99,7 +99,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
     return TaskEither.tryCatch(() async {
       final response = await api.updateSettings(
         updateSettingsRequest: UpdateSettingsRequest(
-          aiSummariesEnabled: aiSummariesEnabled,
+          digestEnabled: digestEnabled,
           dataSharingConsent: dataSharingConsent,
           assistantEnabled: assistantEnabled,
           assistantMemoryEnabled: assistantMemoryEnabled,
@@ -139,7 +139,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
 
   UserSettings _mapSettings(UserSettingsResponse dto) {
     return UserSettings(
-      aiSummariesEnabled: dto.aiSummariesEnabled,
+      digestEnabled: dto.digestEnabled,
       dataSharingConsent: dto.dataSharingConsent,
       assistantEnabled: dto.assistantEnabled,
       assistantMemoryEnabled: dto.assistantMemoryEnabled,

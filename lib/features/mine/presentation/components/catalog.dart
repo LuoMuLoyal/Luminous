@@ -5,7 +5,7 @@ import 'package:luminous/features/mine/presentation/providers/surface.dart';
 import 'package:luminous/features/mine/presentation/providers/sync_failures.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/account/account_hero.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/account/account_security.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/account/ai_privacy.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/account/assistant_privacy.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/account/notifications_reminders.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/archive/archive.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/sync/status_alerts.dart';
@@ -229,7 +229,7 @@ class _PrivacyNoticeComponent extends ComponentDescriptor<NoComponentConfig> {
     ComponentRenderContext render,
     NoComponentConfig config,
   ) {
-    return const MineAiPrivacySection();
+    return const MineAssistantPrivacySection();
   }
 }
 

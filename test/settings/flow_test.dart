@@ -26,7 +26,7 @@ import 'package:luminous/features/settings/domain/repositories/notification_pref
 import 'package:luminous/features/settings/presentation/pages/about/about.dart';
 import 'package:luminous/features/settings/presentation/pages/about/help.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/advanced.dart';
-import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/assistant_backend.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/language.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/theme.dart';
 import 'package:luminous/features/settings/presentation/pages/notification/notification.dart';
@@ -453,8 +453,8 @@ GoRouter _buildSettingsTestRouter() {
         builder: (context, state) => const SleepReminderSettingsPage(),
       ),
       GoRoute(
-        path: '/settings/ai',
-        builder: (context, state) => const AiSettingsPage(),
+        path: '/settings/assistant-backend',
+        builder: (context, state) => const AssistantBackendSettingsPage(),
       ),
       GoRoute(
         path: '/settings/export',
