@@ -48,11 +48,11 @@ final class LocalModelException implements Exception {
 /// next launch and hand it to the loader, which fails deep inside llama.cpp with
 /// an opaque message. Deleting on any failure keeps "the file exists" equivalent
 /// to "the file is complete and verified".
-class LocalModelStore {
-  LocalModelStore._(this._downloader, this._appDir, this._digestOf);
+class ModelStore {
+  ModelStore._(this._downloader, this._appDir, this._digestOf);
 
   @visibleForTesting
-  factory LocalModelStore.forTesting(
+  factory ModelStore.forTesting(
     Future<void> Function(
       String urlPath,
       String savePath, {
@@ -62,7 +62,7 @@ class LocalModelStore {
     Directory appDir, {
     Future<String> Function(File file) digestOf = _sha256OfFile,
   }) {
-    return LocalModelStore._(downloader, appDir, digestOf);
+    return ModelStore._(downloader, appDir, digestOf);
   }
 
   final Future<void> Function(
@@ -77,10 +77,10 @@ class LocalModelStore {
 
   static const _directoryName = 'local_models';
 
-  static Future<LocalModelStore> create() async {
+  static Future<ModelStore> create() async {
     final appDir = await getApplicationSupportDirectory();
     final dio = Dio();
-    return LocalModelStore._(
+    return ModelStore._(
       (urlPath, savePath, {onReceiveProgress}) =>
           dio.download(urlPath, savePath, onReceiveProgress: onReceiveProgress),
       appDir,

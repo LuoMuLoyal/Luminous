@@ -43,12 +43,12 @@ void main() {
 
   /// Builds a store whose "download" writes [bytes] and whose digest is computed
   /// over the file that lands on disk.
-  LocalModelStore buildStore(
+  ModelStore buildStore(
     List<int> bytes, {
     bool failDownload = false,
     Future<String> Function(File)? digestOf,
   }) {
-    return LocalModelStore.forTesting(
+    return ModelStore.forTesting(
       (
         String urlPath,
         String savePath, {
@@ -65,7 +65,7 @@ void main() {
     );
   }
 
-  group('LocalModelStore', () {
+  group('ModelStore', () {
     test('a missing model is not available', () {
       final store = buildStore(const []);
 
@@ -135,7 +135,7 @@ void main() {
       final model = _withDigest(_model, digest);
 
       var downloads = 0;
-      final store = LocalModelStore.forTesting((
+      final store = ModelStore.forTesting((
         String urlPath,
         String savePath, {
         void Function(int, int)? onReceiveProgress,
@@ -163,32 +163,6 @@ void main() {
 
       await store.remove(model);
       expect(store.isAvailable(model), isFalse);
-    });
-  });
-
-  group('LocalModel', () {
-    test('sizeLabel is human readable', () {
-      const small = LocalModel(
-        id: 'a',
-        name: 'a',
-        fileName: 'a',
-        downloadUrl: 'u',
-        sha256: 'd',
-        sizeBytes: 30 * 1024 * 1024,
-        contextLength: 2048,
-      );
-      expect(small.sizeLabel, '30 MB');
-
-      const large = LocalModel(
-        id: 'b',
-        name: 'b',
-        fileName: 'b',
-        downloadUrl: 'u',
-        sha256: 'd',
-        sizeBytes: 2 * 1024 * 1024 * 1024,
-        contextLength: 4096,
-      );
-      expect(large.sizeLabel, '2.0 GB');
     });
   });
 }
