@@ -345,7 +345,7 @@ Product Loop Program 的延后项如下。
   放宽「不得改生成物」并调整 drift 生成布局。
 - 新引入循环由 `scripts/arch/guard.dart` 直接拦截；修完一组后 `dart run arch_guard --update-baseline` 收窄冻结清单
 
-## 2026-11-27 端侧 LLM（`lib/core/ai` + `pkgs/llama_native`）
+## 2026-11-27 端侧 LLM（`lib/features/settings` + `pkgs/llama_native`）
 
 模型来源、原生库打包、app 接线三件事已完成，`flutter analyze` 与两侧测试都通过。
 **但仍没有一次真实推理**，且 release 里还没有 `manifest.json`。以下按依赖顺序。
