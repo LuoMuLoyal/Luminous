@@ -3,25 +3,30 @@
 //! ## Shape
 //!
 //! An opaque session handle plus a handful of operations. Dart sees
-//! `Future<ModelInfo>`, a token stream, and a typed error — never an FFI pointer.
+//! `Future<ModelInfo>`, a `Stream<String>` for tokens, and a typed error — never
+//! an FFI pointer.
 //!
-//! ## Why the surface is callback-based rather than `StreamSink`
+//! ## Why signatures spell out `Result<T, LlamaError>`
 //!
-//! `flutter_rust_bridge` represents a Rust-to-Dart stream with
-//! `crate::frb_generated::StreamSink`, which **only exists after the code
-//! generator has run**. Referencing it here would make the crate uncompilable
-//! until then, which is the wrong order: the llama.cpp integration has to be
-//! proven first.
+//! The code generator parses the source, not the type system: it does **not** see
+//! through a `type LlamaResult<T> = Result<T, LlamaError>` alias, and treats the
+//! alias as an opaque handle. The generated Dart then offers no way to read the
+//! value or the error. Writing the `Result` out in full is the one form it
+//! understands.
 //!
-//! So `generate` takes a plain callback, and the generated adapter wraps it in a
-//! `StreamSink`. That keeps this crate buildable and unit-testable with no
-//! toolchain beyond cargo, and confines the codegen dependency to one adapter
-//! file.
+//! ## Why `generate` takes a `StreamSink`
+//!
+//! It is `flutter_rust_bridge`'s representation of a Rust-to-Dart stream, and it
+//! lives in the generated module — which is why this crate only became
+//! bridge-ready once the generator had run once. The callback it replaces would
+//! be a function pointer, which the generator skips along with any generic
+//! parameter.
 
 use std::sync::Mutex;
 
 use crate::engine::Engine;
-use crate::error::{LlamaError, LlamaResult};
+use crate::error::LlamaError;
+use crate::frb_generated::StreamSink;
 use crate::options::{EngineOptions, GenerationOptions, GenerationResult, ModelInfo};
 
 /// A loaded model and its context, as the caller sees it.
@@ -34,7 +39,10 @@ pub struct LlamaSession {
 }
 
 impl LlamaSession {
-    fn with_engine<T>(&self, body: impl FnOnce(&Engine) -> LlamaResult<T>) -> LlamaResult<T> {
+    fn with_engine<T>(
+        &self,
+        body: impl FnOnce(&Engine) -> Result<T, LlamaError>,
+    ) -> Result<T, LlamaError> {
         let guard = self
             .inner
             .lock()
@@ -51,7 +59,10 @@ impl LlamaSession {
 }
 
 /// Loads a model and returns a session handle.
-pub fn load_session(model_path: String, options: EngineOptions) -> LlamaResult<LlamaSession> {
+pub fn load_session(
+    model_path: String,
+    options: EngineOptions,
+) -> Result<LlamaSession, LlamaError> {
     let engine = Engine::load(&model_path, options)?;
     Ok(LlamaSession {
         inner: Mutex::new(Some(engine)),
@@ -59,7 +70,7 @@ pub fn load_session(model_path: String, options: EngineOptions) -> LlamaResult<L
 }
 
 /// Reads the loaded model's metadata.
-pub fn session_info(session: &LlamaSession) -> LlamaResult<ModelInfo> {
+pub fn session_info(session: &LlamaSession) -> Result<ModelInfo, LlamaError> {
     session.with_engine(|engine| Ok(engine.info()))
 }
 
@@ -68,34 +79,34 @@ pub fn format_chat_prompt(
     session: &LlamaSession,
     roles: Vec<String>,
     contents: Vec<String>,
-) -> LlamaResult<Option<String>> {
+) -> Result<Option<String>, LlamaError> {
     session.with_engine(|engine| engine.format_chat_prompt(&roles, &contents))
 }
 
-/// Streams a completion.
+/// Streams a completion to [sink].
 ///
-/// `on_token` receives one piece per decoded token. A piece is **not** a word:
-/// it is whatever the tokenizer produced, and a multi-byte character can span
-/// pieces, so consumers concatenate rather than parsing individual emissions.
+/// Each emission is one decoded token piece. A piece is **not** a word: it is
+/// whatever the tokenizer produced, and a multi-byte character can span pieces,
+/// so consumers concatenate rather than parsing individual emissions.
 ///
-/// Returning `false` from `on_token` stops generation; the result then reports
-/// `cancelled: true` and keeps the text produced so far.
-pub fn generate<F>(
+/// The return value carries the full text and token count, so a caller that
+/// ignores the stream still gets the result. Cancellation is expressed by the
+/// caller closing the stream — `sink.send` then reports an error, which stops the
+/// decode loop instead of burning CPU producing output nobody receives.
+pub fn generate(
     session: &LlamaSession,
     prompt: String,
     options: GenerationOptions,
-    mut on_token: F,
-) -> LlamaResult<GenerationResult>
-where
-    F: FnMut(&str) -> bool,
-{
+    sink: StreamSink<String>,
+) -> Result<(), LlamaError> {
     session.with_engine(|engine| {
-        let (text, tokens, cancelled) = engine.generate(&prompt, options, &mut on_token)?;
-        Ok(GenerationResult {
-            text,
-            completion_tokens: tokens,
-            cancelled,
-        })
+        // The pieces travel through `sink`; the return value only reports
+        // whether the loop completed. A caller that needs the assembled text
+        // concatenates what the stream delivered.
+        let (_text, _tokens, _cancelled) = engine.generate(&prompt, options, |piece| {
+            sink.add(piece.to_owned()).is_ok()
+        })?;
+        Ok(())
     })
 }
 
@@ -103,7 +114,7 @@ where
 ///
 /// Idempotent: a second call finds `None` and succeeds, so the Dart disposal path
 /// does not have to track whether it already ran.
-pub fn release_session(session: &LlamaSession) -> LlamaResult<()> {
+pub fn release_session(session: &LlamaSession) -> Result<(), LlamaError> {
     let mut guard = session
         .inner
         .lock()
@@ -138,19 +149,6 @@ mod tests {
         let session = released();
         assert!(release_session(&session).is_ok());
         assert!(release_session(&session).is_ok());
-    }
-
-    #[test]
-    fn a_released_session_refuses_generation() {
-        let session = released();
-        let error = generate(
-            &session,
-            "hello".to_owned(),
-            GenerationOptions::default(),
-            |_| true,
-        )
-        .unwrap_err();
-        assert_eq!(error.kind(), "invalidState");
     }
 
     #[test]

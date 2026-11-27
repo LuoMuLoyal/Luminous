@@ -15,16 +15,21 @@ dependencies:
   flutter_rust_bridge: 2.11.1
   # Supplies the default download directory for the bundled build hook.
   path: ^1.9.1
+  # Required by the state classes the code generator emits.
+  freezed_annotation: ^3.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  # Required by `flutter_rust_bridge_codegen`.
+  freezed: ^3.0.0
+  build_runner: ^2.4.0
 
 flutter:
-  # The Rust cdylib is built and bundled by `rust_builder` (a local package under
-  # `rust/`); see `rust/README.md`. Nothing here points at a prebuilt binary:
-  # a phone app must build the right ABI, and a desktop build the right arch.
+  # The Rust cdylib is built and bundled by the `rust_builder` hook; see the
+  # README. Nothing here points at a prebuilt binary: a phone must build the right
+  # ABI, and a desktop build the right architecture.
   plugin:
     platforms:
       android:

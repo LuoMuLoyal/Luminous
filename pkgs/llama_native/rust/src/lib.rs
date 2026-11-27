@@ -18,8 +18,14 @@
 //! generator runs. Keeping the surface to a handful of calls keeps the generated
 //! code reviewable and the Dart domain layer stable.
 
+// The generator injects `mod frb_generated;` at the very top of this file on
+// every run. That position is *above* the module doc comment, and Rust rejects a
+// doc comment after an item (`E0753`) — so each regeneration moves the injected
+// line here, where it belongs. Expect this edit after every codegen run.
+
 pub mod api;
 pub mod error;
+pub mod frb_generated;
 pub mod options;
 
 mod engine;

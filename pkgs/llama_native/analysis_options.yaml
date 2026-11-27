@@ -1,0 +1,15 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    # Owned by `flutter_rust_bridge_codegen`: every regeneration rewrites these
+    # files, so a lint about their style cannot be fixed by changing source — it
+    # comes back on the next run. The generator's output is reviewed by
+    # regenerating, not by linting.
+    - lib/src/data/ffi/**
+    - build/**
+
+  errors:
+    # The bridge serialises through `dynamic` because it cannot know the remote
+    # type; analysing generated code does not change that.
+    avoid_dynamic_calls: ignore

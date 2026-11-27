@@ -42,7 +42,7 @@ final class GenerationOptions {
   final double repeatPenalty;
 
   /// Recent tokens the repetition penalty looks at; 0 disables it.
-  final double repeatLastN;
+  final int repeatLastN;
 
   /// Sequences that end generation when matched, across token boundaries.
   final List<String> stopSequences;
@@ -61,7 +61,7 @@ final class GenerationOptions {
     double? topP,
     int? topK,
     double? repeatPenalty,
-    double? repeatLastN,
+    int? repeatLastN,
     List<String>? stopSequences,
     String? grammar,
   }) => GenerationOptions(
