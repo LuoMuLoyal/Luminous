@@ -6,6 +6,7 @@ import 'package:luminous/features/settings/presentation/pages/about/oss_licenses
 import 'package:luminous/features/settings/presentation/pages/advanced/advanced.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/feature_flags.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/local_model.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/accessibility.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/language.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/theme.dart';
@@ -37,7 +38,10 @@ part 'routes.g.dart';
       ],
     ),
     TypedGoRoute<SettingsAccessibilityRoute>(path: 'accessibility'),
-    TypedGoRoute<SettingsAiRoute>(path: 'ai'),
+    TypedGoRoute<SettingsAiRoute>(
+      path: 'ai',
+      routes: [TypedGoRoute<SettingsLocalModelRoute>(path: 'local-model')],
+    ),
     TypedGoRoute<SettingsExportRoute>(path: 'export'),
     TypedGoRoute<SettingsHelpRoute>(path: 'help'),
     TypedGoRoute<SettingsAboutRoute>(
@@ -156,6 +160,16 @@ class SettingsAiRoute extends GoRouteData with $SettingsAiRoute {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     return slidePage(key: state.pageKey, child: const AiSettingsPage());
+  }
+}
+
+class SettingsLocalModelRoute extends GoRouteData
+    with $SettingsLocalModelRoute {
+  const SettingsLocalModelRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return slidePage(key: state.pageKey, child: const LocalModelPage());
   }
 }
 

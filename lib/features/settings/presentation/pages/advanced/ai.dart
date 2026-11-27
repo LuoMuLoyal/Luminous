@@ -13,6 +13,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
+import 'package:luminous/features/settings/presentation/routes.dart';
 import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
@@ -182,6 +183,24 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
                               )
                             : null,
                       ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: Spacing.xl),
+                SectionLabel(label: l10n.settingsLocalModelTitle),
+                SizedBox(height: context.titleContentGap),
+                FTileGroup(
+                  style: settingsTileGroup(context.theme),
+                  children: [
+                    FTile(
+                      title: Text(l10n.settingsLocalModelEntry),
+                      subtitle: Text(l10n.settingsLocalModelEntryHint),
+                      suffix: const Icon(FLucideIcons.chevronRight),
+                      // Always enabled: the model list is usable whether or not the
+                      // server assistant is on — a user evaluating on-device
+                      // capability should not have to enable the cloud path first.
+                      onPress: () =>
+                          const SettingsLocalModelRoute().push(context),
                     ),
                   ],
                 ),

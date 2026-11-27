@@ -299,5 +299,25 @@
   "profileDietOther": "Other",
   "profileAvatarRowTitle": "Avatar",
   "profileAvatarTooLarge": "Image too large. Choose one under 5 MB.",
-  "profileAvatarSaveFailed": "Couldn't save the avatar"
+  "profileAvatarSaveFailed": "Couldn't save the avatar",
+
+  "settingsLocalModelTitle": "On-device model",
+  "settingsLocalModelEntry": "Choose a model",
+  "settingsLocalModelEntryHint": "Runs on this device; conversations never leave it",
+  "settingsLocalModelDescription": "Models run on this device, so conversations never leave it. The first use downloads the model and takes up storage.",
+  "settingsLocalModelUnavailable": "The model list is unavailable",
+  "settingsLocalModelDownload": "Download",
+  "settingsLocalModelDownloading": "Downloading",
+  "settingsLocalModelUse": "Use",
+  "settingsLocalModelInUse": "In use",
+  "settingsLocalModelReady": "Downloaded",
+  "settingsLocalModelRemove": "Delete",
+  "settingsLocalModelTooLarge": "Needs about {gb} GB of memory, more than this device has",
+  "@settingsLocalModelTooLarge": {
+    "placeholders": {
+      "gb": {
+        "type": "int"
+      }
+    }
+  }
 }

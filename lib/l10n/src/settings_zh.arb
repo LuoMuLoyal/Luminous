@@ -299,5 +299,25 @@
   "profileDietOther": "其他",
   "profileAvatarRowTitle": "头像",
   "profileAvatarTooLarge": "图片太大，请选择 5 MB 以内的图片",
-  "profileAvatarSaveFailed": "头像保存失败"
+  "profileAvatarSaveFailed": "头像保存失败",
+
+  "settingsLocalModelTitle": "端侧模型",
+  "settingsLocalModelEntry": "选择模型",
+  "settingsLocalModelEntryHint": "在本机运行，对话不离开设备",
+  "settingsLocalModelDescription": "模型在本机运行，对话不离开设备。首次使用需下载，占用存储空间。",
+  "settingsLocalModelUnavailable": "暂时无法获取模型列表",
+  "settingsLocalModelDownload": "下载",
+  "settingsLocalModelDownloading": "下载中",
+  "settingsLocalModelUse": "使用",
+  "settingsLocalModelInUse": "使用中",
+  "settingsLocalModelReady": "已下载",
+  "settingsLocalModelRemove": "删除",
+  "settingsLocalModelTooLarge": "需要约 {gb} GB 内存，当前设备不足",
+  "@settingsLocalModelTooLarge": {
+    "placeholders": {
+      "gb": {
+        "type": "int"
+      }
+    }
+  }
 }
