@@ -38,7 +38,7 @@ class ReportDashboardResponse {
 
     required this.patterns,
 
-    required this.aiSummaryEnabled,
+    required this.digestEnabled,
   });
 
   @JsonKey(
@@ -70,8 +70,8 @@ class ReportDashboardResponse {
   @JsonKey(name: r'patterns', required: true, includeIfNull: false)
   final List<ReportDashboardResponsePatterns> patterns;
 
-  @JsonKey(name: r'aiSummaryEnabled', required: true, includeIfNull: false)
-  final bool aiSummaryEnabled;
+  @JsonKey(name: r'digestEnabled', required: true, includeIfNull: false)
+  final bool digestEnabled;
 
   @override
   bool operator ==(Object other) =>
@@ -85,7 +85,7 @@ class ReportDashboardResponse {
           other.trends == trends &&
           other.findings == findings &&
           other.patterns == patterns &&
-          other.aiSummaryEnabled == aiSummaryEnabled;
+          other.digestEnabled == digestEnabled;
 
   @override
   int get hashCode =>
@@ -97,7 +97,7 @@ class ReportDashboardResponse {
       trends.hashCode +
       findings.hashCode +
       patterns.hashCode +
-      aiSummaryEnabled.hashCode;
+      digestEnabled.hashCode;
 
   factory ReportDashboardResponse.fromJson(Map<String, dynamic> json) =>
       _$ReportDashboardResponseFromJson(json);

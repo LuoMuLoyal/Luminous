@@ -398,6 +398,8 @@ export 'package:lucent_api/src/model/report_summary_stream_response_low_risk_act
 export 'package:lucent_api/src/model/report_summary_stream_response_observed_pattern.dart';
 export 'package:lucent_api/src/model/reset_password_request.dart';
 export 'package:lucent_api/src/model/reset_password_response.dart';
+export 'package:lucent_api/src/model/run_layout_surface_turn_request.dart';
+export 'package:lucent_api/src/model/run_layout_surface_turn_request_document.dart';
 export 'package:lucent_api/src/model/run_risk_check_request.dart';
 export 'package:lucent_api/src/model/run_risk_check_request_candidate.dart';
 export 'package:lucent_api/src/model/save_layout_request.dart';

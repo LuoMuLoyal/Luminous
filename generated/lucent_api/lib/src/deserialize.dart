@@ -362,6 +362,8 @@ import 'package:lucent_api/src/model/report_summary_stream_response_low_risk_act
 import 'package:lucent_api/src/model/report_summary_stream_response_observed_pattern.dart';
 import 'package:lucent_api/src/model/reset_password_request.dart';
 import 'package:lucent_api/src/model/reset_password_response.dart';
+import 'package:lucent_api/src/model/run_layout_surface_turn_request.dart';
+import 'package:lucent_api/src/model/run_layout_surface_turn_request_document.dart';
 import 'package:lucent_api/src/model/run_risk_check_request.dart';
 import 'package:lucent_api/src/model/run_risk_check_request_candidate.dart';
 import 'package:lucent_api/src/model/save_layout_request.dart';
@@ -1948,6 +1950,14 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ResetPasswordResponse':
       return ResetPasswordResponse.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'RunLayoutSurfaceTurnRequest':
+      return RunLayoutSurfaceTurnRequest.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'RunLayoutSurfaceTurnRequestDocument':
+      return RunLayoutSurfaceTurnRequestDocument.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'RunRiskCheckRequest':
       return RunRiskCheckRequest.fromJson(value as Map<String, dynamic>)

@@ -19,7 +19,7 @@ part 'update_settings_request.g.dart';
 class UpdateSettingsRequest {
   /// Returns a new [UpdateSettingsRequest] instance.
   UpdateSettingsRequest({
-    this.aiSummariesEnabled,
+    this.digestEnabled,
 
     this.dataSharingConsent,
 
@@ -35,8 +35,8 @@ class UpdateSettingsRequest {
   });
 
   /// Allow AI-generated summaries and advice.
-  @JsonKey(name: r'aiSummariesEnabled', required: false, includeIfNull: false)
-  final bool? aiSummariesEnabled;
+  @JsonKey(name: r'digestEnabled', required: false, includeIfNull: false)
+  final bool? digestEnabled;
 
   /// Consent to share anonymized data for research.
   @JsonKey(name: r'dataSharingConsent', required: false, includeIfNull: false)
@@ -77,7 +77,7 @@ class UpdateSettingsRequest {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is UpdateSettingsRequest &&
-          other.aiSummariesEnabled == aiSummariesEnabled &&
+          other.digestEnabled == digestEnabled &&
           other.dataSharingConsent == dataSharingConsent &&
           other.assistantEnabled == assistantEnabled &&
           other.assistantMemoryEnabled == assistantMemoryEnabled &&
@@ -87,7 +87,7 @@ class UpdateSettingsRequest {
 
   @override
   int get hashCode =>
-      aiSummariesEnabled.hashCode +
+      digestEnabled.hashCode +
       dataSharingConsent.hashCode +
       assistantEnabled.hashCode +
       assistantMemoryEnabled.hashCode +

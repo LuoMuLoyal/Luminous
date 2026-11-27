@@ -39,7 +39,7 @@ class AnalysisAsyncResultDataResult {
 
     required this.confidenceNote,
 
-    required this.aiGenerated,
+    required this.briefingGenerated,
 
     this.metrics,
 
@@ -78,8 +78,8 @@ class AnalysisAsyncResultDataResult {
   @JsonKey(name: r'confidenceNote', required: true, includeIfNull: false)
   final String confidenceNote;
 
-  @JsonKey(name: r'aiGenerated', required: true, includeIfNull: false)
-  final bool aiGenerated;
+  @JsonKey(name: r'briefingGenerated', required: true, includeIfNull: false)
+  final bool briefingGenerated;
 
   @JsonKey(name: r'metrics', required: false, includeIfNull: false)
   final List<AnalysisAsyncResultDataMetrics>? metrics;
@@ -117,7 +117,7 @@ class AnalysisAsyncResultDataResult {
           other.actionLabel == actionLabel &&
           other.action == action &&
           other.confidenceNote == confidenceNote &&
-          other.aiGenerated == aiGenerated &&
+          other.briefingGenerated == briefingGenerated &&
           other.metrics == metrics &&
           other.analysis == analysis &&
           other.status == status &&
@@ -135,7 +135,7 @@ class AnalysisAsyncResultDataResult {
       actionLabel.hashCode +
       action.hashCode +
       confidenceNote.hashCode +
-      aiGenerated.hashCode +
+      briefingGenerated.hashCode +
       metrics.hashCode +
       (analysis == null ? 0 : analysis.hashCode) +
       status.hashCode +

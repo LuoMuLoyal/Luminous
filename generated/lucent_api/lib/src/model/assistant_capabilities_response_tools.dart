@@ -143,6 +143,8 @@ enum AssistantCapabilitiesResponseToolsNameEnum {
   getDrugbankDetail(r'get_drugbank_detail'),
   @JsonValue(r'search_drugbank')
   searchDrugbank(r'search_drugbank'),
+  @JsonValue(r'search_adverse_reactions')
+  searchAdverseReactions(r'search_adverse_reactions'),
   @JsonValue(r'reason_ontology')
   reasonOntology(r'reason_ontology'),
   @JsonValue(r'reason_rules')

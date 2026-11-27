@@ -24,7 +24,7 @@ class SuggestionExplanationJobResponseResult {
 
     required this.boundary,
 
-    required this.aiGenerated,
+    required this.briefingGenerated,
 
     this.locale,
   });
@@ -42,8 +42,8 @@ class SuggestionExplanationJobResponseResult {
   final String boundary;
 
   /// Whether the AI model was used to generate the explanation
-  @JsonKey(name: r'aiGenerated', required: true, includeIfNull: false)
-  final bool aiGenerated;
+  @JsonKey(name: r'briefingGenerated', required: true, includeIfNull: false)
+  final bool briefingGenerated;
 
   /// Locale used for the explanation (e.g. \"zh-CN\", \"en\")
   @JsonKey(name: r'locale', required: false, includeIfNull: false)
@@ -56,7 +56,7 @@ class SuggestionExplanationJobResponseResult {
           other.suggestionId == suggestionId &&
           other.reason == reason &&
           other.boundary == boundary &&
-          other.aiGenerated == aiGenerated &&
+          other.briefingGenerated == briefingGenerated &&
           other.locale == locale;
 
   @override
@@ -64,7 +64,7 @@ class SuggestionExplanationJobResponseResult {
       suggestionId.hashCode +
       reason.hashCode +
       boundary.hashCode +
-      aiGenerated.hashCode +
+      briefingGenerated.hashCode +
       locale.hashCode;
 
   factory SuggestionExplanationJobResponseResult.fromJson(

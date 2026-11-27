@@ -19,7 +19,7 @@ part 'user_settings_response.g.dart';
 class UserSettingsResponse {
   /// Returns a new [UserSettingsResponse] instance.
   UserSettingsResponse({
-    required this.aiSummariesEnabled,
+    required this.digestEnabled,
 
     required this.dataSharingConsent,
 
@@ -39,8 +39,8 @@ class UserSettingsResponse {
   });
 
   /// Allow AI-generated summaries and advice.
-  @JsonKey(name: r'aiSummariesEnabled', required: true, includeIfNull: false)
-  final bool aiSummariesEnabled;
+  @JsonKey(name: r'digestEnabled', required: true, includeIfNull: false)
+  final bool digestEnabled;
 
   /// Consent to share anonymized data for research.
   @JsonKey(name: r'dataSharingConsent', required: true, includeIfNull: false)
@@ -91,7 +91,7 @@ class UserSettingsResponse {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is UserSettingsResponse &&
-          other.aiSummariesEnabled == aiSummariesEnabled &&
+          other.digestEnabled == digestEnabled &&
           other.dataSharingConsent == dataSharingConsent &&
           other.assistantEnabled == assistantEnabled &&
           other.assistantMemoryEnabled == assistantMemoryEnabled &&
@@ -104,7 +104,7 @@ class UserSettingsResponse {
 
   @override
   int get hashCode =>
-      aiSummariesEnabled.hashCode +
+      digestEnabled.hashCode +
       dataSharingConsent.hashCode +
       assistantEnabled.hashCode +
       assistantMemoryEnabled.hashCode +
