@@ -1,0 +1,20 @@
+{
+  "_comment": [
+    "Input for build-manifest.ps1. Copy to models.json and edit.",
+    "sha256 and sizeBytes are deliberately absent: the script computes them from",
+    "the actual files, because a hand-copied digest that disagrees with the upload",
+    "turns every download into an integrity failure.",
+    "",
+    "contextLength is the window the model was TRAINED for. The app caps what it",
+    "actually allocates (see LocalAssistant._defaultContextLength), so a large value",
+    "here does not mean a large KV cache on a phone."
+  ],
+  "models": [
+    {
+      "id": "qwen3-1.7b-q4",
+      "name": "Qwen3 1.7B",
+      "fileName": "qwen3-1.7b-q4_k_m.gguf",
+      "contextLength": 32768
+    }
+  ]
+}
