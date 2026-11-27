@@ -1,15 +1,18 @@
-/// A downloadable on-device model, pinned by digest.
+import 'dart:convert';
+
+/// A downloadable on-device model, as published by the release.
 ///
-/// ## Why the digest is the identity, not the filename
+/// ## Why the descriptor comes from the release, not from a constant
 ///
-/// A GGUF is a few gigabytes served from a third party. A filename proves
-/// nothing: the bytes behind it can change, and a swapped model would run with
-/// the full trust of the app. Pinning SHA-256 and refusing anything else is what
-/// makes "download a model" an operation the app can perform at all.
+/// A GGUF is gigabytes served from a third party, and the digest is the only
+/// thing that makes "download and run these weights" safe. Computing that digest
+/// by hand is not an option: it has to match the exact bytes the host will serve,
+/// and a hand-copied value silently rots the moment the upload is replaced.
 ///
-/// The descriptor also carries its own size so the UI can ask for consent before
-/// spending a user's data allowance — a 2 GB download is not something to start
-/// on a whim.
+/// So the release publishes a manifest alongside the model files, and this class
+/// is its parsed form. The app reads the manifest, downloads what it names, and
+/// verifies against the digest that same manifest carries — one source of truth
+/// for both URL and hash.
 final class LocalModel {
   const LocalModel({
     required this.id,
@@ -21,28 +24,67 @@ final class LocalModel {
     required this.contextLength,
   });
 
+  /// Parses one entry of the release manifest.
+  ///
+  /// Throws [FormatException] when a required field is missing or malformed:
+  /// a partial descriptor would reach the download step and fail there, with a
+  /// far less useful message.
+  factory LocalModel.fromJson(Map<String, Object?> json) {
+    String requireString(String key) {
+      final value = json[key];
+      if (value is! String || value.isEmpty) {
+        throw FormatException('manifest entry is missing "$key"', json);
+      }
+      return value;
+    }
+
+    int requireInt(String key) {
+      final value = json[key];
+      if (value is! num) {
+        throw FormatException('manifest entry is missing "$key"', json);
+      }
+      return value.toInt();
+    }
+
+    final sha256 = requireString('sha256').toLowerCase();
+    // Rejecting a malformed digest here is the point of the check: a truncated
+    // hash would compare unequal to every file and fail as an integrity error,
+    // sending the user to look at their network instead of at the manifest.
+    if (!RegExp(r'^[0-9a-f]{64}$').hasMatch(sha256)) {
+      throw FormatException('manifest entry has an invalid sha256', json);
+    }
+
+    return LocalModel(
+      id: requireString('id'),
+      name: requireString('name'),
+      fileName: requireString('fileName'),
+      downloadUrl: requireString('downloadUrl'),
+      sha256: sha256,
+      sizeBytes: requireInt('sizeBytes'),
+      contextLength: requireInt('contextLength'),
+    );
+  }
+
   /// Stable identifier used for storage and settings.
   final String id;
 
   /// Display name.
   final String name;
 
-  /// File name on disk (not the identity — see the type doc).
+  /// File name on disk (not the identity — [sha256] is).
   final String fileName;
 
   final String downloadUrl;
 
-  /// Lowercase hex SHA-256 of the exact bytes served at [downloadUrl].
+  /// Lowercase hex SHA-256 of the exact bytes at [downloadUrl].
   final String sha256;
 
-  /// Exact size, for the pre-download consent prompt and progress fallback when
-  /// the server omits `Content-Length`.
+  /// Exact size, for the pre-download consent prompt and for progress when the
+  /// host omits `Content-Length`.
   final int sizeBytes;
 
-  /// The context window this model was trained for.
-  ///
-  /// Kept on the descriptor rather than read from the file so the settings
-  /// screen can show a plausible memory estimate **before** downloading.
+  /// The context window the model was trained for; kept here so the settings
+  /// screen can show a memory estimate **before** downloading.
   final int contextLength;
 
   /// Human-readable size for the consent prompt.
@@ -56,15 +98,60 @@ final class LocalModel {
   String toString() => 'LocalModel($id, $sizeLabel)';
 }
 
-/// The models this build can offer.
-///
-/// Deliberately a short list with pinned digests: an on-device model is a
-/// compatibility commitment (context window, chat template, quantisation), and a
-/// free-form "paste a URL" flow would produce configurations the app cannot
-/// support and cannot diagnose.
-///
-/// **This list is currently empty.** Entries require a digest computed from the
-/// exact bytes the host will serve; inventing one would make every download fail
-/// verification, and weakening the check to accommodate that would defeat its
-/// purpose. See `docs/TODO.md` for the remaining work.
-const List<LocalModel> availableLocalModels = [];
+/// The release manifest: every model this build can offer.
+final class ModelManifest {
+  const ModelManifest({required this.models, required this.version});
+
+  /// Parses the manifest published in the release.
+  ///
+  /// Shape:
+  /// ```json
+  /// {
+  ///   "version": 1,
+  ///   "models": [
+  ///     { "id": "...", "name": "...", "fileName": "...", "downloadUrl": "...",
+  ///       "sha256": "...", "sizeBytes": 0, "contextLength": 4096 }
+  ///   ]
+  /// }
+  /// ```
+  factory ModelManifest.fromJson(Map<String, Object?> json) {
+    final version = json['version'];
+    if (version is! num) {
+      throw const FormatException('manifest is missing "version"');
+    }
+    final rawModels = json['models'];
+    if (rawModels is! List) {
+      throw const FormatException('manifest is missing "models"');
+    }
+    return ModelManifest(
+      version: version.toInt(),
+      models: [
+        for (final entry in rawModels)
+          LocalModel.fromJson(Map<String, Object?>.from(entry as Map)),
+      ],
+    );
+  }
+
+  /// Decodes [raw] JSON into a manifest.
+  factory ModelManifest.decode(String raw) {
+    final decoded = jsonDecode(raw);
+    if (decoded is! Map<String, Object?>) {
+      throw const FormatException('manifest is not a JSON object');
+    }
+    return ModelManifest.fromJson(decoded);
+  }
+
+  /// Manifest schema version, so a future format change can be detected rather
+  /// than misparsed.
+  final int version;
+
+  final List<LocalModel> models;
+
+  /// The model with [id], or null.
+  LocalModel? byId(String id) {
+    for (final model in models) {
+      if (model.id == id) return model;
+    }
+    return null;
+  }
+}
