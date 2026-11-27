@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-11-26
+updated: 2026-11-27
 ---
 
 # Luminous TODO
 
-Last updated: 2026-11-26
+Last updated: 2026-11-27
 
 本文件记录仍缺失或被故意门控的工作。当前实现状态以代码与 `flutter test` 为准；规划以 `plans/` 为准。
 
@@ -345,25 +345,20 @@ Product Loop Program 的延后项如下。
   放宽「不得改生成物」并调整 drift 生成布局。
 - 新引入循环由 `scripts/arch/guard.dart` 直接拦截；修完一组后 `dart run arch_guard --update-baseline` 收窄冻结清单
 
-## 2026-11-26 端侧 LLM（`pkgs/llama_native`）
+## 2026-11-27 端侧 LLM（`pkgs/llama_native`）
 
-Dart 侧与 Rust 侧代码已落地（22 个测试通过、`flutter analyze` 干净），**但桥接代码未
-生成、Rust crate 未编译过**，包还不能真正推理。以下按依赖顺序。
+Dart 与 Rust 两侧代码已落地、桥接代码已生成。**仍未在真机上跑过模型**，模型清单是空的。
+以下按依赖顺序。
 
-- **桥接代码生成（当前阻塞点）**：`flutter_rust_bridge_codegen` 未安装（需
-  `cargo install flutter_rust_bridge_codegen`，要编译数分钟）。`LlamaBridge` 接缝已定义、
-  `RustLlamaEngine` 已按接缝实现并有 fake 测试覆盖，但生成目录还是空的。
-  生成后只需补一个约 80 行的 `RustBridgeBindings` 适配类，其余不动。
-- **Rust crate 从未编译过**：`rust/src/**` 按 `llama-cpp-2` 与 `flutter_rust_bridge` 的
-  API 写成，`cargo check` 没跑完。第一次编译预计要修签名与生命周期问题——
-  这是最可能推翻当前设计的环节，应优先验证。
-- **构建工具链已就绪**：cmake 4.2.3、ninja 1.12.1、MSVC 19.50、Windows SDK 均可用，
-  cmake/ninja 已加入用户 PATH。不需要完整 VS。
-- **平台工程配置**：Android 需 `jniLibs` 与 Gradle NDK 配置；iOS 需 podspec 与
-  `PrivacyInfo.xcprivacy`；桌面需把动态库放到可执行文件旁。
-- **模型管理**：下载 + sha256 校验 + manifest 版本化。**复用现有模式**（
-  `lib/features/scan/data/datasources/ocr_model_manager.dart` 的按需下载方案）。
-  模型 2–3 GB，绝不能进安装包。
+- **模型清单与下载源**：`lib/core/ai/local_model.dart` 的 `availableLocalModels` 目前是
+  空列表。填条目需要从实际要分发的字节算出 SHA-256——编一个假哈希会让每次下载都校验
+  失败，而放宽校验就失去了校验的意义。需要先定分发渠道（GitHub Release / 自建），再算
+  哈希。模型 2–3 GB，绝不能进安装包。
+- **真机验证**：Desktop 上 `cargo build` 通过、DLL 已生成，但**没有任何一次真实推理**。
+  第一次加载模型会暴露 KV 分配、GPU 层、线程数这些参数的实际表现，这次构建里对它们的
+  判断全部来自文档而非实测。
+- **平台原生库打包**：Android `jniLibs` + Gradle NDK、iOS podspec +
+  `PrivacyInfo.xcprivacy`、桌面把动态库放到可执行文件旁。`rust_builder` 钩子还没配。
 - **app 接线**：`pubspec.yaml` 加 path 依赖；`RuntimeProviderKind` 增加后端枚举值
   （现有 `aiToolkit` 指向一个不存在的包，是历史遗留）；engine 装配与生命周期。
   **改枚举要写迁移**：`runtimeProvider` 存在 SharedPreferences
