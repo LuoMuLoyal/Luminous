@@ -294,7 +294,7 @@ void main() {
       '/settings/more',
       '/settings/notifications',
       '/settings/notifications/sleep',
-      '/settings/ai',
+      '/settings/assistant-backend',
       '/settings/export',
       '/settings/help',
       '/settings/about',
@@ -470,7 +470,7 @@ void main() {
         Routes.accountSessions,
         Routes.accountSecurityCenter,
         Routes.settingsExport,
-        Routes.settingsAi,
+        Routes.settingsAssistantBackend,
         Routes.recordCreate,
       ];
 

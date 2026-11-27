@@ -106,12 +106,12 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
     ref.watch(medicineReminderDeliveryReporterProvider);
     ref.watch(pushCoordinatorProvider);
     ref.watch(localNotificationRouterProvider);
-    ref.listen<AsyncValue<Map<String, dynamic>>>(
-      aiTodaySummaryPushEventsProvider,
-      (previous, next) {
-        next.whenData((event) => _showAiTodaySummaryToast(context, event));
-      },
-    );
+    ref.listen<AsyncValue<Map<String, dynamic>>>(briefingPushEventsProvider, (
+      previous,
+      next,
+    ) {
+      next.whenData((event) => _showAiTodaySummaryToast(context, event));
+    });
 
     final themePreference = ref
         .watch(themeControllerProvider)

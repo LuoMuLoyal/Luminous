@@ -141,11 +141,30 @@ class FeatureFlagsController extends AsyncNotifier<FeatureFlagsState> {
     RuntimeProviderKind fallback,
   ) {
     if (stored == null) return fallback;
+    // Names an earlier build wrote for what is now `localRuntime`. Without this
+    // mapping, renaming the enum silently turned every user's saved choice into
+    // `none` — they would see the switch reset itself with no explanation.
+    //
+    // `parse` already accepts the same strings for the env-var path; this branch is
+    // the storage path, and the two must agree.
+    final normalised = stored.trim().toLowerCase();
+    if (_legacyLocalRuntimeNames.contains(normalised)) {
+      return RuntimeProviderKind.localRuntime;
+    }
     for (final kind in RuntimeProviderKind.values) {
       if (kind.name == stored) return kind;
     }
     return fallback;
   }
+
+  /// Stored strings from earlier builds that meant [RuntimeProviderKind.localRuntime].
+  static const _legacyLocalRuntimeNames = {
+    'aitoolkit',
+    'ai_toolkit',
+    'toolkit',
+    'assistantruntime',
+    'assistant_runtime',
+  };
 }
 
 final featureFlagsControllerProvider =

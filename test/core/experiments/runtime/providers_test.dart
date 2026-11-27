@@ -13,7 +13,7 @@ void main() {
     test('parses known provider names', () {
       expect(
         RuntimeProviderKindX.parse('ai_toolkit'),
-        RuntimeProviderKind.aiToolkit,
+        RuntimeProviderKind.localRuntime,
       );
       expect(RuntimeProviderKindX.parse('gen_ui'), RuntimeProviderKind.genUi);
       expect(RuntimeProviderKindX.parse('custom'), RuntimeProviderKind.custom);
@@ -43,7 +43,7 @@ void main() {
           runtimeEnvironmentProvider.overrideWithValue(
             const RuntimeEnvironment(
               enabled: true,
-              provider: RuntimeProviderKind.aiToolkit,
+              provider: RuntimeProviderKind.localRuntime,
               genUiEnabled: true,
             ),
           ),
@@ -54,7 +54,7 @@ void main() {
       final config = container.read(runtimeConfigProvider);
 
       expect(config.enabled, isTrue);
-      expect(config.provider, RuntimeProviderKind.aiToolkit);
+      expect(config.provider, RuntimeProviderKind.localRuntime);
       expect(config.genUiEnabled, isTrue);
       expect(config.exposesLocalRuntime, isTrue);
     });

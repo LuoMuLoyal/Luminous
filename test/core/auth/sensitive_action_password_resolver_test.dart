@@ -20,7 +20,7 @@ import '../../helpers/kv_test_store.dart';
 
 UserSettings _testSettings({required bool passwordReauthenticationRequired}) {
   return UserSettings(
-    aiSummariesEnabled: true,
+    digestEnabled: true,
     dataSharingConsent: false,
     assistantEnabled: true,
     assistantMemoryEnabled: false,

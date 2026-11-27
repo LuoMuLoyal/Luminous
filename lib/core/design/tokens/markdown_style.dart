@@ -99,7 +99,7 @@ abstract final class MarkdownStyle {
   /// - 引用块 primary 4px 左侧色条 + primary subtle 底色。
   /// - 代码块保持库默认的横向滚动（库把 `pre` 硬编码为横向 ScrollView，样式表无
   ///   折行开关；折行会破坏代码缩进，故不硬造自定义 builder，记为限制）。
-  static MarkdownStyleSheet ai(
+  static MarkdownStyleSheet assistantGenerated(
     BuildContext context, {
     Color? background,
     FontWeight? paragraphWeight,

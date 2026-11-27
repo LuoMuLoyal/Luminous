@@ -23,7 +23,7 @@ String routeForPushEvent(Map<String, dynamic> event) {
   // destinations without changing the coordinator or gateway contracts.
   final action = pushActionOf(event);
   switch (action) {
-    case PushAction.aiTodaySummary:
+    case PushAction.todayBriefing:
       return Routes.home;
     case PushAction.medicineReminder:
     default:
@@ -61,7 +61,7 @@ class PushMessageHandler {
 
   void _handleReceiveEvent(Map<String, dynamic> event) {
     handlers.onReceive(event);
-    if (pushActionOf(event) == PushAction.aiTodaySummary) {
+    if (pushActionOf(event) == PushAction.todayBriefing) {
       emitAiSummary(event);
     }
   }
@@ -89,7 +89,7 @@ final pushMessageHandlerProvider = Provider<PushMessageHandler>((ref) {
   final handler = PushMessageHandler(
     gateway: ref.watch(jpushGatewayProvider),
     handlers: ref.watch(pushEventHandlersProvider),
-    emitAiSummary: (event) => ref.read(aiSummarySinkProvider).add(event),
+    emitAiSummary: (event) => ref.read(digestSinkProvider).add(event),
     navigate: (route) => ref.read(pushNavigateProvider)(route),
   );
   handler.start();
@@ -98,10 +98,8 @@ final pushMessageHandlerProvider = Provider<PushMessageHandler>((ref) {
 });
 
 /// Foreground push events with action `ai_today_summary`.
-final aiTodaySummaryPushEventsProvider = StreamProvider<Map<String, dynamic>>((
-  ref,
-) {
-  final sink = ref.watch(aiSummarySinkProvider);
+final briefingPushEventsProvider = StreamProvider<Map<String, dynamic>>((ref) {
+  final sink = ref.watch(digestSinkProvider);
   final controller = StreamController<Map<String, dynamic>>.broadcast();
   sink.attach(controller.add);
   ref.onDispose(controller.close);
@@ -124,7 +122,7 @@ final localNotificationRouterProvider = Provider<void>((ref) {
     if (decoded is! Map<String, dynamic>) return;
 
     final action = decoded['action'];
-    if (action == PushAction.aiTodaySummary) {
+    if (action == PushAction.todayBriefing) {
       ref.read(pushEventHandlersProvider).onOpen(decoded);
       ref.read(pushNavigateProvider)(Routes.home);
     }

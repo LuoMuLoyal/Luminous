@@ -6,7 +6,7 @@ import 'package:luminous/core/push/event_handlers.dart';
 import 'package:luminous/core/push/lifecycle.dart';
 import 'package:luminous/features/settings/data/datasources/notification_permission.dart';
 import 'package:luminous/features/settings/domain/entities/notification_permission_state.dart';
-import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
+import 'package:luminous/features/today/presentation/providers/briefing.dart';
 
 /// Feature-backed [PushEventHandlers] registered by the composition root.
 ///
@@ -29,7 +29,7 @@ class FeaturePushEventHandlers implements PushEventHandlers {
   @override
   void onReceive(Map<String, dynamic> event) {
     invalidateUnread();
-    if (pushActionOf(event) == PushAction.aiTodaySummary) {
+    if (pushActionOf(event) == PushAction.todayBriefing) {
       invalidateTodayAnalysis();
     }
   }
@@ -37,7 +37,7 @@ class FeaturePushEventHandlers implements PushEventHandlers {
   @override
   void onOpen(Map<String, dynamic> event) {
     invalidateUnread();
-    if (pushActionOf(event) == PushAction.aiTodaySummary) {
+    if (pushActionOf(event) == PushAction.todayBriefing) {
       invalidateTodayAnalysis();
       handleAiSummaryOpen(event);
     }
@@ -48,7 +48,7 @@ final pushEventHandlersProviderForApp = Provider<PushEventHandlers>((ref) {
   return FeaturePushEventHandlers(
     invalidateUnread: () => ref.invalidate(notificationUnreadCountProvider),
     invalidateTodayAnalysis: () =>
-        ref.invalidate(todayAiAnalysisControllerProvider),
+        ref.invalidate(todayBriefingAnalysisControllerProvider),
     // Navigation is handled by core's PushMessageHandler; nothing extra needed.
     handleAiSummaryOpen: (_) {},
   );
@@ -88,7 +88,7 @@ List<Override> pushProviderOverrides(ProviderContainer container) => [
       invalidateUnread: () =>
           container.invalidate(notificationUnreadCountProvider),
       invalidateTodayAnalysis: () =>
-          container.invalidate(todayAiAnalysisControllerProvider),
+          container.invalidate(todayBriefingAnalysisControllerProvider),
       handleAiSummaryOpen: (_) {},
     ),
   ),

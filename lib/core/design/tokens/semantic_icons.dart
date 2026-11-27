@@ -6,7 +6,7 @@ import 'package:forui_phosphor/forui_phosphor.dart';
 /// 所有业务代码应通过 [SemanticIcons] 引用图标，而非直接使用 [FLucideIcons]。
 /// 这确保同一语义不会使用不同图标，不同语义不会使用相同图标。
 ///
-/// 命名规则：`{域}{语义}`，如 `safetySafe`、`recordMedicine`、`aiEntry`。
+/// 命名规则：`{域}{语义}`，如 `safetySafe`、`recordMedicine`、`assistantEntry`。
 abstract final class SemanticIcons {
   // ================================================================
   // 导航 — Tab 图标，与内容层图标严格区分
@@ -20,38 +20,38 @@ abstract final class SemanticIcons {
   // ================================================================
   // AI — 入口 / 生成中 / 结果 / 建议 各用不同图标
   // ================================================================
-  static const aiEntry = FLucideIcons.sparkles;
-  static const aiAnalyzing = FLucideIcons.loaderCircle;
-  static const aiGenerated = FLucideIcons.bot;
-  static const aiSuggestion = FLucideIcons.brain;
-  static const aiTip = FLucideIcons.lightbulb;
+  static const assistantEntry = FLucideIcons.sparkles;
+  static const briefingAnalyzing = FLucideIcons.loaderCircle;
+  static const briefingGenerated = FLucideIcons.bot;
+  static const assistantSuggestion = FLucideIcons.brain;
+  static const assistantTip = FLucideIcons.lightbulb;
 
   /// 持久化记忆(能力面板摘要行)。
-  static const aiMemory = FLucideIcons.memoryStick;
+  static const assistantMemory = FLucideIcons.memoryStick;
 
   /// 知识库 / RAG 检索(能力面板摘要行)。
-  static const aiKnowledge = FLucideIcons.database;
+  static const assistantKnowledge = FLucideIcons.database;
 
   /// 工具调用(能力面板工具列表行前缀)。
-  static const aiToolCalling = FLucideIcons.wrench;
+  static const assistantToolCalling = FLucideIcons.wrench;
 
   /// 未授权访问 AI 摘要的提示。
-  static const aiPermissionHint = FLucideIcons.lockKeyhole;
+  static const assistantPermissionHint = FLucideIcons.lockKeyhole;
 
   /// AI 分析结果为空。
-  static const aiEmptyAnalysis = FLucideIcons.circleDashed;
+  static const briefingEmpty = FLucideIcons.circleDashed;
 
   /// AI 建议列表空态。
-  static const aiEmptySuggestion = FLucideIcons.orbit;
+  static const assistantEmptySuggestion = FLucideIcons.orbit;
 
   /// 后端图标字符串无法识别时的兜底图标。
-  static const aiFallbackIcon = FLucideIcons.wandSparkles;
+  static const assistantFallbackIcon = FLucideIcons.wandSparkles;
 
   /// 触发 AI 生成报告 / 总结。
-  static const aiGenerate = FLucideIcons.wand2;
+  static const briefingGenerate = FLucideIcons.wand2;
 
   /// 扫码「AI 识别」方式入口。
-  static const aiScanMethod = FLucideIcons.scanText;
+  static const assistantScanMethod = FLucideIcons.scanText;
 
   // ================================================================
   // 健康记录类型
@@ -415,14 +415,14 @@ abstract final class SemanticIcons {
 
   /// `actionSettings` 的页面区分版本（general_section.dart）。
 
-  /// `aiAnalyzing` 的页面区分版本（export.dart）。
+  /// `briefingAnalyzing` 的页面区分版本（export.dart）。
 
-  /// `aiAnalyzing` 的页面区分版本（top_bar.dart）。
+  /// `briefingAnalyzing` 的页面区分版本（top_bar.dart）。
 
-  /// `aiEntry` 的页面区分版本（top_bar.dart）。
-  static const aiEntryTopBar = FLucideIcons.cpu;
+  /// `assistantEntry` 的页面区分版本（top_bar.dart）。
+  static const assistantEntryTopBar = FLucideIcons.cpu;
 
-  /// `aiGenerate` 的页面区分版本（top_bar.dart）。
+  /// `briefingGenerate` 的页面区分版本（top_bar.dart）。
 
   /// `authEmailVerified` 的页面区分版本（account_manage_sections.dart）。
 

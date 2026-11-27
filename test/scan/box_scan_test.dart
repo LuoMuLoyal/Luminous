@@ -210,7 +210,7 @@ void main() {
 
       expect(find.text(l10n.scanMethodPickerTitle), findsOneWidget);
       expect(find.text(l10n.scanMethodOcrTitle), findsOneWidget);
-      expect(find.text(l10n.scanMethodAiTitle), findsOneWidget);
+      expect(find.text(l10n.scanMethodAssistantTitle), findsOneWidget);
     });
   });
 
@@ -461,7 +461,7 @@ void main() {
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
         ],
       );
-      await tester.tap(find.text(l10n.scanMethodAiTitle));
+      await tester.tap(find.text(l10n.scanMethodAssistantTitle));
       await flushAsync(tester);
 
       expect(fakePicker.pickCalls, 1);
@@ -484,7 +484,7 @@ void main() {
         ],
       );
 
-      await tester.tap(find.text(l10n.scanMethodAiTitle));
+      await tester.tap(find.text(l10n.scanMethodAssistantTitle));
       await flushAsync(tester);
 
       expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);

@@ -80,7 +80,7 @@ const List<NotificationItem> _notifications = <NotificationItem>[
   ),
   NotificationItem(
     id: 'ntf-sleep-0002',
-    type: NotificationType.aiWeeklyInsight,
+    type: NotificationType.digestWeeklyInsight,
     title: '睡眠周报已生成',
     content:
         '上周（06-08 至 06-14）平均睡眠 6 小时 52 分，比前一周少了 24 分钟；'
@@ -91,7 +91,7 @@ const List<NotificationItem> _notifications = <NotificationItem>[
   ),
   NotificationItem(
     id: 'ntf-visit-0003',
-    type: NotificationType.aiProactiveSuggestion,
+    type: NotificationType.assistantProactiveSuggestion,
     title: '复诊提醒：心内科随访',
     content:
         '距离上次复诊已满 12 周，建议在 06-25 前预约心内科复查血压与血脂。'
@@ -101,7 +101,7 @@ const List<NotificationItem> _notifications = <NotificationItem>[
   ),
   NotificationItem(
     id: 'ntf-bp-0004',
-    type: NotificationType.aiTodaySummary,
+    type: NotificationType.todayBriefing,
     title: '今日血压小结',
     content:
         '今天已记录 2 次血压：晨起 138/86 mmHg，午后 132/82 mmHg，'
@@ -1345,7 +1345,7 @@ class SimulatedUserSettingsRepository implements UserSettingsRepository {
   TaskEither<LucentFailure, UserSettings> getSettings() {
     return TaskEither.right(
       const UserSettings(
-        aiSummariesEnabled: true,
+        digestEnabled: true,
         dataSharingConsent: false,
         assistantEnabled: true,
         assistantMemoryEnabled: true,
@@ -1364,7 +1364,7 @@ class SimulatedUserSettingsRepository implements UserSettingsRepository {
 
   @override
   TaskEither<LucentFailure, UserSettings> updateSettings({
-    required bool aiSummariesEnabled,
+    required bool digestEnabled,
     required bool dataSharingConsent,
     required bool assistantEnabled,
     required bool assistantMemoryEnabled,
@@ -1374,7 +1374,7 @@ class SimulatedUserSettingsRepository implements UserSettingsRepository {
   }) {
     return TaskEither.right(
       UserSettings(
-        aiSummariesEnabled: aiSummariesEnabled,
+        digestEnabled: digestEnabled,
         dataSharingConsent: dataSharingConsent,
         assistantEnabled: assistantEnabled,
         assistantMemoryEnabled: assistantMemoryEnabled,

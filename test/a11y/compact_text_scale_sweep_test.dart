@@ -80,7 +80,7 @@ import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/about/about.dart';
 import 'package:luminous/features/settings/presentation/pages/about/help.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/advanced.dart';
-import 'package:luminous/features/settings/presentation/pages/advanced/ai.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced/assistant_backend.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced/feature_flags.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/accessibility.dart';
 import 'package:luminous/features/settings/presentation/pages/appearance/language.dart';
@@ -271,7 +271,7 @@ const List<_SweepCase> _sweepCases = <_SweepCase>[
   _SweepCase('DndSettingsPage', _pumpDnd),
   _SweepCase('SleepReminderSettingsPage', _pumpSleepReminder),
   _SweepCase('FeatureFlagsSettingsPage', _pumpFeatureFlags),
-  _SweepCase('AiSettingsPage', _pumpAiSettings),
+  _SweepCase('AssistantBackendSettingsPage', _pumpAiSettings),
   _SweepCase('DataExportPage', _pumpDataExport),
 ];
 
@@ -497,7 +497,7 @@ Future<void> _pumpAssistant(WidgetTester tester, double scale) {
                   const Scaffold(body: Text('login-page')),
             ),
             GoRoute(
-              path: '/settings/ai',
+              path: '/settings/assistant-backend',
               builder: (context, state) => const Scaffold(body: Text('ai')),
             ),
           ],
@@ -930,7 +930,7 @@ Future<void> _pumpAiSettings(WidgetTester tester, double scale) {
         ),
       ],
       child: TestForuiApp(
-        home: scaledForTextScale(const AiSettingsPage(), scale),
+        home: scaledForTextScale(const AssistantBackendSettingsPage(), scale),
       ),
     ),
   );
@@ -1133,7 +1133,7 @@ class _ReadyUserSettingsController extends UserSettingsController {
   @override
   Future<UserSettings> build() async {
     return const UserSettings(
-      aiSummariesEnabled: true,
+      digestEnabled: true,
       dataSharingConsent: false,
       assistantEnabled: true,
       assistantMemoryEnabled: false,

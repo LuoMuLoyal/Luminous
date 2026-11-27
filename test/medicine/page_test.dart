@@ -675,7 +675,7 @@ void main() {
 
     expect(find.text(l10n.scanMethodPickerTitle), findsOneWidget);
     expect(find.text(l10n.scanMethodOcrTitle), findsOneWidget);
-    expect(find.text(l10n.scanMethodAiTitle), findsOneWidget);
+    expect(find.text(l10n.scanMethodAssistantTitle), findsOneWidget);
   });
 
   testWidgets('Medicine uncovered safety summary uses readable icon color', (

@@ -138,7 +138,7 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
         sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
       ),
     ],
-    aiSummaryEnabled: false,
+    digestEnabled: false,
   );
 
   static final _signedOutDashboard = ReviewDashboard(
@@ -242,6 +242,6 @@ class MockReviewDashboardRepository implements ReviewDashboardRepository {
         sparkline: <double>[0, 0, 0, 0, 0, 0, 0],
       ),
     ],
-    aiSummaryEnabled: false,
+    digestEnabled: false,
   );
 }

@@ -41,7 +41,7 @@ class Routes {
   static const settingsNotificationsSleep = '/settings/notifications/sleep';
   static const settingsNotificationsDnd = '/settings/notifications/dnd';
   static const settingsAccessibility = '/settings/accessibility';
-  static const settingsAi = '/settings/ai';
+  static const settingsAssistantBackend = '/settings/assistant-backend';
   static const settingsExport = '/settings/export';
   static const settingsHelp = '/settings/help';
   static const settingsAbout = '/settings/about';

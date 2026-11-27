@@ -96,7 +96,7 @@ void main() {
       container = buildContainer(
         initialValues: const <String, Object>{
           'featureFlags.onDeviceRuntime': true,
-          'featureFlags.runtimeProvider': 'aiToolkit',
+          'featureFlags.runtimeProvider': 'assistantRuntime',
           'featureFlags.genUiEnabled': true,
           'featureFlags.assistantStreamMode': false,
           'featureFlags.medicineBarcodeScan': true,
@@ -107,7 +107,7 @@ void main() {
       final state = await container.read(featureFlagsControllerProvider.future);
 
       expect(state.onDeviceRuntime, isTrue);
-      expect(state.runtimeProvider, RuntimeProviderKind.aiToolkit);
+      expect(state.runtimeProvider, RuntimeProviderKind.localRuntime);
       expect(state.genUiEnabled, isTrue);
       expect(state.assistantStreamMode, isFalse);
       expect(state.medicineBarcodeScan, isTrue);
@@ -124,7 +124,7 @@ void main() {
       final state = await container.read(featureFlagsControllerProvider.future);
 
       expect(state.onDeviceRuntime, isTrue);
-      expect(state.runtimeProvider, RuntimeProviderKind.aiToolkit);
+      expect(state.runtimeProvider, RuntimeProviderKind.localRuntime);
       expect(state.genUiEnabled, isTrue);
     });
 

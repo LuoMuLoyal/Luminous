@@ -43,7 +43,7 @@ void main() {
     tester,
   ) async {
     final context = await _themedContext(tester);
-    final sheet = MarkdownStyle.ai(context);
+    final sheet = MarkdownStyle.assistantGenerated(context);
     final decoration = sheet.blockquoteDecoration;
     expect(decoration, isNotNull);
     expect(decoration, isA<BoxDecoration>());
@@ -61,7 +61,7 @@ void main() {
 
   testWidgets('ai 样式：h1-h6 字号阶梯递减', (tester) async {
     final context = await _themedContext(tester);
-    final sheet = MarkdownStyle.ai(context);
+    final sheet = MarkdownStyle.assistantGenerated(context);
 
     expect(sheet.h1?.fontSize, greaterThan(sheet.h2!.fontSize!));
     expect(sheet.h2?.fontSize, greaterThan(sheet.h3!.fontSize!));
@@ -81,7 +81,7 @@ void main() {
     tester,
   ) async {
     final context = await _themedContext(tester);
-    final sheet = MarkdownStyle.ai(context);
+    final sheet = MarkdownStyle.assistantGenerated(context);
 
     expect(sheet.listIndent, Spacing.xl);
     expect(sheet.listBulletPadding?.right, Spacing.sm);
@@ -94,7 +94,10 @@ void main() {
 
   testWidgets('ai 样式支持 paragraphWeight 参数', (tester) async {
     final context = await _themedContext(tester);
-    final sheet = MarkdownStyle.ai(context, paragraphWeight: FontWeight.w700);
+    final sheet = MarkdownStyle.assistantGenerated(
+      context,
+      paragraphWeight: FontWeight.w700,
+    );
     expect(sheet.p?.fontWeight, FontWeight.w700);
   });
 }

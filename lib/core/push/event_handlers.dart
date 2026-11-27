@@ -6,7 +6,7 @@ import 'package:luminous/core/push/jpush_gateway.dart';
 /// Declared in core so `core/push` can branch on an action without importing
 /// the feature that owns the behaviour.
 abstract final class PushAction {
-  static const String aiTodaySummary = 'ai_today_summary';
+  static const String todayBriefing = 'ai_today_summary';
   static const String medicineReminder = 'medicine_reminder';
 }
 
@@ -41,8 +41,8 @@ final pushEventHandlersProvider = Provider<PushEventHandlers>(
 );
 
 /// Fan-out point between the JPush listener and
-/// [aiTodaySummaryPushEventsProvider].
-class AiSummaryEventSink {
+/// [briefingPushEventsProvider].
+class DigestEventSink {
   void Function(Map<String, dynamic>)? _emit;
 
   void attach(void Function(Map<String, dynamic>) emit) {
@@ -52,8 +52,8 @@ class AiSummaryEventSink {
   void add(Map<String, dynamic> event) => _emit?.call(event);
 }
 
-final aiSummarySinkProvider = Provider<AiSummaryEventSink>(
-  (ref) => AiSummaryEventSink(),
+final digestSinkProvider = Provider<DigestEventSink>(
+  (ref) => DigestEventSink(),
 );
 
 /// Reads the `action` extra out of a raw push payload.

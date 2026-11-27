@@ -875,6 +875,6 @@ class SimulatedReviewDashboardRepository implements ReviewDashboardRepository {
         sparkline: <double>[120, 119, 121, 117, 118, 119, 118],
       ),
     ],
-    aiSummaryEnabled: true,
+    digestEnabled: true,
   );
 }

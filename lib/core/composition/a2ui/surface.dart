@@ -55,7 +55,7 @@ class GenerativeSurfaceRenderer extends StatelessWidget {
         child: A2uiMarkdown(
           builder: (context, markdown, style) => MarkdownBody(
             data: markdown,
-            styleSheet: MarkdownStyle.ai(context),
+            styleSheet: MarkdownStyle.assistantGenerated(context),
           ),
           child: LimitedBox(
             // 竖排容器里 agent 可能给一个没有宽度的 `TextField`；没有这层

@@ -11,8 +11,8 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/core/push/jpush_gateway.dart';
 import 'package:luminous/core/push/message_handler.dart';
-import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
-import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
+import 'package:luminous/features/today/domain/entities/briefing.dart';
+import 'package:luminous/features/today/presentation/providers/briefing.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../helpers/kv_test_store.dart';
@@ -81,13 +81,13 @@ class _CountingPushHandlers implements PushEventHandlers {
   void onOpen(Map<String, dynamic> event) => onEvent?.call();
 }
 
-class _FakeTodayAiAnalysisNotifier extends TodayAiAnalysisNotifier {
+class _FakeTodayBriefingNotifier extends TodayBriefingNotifier {
   static int disposeCount = 0;
 
   @override
-  Future<TodayAiAnalysisCardState> build() async {
+  Future<TodayBriefingCardState> build() async {
     ref.onDispose(() => disposeCount++);
-    return const TodayAiAnalysisCardState.idle();
+    return const TodayBriefingCardState.idle();
   }
 }
 
@@ -173,7 +173,7 @@ void main() {
   });
 
   group('localNotificationRouterProvider', () {
-    setUp(() => _FakeTodayAiAnalysisNotifier.disposeCount = 0);
+    setUp(() => _FakeTodayBriefingNotifier.disposeCount = 0);
 
     test(
       'routes ai_today_summary tap to / and invalidates unread count',
@@ -191,7 +191,7 @@ void main() {
               _AppLikePushHandlers(
                 onOpenEvent: () {
                   container.invalidate(notificationUnreadCountProvider);
-                  container.invalidate(todayAiAnalysisControllerProvider);
+                  container.invalidate(todayBriefingAnalysisControllerProvider);
                 },
               ),
             ),
@@ -199,8 +199,8 @@ void main() {
               unreadBuildCount++;
               return 0;
             }),
-            todayAiAnalysisControllerProvider.overrideWith(
-              _FakeTodayAiAnalysisNotifier.new,
+            todayBriefingAnalysisControllerProvider.overrideWith(
+              _FakeTodayBriefingNotifier.new,
             ),
           ],
         );
@@ -211,7 +211,7 @@ void main() {
 
         // Ensure the AI analysis provider has been built so invalidation triggers
         // its onDispose callback.
-        await container.read(todayAiAnalysisControllerProvider.future);
+        await container.read(todayBriefingAnalysisControllerProvider.future);
 
         gateway.emitTap(
           const NotificationResponse(
@@ -226,7 +226,7 @@ void main() {
         verify(() => router.go(Routes.home)).called(1);
         await container.read(notificationUnreadCountProvider.future);
         expect(unreadBuildCount, 1);
-        expect(_FakeTodayAiAnalysisNotifier.disposeCount, 1);
+        expect(_FakeTodayBriefingNotifier.disposeCount, 1);
       },
     );
 
@@ -238,8 +238,8 @@ void main() {
         overrides: [
           localNotificationGatewayProvider.overrideWithValue(gateway),
           pushNavigateProvider.overrideWithValue(router.go),
-          todayAiAnalysisControllerProvider.overrideWith(
-            _FakeTodayAiAnalysisNotifier.new,
+          todayBriefingAnalysisControllerProvider.overrideWith(
+            _FakeTodayBriefingNotifier.new,
           ),
         ],
       );

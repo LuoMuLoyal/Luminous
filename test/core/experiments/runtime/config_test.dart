@@ -13,24 +13,24 @@ void main() {
   });
 
   group('RuntimeProviderKindX.parse', () {
-    test('parses "ai_toolkit" as aiToolkit', () {
+    test('parses "ai_toolkit" as assistantRuntime', () {
       expect(
         RuntimeProviderKindX.parse('ai_toolkit'),
-        RuntimeProviderKind.aiToolkit,
+        RuntimeProviderKind.localRuntime,
       );
     });
 
-    test('parses "aitoolkit" as aiToolkit', () {
+    test('parses "aitoolkit" as assistantRuntime', () {
       expect(
         RuntimeProviderKindX.parse('aitoolkit'),
-        RuntimeProviderKind.aiToolkit,
+        RuntimeProviderKind.localRuntime,
       );
     });
 
-    test('parses "toolkit" as aiToolkit', () {
+    test('parses "toolkit" as assistantRuntime', () {
       expect(
         RuntimeProviderKindX.parse('toolkit'),
-        RuntimeProviderKind.aiToolkit,
+        RuntimeProviderKind.localRuntime,
       );
     });
 
@@ -57,7 +57,7 @@ void main() {
     test('trims and lowercases input', () {
       expect(
         RuntimeProviderKindX.parse('  AI_TOOLKIT  '),
-        RuntimeProviderKind.aiToolkit,
+        RuntimeProviderKind.localRuntime,
       );
       expect(
         RuntimeProviderKindX.parse('  Custom  '),
@@ -70,7 +70,7 @@ void main() {
     test('exposesLocalRuntime is false when disabled', () {
       const config = RuntimeConfig(
         enabled: false,
-        provider: RuntimeProviderKind.aiToolkit,
+        provider: RuntimeProviderKind.localRuntime,
         genUiEnabled: false,
       );
       expect(config.exposesLocalRuntime, isFalse);
@@ -90,7 +90,7 @@ void main() {
       () {
         const config = RuntimeConfig(
           enabled: true,
-          provider: RuntimeProviderKind.aiToolkit,
+          provider: RuntimeProviderKind.localRuntime,
           genUiEnabled: false,
         );
         expect(config.exposesLocalRuntime, isTrue);
@@ -118,12 +118,12 @@ void main() {
     test('fromEnvironment copies values from environment', () {
       const env = RuntimeEnvironment(
         enabled: true,
-        provider: RuntimeProviderKind.aiToolkit,
+        provider: RuntimeProviderKind.localRuntime,
         genUiEnabled: true,
       );
       final config = RuntimeConfig.fromEnvironment(env);
       expect(config.enabled, isTrue);
-      expect(config.provider, RuntimeProviderKind.aiToolkit);
+      expect(config.provider, RuntimeProviderKind.localRuntime);
       expect(config.genUiEnabled, isTrue);
     });
   });
@@ -138,7 +138,7 @@ void main() {
     test('reads provider from env', () {
       EnvReader.setTestValue(EnvKey.luminousRuntimeProvider, 'ai_toolkit');
       final env = RuntimeEnvironment.fromPlatform();
-      expect(env.provider, RuntimeProviderKind.aiToolkit);
+      expect(env.provider, RuntimeProviderKind.localRuntime);
     });
 
     test('reads genUiEnabled from env', () {

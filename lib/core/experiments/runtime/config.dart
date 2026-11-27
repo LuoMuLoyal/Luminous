@@ -4,18 +4,22 @@ import 'package:luminous/core/network/config/env_reader.dart';
 
 /// 实验性 runtime 的提供方种类。
 ///
-/// 类名不带 `Ai`：目录已经是 `experiments/runtime`，`Ai` 在这里既不精确
-/// （它描述的不是"AI"，而是"哪个本地推理后端"），也和 feature flag 里的
-/// `onDeviceRuntime` 撞词。
-enum RuntimeProviderKind { none, aiToolkit, genUi, custom }
+/// 值是**本地推理后端**，不是"AI"：它回答的问题是「这台设备上跑哪个引擎」，
+/// 而不是「有没有 AI」。`localRuntime` 与 feature flag 的 `onDeviceRuntime`
+/// 说的是同一件事，两者不再用两套词汇。
+enum RuntimeProviderKind { none, localRuntime, genUi, custom }
 
 extension RuntimeProviderKindX on RuntimeProviderKind {
   static RuntimeProviderKind parse(String rawValue) {
     switch (rawValue.trim().toLowerCase()) {
+      // 历史别名保留：这些字符串可能已经存在于旧构建的环境变量与
+      // SharedPreferences 里，删掉会让老配置静默回落 `none`。
       case 'ai_toolkit':
       case 'aitoolkit':
       case 'toolkit':
-        return RuntimeProviderKind.aiToolkit;
+      case 'local_runtime':
+      case 'localruntime':
+        return RuntimeProviderKind.localRuntime;
       case 'gen_ui':
       case 'genui':
         return RuntimeProviderKind.genUi;
