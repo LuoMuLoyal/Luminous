@@ -8,6 +8,11 @@ analyzer:
     # regenerating, not by linting.
     - lib/src/data/ffi/**
     - build/**
+    - android/**
+    - ios/**
+    - windows/**
+    - macos/**
+    - linux/**
 
   errors:
     # The bridge serialises through `dynamic` because it cannot know the remote

@@ -13,7 +13,8 @@
 ///   services/      CollectGeneration, fallbackChatPrompt
 ///
 /// data/            the llama.cpp implementation (Rust core + bridge).
-///   bridge/        the only file that names generated `flutter_rust_bridge` symbols
+///   bridge/        the only files that name generated `flutter_rust_bridge` symbols
+///   ffi/           codegen output — never hand-edited
 ///   repositories/  RustLlamaEngine — implements the port
 ///
 /// rust/            the Rust crate: llama-cpp-2 session, options, error mapping.
@@ -27,9 +28,9 @@
 ///
 /// `llama-cpp-2` generates its bindings from the vendored llama.cpp source, so an
 /// upstream rename becomes a compile error instead of a runtime segfault — the
-/// reason the earlier C shim existed at all. The model and context also live
-/// behind Rust's ownership rules, which removes the manual pending-call bookkeeping
-/// a Dart-only FFI layer needed.
+/// reason an earlier C shim existed at all. The model and context also live behind
+/// Rust's ownership rules, which removes the manual bookkeeping a Dart-only FFI
+/// layer needed.
 ///
 /// ## Why inference still runs off the UI thread
 ///
@@ -39,16 +40,17 @@
 ///
 /// ## What this package deliberately does not do
 ///
-/// - **Model download.** The app decides where models come from and verifies
-///   them; this package opens a path.
-/// - **Chat templates.** They come from the GGUF, via llama.cpp. Guessing a
-///   format the model was not trained on produces plausible garbage.
+/// - **Model download.** The app decides where models come from and verifies them;
+///   this package opens a path.
+/// - **Chat templates.** They come from the GGUF, via llama.cpp. Guessing a format
+///   the model was not trained on produces plausible garbage.
 /// - **Prompt construction from app data.** Callers assemble the conversation.
 library;
 
 export 'src/data/bridge/bridge_error_mapper.dart'
     show mapBridgeError, mapBridgeErrorKind;
 export 'src/data/bridge/llama_bridge.dart' show LlamaBridge, TokenEvent;
+export 'src/data/bridge/rust_bridge_bindings.dart' show RustBridgeBindings;
 export 'src/data/repositories/rust_llama_engine.dart' show RustLlamaEngine;
 export 'src/domain/entities/chat_message.dart' show ChatMessage;
 export 'src/domain/entities/engine_options.dart' show EngineOptions;

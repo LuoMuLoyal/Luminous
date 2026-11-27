@@ -27,9 +27,11 @@ dev_dependencies:
   build_runner: ^2.4.0
 
 flutter:
-  # The Rust cdylib is built and bundled by the `rust_builder` hook; see the
-  # README. Nothing here points at a prebuilt binary: a phone must build the right
-  # ABI, and a desktop build the right architecture.
+  # The Rust cdylib is built and bundled by cargokit: the platform projects below
+  # invoke `cargokit/build_pod.sh` (Apple) or the Gradle/CMake hooks, which run
+  # `cargo build` for the target and copy the artifact into the bundle. Nothing
+  # here points at a prebuilt binary — a phone must build the right ABI, and a
+  # desktop build the right architecture.
   plugin:
     platforms:
       android:
