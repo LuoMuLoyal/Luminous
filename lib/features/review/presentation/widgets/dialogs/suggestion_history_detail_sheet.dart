@@ -181,7 +181,7 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
       TodaySuggestionType.confirmedRisk => SemanticIcons.statusWarning,
       TodaySuggestionType.compliance => SemanticIcons.recordClipboard,
       TodaySuggestionType.trend => SemanticIcons.reportTrend,
-      TodaySuggestionType.behaviorAdvice => SemanticIcons.aiTip,
+      TodaySuggestionType.behaviorAdvice => SemanticIcons.assistantTip,
       TodaySuggestionType.coverage => SemanticIcons.recordActivity,
     };
   }

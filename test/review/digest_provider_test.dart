@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/app/auth_session_adapter.dart';
-import 'package:luminous/features/review/data/repositories/lucent_ai_summary.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
-import 'package:luminous/features/review/domain/repositories/ai_summary.dart';
-import 'package:luminous/features/review/presentation/providers/ai_summary.dart';
+import 'package:luminous/features/review/data/repositories/lucent_digest.dart';
+import 'package:luminous/features/review/domain/entities/digest.dart';
+import 'package:luminous/features/review/domain/repositories/digest.dart';
+import 'package:luminous/features/review/presentation/providers/digest.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
@@ -18,7 +18,7 @@ void main() {
     KvTestStore.install();
   });
 
-  group('ReviewAiSummaryController – build', () {
+  group('ReviewDigestController – build', () {
     test('idle when signed out', () {
       final container = ProviderContainer(
         overrides: [
@@ -28,13 +28,13 @@ void main() {
       addTearDown(container.dispose);
 
       final state = container.read(
-        reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
+        reviewDigestControllerProvider(ReviewDigestRange.last7Days),
       );
-      expect(state.status, ReviewAiSummaryCardStatus.idle);
+      expect(state.status, ReviewDigestCardStatus.idle);
       expect(state.summary, isNull);
     });
 
-    test('disabled when aiSummariesEnabled is false', () async {
+    test('disabled when digestEnabled is false', () async {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
@@ -49,12 +49,12 @@ void main() {
       await container.read(userSettingsControllerProvider.future);
 
       final state = container.read(
-        reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
+        reviewDigestControllerProvider(ReviewDigestRange.last7Days),
       );
-      expect(state.status, ReviewAiSummaryCardStatus.disabled);
+      expect(state.status, ReviewDigestCardStatus.disabled);
     });
 
-    test('idle when signed in and aiSummariesEnabled is true', () async {
+    test('idle when signed in and digestEnabled is true', () async {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
@@ -68,13 +68,13 @@ void main() {
       await container.read(userSettingsControllerProvider.future);
 
       final state = container.read(
-        reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
+        reviewDigestControllerProvider(ReviewDigestRange.last7Days),
       );
-      expect(state.status, ReviewAiSummaryCardStatus.idle);
+      expect(state.status, ReviewDigestCardStatus.idle);
     });
   });
 
-  group('ReviewAiSummaryController – generate', () {
+  group('ReviewDigestController – generate', () {
     test('returns idle when signed out (no network call)', () async {
       final container = ProviderContainer(
         overrides: [
@@ -85,24 +85,22 @@ void main() {
 
       final result = await container
           .read(
-            reviewAiSummaryControllerProvider(
-              ReviewAiSummaryRange.last7Days,
+            reviewDigestControllerProvider(
+              ReviewDigestRange.last7Days,
             ).notifier,
           )
           .generate();
 
-      expect(result.status, ReviewAiSummaryCardStatus.idle);
+      expect(result.status, ReviewDigestCardStatus.idle);
       expect(
         container
-            .read(
-              reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
-            )
+            .read(reviewDigestControllerProvider(ReviewDigestRange.last7Days))
             .status,
-        ReviewAiSummaryCardStatus.idle,
+        ReviewDigestCardStatus.idle,
       );
     });
 
-    test('sets disabled when aiSummariesEnabled is false', () async {
+    test('sets disabled when digestEnabled is false', () async {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
@@ -117,26 +115,24 @@ void main() {
 
       final result = await container
           .read(
-            reviewAiSummaryControllerProvider(
-              ReviewAiSummaryRange.last7Days,
+            reviewDigestControllerProvider(
+              ReviewDigestRange.last7Days,
             ).notifier,
           )
           .generate();
 
-      expect(result.status, ReviewAiSummaryCardStatus.disabled);
+      expect(result.status, ReviewDigestCardStatus.disabled);
       expect(
         container
-            .read(
-              reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
-            )
+            .read(reviewDigestControllerProvider(ReviewDigestRange.last7Days))
             .isDisabled,
         isTrue,
       );
     });
 
     test('loading → success path', () async {
-      final fakeRepo = _FakeReviewAiSummaryRepository(
-        response: _testSummary(range: ReviewAiSummaryRange.last7Days),
+      final fakeRepo = _FakeReviewDigestRepository(
+        response: _testSummary(range: ReviewDigestRange.last7Days),
       );
 
       final container = ProviderContainer(
@@ -145,7 +141,7 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          reviewAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
+          reviewDigestRepositoryProvider.overrideWithValue(fakeRepo),
         ],
       );
       addTearDown(container.dispose);
@@ -153,9 +149,9 @@ void main() {
       await container.read(userSettingsControllerProvider.future);
 
       // Listen to capture loading state.
-      final states = <ReviewAiSummaryCardState>[];
+      final states = <ReviewDigestCardState>[];
       container.listen(
-        reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
+        reviewDigestControllerProvider(ReviewDigestRange.last7Days),
         (prev, next) {
           states.add(next);
         },
@@ -164,39 +160,37 @@ void main() {
 
       final result = await container
           .read(
-            reviewAiSummaryControllerProvider(
-              ReviewAiSummaryRange.last7Days,
+            reviewDigestControllerProvider(
+              ReviewDigestRange.last7Days,
             ).notifier,
           )
           .generate();
 
-      expect(result.status, ReviewAiSummaryCardStatus.success);
+      expect(result.status, ReviewDigestCardStatus.success);
       expect(result.summary?.summary, '测试周总结');
 
       // Should have seen loading at some point.
       expect(
-        states.any((s) => s.status == ReviewAiSummaryCardStatus.loading),
+        states.any((s) => s.status == ReviewDigestCardStatus.loading),
         isTrue,
       );
       // Final state is success.
       expect(
         container
-            .read(
-              reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
-            )
+            .read(reviewDigestControllerProvider(ReviewDigestRange.last7Days))
             .status,
-        ReviewAiSummaryCardStatus.success,
+        ReviewDigestCardStatus.success,
       );
     });
 
     test(
       'loading state carries streaming summary before final result',
       () async {
-        final fakeRepo = _FakeReviewAiSummaryRepository(
+        final fakeRepo = _FakeReviewDigestRepository(
           streamEvents: [
-            const ReviewAiGenerationSummaryEvent('近 7 天总结正在生成中。'),
-            ReviewAiGenerationResultEvent(
-              _testSummary(range: ReviewAiSummaryRange.last7Days),
+            const ReviewDigestSummaryEvent('近 7 天总结正在生成中。'),
+            ReviewDigestResultEvent(
+              _testSummary(range: ReviewDigestRange.last7Days),
             ),
           ],
         );
@@ -207,16 +201,16 @@ void main() {
             userSettingsControllerProvider.overrideWith(
               EnabledUserSettingsController.new,
             ),
-            reviewAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
+            reviewDigestRepositoryProvider.overrideWithValue(fakeRepo),
           ],
         );
         addTearDown(container.dispose);
 
         await container.read(userSettingsControllerProvider.future);
 
-        final states = <ReviewAiSummaryCardState>[];
+        final states = <ReviewDigestCardState>[];
         container.listen(
-          reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
+          reviewDigestControllerProvider(ReviewDigestRange.last7Days),
           (prev, next) {
             states.add(next);
           },
@@ -225,17 +219,17 @@ void main() {
 
         final result = await container
             .read(
-              reviewAiSummaryControllerProvider(
-                ReviewAiSummaryRange.last7Days,
+              reviewDigestControllerProvider(
+                ReviewDigestRange.last7Days,
               ).notifier,
             )
             .generate();
 
-        expect(result.status, ReviewAiSummaryCardStatus.success);
+        expect(result.status, ReviewDigestCardStatus.success);
         expect(
           states.any(
             (state) =>
-                state.status == ReviewAiSummaryCardStatus.loading &&
+                state.status == ReviewDigestCardStatus.loading &&
                 state.streamingSummary == '近 7 天总结正在生成中。',
           ),
           isTrue,
@@ -244,7 +238,7 @@ void main() {
     );
 
     test('backend 403 → disabled state', () async {
-      final fakeRepo = _FakeReviewAiSummaryRepository(
+      final fakeRepo = _FakeReviewDigestRepository(
         error: DioException(
           requestOptions: RequestOptions(
             path: '/api/v1/user/reports/summary/generate',
@@ -265,7 +259,7 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          reviewAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
+          reviewDigestRepositoryProvider.overrideWithValue(fakeRepo),
         ],
       );
       addTearDown(container.dispose);
@@ -274,27 +268,25 @@ void main() {
 
       final result = await container
           .read(
-            reviewAiSummaryControllerProvider(
-              ReviewAiSummaryRange.last7Days,
+            reviewDigestControllerProvider(
+              ReviewDigestRange.last7Days,
             ).notifier,
           )
           .generate();
 
-      expect(result.status, ReviewAiSummaryCardStatus.disabled);
+      expect(result.status, ReviewDigestCardStatus.disabled);
       expect(
         container
-            .read(
-              reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
-            )
+            .read(reviewDigestControllerProvider(ReviewDigestRange.last7Days))
             .status,
-        ReviewAiSummaryCardStatus.disabled,
+        ReviewDigestCardStatus.disabled,
       );
     });
 
     test(
       'backend failure → error state with previous summary retention',
       () async {
-        final fakeRepo = _FakeReviewAiSummaryRepository(
+        final fakeRepo = _FakeReviewDigestRepository(
           error: DioException(
             requestOptions: RequestOptions(
               path: '/api/v1/user/reports/summary/generate',
@@ -309,7 +301,7 @@ void main() {
             userSettingsControllerProvider.overrideWith(
               EnabledUserSettingsController.new,
             ),
-            reviewAiSummaryRepositoryProvider.overrideWithValue(fakeRepo),
+            reviewDigestRepositoryProvider.overrideWithValue(fakeRepo),
           ],
         );
         addTearDown(container.dispose);
@@ -318,13 +310,13 @@ void main() {
 
         final result = await container
             .read(
-              reviewAiSummaryControllerProvider(
-                ReviewAiSummaryRange.last7Days,
+              reviewDigestControllerProvider(
+                ReviewDigestRange.last7Days,
               ).notifier,
             )
             .generate();
 
-        expect(result.status, ReviewAiSummaryCardStatus.error);
+        expect(result.status, ReviewDigestCardStatus.error);
         // 失败对象（不是预格式化文案）留在 state 里，卡片渲染时才映射。
         expect(result.error, isNotNull);
         // No previous summary to retain on first failure.
@@ -333,8 +325,8 @@ void main() {
     );
 
     test('backend failure retains previous summary on retry', () async {
-      final successRepo = _FakeReviewAiSummaryRepository(
-        response: _testSummary(range: ReviewAiSummaryRange.last7Days),
+      final successRepo = _FakeReviewDigestRepository(
+        response: _testSummary(range: ReviewDigestRange.last7Days),
       );
 
       final container = ProviderContainer(
@@ -343,7 +335,7 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          reviewAiSummaryRepositoryProvider.overrideWithValue(successRepo),
+          reviewDigestRepositoryProvider.overrideWithValue(successRepo),
         ],
       );
       addTearDown(container.dispose);
@@ -353,25 +345,21 @@ void main() {
       // First call succeeds.
       await container
           .read(
-            reviewAiSummaryControllerProvider(
-              ReviewAiSummaryRange.last7Days,
+            reviewDigestControllerProvider(
+              ReviewDigestRange.last7Days,
             ).notifier,
           )
           .generate();
 
       expect(
         container
-            .read(
-              reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
-            )
+            .read(reviewDigestControllerProvider(ReviewDigestRange.last7Days))
             .status,
-        ReviewAiSummaryCardStatus.success,
+        ReviewDigestCardStatus.success,
       );
       expect(
         container
-            .read(
-              reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
-            )
+            .read(reviewDigestControllerProvider(ReviewDigestRange.last7Days))
             .summary
             ?.summary,
         '测试周总结',
@@ -388,20 +376,18 @@ void main() {
 
       final result = await container
           .read(
-            reviewAiSummaryControllerProvider(
-              ReviewAiSummaryRange.last7Days,
+            reviewDigestControllerProvider(
+              ReviewDigestRange.last7Days,
             ).notifier,
           )
           .generate();
 
-      expect(result.status, ReviewAiSummaryCardStatus.error);
+      expect(result.status, ReviewDigestCardStatus.error);
       // Previous summary should be retained.
       expect(result.summary?.summary, '测试周总结');
       expect(
         container
-            .read(
-              reviewAiSummaryControllerProvider(ReviewAiSummaryRange.last7Days),
-            )
+            .read(reviewDigestControllerProvider(ReviewDigestRange.last7Days))
             .summary
             ?.summary,
         '测试周总结',
@@ -414,20 +400,17 @@ void main() {
 // Helpers
 // ---------------------------------------------------------------------------
 
-ReviewAiSummary _testSummary({required ReviewAiSummaryRange range}) {
-  return ReviewAiSummary(
+ReviewDigest _testSummary({required ReviewDigestRange range}) {
+  return ReviewDigest(
     range: range,
     startDate: '2026-06-06',
     endDate: '2026-06-12',
     generatedAt: DateTime.parse('2026-06-12T10:00:00.000Z'),
     summary: '测试周总结',
-    coverage: const ReviewAiSummaryCoverage(
-      medication: ReviewAiSummaryCoverageDimension(
-        trackedDays: 5,
-        totalDays: 7,
-      ),
-      water: ReviewAiSummaryCoverageDimension(trackedDays: 3, totalDays: 7),
-      sleep: ReviewAiSummaryCoverageDimension(trackedDays: 0, totalDays: 7),
+    coverage: const ReviewDigestCoverage(
+      medication: ReviewDigestCoverageDimension(trackedDays: 5, totalDays: 7),
+      water: ReviewDigestCoverageDimension(trackedDays: 3, totalDays: 7),
+      sleep: ReviewDigestCoverageDimension(trackedDays: 0, totalDays: 7),
     ),
     observedPattern: null,
     lowRiskAction: null,
@@ -439,20 +422,16 @@ ReviewAiSummary _testSummary({required ReviewAiSummaryRange range}) {
 // Fake repository
 // ---------------------------------------------------------------------------
 
-class _FakeReviewAiSummaryRepository implements ReviewAiSummaryRepository {
-  _FakeReviewAiSummaryRepository({
-    this.response,
-    this.error,
-    this.streamEvents,
-  });
+class _FakeReviewDigestRepository implements ReviewDigestRepository {
+  _FakeReviewDigestRepository({this.response, this.error, this.streamEvents});
 
-  ReviewAiSummary? response;
+  ReviewDigest? response;
   Object? error;
-  List<ReviewAiGenerationEvent>? streamEvents;
+  List<ReviewDigestEvent>? streamEvents;
 
   @override
-  Stream<ReviewAiGenerationEvent> generateStream(
-    ReviewAiSummaryRange range, {
+  Stream<ReviewDigestEvent> generateStream(
+    ReviewDigestRange range, {
     String? startDate,
     String? endDate,
   }) async* {
@@ -466,6 +445,6 @@ class _FakeReviewAiSummaryRepository implements ReviewAiSummaryRepository {
       }
       return;
     }
-    yield ReviewAiGenerationResultEvent(response!);
+    yield ReviewDigestResultEvent(response!);
   }
 }

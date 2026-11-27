@@ -4,51 +4,51 @@ import 'package:luminous/core/logger/log_level.dart';
 import 'package:luminous/core/network/contract/error_mapper.dart';
 import 'package:luminous/core/providers/channel.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
-import 'package:luminous/features/review/domain/repositories/ai_summary.dart';
+import 'package:luminous/features/review/domain/entities/digest.dart';
+import 'package:luminous/features/review/domain/repositories/digest.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/providers/data_access.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
-class ReviewAiSummaryController extends Notifier<ReviewAiSummaryCardState> {
-  ReviewAiSummaryController(this.range);
+class ReviewDigestController extends Notifier<ReviewDigestCardState> {
+  ReviewDigestController(this.range);
 
-  final ReviewAiSummaryRange range;
+  final ReviewDigestRange range;
 
   @override
-  ReviewAiSummaryCardState build() {
+  ReviewDigestCardState build() {
     final session = ref.watch(authSessionProvider);
     if (!session.canAccessProtectedData) {
-      return const ReviewAiSummaryCardState.idle();
+      return const ReviewDigestCardState.idle();
     }
 
     final settings = ref.watch(userSettingsControllerProvider).asData?.value;
-    if (settings?.aiSummariesEnabled == false) {
-      return const ReviewAiSummaryCardState.disabled();
+    if (settings?.digestEnabled == false) {
+      return const ReviewDigestCardState.disabled();
     }
 
-    return const ReviewAiSummaryCardState.idle();
+    return const ReviewDigestCardState.idle();
   }
 
-  Future<ReviewAiSummaryCardState> generate() async {
+  Future<ReviewDigestCardState> generate() async {
     final session = ref.read(authSessionProvider);
     if (!session.canAccessProtectedData) {
       return state;
     }
 
     final settings = ref.read(userSettingsControllerProvider).asData?.value;
-    if (settings?.aiSummariesEnabled == false) {
-      state = const ReviewAiSummaryCardState.disabled();
+    if (settings?.digestEnabled == false) {
+      state = const ReviewDigestCardState.disabled();
       return state;
     }
 
     final previousSummary = state.summary;
-    state = ReviewAiSummaryCardState.loading(previousSummary: previousSummary);
+    state = ReviewDigestCardState.loading(previousSummary: previousSummary);
 
     String? startDate;
     String? endDate;
-    if (range == ReviewAiSummaryRange.custom) {
+    if (range == ReviewDigestRange.custom) {
       final query = ref.read(reviewDashboardSelectedQueryProvider);
       if (query.isCustom) {
         startDate = _formatDate(query.startDate);
@@ -70,16 +70,16 @@ class ReviewAiSummaryController extends Notifier<ReviewAiSummaryCardState> {
     try {
       await for (final event
           in ref
-              .read(reviewAiSummaryRepositoryProvider)
+              .read(reviewDigestRepositoryProvider)
               .generateStream(range, startDate: startDate, endDate: endDate)) {
         switch (event) {
-          case ReviewAiGenerationSummaryEvent():
-            state = ReviewAiSummaryCardState.loading(
+          case ReviewDigestSummaryEvent():
+            state = ReviewDigestCardState.loading(
               previousSummary: previousSummary,
               streamingSummary: event.summary,
             );
-          case ReviewAiGenerationResultEvent():
-            state = ReviewAiSummaryCardState.success(event.summary);
+          case ReviewDigestResultEvent():
+            state = ReviewDigestCardState.success(event.summary);
             return state;
         }
       }
@@ -96,14 +96,14 @@ class ReviewAiSummaryController extends Notifier<ReviewAiSummaryCardState> {
     } catch (error) {
       ref
           .read(talkerProvider)
-          .error('ReviewAiSummaryController.generate: failed: $error');
+          .error('ReviewDigestController.generate: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       if (apiError.statusCode == 403) {
-        state = const ReviewAiSummaryCardState.disabled();
+        state = const ReviewDigestCardState.disabled();
         return state;
       }
 
-      state = ReviewAiSummaryCardState.error(
+      state = ReviewDigestCardState.error(
         // 保留失败对象：卡片渲染时才拿得到 l10n，在这里取 message 会把
         // 英文诊断串固化进 entity。
         error: apiError,
@@ -120,25 +120,23 @@ class ReviewAiSummaryController extends Notifier<ReviewAiSummaryCardState> {
   }
 }
 
-final reviewAiSummaryControllerProvider =
+final reviewDigestControllerProvider =
     NotifierProvider.family<
-      ReviewAiSummaryController,
-      ReviewAiSummaryCardState,
-      ReviewAiSummaryRange
-    >((range) => ReviewAiSummaryController(range));
+      ReviewDigestController,
+      ReviewDigestCardState,
+      ReviewDigestRange
+    >((range) => ReviewDigestController(range));
 
-class ReviewAiSummarySelectedRangeNotifier
-    extends Notifier<ReviewAiSummaryRange> {
+class ReviewDigestRangeNotifier extends Notifier<ReviewDigestRange> {
   @override
-  ReviewAiSummaryRange build() => ReviewAiSummaryRange.last7Days;
+  ReviewDigestRange build() => ReviewDigestRange.last7Days;
 
-  void setRange(ReviewAiSummaryRange range) {
+  void setRange(ReviewDigestRange range) {
     state = range;
   }
 }
 
-final reviewAiSummarySelectedRangeProvider =
-    NotifierProvider<
-      ReviewAiSummarySelectedRangeNotifier,
-      ReviewAiSummaryRange
-    >(ReviewAiSummarySelectedRangeNotifier.new);
+final reviewDigestSummarySelectedRangeProvider =
+    NotifierProvider<ReviewDigestRangeNotifier, ReviewDigestRange>(
+      ReviewDigestRangeNotifier.new,
+    );

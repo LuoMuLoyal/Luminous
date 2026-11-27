@@ -5,10 +5,10 @@ import 'package:luminous/core/composition/composition.dart';
 import 'package:luminous/core/providers/session/session_snapshot.dart';
 import 'package:luminous/core/widgets/auth/required_dialog.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
-import 'package:luminous/features/review/presentation/providers/ai_summary.dart';
+import 'package:luminous/features/review/presentation/providers/digest.dart';
 import 'package:luminous/features/review/presentation/providers/surface.dart';
 import 'package:luminous/features/review/presentation/utils/ui_formatters.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/period/ai_summary.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/period/digest.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/period/findings.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/period/patterns.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/period/readiness.dart';
@@ -32,7 +32,7 @@ import 'package:material_ui/material_ui.dart';
 /// 别的 surface 上不需要新接线。
 const reviewReadinessPeriodId = ComponentId('readiness.period');
 const reviewFindingsPeriodId = ComponentId('findings.period');
-const reviewAiSummaryPeriodId = ComponentId('ai_summary.period');
+const reviewDigestSummaryPeriodId = ComponentId('digest.period');
 const reviewPatternsPeriodId = ComponentId('patterns.period');
 const reviewSuggestionHistoryId = ComponentId('history.suggestion');
 
@@ -40,7 +40,7 @@ const reviewSuggestionHistoryId = ComponentId('history.suggestion');
 const reviewPeriodComponentIds = <ComponentId>[
   reviewReadinessPeriodId,
   reviewFindingsPeriodId,
-  reviewAiSummaryPeriodId,
+  reviewDigestSummaryPeriodId,
   reviewPatternsPeriodId,
   reviewSuggestionHistoryId,
 ];
@@ -49,7 +49,7 @@ const reviewPeriodComponentIds = <ComponentId>[
 void registerReviewPeriodComponents(ComponentRegistry registry) {
   registry.registerDescriptor(const _ReadinessPeriodComponent());
   registry.registerDescriptor(const _FindingsPeriodComponent());
-  registry.registerDescriptor(const _AiSummaryPeriodComponent());
+  registry.registerDescriptor(const _DigestPeriodComponent());
   registry.registerDescriptor(const _PatternsPeriodComponent());
   registry.registerDescriptor(const _SuggestionHistoryComponent());
 }
@@ -142,11 +142,11 @@ class _FindingsPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
   }
 }
 
-class _AiSummaryPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
-  const _AiSummaryPeriodComponent();
+class _DigestPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _DigestPeriodComponent();
 
   @override
-  ComponentId get id => reviewAiSummaryPeriodId;
+  ComponentId get id => reviewDigestSummaryPeriodId;
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
@@ -164,27 +164,25 @@ class _AiSummaryPeriodComponent extends ComponentDescriptor<NoComponentConfig> {
     final canAccessProtectedData = ref
         .watch(authSessionProvider)
         .canAccessProtectedData;
-    final selectedRange = ref.watch(reviewAiSummarySelectedRangeProvider);
-    final aiEnabled = ref.watch(
+    final selectedRange = ref.watch(reviewDigestSummarySelectedRangeProvider);
+    final assistantEnabled = ref.watch(
       userSettingsControllerProvider.select(
-        (settings) => settings.asData?.value.aiSummariesEnabled,
+        (settings) => settings.asData?.value.digestEnabled,
       ),
     );
-    return ReviewPeriodAiSummarySection(
+    return ReviewPeriodDigestSection(
       dashboard: dashboard,
       canAccessProtectedData: canAccessProtectedData,
-      aiSummariesEnabled: aiEnabled,
-      aiState: ref.watch(reviewAiSummaryControllerProvider(selectedRange)),
+      digestEnabled: assistantEnabled,
+      briefingState: ref.watch(reviewDigestControllerProvider(selectedRange)),
       selectedRange: selectedRange,
       onRangeChanged: (range) => ref
-          .read(reviewAiSummarySelectedRangeProvider.notifier)
+          .read(reviewDigestSummarySelectedRangeProvider.notifier)
           .setRange(range),
       onGenerate: canAccessProtectedData
           ? () async {
               await ref
-                  .read(
-                    reviewAiSummaryControllerProvider(selectedRange).notifier,
-                  )
+                  .read(reviewDigestControllerProvider(selectedRange).notifier)
                   .generate();
             }
           : null,

@@ -19,7 +19,7 @@ void main() {
         dao: _FakeReviewDashboardDao(),
         dataSource: _FakeReviewDashboardRemoteDataSource(
           _dashboardDto(
-            aiSummaryEnabled: false,
+            digestEnabled: false,
             findings: [
               lucent.ReportDashboardResponseFindings(
                 id: 'sleep_insufficient',
@@ -78,7 +78,7 @@ void main() {
       expect(dashboard.trends.single.currentValue, '--');
       expect(dashboard.findings.single.kind, ReviewInsightKind.sleep);
       expect(dashboard.patterns.single.status, ReviewStatus.insufficientData);
-      expect(dashboard.aiSummaryEnabled, isFalse);
+      expect(dashboard.digestEnabled, isFalse);
     },
   );
 
@@ -90,7 +90,7 @@ void main() {
         dao: _FakeReviewDashboardDao(),
         dataSource: _FakeReviewDashboardRemoteDataSource(
           _dashboardDto(
-            aiSummaryEnabled: true,
+            digestEnabled: true,
             findings: [
               for (var index = 1; index <= 4; index += 1)
                 lucent.ReportDashboardResponseFindings(
@@ -140,7 +140,7 @@ void main() {
         ),
       );
 
-      expect(dashboard.aiSummaryEnabled, isTrue);
+      expect(dashboard.digestEnabled, isTrue);
       expect(
         dashboard.exportActions.map((action) => action.kind).toList(),
         const [
@@ -162,7 +162,7 @@ void main() {
       dao: _FakeReviewDashboardDao(),
       dataSource: _FakeReviewDashboardRemoteDataSource(
         _dashboardDto(
-          aiSummaryEnabled: false,
+          digestEnabled: false,
           findings: const [],
           patterns: const [],
           trends: const [],
@@ -222,7 +222,7 @@ void main() {
         dao: _FakeReviewDashboardDao(),
         dataSource: _FakeReviewDashboardRemoteDataSource(
           _dashboardDto(
-            aiSummaryEnabled: false,
+            digestEnabled: false,
             findings: const [],
             patterns: const [],
             trends: const [],
@@ -262,7 +262,7 @@ void main() {
         dao: _FakeReviewDashboardDao(),
         dataSource: _FakeReviewDashboardRemoteDataSource(
           _dashboardDto(
-            aiSummaryEnabled: false,
+            digestEnabled: false,
             metrics: const [],
             trends: const [],
             findings: const [],
@@ -290,7 +290,7 @@ void main() {
           dao: _FakeReviewDashboardDao(),
           dataSource: _FakeReviewDashboardRemoteDataSource(
             _dashboardDto(
-              aiSummaryEnabled: false,
+              digestEnabled: false,
               metrics: const [],
               trends: const [],
               findings: const [],
@@ -336,7 +336,7 @@ void main() {
           dao: _FakeReviewDashboardDao(),
           dataSource: _FakeReviewDashboardRemoteDataSource(
             _dashboardDto(
-              aiSummaryEnabled: false,
+              digestEnabled: false,
               metrics: const [],
               trends: const [],
               findings: const [],
@@ -363,7 +363,7 @@ void main() {
           dao: _FakeReviewDashboardDao(),
           dataSource: _FakeReviewDashboardRemoteDataSource(
             _dashboardDto(
-              aiSummaryEnabled: false,
+              digestEnabled: false,
               metrics: const [],
               trends: const [],
               findings: const [],
@@ -403,7 +403,7 @@ void main() {
           dao: _FakeReviewDashboardDao(),
           dataSource: _FakeReviewDashboardRemoteDataSource(
             _dashboardDto(
-              aiSummaryEnabled: false,
+              digestEnabled: false,
               metrics: const [],
               trends: const [],
               findings: const [],
@@ -459,7 +459,7 @@ class _FakeReviewDashboardRemoteDataSource
 }
 
 lucent.ReportDashboardResponse _dashboardDto({
-  required bool aiSummaryEnabled,
+  required bool digestEnabled,
   required List<lucent.ReportDashboardResponseMetrics> metrics,
   required List<lucent.ReportDashboardResponseTrends> trends,
   required List<lucent.ReportDashboardResponseFindings> findings,
@@ -474,6 +474,6 @@ lucent.ReportDashboardResponse _dashboardDto({
     trends: trends,
     findings: findings,
     patterns: patterns,
-    aiSummaryEnabled: aiSummaryEnabled,
+    digestEnabled: digestEnabled,
   );
 }

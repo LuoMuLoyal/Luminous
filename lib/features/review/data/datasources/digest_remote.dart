@@ -3,39 +3,39 @@ import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/client/sse.dart';
 import 'package:luminous/core/network/map_utils.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
+import 'package:luminous/features/review/domain/entities/digest.dart';
 
-sealed class ReviewAiRemoteEvent {
-  const ReviewAiRemoteEvent();
+sealed class ReviewDigestRemoteEvent {
+  const ReviewDigestRemoteEvent();
 }
 
-class ReviewAiRemoteSummaryEvent extends ReviewAiRemoteEvent {
-  const ReviewAiRemoteSummaryEvent(this.summary);
+class ReviewDigestRemoteSummaryEvent extends ReviewDigestRemoteEvent {
+  const ReviewDigestRemoteSummaryEvent(this.summary);
 
   final String summary;
 }
 
-class ReviewAiRemoteResultEvent extends ReviewAiRemoteEvent {
-  const ReviewAiRemoteResultEvent(this.dto);
+class ReviewDigestRemoteResultEvent extends ReviewDigestRemoteEvent {
+  const ReviewDigestRemoteResultEvent(this.dto);
 
   final lucent.ReportSummaryResponse dto;
 }
 
-class ReviewAiSummaryRemoteDataSource {
-  ReviewAiSummaryRemoteDataSource({required this.api, required this.dio});
+class ReviewDigestRemoteDataSource {
+  ReviewDigestRemoteDataSource({required this.api, required this.dio});
 
   final lucent.ReportsApi api;
   final Dio dio;
 
-  Stream<ReviewAiRemoteEvent> generateStream(
-    ReviewAiSummaryRange range, {
+  Stream<ReviewDigestRemoteEvent> generateStream(
+    ReviewDigestRange range, {
     String? startDate,
     String? endDate,
   }) async* {
     final dtoRange = switch (range) {
-      ReviewAiSummaryRange.last7Days => 'last_7_days',
-      ReviewAiSummaryRange.last30Days => 'last_30_days',
-      ReviewAiSummaryRange.custom => 'custom',
+      ReviewDigestRange.last7Days => 'last_7_days',
+      ReviewDigestRange.last30Days => 'last_30_days',
+      ReviewDigestRange.custom => 'custom',
     };
 
     final body = <String, Object?>{
@@ -56,12 +56,12 @@ class ReviewAiSummaryRemoteDataSource {
           if (data is Map<String, Object?>) {
             final summary = data['summary'];
             if (summary is String && summary.trim().isNotEmpty) {
-              yield ReviewAiRemoteSummaryEvent(summary);
+              yield ReviewDigestRemoteSummaryEvent(summary);
             }
           }
         case 'result':
           final json = requireMap(event.data);
-          yield ReviewAiRemoteResultEvent(
+          yield ReviewDigestRemoteResultEvent(
             lucent.ReportSummaryResponse.fromJson(json),
           );
         case 'error':

@@ -65,7 +65,7 @@ class NextStepSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ReviewFactRow(icon: SemanticIcons.aiTip, text: prompt),
+          ReviewFactRow(icon: SemanticIcons.assistantTip, text: prompt),
           if (redFlags.isNotEmpty) ...[
             const SizedBox(height: Spacing.sm),
             _RedFlagList(l10n: l10n, redFlags: redFlags),

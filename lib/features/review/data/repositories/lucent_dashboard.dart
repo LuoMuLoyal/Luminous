@@ -102,7 +102,7 @@ class LucentReviewDashboardRepository implements ReviewDashboardRepository {
       findings: findings,
       exportActions: style.exportActions,
       patterns: dto.patterns.map(_mapPattern).toList(growable: false),
-      aiSummaryEnabled: dto.aiSummaryEnabled,
+      digestEnabled: dto.digestEnabled,
     );
   }
 

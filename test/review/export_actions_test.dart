@@ -54,7 +54,7 @@ class _FakeUserSettingsController extends UserSettingsController {
   @override
   Future<UserSettings> build() async {
     return const UserSettings(
-      aiSummariesEnabled: false,
+      digestEnabled: false,
       dataSharingConsent: false,
       assistantEnabled: false,
       assistantMemoryEnabled: false,
@@ -108,7 +108,7 @@ Future<void> _pumpHarness(
         sensitiveActionPolicyProvider.overrideWithValue(
           FeatureSensitiveActionPolicy(
             () async => const UserSettings(
-              aiSummariesEnabled: false,
+              digestEnabled: false,
               dataSharingConsent: false,
               assistantEnabled: false,
               assistantMemoryEnabled: false,

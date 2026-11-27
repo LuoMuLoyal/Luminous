@@ -5,4 +5,4 @@ library;
 
 export 'package:luminous/app/composition/review/review.dart';
 
-export 'package:luminous/features/review/data/repositories/lucent_ai_summary.dart';
+export 'package:luminous/features/review/data/repositories/lucent_digest.dart';

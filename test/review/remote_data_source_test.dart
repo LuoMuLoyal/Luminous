@@ -41,7 +41,7 @@ void main() {
         );
         expect(dashboard.startDate, '2026-06-06');
         expect(dashboard.endDate, '2026-06-12');
-        expect(dashboard.aiSummaryEnabled, isTrue);
+        expect(dashboard.digestEnabled, isTrue);
         expect(
           dashboard.metrics.single.kind,
           lucent.ReportDashboardResponseMetricsKindEnum.water,
@@ -116,7 +116,7 @@ class _FakeReportAdapter implements HttpClientAdapter {
         'sparkline': <num>[30, 34, 38, 36, 42, 44, 43],
       },
     ],
-    'aiSummaryEnabled': true,
+    'digestEnabled': true,
   };
 
   _CapturedReportRequest requestAt(String method, String path) {

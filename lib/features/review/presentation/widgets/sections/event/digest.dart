@@ -2,36 +2,36 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
+import 'package:luminous/features/review/domain/entities/digest.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// AI 纵向洞察段落：展示 AI 生成的周/月洞察摘要。
 ///
-/// 从旧 `ReviewAiSummarySection` 改名而来，不再硬依赖 `ReviewDashboard`
-/// 实体——只接收 `aiSummaryEnabled` 布尔值即可。
+/// 从旧 `ReviewDigestSection` 改名而来，不再硬依赖 `ReviewDashboard`
+/// 实体——只接收 `digestEnabled` 布尔值即可。
 ///
 /// Deferred by Review Page Restructure P0-7: 建议历史与 AI 摘要已从 Review
 /// 主路径下线，本 section 目前仅被 legacy dashboard 兼容页消费。不删除——
 /// capability 仍有价值，待 agentic P0-3 统一 AI 数据层后复核是否归档/启用。
-class ReviewAiSummarySection extends StatelessWidget {
-  const ReviewAiSummarySection({
+class ReviewDigestSection extends StatelessWidget {
+  const ReviewDigestSection({
     super.key,
-    required this.aiSummaryEnabled,
+    required this.digestEnabled,
     required this.canAccessProtectedData,
-    required this.aiState,
+    required this.briefingState,
     required this.selectedRange,
     this.onRangeChanged,
     this.onGenerate,
     required this.l10n,
   });
 
-  final bool aiSummaryEnabled;
+  final bool digestEnabled;
   final bool canAccessProtectedData;
-  final ReviewAiSummaryCardState aiState;
-  final ReviewAiSummaryRange selectedRange;
-  final ValueChanged<ReviewAiSummaryRange>? onRangeChanged;
+  final ReviewDigestCardState briefingState;
+  final ReviewDigestRange selectedRange;
+  final ValueChanged<ReviewDigestRange>? onRangeChanged;
   final Future<void> Function()? onGenerate;
   final AppLocalizations l10n;
 
@@ -39,11 +39,11 @@ class ReviewAiSummarySection extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    final content = buildReviewAiSummaryContent(
+    final content = buildReviewDigestContent(
       l10n: l10n,
-      aiSummaryEnabled: aiSummaryEnabled,
+      digestEnabled: digestEnabled,
       canAccessProtectedData: canAccessProtectedData,
-      aiState: aiState,
+      briefingState: briefingState,
       selectedRange: selectedRange,
       colors: colors,
     );
@@ -59,7 +59,7 @@ class ReviewAiSummarySection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(
-                  SemanticIcons.aiEntry,
+                  SemanticIcons.assistantEntry,
                   color: SemanticColor.primary.solid(context),
                   size: IconSizeTokens.lg,
                 ),
@@ -69,7 +69,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        l10n.reviewAiSummaryTitle,
+                        l10n.reviewDigestSummaryTitle,
                         style: typography.body.md.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -103,7 +103,7 @@ class ReviewAiSummarySection extends StatelessWidget {
                 child: MarkdownBody(
                   data: content.summaryText!,
                   selectable: true,
-                  styleSheet: MarkdownStyle.ai(
+                  styleSheet: MarkdownStyle.assistantGenerated(
                     context,
                     paragraphWeight: FontWeight.w700,
                   ),
@@ -150,20 +150,23 @@ class ReviewAiSummarySection extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: FButton(
                   key: const Key('review-ai-summary-generate-action'),
-                  onPress: aiState.isLoading || onGenerate == null
+                  onPress: briefingState.isLoading || onGenerate == null
                       ? null
                       : () async {
                           await onGenerate!();
                         },
                   prefix: Icon(
-                    aiState.isLoading
-                        ? SemanticIcons.aiAnalyzing
-                        : SemanticIcons.aiEntry,
+                    briefingState.isLoading
+                        ? SemanticIcons.briefingAnalyzing
+                        : SemanticIcons.assistantEntry,
                     size: 16,
                   ),
                   child: Text(
-                    aiState.isLoading
-                        ? reviewAiSummaryGeneratingLabel(l10n, selectedRange)
+                    briefingState.isLoading
+                        ? reviewDigestSummaryGeneratingLabel(
+                            l10n,
+                            selectedRange,
+                          )
                         : l10n.reviewGenerateAction,
                   ),
                 ),
@@ -189,8 +192,8 @@ class _RangeChipRow extends StatelessWidget {
     required this.l10n,
   });
 
-  final ReviewAiSummaryRange selectedRange;
-  final ValueChanged<ReviewAiSummaryRange>? onRangeChanged;
+  final ReviewDigestRange selectedRange;
+  final ValueChanged<ReviewDigestRange>? onRangeChanged;
   final AppLocalizations l10n;
 
   @override
@@ -200,10 +203,10 @@ class _RangeChipRow extends StatelessWidget {
       spacing: Spacing.sm,
       runSpacing: Spacing.sm,
       children: [
-        for (final (range, label) in <(ReviewAiSummaryRange, String)>[
-          (ReviewAiSummaryRange.last7Days, l10n.reviewRangeLast7Days),
-          (ReviewAiSummaryRange.last30Days, l10n.reviewRangeLast30Days),
-          (ReviewAiSummaryRange.custom, l10n.reviewRangeCustom),
+        for (final (range, label) in <(ReviewDigestRange, String)>[
+          (ReviewDigestRange.last7Days, l10n.reviewRangeLast7Days),
+          (ReviewDigestRange.last30Days, l10n.reviewRangeLast30Days),
+          (ReviewDigestRange.custom, l10n.reviewRangeCustom),
         ])
           _RangeChip(
             label: label,

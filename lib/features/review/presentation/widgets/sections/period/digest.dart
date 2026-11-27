@@ -2,19 +2,19 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/control/divider.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/features/review/domain/entities/digest.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-class ReviewPeriodAiSummarySection extends StatelessWidget {
-  const ReviewPeriodAiSummarySection({
+class ReviewPeriodDigestSection extends StatelessWidget {
+  const ReviewPeriodDigestSection({
     super.key,
     required this.dashboard,
     required this.canAccessProtectedData,
-    required this.aiSummariesEnabled,
-    required this.aiState,
+    required this.digestEnabled,
+    required this.briefingState,
     required this.selectedRange,
     this.onRangeChanged,
     this.onGenerate,
@@ -23,10 +23,10 @@ class ReviewPeriodAiSummarySection extends StatelessWidget {
 
   final ReviewDashboard dashboard;
   final bool canAccessProtectedData;
-  final bool? aiSummariesEnabled;
-  final ReviewAiSummaryCardState aiState;
-  final ReviewAiSummaryRange selectedRange;
-  final ValueChanged<ReviewAiSummaryRange>? onRangeChanged;
+  final bool? digestEnabled;
+  final ReviewDigestCardState briefingState;
+  final ReviewDigestRange selectedRange;
+  final ValueChanged<ReviewDigestRange>? onRangeChanged;
   final Future<void> Function()? onGenerate;
   final AppLocalizations l10n;
 
@@ -34,12 +34,12 @@ class ReviewPeriodAiSummarySection extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    final content = buildReviewAiSummaryContentFromDashboard(
+    final content = buildReviewDigestContentFromDashboard(
       l10n: l10n,
       dashboard: dashboard,
       canAccessProtectedData: canAccessProtectedData,
-      aiSummariesEnabled: aiSummariesEnabled,
-      aiState: aiState,
+      digestEnabled: digestEnabled,
+      briefingState: briefingState,
       selectedRange: selectedRange,
       colors: colors,
     );
@@ -55,7 +55,7 @@ class ReviewPeriodAiSummarySection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(
-                  SemanticIcons.aiGenerated,
+                  SemanticIcons.briefingGenerated,
                   color: SemanticColor.primary.solid(context),
                   size: IconSizeTokens.lg,
                 ),
@@ -65,7 +65,7 @@ class ReviewPeriodAiSummarySection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        l10n.reviewAiSummaryTitle,
+                        l10n.reviewDigestSummaryTitle,
                         style: typography.body.md.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -83,7 +83,7 @@ class ReviewPeriodAiSummarySection extends StatelessWidget {
                         runSpacing: Spacing.md,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          FSelectGroup<ReviewAiSummaryRange>(
+                          FSelectGroup<ReviewDigestRange>(
                             key: const Key('report-ai-summary-range-toggle'),
                             control: onRangeChanged == null
                                 ? FMultiValueControl.lifted(
@@ -103,15 +103,15 @@ class ReviewPeriodAiSummarySection extends StatelessWidget {
                                   ),
                             children: [
                               FSelectGroupItemMixin.radio(
-                                value: ReviewAiSummaryRange.last7Days,
+                                value: ReviewDigestRange.last7Days,
                                 label: Text(l10n.reviewRangeLast7Days),
                               ),
                               FSelectGroupItemMixin.radio(
-                                value: ReviewAiSummaryRange.last30Days,
+                                value: ReviewDigestRange.last30Days,
                                 label: Text(l10n.reviewRangeLast30Days),
                               ),
                               FSelectGroupItemMixin.radio(
-                                value: ReviewAiSummaryRange.custom,
+                                value: ReviewDigestRange.custom,
                                 label: Text(l10n.reviewRangeCustom),
                               ),
                             ],
@@ -134,7 +134,7 @@ class ReviewPeriodAiSummarySection extends StatelessWidget {
                 child: MarkdownBody(
                   data: content.summaryText!,
                   selectable: true,
-                  styleSheet: MarkdownStyle.ai(
+                  styleSheet: MarkdownStyle.assistantGenerated(
                     context,
                     paragraphWeight: FontWeight.w700,
                   ),
@@ -181,20 +181,23 @@ class ReviewPeriodAiSummarySection extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: FButton(
                   key: const Key('report-ai-summary-generate-action'),
-                  onPress: aiState.isLoading || onGenerate == null
+                  onPress: briefingState.isLoading || onGenerate == null
                       ? null
                       : () async {
                           await onGenerate!();
                         },
                   prefix: Icon(
-                    aiState.isLoading
-                        ? SemanticIcons.aiAnalyzing
-                        : SemanticIcons.aiGenerate,
+                    briefingState.isLoading
+                        ? SemanticIcons.briefingAnalyzing
+                        : SemanticIcons.briefingGenerate,
                     size: 16,
                   ),
                   child: Text(
-                    aiState.isLoading
-                        ? reviewAiSummaryGeneratingLabel(l10n, selectedRange)
+                    briefingState.isLoading
+                        ? reviewDigestSummaryGeneratingLabel(
+                            l10n,
+                            selectedRange,
+                          )
                         : l10n.reviewGenerateAction,
                   ),
                 ),

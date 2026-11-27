@@ -2,34 +2,34 @@ import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/app_log.dart';
 import 'package:luminous/core/network/client/client_providers.dart';
 import 'package:luminous/core/network/wire_time.dart';
-import 'package:luminous/features/review/data/datasources/ai_summary_remote.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
-import 'package:luminous/features/review/domain/repositories/ai_summary.dart';
+import 'package:luminous/features/review/data/datasources/digest_remote.dart';
+import 'package:luminous/features/review/domain/entities/digest.dart';
+import 'package:luminous/features/review/domain/repositories/digest.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'lucent_ai_summary.g.dart';
+part 'lucent_digest.g.dart';
 
 @riverpod
-ReviewAiSummaryRemoteDataSource reviewAiSummaryRemoteDataSource(Ref ref) {
+ReviewDigestRemoteDataSource reviewDigestRemoteDataSource(Ref ref) {
   final api = ref.watch(lucentClientProvider).reports;
   final dio = ref.watch(lucentDioClientProvider).dio;
-  return ReviewAiSummaryRemoteDataSource(api: api, dio: dio);
+  return ReviewDigestRemoteDataSource(api: api, dio: dio);
 }
 
 @riverpod
-ReviewAiSummaryRepository reviewAiSummaryRepository(Ref ref) {
-  final dataSource = ref.watch(reviewAiSummaryRemoteDataSourceProvider);
-  return LucentReviewAiSummaryRepository(dataSource: dataSource);
+ReviewDigestRepository reviewDigestRepository(Ref ref) {
+  final dataSource = ref.watch(reviewDigestRemoteDataSourceProvider);
+  return LucentReviewDigestRepository(dataSource: dataSource);
 }
 
-class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
-  LucentReviewAiSummaryRepository({required this.dataSource});
+class LucentReviewDigestRepository implements ReviewDigestRepository {
+  LucentReviewDigestRepository({required this.dataSource});
 
-  final ReviewAiSummaryRemoteDataSource dataSource;
+  final ReviewDigestRemoteDataSource dataSource;
 
   @override
-  Stream<ReviewAiGenerationEvent> generateStream(
-    ReviewAiSummaryRange range, {
+  Stream<ReviewDigestEvent> generateStream(
+    ReviewDigestRange range, {
     String? startDate,
     String? endDate,
   }) async* {
@@ -39,16 +39,16 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
       endDate: endDate,
     )) {
       switch (event) {
-        case ReviewAiRemoteSummaryEvent():
-          yield ReviewAiGenerationSummaryEvent(event.summary);
-        case ReviewAiRemoteResultEvent():
-          yield ReviewAiGenerationResultEvent(_mapSummary(event.dto));
+        case ReviewDigestRemoteSummaryEvent():
+          yield ReviewDigestSummaryEvent(event.summary);
+        case ReviewDigestRemoteResultEvent():
+          yield ReviewDigestResultEvent(_mapSummary(event.dto));
       }
     }
   }
 
-  ReviewAiSummary _mapSummary(lucent.ReportSummaryResponse dto) {
-    return ReviewAiSummary(
+  ReviewDigest _mapSummary(lucent.ReportSummaryResponse dto) {
+    return ReviewDigest(
       range: _mapRange(dto.range),
       startDate: dto.startDate,
       endDate: dto.endDate,
@@ -61,10 +61,8 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
     );
   }
 
-  ReviewAiSummaryCoverage _mapCoverage(
-    lucent.ReportSummaryResponseCoverage dto,
-  ) {
-    return ReviewAiSummaryCoverage(
+  ReviewDigestCoverage _mapCoverage(lucent.ReportSummaryResponseCoverage dto) {
+    return ReviewDigestCoverage(
       medication: _mapCoverageDimension(dto.medication),
       // 新客户端为 water/sleep 生成独立类型（JSON 形状一致），经 JSON
       // 往返复用 _mapCoverageDimension。
@@ -81,36 +79,36 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
     );
   }
 
-  ReviewAiSummaryCoverageDimension _mapCoverageDimension(
+  ReviewDigestCoverageDimension _mapCoverageDimension(
     lucent.ReportSummaryResponseCoverageMedication dto,
   ) {
-    return ReviewAiSummaryCoverageDimension(
+    return ReviewDigestCoverageDimension(
       trackedDays: dto.trackedDays.toInt(),
       totalDays: dto.totalDays.toInt(),
     );
   }
 
-  ReviewAiSummaryObservedPattern? _mapObservedPattern(
+  ReviewDigestObservedPattern? _mapObservedPattern(
     lucent.ReportSummaryResponseObservedPattern? dto,
   ) {
     if (dto == null) return null;
-    return ReviewAiSummaryObservedPattern(
+    return ReviewDigestObservedPattern(
       kind: _mapPatternKind(dto.kind),
       text: dto.text,
       source: dto.source_,
     );
   }
 
-  ReviewAiSummaryPatternKind _mapPatternKind(
+  ReviewDigestPatternKind _mapPatternKind(
     lucent.ReportSummaryResponseObservedPatternKindEnum kind,
   ) {
     switch (kind) {
       case lucent.ReportSummaryResponseObservedPatternKindEnum.medication:
-        return ReviewAiSummaryPatternKind.medication;
+        return ReviewDigestPatternKind.medication;
       case lucent.ReportSummaryResponseObservedPatternKindEnum.hydration:
-        return ReviewAiSummaryPatternKind.hydration;
+        return ReviewDigestPatternKind.hydration;
       case lucent.ReportSummaryResponseObservedPatternKindEnum.sleep:
-        return ReviewAiSummaryPatternKind.sleep;
+        return ReviewDigestPatternKind.sleep;
       // The OpenAPI generator emits this sentinel for any value the server
       // returns that the generated client does not know about. Log a
       // warning and fall back to `medication` rather than throwing,
@@ -119,31 +117,31 @@ class LucentReviewAiSummaryRepository implements ReviewAiSummaryRepository {
           .ReportSummaryResponseObservedPatternKindEnum
           .unknownDefaultOpenApi:
         appLog.warning('Unknown pattern kind from API: $kind');
-        return ReviewAiSummaryPatternKind.medication;
+        return ReviewDigestPatternKind.medication;
     }
   }
 
-  ReviewAiSummaryLowRiskAction? _mapLowRiskAction(
+  ReviewDigestLowRiskAction? _mapLowRiskAction(
     lucent.ReportSummaryResponseLowRiskAction? dto,
   ) {
     if (dto == null) return null;
-    return ReviewAiSummaryLowRiskAction(label: dto.label, text: dto.text);
+    return ReviewDigestLowRiskAction(label: dto.label, text: dto.text);
   }
 
-  ReviewAiSummaryRange _mapRange(lucent.ReportSummaryResponseRangeEnum range) {
+  ReviewDigestRange _mapRange(lucent.ReportSummaryResponseRangeEnum range) {
     switch (range) {
       case lucent.ReportSummaryResponseRangeEnum.last7Days:
-        return ReviewAiSummaryRange.last7Days;
+        return ReviewDigestRange.last7Days;
       case lucent.ReportSummaryResponseRangeEnum.last30Days:
-        return ReviewAiSummaryRange.last30Days;
+        return ReviewDigestRange.last30Days;
       case lucent.ReportSummaryResponseRangeEnum.custom:
-        return ReviewAiSummaryRange.custom;
+        return ReviewDigestRange.custom;
       // The OpenAPI generator emits this sentinel for any value the server
       // returns that the generated client does not know about. Log a
       // warning and fall back to `last7Days` rather than throwing.
       case lucent.ReportSummaryResponseRangeEnum.unknownDefaultOpenApi:
         appLog.warning('Unknown summary range from API: $range');
-        return ReviewAiSummaryRange.last7Days;
+        return ReviewDigestRange.last7Days;
     }
   }
 }

@@ -220,7 +220,7 @@ class _PrimaryAction extends StatelessWidget {
                 height: Spacing.xl,
                 child: FCircularProgress(),
               )
-            : const Icon(SemanticIcons.aiEntry, size: IconSizeTokens.lg),
+            : const Icon(SemanticIcons.assistantEntry, size: IconSizeTokens.lg),
         child: Text(section.l10n.reviewGenerateAction),
       ),
     };

@@ -210,6 +210,6 @@ ReviewDashboard reviewDashboardWithCoverage() {
     findings: [],
     exportActions: [],
     patterns: [],
-    aiSummaryEnabled: false,
+    digestEnabled: false,
   );
 }

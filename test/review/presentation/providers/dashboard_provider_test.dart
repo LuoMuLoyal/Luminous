@@ -191,7 +191,7 @@ void main() {
       expect(dashboard.findings, isEmpty);
       expect(dashboard.exportActions, isEmpty);
       expect(dashboard.patterns, isEmpty);
-      expect(dashboard.aiSummaryEnabled, isFalse);
+      expect(dashboard.digestEnabled, isFalse);
     });
   });
 }

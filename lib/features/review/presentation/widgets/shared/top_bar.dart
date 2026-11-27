@@ -161,8 +161,8 @@ class ReviewActionBar extends StatelessWidget {
             onPress: isGenerating ? null : onGenerate,
             prefix: Icon(
               isGenerating
-                  ? SemanticIcons.aiAnalyzing
-                  : SemanticIcons.aiGenerate,
+                  ? SemanticIcons.briefingAnalyzing
+                  : SemanticIcons.briefingGenerate,
               size: 16,
             ),
             child: Text(
@@ -184,7 +184,7 @@ class ReviewActionBar extends StatelessWidget {
               onPress: isSyncing ? null : onSync,
               child: Icon(
                 isSyncing
-                    ? SemanticIcons.aiAnalyzing
+                    ? SemanticIcons.briefingAnalyzing
                     : SemanticIcons.actionRefresh,
                 size: 16,
               ),

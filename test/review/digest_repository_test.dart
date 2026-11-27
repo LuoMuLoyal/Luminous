@@ -1,15 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/features/review/data/datasources/ai_summary_remote.dart';
-import 'package:luminous/features/review/data/repositories/lucent_ai_summary.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
-import 'package:luminous/features/review/domain/repositories/ai_summary.dart';
+import 'package:luminous/features/review/data/datasources/digest_remote.dart';
+import 'package:luminous/features/review/data/repositories/lucent_digest.dart';
+import 'package:luminous/features/review/domain/entities/digest.dart';
+import 'package:luminous/features/review/domain/repositories/digest.dart';
 
 void main() {
   test('Lucent report ai summary repository maps summary dto', () async {
-    final repository = LucentReviewAiSummaryRepository(
-      dataSource: _FakeReviewAiSummaryRemoteDataSource(
+    final repository = LucentReviewDigestRepository(
+      dataSource: _FakeReviewDigestRemoteDataSource(
         lucent.ReportSummaryResponse(
           range: lucent.ReportSummaryResponseRangeEnum.last30Days,
           startDate: '2026-06-06',
@@ -46,23 +46,20 @@ void main() {
     );
 
     final events = await repository
-        .generateStream(ReviewAiSummaryRange.last30Days)
+        .generateStream(ReviewDigestRange.last30Days)
         .toList();
 
     expect(events, hasLength(1));
-    expect(events[0], isA<ReviewAiGenerationResultEvent>());
+    expect(events[0], isA<ReviewDigestResultEvent>());
 
-    final summary = (events[0] as ReviewAiGenerationResultEvent).summary;
-    expect(summary.range, ReviewAiSummaryRange.last30Days);
+    final summary = (events[0] as ReviewDigestResultEvent).summary;
+    expect(summary.range, ReviewDigestRange.last30Days);
     expect(summary.generatedAt, DateTime.parse('2026-06-12T10:00:00.000Z'));
     expect(summary.coverage.medication.trackedDays, 5);
     expect(summary.coverage.water.trackedDays, 3);
     expect(summary.coverage.sleep.trackedDays, 0);
     expect(summary.observedPattern, isNotNull);
-    expect(
-      summary.observedPattern!.kind,
-      ReviewAiSummaryPatternKind.medication,
-    );
+    expect(summary.observedPattern!.kind, ReviewDigestPatternKind.medication);
     expect(summary.observedPattern!.text, '近 5 天用药完成率保持在 80% 以上。');
     expect(summary.observedPattern!.source, '用药提醒记录');
     expect(summary.lowRiskAction, isNotNull);
@@ -71,9 +68,8 @@ void main() {
   });
 }
 
-class _FakeReviewAiSummaryRemoteDataSource
-    extends ReviewAiSummaryRemoteDataSource {
-  _FakeReviewAiSummaryRemoteDataSource(this._dto)
+class _FakeReviewDigestRemoteDataSource extends ReviewDigestRemoteDataSource {
+  _FakeReviewDigestRemoteDataSource(this._dto)
     : super(
         api: lucent.ReportsApi(Dio(BaseOptions())),
         dio: Dio(BaseOptions()),
@@ -82,11 +78,11 @@ class _FakeReviewAiSummaryRemoteDataSource
   final lucent.ReportSummaryResponse _dto;
 
   @override
-  Stream<ReviewAiRemoteEvent> generateStream(
-    ReviewAiSummaryRange range, {
+  Stream<ReviewDigestRemoteEvent> generateStream(
+    ReviewDigestRange range, {
     String? startDate,
     String? endDate,
   }) async* {
-    yield ReviewAiRemoteResultEvent(_dto);
+    yield ReviewDigestRemoteResultEvent(_dto);
   }
 }

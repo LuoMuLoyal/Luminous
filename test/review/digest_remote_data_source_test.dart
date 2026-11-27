@@ -4,8 +4,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/features/review/data/datasources/ai_summary_remote.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
+import 'package:luminous/features/review/data/datasources/digest_remote.dart';
+import 'package:luminous/features/review/domain/entities/digest.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 /// Adapter that returns an SSE stream from raw event text.
@@ -42,15 +42,15 @@ String _sseEvent(String event, Object? data) {
 }
 
 void main() {
-  group('ReviewAiSummaryRemoteDataSource — generateStream', () {
+  group('ReviewDigestRemoteDataSource — generateStream', () {
     late Dio dio;
     late lucent.ReportsApi api;
-    late ReviewAiSummaryRemoteDataSource ds;
+    late ReviewDigestRemoteDataSource ds;
 
     setUp(() {
       dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
       api = lucent.ReportsApi(dio);
-      ds = ReviewAiSummaryRemoteDataSource(api: api, dio: dio);
+      ds = ReviewDigestRemoteDataSource(api: api, dio: dio);
     });
 
     test('yields summary event then result event then done', () async {
@@ -77,14 +77,14 @@ void main() {
       dio.httpClientAdapter = _SseAdapter(sseText);
 
       final events = await ds
-          .generateStream(ReviewAiSummaryRange.last7Days)
+          .generateStream(ReviewDigestRange.last7Days)
           .toList();
 
       expect(events, hasLength(2));
-      expect(events[0], isA<ReviewAiRemoteSummaryEvent>());
-      expect((events[0] as ReviewAiRemoteSummaryEvent).summary, '正在生成...');
-      expect(events[1], isA<ReviewAiRemoteResultEvent>());
-      expect((events[1] as ReviewAiRemoteResultEvent).dto.summary, '完成总结');
+      expect(events[0], isA<ReviewDigestRemoteSummaryEvent>());
+      expect((events[0] as ReviewDigestRemoteSummaryEvent).summary, '正在生成...');
+      expect(events[1], isA<ReviewDigestRemoteResultEvent>());
+      expect((events[1] as ReviewDigestRemoteResultEvent).dto.summary, '完成总结');
     });
 
     test('skips summary event with empty text', () async {
@@ -96,7 +96,7 @@ void main() {
       dio.httpClientAdapter = _SseAdapter(sseText);
 
       final events = await ds
-          .generateStream(ReviewAiSummaryRange.last7Days)
+          .generateStream(ReviewDigestRange.last7Days)
           .toList();
 
       expect(events, isEmpty);
@@ -111,7 +111,7 @@ void main() {
       dio.httpClientAdapter = _SseAdapter(sseText);
 
       final events = await ds
-          .generateStream(ReviewAiSummaryRange.last7Days)
+          .generateStream(ReviewDigestRange.last7Days)
           .toList();
 
       expect(events, isEmpty);
@@ -133,7 +133,7 @@ void main() {
       dio.httpClientAdapter = _SseAdapter(sseText);
 
       expect(
-        () => ds.generateStream(ReviewAiSummaryRange.last7Days).toList(),
+        () => ds.generateStream(ReviewDigestRange.last7Days).toList(),
         throwsA(
           isA<LucentFailure>()
               .having((e) => e.code, 'code', 'DEPENDENCY_TIMEOUT')
@@ -152,7 +152,7 @@ void main() {
       dio.httpClientAdapter = _SseAdapter(sseText);
 
       expect(
-        () => ds.generateStream(ReviewAiSummaryRange.last7Days).toList(),
+        () => ds.generateStream(ReviewDigestRange.last7Days).toList(),
         throwsA(isA<FormatException>()),
       );
     });
@@ -168,11 +168,11 @@ void main() {
       dio.httpClientAdapter = _SseAdapter(sseText);
 
       final events = await ds
-          .generateStream(ReviewAiSummaryRange.last7Days)
+          .generateStream(ReviewDigestRange.last7Days)
           .toList();
 
       expect(events, hasLength(1));
-      expect((events[0] as ReviewAiRemoteSummaryEvent).summary, 'partial');
+      expect((events[0] as ReviewDigestRemoteSummaryEvent).summary, 'partial');
     });
 
     test(
@@ -188,7 +188,7 @@ void main() {
         );
 
         expect(
-          () => ds.generateStream(ReviewAiSummaryRange.last7Days).toList(),
+          () => ds.generateStream(ReviewDigestRange.last7Days).toList(),
           throwsA(
             isA<DioException>().having(
               (e) => e.type,
@@ -221,7 +221,7 @@ void main() {
 
       Object? thrown;
       try {
-        await ds.generateStream(ReviewAiSummaryRange.last7Days).toList();
+        await ds.generateStream(ReviewDigestRange.last7Days).toList();
         fail('expected the error event to fail the stream');
       } catch (error) {
         thrown = error;
@@ -249,7 +249,7 @@ void main() {
       dio.httpClientAdapter = _SseAdapter(sseText);
 
       final events = await ds
-          .generateStream(ReviewAiSummaryRange.last7Days)
+          .generateStream(ReviewDigestRange.last7Days)
           .toList();
 
       expect(events, isEmpty);
@@ -265,7 +265,7 @@ void main() {
 
         await ds
             .generateStream(
-              ReviewAiSummaryRange.custom,
+              ReviewDigestRange.custom,
               startDate: '2026-07-01',
               endDate: '2026-07-10',
             )
@@ -303,12 +303,12 @@ void main() {
       dio.httpClientAdapter = _SseAdapter(sseText);
 
       final events = await ds
-          .generateStream(ReviewAiSummaryRange.last7Days)
+          .generateStream(ReviewDigestRange.last7Days)
           .toList();
 
       expect(events, hasLength(1));
-      expect(events[0], isA<ReviewAiRemoteResultEvent>());
-      final dto = (events[0] as ReviewAiRemoteResultEvent).dto;
+      expect(events[0], isA<ReviewDigestRemoteResultEvent>());
+      final dto = (events[0] as ReviewDigestRemoteResultEvent).dto;
       expect(dto.summary, 'test');
     });
 
@@ -321,7 +321,7 @@ void main() {
       dio.httpClientAdapter = _SseAdapter(sseText);
 
       final events = await ds
-          .generateStream(ReviewAiSummaryRange.last7Days)
+          .generateStream(ReviewDigestRange.last7Days)
           .toList();
 
       expect(events, isEmpty);

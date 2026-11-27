@@ -71,8 +71,8 @@ void main() {
       expect(ReviewDashboard.signedOut().patterns, isEmpty);
     });
 
-    test('has aiSummaryEnabled false', () {
-      expect(ReviewDashboard.signedOut().aiSummaryEnabled, isFalse);
+    test('has digestEnabled false', () {
+      expect(ReviewDashboard.signedOut().digestEnabled, isFalse);
     });
   });
 

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/features/review/domain/entities/digest.dart';
 import 'package:luminous/features/review/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
@@ -57,36 +57,36 @@ void main() {
     });
   });
 
-  group('reviewAiSummarySubtitle', () {
+  group('reviewDigestSummarySubtitle', () {
     test('last7Days returns subtitle', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(
-        reviewAiSummarySubtitle(l10n, ReviewAiSummaryRange.last7Days),
-        l10n.reviewAiSummarySubtitle,
+        reviewDigestSummarySubtitle(l10n, ReviewDigestRange.last7Days),
+        l10n.reviewDigestSummarySubtitle,
       );
     });
     test('last30Days returns subtitle', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(
-        reviewAiSummarySubtitle(l10n, ReviewAiSummaryRange.last30Days),
-        l10n.reviewAiSummarySubtitleLast30Days,
+        reviewDigestSummarySubtitle(l10n, ReviewDigestRange.last30Days),
+        l10n.reviewDigestSummarySubtitleLast30Days,
       );
     });
   });
 
-  group('reviewAiSummaryGeneratingLabel', () {
+  group('reviewDigestSummaryGeneratingLabel', () {
     test('last7Days returns generating hint', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(
-        reviewAiSummaryGeneratingLabel(l10n, ReviewAiSummaryRange.last7Days),
-        l10n.reviewAiSummaryGeneratingHint,
+        reviewDigestSummaryGeneratingLabel(l10n, ReviewDigestRange.last7Days),
+        l10n.reviewDigestSummaryGeneratingHint,
       );
     });
     test('last30Days returns hint', () async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(
-        reviewAiSummaryGeneratingLabel(l10n, ReviewAiSummaryRange.last30Days),
-        l10n.reviewAiSummaryGeneratingHintLast30Days,
+        reviewDigestSummaryGeneratingLabel(l10n, ReviewDigestRange.last30Days),
+        l10n.reviewDigestSummaryGeneratingHintLast30Days,
       );
     });
   });

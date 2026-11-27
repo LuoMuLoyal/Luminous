@@ -2,8 +2,8 @@ import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/design/color/semantic_color.dart';
 import 'package:luminous/core/errors/user_message.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
+import 'package:luminous/features/review/domain/entities/digest.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -24,8 +24,8 @@ DataExportRequestInput? reviewExportInputForKind(ReviewExportKind kind) {
 // Data models
 // ---------------------------------------------------------------------------
 
-class ReviewAiSummaryContent {
-  const ReviewAiSummaryContent({
+class ReviewDigestContent {
+  const ReviewDigestContent({
     required this.subtitle,
     this.summaryText,
     this.observedPattern,
@@ -40,7 +40,7 @@ class ReviewAiSummaryContent {
   final String? observedPattern;
   final String? lowRiskAction;
   final String? disclaimer;
-  final ReviewAiSummaryCoverage? coverage;
+  final ReviewDigestCoverage? coverage;
   final bool showGenerateButton;
 }
 
@@ -123,20 +123,20 @@ String reviewExportCardSubtitle(
 // AI summary helpers
 // ---------------------------------------------------------------------------
 
-ReviewAiSummaryContent buildReviewAiSummaryContentFromDashboard({
+ReviewDigestContent buildReviewDigestContentFromDashboard({
   required AppLocalizations l10n,
   required ReviewDashboard dashboard,
   required bool canAccessProtectedData,
-  required bool? aiSummariesEnabled,
-  required ReviewAiSummaryCardState aiState,
-  required ReviewAiSummaryRange selectedRange,
+  required bool? digestEnabled,
+  required ReviewDigestCardState briefingState,
+  required ReviewDigestRange selectedRange,
   required FColors colors,
 }) {
-  return buildReviewAiSummaryContent(
+  return buildReviewDigestContent(
     l10n: l10n,
-    aiSummaryEnabled: dashboard.aiSummaryEnabled,
+    digestEnabled: dashboard.digestEnabled,
     canAccessProtectedData: canAccessProtectedData,
-    aiState: aiState,
+    briefingState: briefingState,
     selectedRange: selectedRange,
     colors: colors,
   );
@@ -144,35 +144,35 @@ ReviewAiSummaryContent buildReviewAiSummaryContentFromDashboard({
 
 /// Review 主路径用的 AI 总结内容构建函数。
 ///
-/// 与 [buildReviewAiSummaryContentFromDashboard] 的区别：不依赖 [ReviewDashboard] 实体，
-/// 只接收 `aiSummaryEnabled` 布尔值，适配 Review 页面不一定有 dashboard
+/// 与 [buildReviewDigestContentFromDashboard] 的区别：不依赖 [ReviewDashboard] 实体，
+/// 只接收 `digestEnabled` 布尔值，适配 Review 页面不一定有 dashboard
 /// 数据的场景。
-ReviewAiSummaryContent buildReviewAiSummaryContent({
+ReviewDigestContent buildReviewDigestContent({
   required AppLocalizations l10n,
-  required bool aiSummaryEnabled,
+  required bool digestEnabled,
   required bool canAccessProtectedData,
-  required ReviewAiSummaryCardState aiState,
-  required ReviewAiSummaryRange selectedRange,
+  required ReviewDigestCardState briefingState,
+  required ReviewDigestRange selectedRange,
   required FColors colors,
 }) {
   if (!canAccessProtectedData) {
-    return ReviewAiSummaryContent(
+    return ReviewDigestContent(
       subtitle: l10n.reviewSnapshotHint,
       disclaimer: l10n.authNotSignedIn,
     );
   }
 
-  if (!aiSummaryEnabled || aiState.isDisabled) {
-    return ReviewAiSummaryContent(
+  if (!digestEnabled || briefingState.isDisabled) {
+    return ReviewDigestContent(
       subtitle: l10n.reviewSnapshotHint,
-      disclaimer: l10n.reviewAiSummaryDisabledHint,
+      disclaimer: l10n.reviewDigestSummaryDisabledHint,
     );
   }
 
-  final summary = aiState.summary;
+  final summary = briefingState.summary;
   if (summary != null) {
-    return ReviewAiSummaryContent(
-      subtitle: reviewAiSummarySubtitle(l10n, selectedRange),
+    return ReviewDigestContent(
+      subtitle: reviewDigestSummarySubtitle(l10n, selectedRange),
       summaryText: summary.summary,
       observedPattern: summary.observedPattern?.text,
       lowRiskAction: summary.lowRiskAction?.text,
@@ -181,54 +181,54 @@ ReviewAiSummaryContent buildReviewAiSummaryContent({
     );
   }
 
-  if (aiState.status == ReviewAiSummaryCardStatus.error) {
-    return ReviewAiSummaryContent(
-      subtitle: reviewAiSummarySubtitle(l10n, selectedRange),
+  if (briefingState.status == ReviewDigestCardStatus.error) {
+    return ReviewDigestContent(
+      subtitle: reviewDigestSummarySubtitle(l10n, selectedRange),
       // 失败对象在渲染点过一遍错误归一 seam：能取到错误码就用本地化文案，
       // 否则退回服务端下发的 message。
       disclaimer: userMessageFromError(
-        aiState.error,
+        briefingState.error,
         l10n: l10n,
-        fallback: l10n.reviewAiSummaryErrorHint,
+        fallback: l10n.reviewDigestSummaryErrorHint,
       ),
-      showGenerateButton: aiSummaryEnabled,
+      showGenerateButton: digestEnabled,
     );
   }
 
-  if (aiState.status == ReviewAiSummaryCardStatus.loading) {
-    return ReviewAiSummaryContent(
-      subtitle: reviewAiSummarySubtitle(l10n, selectedRange),
-      summaryText: aiState.streamingSummary,
-      disclaimer: reviewAiSummaryGeneratingLabel(l10n, selectedRange),
+  if (briefingState.status == ReviewDigestCardStatus.loading) {
+    return ReviewDigestContent(
+      subtitle: reviewDigestSummarySubtitle(l10n, selectedRange),
+      summaryText: briefingState.streamingSummary,
+      disclaimer: reviewDigestSummaryGeneratingLabel(l10n, selectedRange),
     );
   }
 
-  return ReviewAiSummaryContent(
+  return ReviewDigestContent(
     subtitle: l10n.reviewSnapshotHint,
-    disclaimer: l10n.reviewAiSummaryDefaultHint,
-    showGenerateButton: aiSummaryEnabled,
+    disclaimer: l10n.reviewDigestSummaryDefaultHint,
+    showGenerateButton: digestEnabled,
   );
 }
 
-String reviewAiSummarySubtitle(
+String reviewDigestSummarySubtitle(
   AppLocalizations l10n,
-  ReviewAiSummaryRange range,
+  ReviewDigestRange range,
 ) {
   return switch (range) {
-    ReviewAiSummaryRange.last30Days => l10n.reviewAiSummarySubtitleLast30Days,
-    ReviewAiSummaryRange.custom => l10n.reviewAiSummarySubtitleCustom,
-    ReviewAiSummaryRange.last7Days => l10n.reviewAiSummarySubtitle,
+    ReviewDigestRange.last30Days => l10n.reviewDigestSummarySubtitleLast30Days,
+    ReviewDigestRange.custom => l10n.reviewDigestSummarySubtitleCustom,
+    ReviewDigestRange.last7Days => l10n.reviewDigestSummarySubtitle,
   };
 }
 
-String reviewAiSummaryGeneratingLabel(
+String reviewDigestSummaryGeneratingLabel(
   AppLocalizations l10n,
-  ReviewAiSummaryRange range,
+  ReviewDigestRange range,
 ) {
   return switch (range) {
-    ReviewAiSummaryRange.last30Days =>
-      l10n.reviewAiSummaryGeneratingHintLast30Days,
-    ReviewAiSummaryRange.custom => l10n.reviewAiSummaryGeneratingHintCustom,
-    ReviewAiSummaryRange.last7Days => l10n.reviewAiSummaryGeneratingHint,
+    ReviewDigestRange.last30Days =>
+      l10n.reviewDigestSummaryGeneratingHintLast30Days,
+    ReviewDigestRange.custom => l10n.reviewDigestSummaryGeneratingHintCustom,
+    ReviewDigestRange.last7Days => l10n.reviewDigestSummaryGeneratingHint,
   };
 }

@@ -71,7 +71,7 @@ abstract class ReviewDashboard with _$ReviewDashboard {
     required List<ReviewFinding> findings,
     required List<ReviewExportAction> exportActions,
     required List<ReviewPatternCard> patterns,
-    required bool aiSummaryEnabled,
+    required bool digestEnabled,
   }) = _ReviewDashboard;
 
   /// A minimal dashboard for signed-out users with no real or mock data.
@@ -85,7 +85,7 @@ abstract class ReviewDashboard with _$ReviewDashboard {
     findings: <ReviewFinding>[],
     exportActions: <ReviewExportAction>[],
     patterns: <ReviewPatternCard>[],
-    aiSummaryEnabled: false,
+    digestEnabled: false,
   );
 }
 

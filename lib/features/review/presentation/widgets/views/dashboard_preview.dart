@@ -114,7 +114,7 @@ class ReviewDashboardPreview extends StatelessWidget {
               Expanded(
                 child: ReviewPreviewLockedSection(
                   key: const Key('report-findings-preview-locked'),
-                  icon: SemanticIcons.aiTip,
+                  icon: SemanticIcons.assistantTip,
                   title: l10n.reviewFindingsPreviewTitle,
                   body: l10n.reviewFindingsPreviewBody,
                 ),
@@ -133,7 +133,7 @@ class ReviewDashboardPreview extends StatelessWidget {
         else ...[
           ReviewPreviewLockedSection(
             key: const Key('report-findings-preview-locked'),
-            icon: SemanticIcons.aiTip,
+            icon: SemanticIcons.assistantTip,
             title: l10n.reviewFindingsPreviewTitle,
             body: l10n.reviewFindingsPreviewBody,
           ),

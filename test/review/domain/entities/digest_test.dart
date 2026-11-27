@@ -1,47 +1,47 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/review/domain/entities/ai_summary.dart';
+import 'package:luminous/features/review/domain/entities/digest.dart';
 import 'package:luminous/shared/domain/failure.dart';
 
 void main() {
-  group('ReviewAiSummaryRange', () {
+  group('ReviewDigestRange', () {
     test('last7Days has correct apiValue', () {
-      expect(ReviewAiSummaryRange.last7Days.apiValue, 'last_7_days');
+      expect(ReviewDigestRange.last7Days.apiValue, 'last_7_days');
     });
 
     test('last30Days has correct apiValue', () {
-      expect(ReviewAiSummaryRange.last30Days.apiValue, 'last_30_days');
+      expect(ReviewDigestRange.last30Days.apiValue, 'last_30_days');
     });
 
     test('custom has correct apiValue', () {
-      expect(ReviewAiSummaryRange.custom.apiValue, 'custom');
+      expect(ReviewDigestRange.custom.apiValue, 'custom');
     });
   });
 
-  group('ReviewAiSummaryCardState', () {
+  group('ReviewDigestCardState', () {
     test('idle constructor sets idle status', () {
-      const state = ReviewAiSummaryCardState.idle();
-      expect(state.status, ReviewAiSummaryCardStatus.idle);
+      const state = ReviewDigestCardState.idle();
+      expect(state.status, ReviewDigestCardStatus.idle);
       expect(state.summary, isNull);
       expect(state.streamingSummary, isNull);
       expect(state.error, isNull);
     });
 
     test('loading constructor sets loading status', () {
-      const state = ReviewAiSummaryCardState.loading();
-      expect(state.status, ReviewAiSummaryCardStatus.loading);
+      const state = ReviewDigestCardState.loading();
+      expect(state.status, ReviewDigestCardStatus.loading);
       expect(state.summary, isNull);
       expect(state.streamingSummary, isNull);
     });
 
     test('loading constructor preserves previousSummary', () {
       final summary = _buildSummary();
-      final state = ReviewAiSummaryCardState.loading(previousSummary: summary);
-      expect(state.status, ReviewAiSummaryCardStatus.loading);
+      final state = ReviewDigestCardState.loading(previousSummary: summary);
+      expect(state.status, ReviewDigestCardStatus.loading);
       expect(state.summary, same(summary));
     });
 
     test('loading constructor sets streamingSummary', () {
-      const state = ReviewAiSummaryCardState.loading(
+      const state = ReviewDigestCardState.loading(
         streamingSummary: 'Partial...',
       );
       expect(state.streamingSummary, 'Partial...');
@@ -49,8 +49,8 @@ void main() {
 
     test('success constructor sets success status and summary', () {
       final summary = _buildSummary();
-      final state = ReviewAiSummaryCardState.success(summary);
-      expect(state.status, ReviewAiSummaryCardStatus.success);
+      final state = ReviewDigestCardState.success(summary);
+      expect(state.status, ReviewDigestCardStatus.success);
       expect(state.summary, same(summary));
     });
 
@@ -58,8 +58,8 @@ void main() {
       'error constructor sets error status and keeps the failure object',
       () {
         final failure = LucentFailure.unknown(message: 'Network failed');
-        final state = ReviewAiSummaryCardState.error(error: failure);
-        expect(state.status, ReviewAiSummaryCardStatus.error);
+        final state = ReviewDigestCardState.error(error: failure);
+        expect(state.status, ReviewDigestCardStatus.error);
         expect(state.error, same(failure));
         expect(state.summary, isNull);
       },
@@ -67,7 +67,7 @@ void main() {
 
     test('error constructor preserves previousSummary', () {
       final summary = _buildSummary();
-      final state = ReviewAiSummaryCardState.error(
+      final state = ReviewDigestCardState.error(
         error: LucentFailure.unknown(message: 'Failed'),
         previousSummary: summary,
       );
@@ -75,74 +75,74 @@ void main() {
     });
 
     test('disabled constructor sets disabled status', () {
-      const state = ReviewAiSummaryCardState.disabled();
-      expect(state.status, ReviewAiSummaryCardStatus.disabled);
+      const state = ReviewDigestCardState.disabled();
+      expect(state.status, ReviewDigestCardStatus.disabled);
       expect(state.summary, isNull);
     });
   });
 
-  group('ReviewAiSummaryCardState computed getters', () {
+  group('ReviewDigestCardState computed getters', () {
     test('isLoading is true for loading status', () {
-      const state = ReviewAiSummaryCardState.loading();
+      const state = ReviewDigestCardState.loading();
       expect(state.isLoading, isTrue);
     });
 
     test('isLoading is false for idle status', () {
-      const state = ReviewAiSummaryCardState.idle();
+      const state = ReviewDigestCardState.idle();
       expect(state.isLoading, isFalse);
     });
 
     test('isDisabled is true for disabled status', () {
-      const state = ReviewAiSummaryCardState.disabled();
+      const state = ReviewDigestCardState.disabled();
       expect(state.isDisabled, isTrue);
     });
 
     test('isDisabled is false for idle status', () {
-      const state = ReviewAiSummaryCardState.idle();
+      const state = ReviewDigestCardState.idle();
       expect(state.isDisabled, isFalse);
     });
 
     test('hasSummary is true when summary is non-null', () {
       final summary = _buildSummary();
-      final state = ReviewAiSummaryCardState.success(summary);
+      final state = ReviewDigestCardState.success(summary);
       expect(state.hasSummary, isTrue);
     });
 
     test('hasSummary is false when summary is null', () {
-      const state = ReviewAiSummaryCardState.idle();
+      const state = ReviewDigestCardState.idle();
       expect(state.hasSummary, isFalse);
     });
   });
 
-  group('ReviewAiSummary', () {
+  group('ReviewDigest', () {
     test('stores all fields correctly', () {
-      final summary = ReviewAiSummary(
-        range: ReviewAiSummaryRange.last7Days,
+      final summary = ReviewDigest(
+        range: ReviewDigestRange.last7Days,
         startDate: '2026-07-05',
         endDate: '2026-07-12',
         generatedAt: DateTime(2026, 7, 12, 10, 30),
         summary: 'Weekly summary',
-        coverage: const ReviewAiSummaryCoverage(
-          medication: ReviewAiSummaryCoverageDimension(
+        coverage: const ReviewDigestCoverage(
+          medication: ReviewDigestCoverageDimension(
             trackedDays: 5,
             totalDays: 7,
           ),
-          water: ReviewAiSummaryCoverageDimension(trackedDays: 3, totalDays: 7),
-          sleep: ReviewAiSummaryCoverageDimension(trackedDays: 0, totalDays: 7),
+          water: ReviewDigestCoverageDimension(trackedDays: 3, totalDays: 7),
+          sleep: ReviewDigestCoverageDimension(trackedDays: 0, totalDays: 7),
         ),
-        observedPattern: const ReviewAiSummaryObservedPattern(
-          kind: ReviewAiSummaryPatternKind.medication,
+        observedPattern: const ReviewDigestObservedPattern(
+          kind: ReviewDigestPatternKind.medication,
           text: '用药完成率稳定。',
           source: '用药提醒记录',
         ),
-        lowRiskAction: const ReviewAiSummaryLowRiskAction(
+        lowRiskAction: const ReviewDigestLowRiskAction(
           label: '继续记录',
           text: '建议保持当前节奏。',
         ),
         disclaimer: '仅基于近 7 天数据。',
       );
 
-      expect(summary.range, ReviewAiSummaryRange.last7Days);
+      expect(summary.range, ReviewDigestRange.last7Days);
       expect(summary.startDate, '2026-07-05');
       expect(summary.endDate, '2026-07-12');
       expect(summary.generatedAt, DateTime(2026, 7, 12, 10, 30));
@@ -151,10 +151,7 @@ void main() {
       expect(summary.coverage.water.trackedDays, 3);
       expect(summary.coverage.sleep.trackedDays, 0);
       expect(summary.observedPattern, isNotNull);
-      expect(
-        summary.observedPattern!.kind,
-        ReviewAiSummaryPatternKind.medication,
-      );
+      expect(summary.observedPattern!.kind, ReviewDigestPatternKind.medication);
       expect(summary.observedPattern!.text, '用药完成率稳定。');
       expect(summary.observedPattern!.source, '用药提醒记录');
       expect(summary.lowRiskAction, isNotNull);
@@ -169,49 +166,46 @@ void main() {
     });
   });
 
-  group('ReviewAiSummaryCardStatus', () {
+  group('ReviewDigestCardStatus', () {
     test('has all expected values', () {
       expect(
-        ReviewAiSummaryCardStatus.values,
+        ReviewDigestCardStatus.values,
         containsAll([
-          ReviewAiSummaryCardStatus.idle,
-          ReviewAiSummaryCardStatus.loading,
-          ReviewAiSummaryCardStatus.success,
-          ReviewAiSummaryCardStatus.error,
-          ReviewAiSummaryCardStatus.disabled,
+          ReviewDigestCardStatus.idle,
+          ReviewDigestCardStatus.loading,
+          ReviewDigestCardStatus.success,
+          ReviewDigestCardStatus.error,
+          ReviewDigestCardStatus.disabled,
         ]),
       );
     });
   });
 
-  group('ReviewAiSummaryPatternKind', () {
+  group('ReviewDigestPatternKind', () {
     test('has all expected values', () {
       expect(
-        ReviewAiSummaryPatternKind.values,
+        ReviewDigestPatternKind.values,
         containsAll([
-          ReviewAiSummaryPatternKind.medication,
-          ReviewAiSummaryPatternKind.hydration,
-          ReviewAiSummaryPatternKind.sleep,
+          ReviewDigestPatternKind.medication,
+          ReviewDigestPatternKind.hydration,
+          ReviewDigestPatternKind.sleep,
         ]),
       );
     });
   });
 }
 
-ReviewAiSummary _buildSummary() {
-  return ReviewAiSummary(
-    range: ReviewAiSummaryRange.last7Days,
+ReviewDigest _buildSummary() {
+  return ReviewDigest(
+    range: ReviewDigestRange.last7Days,
     startDate: '2026-07-05',
     endDate: '2026-07-12',
     generatedAt: DateTime(2026, 7, 12),
     summary: 'Summary',
-    coverage: const ReviewAiSummaryCoverage(
-      medication: ReviewAiSummaryCoverageDimension(
-        trackedDays: 5,
-        totalDays: 7,
-      ),
-      water: ReviewAiSummaryCoverageDimension(trackedDays: 3, totalDays: 7),
-      sleep: ReviewAiSummaryCoverageDimension(trackedDays: 0, totalDays: 7),
+    coverage: const ReviewDigestCoverage(
+      medication: ReviewDigestCoverageDimension(trackedDays: 5, totalDays: 7),
+      water: ReviewDigestCoverageDimension(trackedDays: 3, totalDays: 7),
+      sleep: ReviewDigestCoverageDimension(trackedDays: 0, totalDays: 7),
     ),
     observedPattern: null,
     lowRiskAction: null,

@@ -67,7 +67,7 @@ class _EmptyFindingsView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            SemanticIcons.aiTip,
+            SemanticIcons.assistantTip,
             color: colors.secondary,
             size: IconSizeTokens.sm,
           ),

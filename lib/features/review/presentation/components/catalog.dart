@@ -8,13 +8,13 @@ import 'package:luminous/core/router/app_routes.dart';
 import 'package:luminous/features/review/domain/entities/dashboard.dart';
 import 'package:luminous/features/review/domain/entities/review.dart';
 import 'package:luminous/features/review/presentation/components/period.dart';
-import 'package:luminous/features/review/presentation/providers/ai_summary.dart';
 import 'package:luminous/features/review/presentation/providers/dashboard.dart';
 import 'package:luminous/features/review/presentation/providers/data_access.dart';
+import 'package:luminous/features/review/presentation/providers/digest.dart';
 import 'package:luminous/features/review/presentation/providers/review.dart';
 import 'package:luminous/features/review/presentation/providers/surface.dart';
 import 'package:luminous/features/review/presentation/providers/trend.dart';
-import 'package:luminous/features/review/presentation/widgets/sections/event/ai_summary.dart';
+import 'package:luminous/features/review/presentation/widgets/sections/event/digest.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/event/what_happened.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/history/history.dart';
 import 'package:luminous/features/review/presentation/widgets/sections/history/period_switch.dart';
@@ -74,7 +74,7 @@ const reviewMultiTrendId = ComponentId('trend.multi');
 /// 验收口径），新增可选组件只在编排页里出现。
 const reviewMetricGridId = ComponentId('metric.grid');
 const reviewHistoryId = ComponentId('history.review');
-const reviewAiSummaryId = ComponentId('ai_summary.event');
+const reviewDigestSummaryId = ComponentId('digest.event');
 const reviewPreviewOverviewId = ComponentId('preview.overview');
 const reviewNoEventExplanationId = ComponentId('preview.no_event_note');
 const reviewStaleBannerId = ComponentId('status.stale_banner');
@@ -101,7 +101,7 @@ const reviewSurfaceDefinition = SurfaceDefinition(
     reviewNoteworthyId,
     reviewRecordGuideId,
     reviewHistoryId,
-    reviewAiSummaryId,
+    reviewDigestSummaryId,
     reviewPreviewOverviewId,
     reviewNoEventExplanationId,
     reviewStaleBannerId,
@@ -179,7 +179,7 @@ void registerReviewComponents(ComponentRegistry registry) {
   registry.registerDescriptor(const _MultiTrendComponent());
   registry.registerDescriptor(const _MetricGridComponent());
   registry.registerDescriptor(const _HistoryComponent());
-  registry.registerDescriptor(const _AiSummaryComponent());
+  registry.registerDescriptor(const _DigestComponent());
   registry.registerDescriptor(const _PreviewOverviewComponent());
   registry.registerDescriptor(const _NoEventExplanationComponent());
   registry.registerDescriptor(const _StaleBannerComponent());
@@ -678,11 +678,11 @@ class _HistoryComponent extends ComponentDescriptor<NoComponentConfig> {
   }
 }
 
-class _AiSummaryComponent extends ComponentDescriptor<NoComponentConfig> {
-  const _AiSummaryComponent();
+class _DigestComponent extends ComponentDescriptor<NoComponentConfig> {
+  const _DigestComponent();
 
   @override
-  ComponentId get id => reviewAiSummaryId;
+  ComponentId get id => reviewDigestSummaryId;
 
   @override
   NoComponentConfig get defaultConfig => const NoComponentConfig();
@@ -699,26 +699,24 @@ class _AiSummaryComponent extends ComponentDescriptor<NoComponentConfig> {
     final canAccessProtectedData = ref
         .watch(authSessionProvider)
         .canAccessProtectedData;
-    final selectedRange = ref.watch(reviewAiSummarySelectedRangeProvider);
-    final aiEnabled = ref.watch(
+    final selectedRange = ref.watch(reviewDigestSummarySelectedRangeProvider);
+    final assistantEnabled = ref.watch(
       userSettingsControllerProvider.select(
-        (settings) => settings.asData?.value.aiSummariesEnabled,
+        (settings) => settings.asData?.value.digestEnabled,
       ),
     );
-    return ReviewAiSummarySection(
-      aiSummaryEnabled: aiEnabled ?? true,
+    return ReviewDigestSection(
+      digestEnabled: assistantEnabled ?? true,
       canAccessProtectedData: canAccessProtectedData,
-      aiState: ref.watch(reviewAiSummaryControllerProvider(selectedRange)),
+      briefingState: ref.watch(reviewDigestControllerProvider(selectedRange)),
       selectedRange: selectedRange,
       onRangeChanged: (range) => ref
-          .read(reviewAiSummarySelectedRangeProvider.notifier)
+          .read(reviewDigestSummarySelectedRangeProvider.notifier)
           .setRange(range),
       onGenerate: canAccessProtectedData
           ? () async {
               await ref
-                  .read(
-                    reviewAiSummaryControllerProvider(selectedRange).notifier,
-                  )
+                  .read(reviewDigestControllerProvider(selectedRange).notifier)
                   .generate();
             }
           : null,
